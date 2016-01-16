@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-Hi, I'm Doug and I'm a Linux Sys Admin, Gentoo user, PostgreSQL advocate, Android fanboi, OSS supporter, and PlayStation gamer. But try not to hold all that against me, ok?
+Hi, I'm Doug and I'm a [Linux](https://en.wikipedia.org/wiki/Linux) [Sys Admin](https://en.wikipedia.org/wiki/System_administrator), [Gentoo](https://gentoo.org) user, [PostgreSQL](https://www.postgresql.org) DBA and advocate, [Android](http://www.android.com) fanboi, [OSS](https://en.wikipedia.org/wiki/Open-source_movement) supporter, a console gamer ([PlayStation](https://www.playstation.com)), and a mobile gamer ([Android](https://play.google.com/store/apps/category/GAME)). But try not to hold all that against me, ok?
 
 ### More Information
 
