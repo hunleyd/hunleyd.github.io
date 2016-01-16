@@ -284,25 +284,24 @@ footer {
 }
 
 .meta_wrapper {
-    border:1px solid #C9C6C3;
-    border-width:1px 0;
-    color:#666;
-    font-size:12px;
-    line-height:20px;
-    margin:0 0 20px;
-    padding:1px 0;
-    text-transform:uppercase
+    border: 1px solid #C9C6C3;
+    border-width: 1px 0;
+    color: #666;
+    font-size: 12px;
+    line-height: 20px;
+    margin: 0 0 20px;
+    padding: 1px 0;
+    text-transform: uppercase
 }
-ul.tag_list_in_post{
-    border-left:1px solid #bbb;
-    display:inline;
-    margin-left:15px;
-    padding:0 0 0 10px;
+ul.tag_list_in_post {
+    display: inline;
+    margin-left: 15px;
+    padding: 0 0 0 10px;
 }
-li.tag_list_item{
-    line-height:1;
-    list-style:none;
-    margin:0;
+li.tag_list_item {
+    line-height: 1;
+    list-style: none;
+    margin: 0;
 }
 
 // Settled on moving the import of syntax highlighting to the bottom of the CSS
