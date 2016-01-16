@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Once More, With Feeling
+tags: general
 ---
 
 Welcome to the new blog.
