@@ -4,9 +4,9 @@ layout: default
 
 <article class="post">
   <h1>{{ page.title }}</h1>
-  <sub>
+  <font size=-1>
 {% assign d = page.date | date: "%-d"  %}
-{{ page.date | date: "%B" }} 
+{{ page.date | date: "%B" }}
 {% case d %}
   {% when '1' or '21' or '31' %}{{ d }}st
   {% when '2' or '22' %}{{ d }}nd
@@ -14,7 +14,7 @@ layout: default
   {% else %}{{ d }}th
   {% endcase %}, 
 {{ page.date | date: "%Y" }}
-  </sub>
+  </font>
 
   <div class="entry">
     {{ content }}
