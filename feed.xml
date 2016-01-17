@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-01-16T20:49:50-05:00</updated>
+ <updated>2016-01-16T21:03:18-05:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -24,6 +24,21 @@
 &lt;p&gt;So then a coworker mentioned standing up &lt;em&gt;his&lt;/em&gt; new blog using &lt;a href=&quot;https://www.github.com&quot;&gt;GitHub&lt;/a&gt; and &lt;a href=&quot;https://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt; and I was blown away at how it worked. It just &lt;em&gt;so totally fit&lt;/em&gt; with my workflow and preferences. So here we are. Everything old is new again. Or something.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://www.wired.com/wp-content/uploads/2014/08/poster.jpg&quot; border=0 alt=&quot;Yeah, it&#39;s that kinda blog&quot;&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>More Bloggy Goodness</title>
+   <link href="http://hunleyd.github.io/More-Bloggy-Goodness/"/>
+   <updated>2016-01-16T00:00:00-05:00</updated>
+   <id>http://hunleyd.github.io/More-Bloggy-Goodness</id>
+   <content type="html">&lt;p&gt;It&amp;#39;s been a bit of a busy day for my and my blog. I&amp;#39;ve added:
+* an RSS feed
+* an archive
+* tags
+* Disqus comments&lt;/p&gt;
+
+&lt;p&gt;All with as little effort on my part as I&amp;#39;ve put into a blog. I &lt;strong&gt;fucking&lt;/strong&gt; love this blogging platform!&lt;/p&gt;
 </content>
  </entry>
  
