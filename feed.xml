@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-01-16T21:03:57-05:00</updated>
+ <updated>2016-01-16T21:05:00-05:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -32,11 +32,14 @@
    <link href="http://hunleyd.github.io/More-Bloggy-Goodness/"/>
    <updated>2016-01-16T00:00:00-05:00</updated>
    <id>http://hunleyd.github.io/More-Bloggy-Goodness</id>
-   <content type="html">&lt;p&gt;It&amp;#39;s been a bit of a busy day for me and my blog. I&amp;#39;ve added:
-* an RSS feed
-* an archive
-* tags
-* Disqus comments&lt;/p&gt;
+   <content type="html">&lt;p&gt;It&amp;#39;s been a bit of a busy day for me and my blog. I&amp;#39;ve added:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;an RSS feed&lt;/li&gt;
+&lt;li&gt;an archive&lt;/li&gt;
+&lt;li&gt;tags&lt;/li&gt;
+&lt;li&gt;Disqus comments&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;All with as little effort on my part as I&amp;#39;ve put into a blog. I &lt;strong&gt;fucking&lt;/strong&gt; love this blogging platform!&lt;/p&gt;
 </content>
