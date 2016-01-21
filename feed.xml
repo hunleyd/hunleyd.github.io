@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-01-21T14:41:36-05:00</updated>
+ <updated>2016-01-21T18:21:29-05:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -13,10 +13,10 @@
 
  
  <entry>
-   <title>Huawei Watch (Review)</title>
-   <link href="http://hunleyd.github.io/Huawei-Watch-(Review)/"/>
+   <title>Huawei Watch Review</title>
+   <link href="http://hunleyd.github.io/Huawei-Watch-Review/"/>
    <updated>2016-01-21T00:00:00-05:00</updated>
-   <id>http://hunleyd.github.io/Huawei-Watch-(Review)</id>
+   <id>http://hunleyd.github.io/Huawei-Watch-Review</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://www.gethuawei.com/buy-huawei-watch&quot;&gt;&lt;img src=&quot;http://www.gethuawei.com/media/wysiwyg/pdpcms/huawei_watch/watches/stainless-leather1.png&quot; width=150 height=197 border=0 align=left&gt;&lt;/a&gt;A couple of my mates wanted me to let them know what I thought of the &lt;a href=&quot;http://www.huawei.com/en/&quot;&gt;Huawei&lt;/a&gt; Watch (hereafter, &amp;#39;H&amp;#39;) after upgrading from the &lt;a href=&quot;https://www.motorola.com/us/products/moto-360&quot;&gt;Moto 360&lt;/a&gt; (hereafter, 360) and spending some time getting to know the &amp;#39;H&amp;#39;. So here&amp;#39;s my thoughts.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Better than the 360 in every way that counts&lt;/p&gt;
@@ -30,6 +30,29 @@
 &lt;p&gt;So yeah, charging. The one thorn in the rose. But worth it, imho.&lt;/p&gt;
 
 &lt;p&gt;Review: ★★★★★&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Efficient, yet Creepy</title>
+   <link href="http://hunleyd.github.io/Efficient-Yet-Creepy/"/>
+   <updated>2016-01-21T00:00:00-05:00</updated>
+   <id>http://hunleyd.github.io/Efficient-Yet-Creepy</id>
+   <content type="html">&lt;p&gt;So I&amp;#39;m sitting here seting up a new Internet connected device I bought recently (more on it later) and I can&amp;#39;t seem to get it to setup properly. I can create an account on their site, I can login to said account, I can power on said device and connect to it using the app and configure it to use my home wifi, but the device just won&amp;#39;t ever finish connecting and syncing w/ my account on the site.&lt;/p&gt;
+
+&lt;p&gt;I try this about half a dozen times, with a few reboots and even a reset of the device in there. Still no luck. So I power it off, set it aside, and go do some things IRL thinking &amp;quot;I&amp;#39;ll come back to it&amp;quot;. Not five minutes later, I get an email on my phone from Tech Support at the device&amp;#39;s company saying thusly:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;We noticed that you are having problems adding $device to your system.
+To assist you with the process, we would like to first push a firmware
+update to your $device. Please keep your $device plugged in and we
+will take care of the rest. We will send you another email when you
+have been updated.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Now &lt;em&gt;that&amp;#39;s&lt;/em&gt; efficient. And &lt;strong&gt;super creepy&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;I kinda like it :D&lt;/p&gt;
 </content>
  </entry>
  
