@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://hunleyd.github.io/Glutton-for-punishment/</loc>
+<lastmod>2016-02-29T05:14:50-05:00</lastmod>
+</url>
+<url>
 <loc>http://hunleyd.github.io/Flyover-state/</loc>
 <lastmod>2016-02-09T11:59:24-05:00</lastmod>
 </url>
@@ -25,13 +29,13 @@
 <lastmod>2016-01-15T19:00:00-05:00</lastmod>
 </url>
 <url>
-<loc>http://hunleyd.github.io/404.html</loc>
+<loc>http://hunleyd.github.io/404/</loc>
 </url>
 <url>
 <loc>http://hunleyd.github.io/about/</loc>
 </url>
 <url>
-<loc>http://hunleyd.github.io/archive.html</loc>
+<loc>http://hunleyd.github.io/archive/</loc>
 </url>
 <url>
 <loc>http://hunleyd.github.io/</loc>
@@ -50,5 +54,17 @@
 </url>
 <url>
 <loc>http://hunleyd.github.io/tag/android/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/work/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/computers/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/osx/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/linux/</loc>
 </url>
 </urlset>
