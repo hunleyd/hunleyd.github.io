@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://hunleyd.github.io/Hello_eero/</loc>
+<lastmod>2016-03-30T10:00:25-04:00</lastmod>
+</url>
+<url>
 <loc>http://hunleyd.github.io/Glutton-for-punishment/</loc>
 <lastmod>2016-02-29T05:14:50-05:00</lastmod>
 </url>
@@ -66,5 +70,11 @@
 </url>
 <url>
 <loc>http://hunleyd.github.io/tag/linux/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/networking/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/crowdfunding/</loc>
 </url>
 </urlset>
