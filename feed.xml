@@ -4,13 +4,84 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-03-30T14:00:26-04:00</updated>
+ <updated>2016-04-18T15:04:28-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>PostgreSQL Streaming Replication in 10 Minutes</title>
+   <link href="http://hunleyd.github.io/PostgreSQL-Streaming-Replication-In-10-Minutes/"/>
+   <updated>2016-04-18T10:47:10-04:00</updated>
+   <id>http://hunleyd.github.io/PostgreSQL-Streaming-Replication-In-10-Minutes</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://unitedlayer.com/sites/default/files/dr-icons-01.png&quot; border=0 align=right&gt;While there&amp;#39;s absolutely nothing new in this blog post that isn&amp;#39;t covered by the wonderful &lt;a href=&quot;http://www.postgresql.org/docs/current/static/index.html&quot;&gt;docs&lt;/a&gt; I&amp;#39;ve been asked multiple times now by customers if we had some kind of &amp;#39;crib notes&amp;#39; format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well post it so that I can simply point people to it in the future. So here we are.&lt;/p&gt;
+
+&lt;p&gt;Now, let&amp;#39;s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity&amp;#39;s sake, we will these machines &amp;#39;master&amp;#39; and &amp;#39;slave&amp;#39;. Note too that I&amp;#39;m using &lt;code&gt;replication slots&lt;/code&gt; which needs PostgreSQL 9.4.0 or later; if you&amp;#39;re using something earlier, simply ignore the slot stuff.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;#39;s get started!&lt;/p&gt;
+
+&lt;p&gt;On the master, do the following:
+&lt;pre&gt;&lt;code&gt;
+    cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; postgresql.org
+    wal _ level = hot _ standby
+    full _ page _ writes = on
+    wal _ log _ hints = on
+    max _ wal _ senders = 6
+    max _ replication _ slots = 6
+    hot _ standby = on
+    hot _ standby _ feedback = on
+    EOF
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;On the master, add the external IP addresses of the servers to &lt;code&gt;pg_hba.conf&lt;/code&gt;:
+&lt;pre&gt;&lt;code&gt;
+    cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; pg _ hba.conf
+    host replication repl _ user IP _ of _ master/32 md5
+    host replication repl _ user IP _ of _ slave/32 md5
+    EOF
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;Restart PostgreSQL on the master for the changes to take affect&lt;/p&gt;
+
+&lt;p&gt;On the master, create the replication user:
+&lt;pre&gt;&lt;code&gt;
+    psql -d postgres -U postgres -c &amp;quot;CREATE ROLE repl _ user LOGIN REPLICATION ENCRYPTED PASSWORD &amp;#39;secretpasswordhere&amp;#39;;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;On the master, create the replication slot for the slave:
+&lt;pre&gt;&lt;code&gt;
+    psql -d postgres -U postgres -c &amp;quot;SELECT * FROM pg _ create _ physical _ replication _ slot(&amp;#39;slave1&amp;#39;);&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;On the slave, wipe the existing cluster:
+&lt;pre&gt;&lt;code&gt;
+    cd /var/lib/pgsql/9.4/data
+    pg _ ctl -D $PWD -mf stop
+    cd ..
+    rm -rfv data
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;On the slave, use the &lt;code&gt;pg_basebackup&lt;/code&gt; command to clone the master (enter the repl _ user&amp;#39;s password from above when prompted):
+&lt;pre&gt;&lt;code&gt;
+    pg _ basebackup -D data -Fp -R -Xs -c fast -l &amp;#39;initial clone&amp;#39; -P -v -h IP _ of _ master -U repl _ user
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;On the slave, tweak the &lt;code&gt;recovery.conf&lt;/code&gt; that was created for you and add the replication slot name:
+&lt;pre&gt;&lt;code&gt;
+    cd data
+    cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; recovery.conf
+    primary _ slot _ name = &amp;#39;slave1&amp;#39;
+    EOF
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
+
+&lt;p&gt;Start the slave up&lt;/p&gt;
+
+&lt;p&gt;And that&amp;#39;s it. You should be all done. Easy, right?&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Hello, eero</title>
