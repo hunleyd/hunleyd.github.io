@@ -68,21 +68,21 @@
 <p>On the master, do the following:
 <pre><code>
     cat &lt;&lt; EOF &gt;&gt; postgresql.conf
-    wal<em>level = hot</em>standby
-    full<em>page</em>writes = on
-    wal<em>log</em>hints = on
-    max<em>wal</em>senders = 6
-    max<em>replication</em>slots = 6
-    hot<em>standby = on
-    hot</em>standby_feedback = on
+    wal_level = hot_standby
+    full_page_writes = on
+    wal_log_hints = on
+    max_wal_senders = 6
+    max_replication_slots = 6
+    hot_standby = on
+    hot_standby_feedback = on
     EOF
 </code></pre></p>
 
 <p>On the master, add the external IP addresses of the servers to <code>pg_hba.conf</code>:
 <pre><code>
-    cat &lt;&lt; EOF &gt;&gt; pg<em>hba.conf
-    host replication repl</em>user IP<em>of</em>master/32 md5
-    host replication repl<em>user IP</em>of_slave/32 md5
+    cat &lt;&lt; EOF &gt;&gt; pg_hba.conf
+    host replication repl_user IP_of_master/32 md5
+    host replication repl_user IP_of_slave/32 md5
     EOF
 </code></pre></p>
 
@@ -95,7 +95,7 @@
 
 <p>On the master, create the replication slot for the slave:
 <pre><code>
-    psql -d postgres -U postgres -c &quot;SELECT * FROM pg<em>create</em>physical<em>replication</em>slot(&#39;slave1&#39;);&quot;
+    psql -d postgres -U postgres -c &quot;SELECT * FROM pg_create_physical_replication_slot(&#39;slave1&#39;);&quot;
 </code></pre></p>
 
 <p>On the slave, wipe the existing cluster:
@@ -108,14 +108,14 @@
 
 <p>On the slave, use the <code>pg_basebackup</code> command to clone the master (enter the <code>repl_user</code>&#39;s password from above when prompted):
 <pre><code>
-    pg<em>basebackup -D data -Fp -R -Xs -c fast -l &#39;initial clone&#39; -P -v -h IP</em>of<em>master -U repl</em>user
+    pg_basebackup -D data -Fp -R -Xs -c fast -l &#39;initial clone&#39; -P -v -h IP_of_master -U repl_user
 </code></pre></p>
 
 <p>On the slave, tweak the <code>recovery.conf</code> that was created for you and add the replication slot name:
 <pre><code>
     cd data
     cat &lt;&lt; EOF &gt;&gt; recovery.conf
-    primary<em>slot</em>name = &#39;slave1&#39;
+    primary_slot_name = &#39;slave1&#39;
     EOF
 </code></pre></p>
 

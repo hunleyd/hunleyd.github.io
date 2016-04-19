@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-04-19T15:06:39-04:00</updated>
+ <updated>2016-04-19T15:10:39-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -184,21 +184,21 @@ londiste3 slave.init add-table --all
 &lt;p&gt;On the master, do the following:
 &lt;pre&gt;&lt;code&gt;
     cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; postgresql.conf
-    wal&lt;em&gt;level = hot&lt;/em&gt;standby
-    full&lt;em&gt;page&lt;/em&gt;writes = on
-    wal&lt;em&gt;log&lt;/em&gt;hints = on
-    max&lt;em&gt;wal&lt;/em&gt;senders = 6
-    max&lt;em&gt;replication&lt;/em&gt;slots = 6
-    hot&lt;em&gt;standby = on
-    hot&lt;/em&gt;standby_feedback = on
+    wal_level = hot_standby
+    full_page_writes = on
+    wal_log_hints = on
+    max_wal_senders = 6
+    max_replication_slots = 6
+    hot_standby = on
+    hot_standby_feedback = on
     EOF
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the master, add the external IP addresses of the servers to &lt;code&gt;pg_hba.conf&lt;/code&gt;:
 &lt;pre&gt;&lt;code&gt;
-    cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; pg&lt;em&gt;hba.conf
-    host replication repl&lt;/em&gt;user IP&lt;em&gt;of&lt;/em&gt;master/32 md5
-    host replication repl&lt;em&gt;user IP&lt;/em&gt;of_slave/32 md5
+    cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; pg_hba.conf
+    host replication repl_user IP_of_master/32 md5
+    host replication repl_user IP_of_slave/32 md5
     EOF
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
@@ -211,7 +211,7 @@ londiste3 slave.init add-table --all
 
 &lt;p&gt;On the master, create the replication slot for the slave:
 &lt;pre&gt;&lt;code&gt;
-    psql -d postgres -U postgres -c &amp;quot;SELECT * FROM pg&lt;em&gt;create&lt;/em&gt;physical&lt;em&gt;replication&lt;/em&gt;slot(&amp;#39;slave1&amp;#39;);&amp;quot;
+    psql -d postgres -U postgres -c &amp;quot;SELECT * FROM pg_create_physical_replication_slot(&amp;#39;slave1&amp;#39;);&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the slave, wipe the existing cluster:
@@ -224,14 +224,14 @@ londiste3 slave.init add-table --all
 
 &lt;p&gt;On the slave, use the &lt;code&gt;pg_basebackup&lt;/code&gt; command to clone the master (enter the &lt;code&gt;repl_user&lt;/code&gt;&amp;#39;s password from above when prompted):
 &lt;pre&gt;&lt;code&gt;
-    pg&lt;em&gt;basebackup -D data -Fp -R -Xs -c fast -l &amp;#39;initial clone&amp;#39; -P -v -h IP&lt;/em&gt;of&lt;em&gt;master -U repl&lt;/em&gt;user
+    pg_basebackup -D data -Fp -R -Xs -c fast -l &amp;#39;initial clone&amp;#39; -P -v -h IP_of_master -U repl_user
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the slave, tweak the &lt;code&gt;recovery.conf&lt;/code&gt; that was created for you and add the replication slot name:
 &lt;pre&gt;&lt;code&gt;
     cd data
     cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; recovery.conf
-    primary&lt;em&gt;slot&lt;/em&gt;name = &amp;#39;slave1&amp;#39;
+    primary_slot_name = &amp;#39;slave1&amp;#39;
     EOF
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
