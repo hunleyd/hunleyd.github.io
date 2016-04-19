@@ -4,13 +4,154 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-04-18T15:51:40-04:00</updated>
+ <updated>2016-04-19T14:32:48-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Logical Replication with Skytools3</title>
+   <link href="http://hunleyd.github.io/Logical-Replication-With-Skytool3/"/>
+   <updated>2016-04-19T09:55:11-04:00</updated>
+   <id>http://hunleyd.github.io/Logical-Replication-With-Skytool3</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&quot; border=0 align=left&gt; I recently had to do a &lt;em&gt;zero downtime&lt;/em&gt; upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&amp;#39;t use streaming replication because of the change in major version and because it&amp;#39;s simply not present in 8.x, so that left me looking at &lt;em&gt;logical replication&lt;/em&gt; options. Usually, everyone else would be thinking Slony right here. I&amp;#39;ve only messed with Slony a few times, but time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.&lt;/p&gt;
+
+&lt;p&gt;Londiste is part of the Skytools suite, originally developed by Skype back when they were a &amp;#39;no central node&amp;#39; setup. As such, the thing was literally born to be &amp;quot;master-master&amp;quot; and assumes nodes come and go at will, so it&amp;#39;s got all the tools to handle bringing nodes up/down, marking them active/inactive, catching them up, etc. It&amp;#39;s writtin in Python, and uses plain text ini files for configuration.&lt;/p&gt;
+
+&lt;p&gt;There&amp;#39;s really only two hurdles that I found with using Londiste. First is that if you can&amp;#39;t get the rpms from the &lt;a href=&quot;http://yum.postgresql.org&quot;&gt;PGDG Yum Repo&lt;/a&gt; you&amp;#39;re looking at compiling from Git. And second, the online documentation for it is hard to find, hard to follow, and practically no one has used it so you can&amp;#39;t ask $RandomPostgresPerson for help.&lt;/p&gt;
+
+&lt;p&gt;Which is exactly why I&amp;#39;m writing this blog post. Here&amp;#39;s what I needed to get me through the migration in question. I hope it helps you, should you consider using Londiste for your own replication needs. To whit:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them by running:&lt;/p&gt;
+
+&lt;p&gt;SELECT
+    n.naspname as schema,
+    c.relname as table
+FROM
+    pg&lt;em&gt;class c
+JOIN
+    pg&lt;/em&gt;namespace n
+ON
+    n.oid = c.elnamespace
+WHERE
+    c.relkind = &amp;#39;r&amp;#39;
+AND NOT EXISTS (
+    SELECT
+        1
+    FROM
+        pg&lt;em&gt;constraint con
+    WHERE
+        con.conrelid = c.oid
+    AND
+        con.contype = &amp;#39;p&amp;#39;
+)
+AND n.nspname &amp;lt;&amp;gt; ALL (
+    ARRAY [
+        &amp;#39;pg&lt;/em&gt;catalog&amp;#39;,
+        &amp;#39;sys&amp;#39;,
+        &amp;#39;dbo&amp;#39;,
+        &amp;#39;information_schema&amp;#39;
+    ]
+);&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;and then pass that list to your junior DBA and have them create pkeys on while you continue on. :)&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are created. We want all ownerships and grants to be identical when we&amp;#39;re done, right?&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I &lt;em&gt;think&lt;/em&gt; you can actually get Londiste to do this for you as part of the replication, but I couldn&amp;#39;t find anything online for sure, and I didn&amp;#39;t have to add more experimentation here (we&amp;#39;re on the customer&amp;#39;s dime here, remember). So, use &lt;code&gt;pg_dump&lt;/code&gt; over the network and pipe it to &lt;code&gt;pg_restore&lt;/code&gt; to transfer the schema thusly:&lt;/p&gt;
+
+&lt;p&gt;pg&lt;em&gt;dump -Fc -C -S -d myapp -h IPofOldServer -U postgres | pg&lt;/em&gt;restore -d template1 -v -C -e -s&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:&lt;/p&gt;
+
+&lt;p&gt;yum -y install skytools-94 skytools-94-modules&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Restart the PostgreSQL 9.4.x cluster to be pedantic about loading the new libs and modules&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Install Skytools from source on the PostgreSQL 8.4.x server:&lt;/p&gt;
+
+&lt;p&gt;yum -y install python-devel asciidoc xmlto postgresql-devel
+git clone git://github.com/markokr/skytools.git
+cd skytools
+git submodule init
+git submodule update
+./autogen.sh
+./configure
+make
+make install&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Restart the PostgreSQL 8.4.x cluster to be pedantic about loading the new libs and modules&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now we configure the Londiste ticker (note, we have &lt;em&gt;trust&lt;/em&gt; setup for the postgres user in &lt;code&gt;pg_hba.conf&lt;/code&gt; so there is no password= in the connection strings. Adjust to meet your setup):&lt;/p&gt;
+
+&lt;p&gt;mkdir -pv ~postgres/londiste-config/{log,pid}
+cd ~postgres/londist-config
+cat &amp;lt;&amp;lt; EOF &amp;gt; ticker.ini
+[pgqd]
+base&lt;em&gt;connstr = user=postgres host=IPofOldServer
+database&lt;/em&gt;list = myapp
+logfile = log/ticker.log
+pidfile = pid/ticker.pid
+EOF&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Start up the ticker, to provide the replication &amp;quot;heartbeat&amp;quot;:&lt;/p&gt;
+
+&lt;p&gt;pgqd -d ticker.ini&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Check the &lt;code&gt;ticker.log&lt;/code&gt; to ensure there are no warnings or errors! You can stop the ticker with &lt;code&gt;pgqd -s ticker.ini&lt;/code&gt; to while you fix things.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):&lt;/p&gt;
+
+&lt;p&gt;cd ~postgres/londist-config
+cat &amp;lt;&amp;lt; EOF &amp;gt; master.ini
+db = user=postgres host=IPofOldServer dbname=myapp
+queue&lt;em&gt;name = myappq
+loop&lt;/em&gt;delay = 0.5
+logfile = log/master.log
+pidfile = pid/master.pid
+EOF&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;We have to actually create the master node as the root node by doing:&lt;/p&gt;
+
+&lt;p&gt;londiste3 master.ini create-root master &amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;#39;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Check the master.log to see if you have a line like:&lt;/p&gt;
+
+&lt;p&gt;INFO Node &amp;quot;master&amp;quot; initialized for queue &amp;quot;myappq&amp;quot; with type &amp;quot;root&amp;quot;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Now, spin up the master&amp;#39;s replication worker process:&lt;/p&gt;
+
+&lt;p&gt;londiste3 -d master.ini worker&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Next, we configure our slave node (same note applies about the lack of password in the connection string):&lt;/p&gt;
+
+&lt;p&gt;cd ~postgres/londist-config
+cat &amp;lt;&amp;lt; EOF &amp;gt; slave.ini
+db = user=postgres host=127.0.0.1 dbname=myapp
+queue&lt;em&gt;name = myappq
+loop&lt;/em&gt;delay = 0.5
+logfile = log/slave.log
+pidfile = pid/slave.pid
+EOF&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Like the master, we have to create the slave node. I created it as a &lt;code&gt;branch&lt;/code&gt; but I now think I should have created it as a &lt;code&gt;leaf&lt;/code&gt;, but whatever:&lt;/p&gt;
+
+&lt;p&gt;londiste3 slave.ini create-branch slave &amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;#39; --provider=&amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;#39;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Check the slave.log to see if you have the line:&lt;/p&gt;
+
+&lt;p&gt;INFO Node &amp;quot;slave&amp;quot; initialized for queue &amp;quot;myappq&amp;quot; with type &amp;quot;branch&amp;quot;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Spin up the slave&amp;#39;s replication worker process:&lt;/p&gt;
+
+&lt;p&gt;londiste3 -d slave.ini worker&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Tell the master node that we want to replicate all the tables in the db:&lt;/p&gt;
+
+&lt;p&gt;londiste3 master.ini add-table --all&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Ditto for the slave node:&lt;/p&gt;
+
+&lt;p&gt;londiste3 slave.init add-table --all&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&amp;#39;s all you need to do. But what about the data that was already in the master db? You need to tell Londiste to &amp;#39;catch things up&amp;#39; by doing:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;londiste3 slave.ini resync --all
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If you want to check on the replication, simply issue:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;londiste3 slave.ini status
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Enjoy your new cross-version logical replication!&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>PostgreSQL Streaming Replication in 10 Minutes</title>
@@ -26,21 +167,21 @@
 &lt;p&gt;On the master, do the following:
 &lt;pre&gt;&lt;code&gt;
     cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; postgresql.org
-    wal _ level = hot _ standby
-    full _ page _ writes = on
-    wal _ log _ hints = on
-    max _ wal _ senders = 6
-    max _ replication _ slots = 6
-    hot _ standby = on
-    hot _ standby _ feedback = on
+    wal&lt;em&gt;level = hot&lt;/em&gt;standby
+    full&lt;em&gt;page&lt;/em&gt;writes = on
+    wal&lt;em&gt;log&lt;/em&gt;hints = on
+    max&lt;em&gt;wal&lt;/em&gt;senders = 6
+    max&lt;em&gt;replication&lt;/em&gt;slots = 6
+    hot&lt;em&gt;standby = on
+    hot&lt;/em&gt;standby_feedback = on
     EOF
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the master, add the external IP addresses of the servers to &lt;code&gt;pg_hba.conf&lt;/code&gt;:
 &lt;pre&gt;&lt;code&gt;
-    cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; pg _ hba.conf
-    host replication repl _ user IP _ of _ master/32 md5
-    host replication repl _ user IP _ of _ slave/32 md5
+    cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; pg&lt;em&gt;hba.conf
+    host replication repl&lt;/em&gt;user IP&lt;em&gt;of&lt;/em&gt;master/32 md5
+    host replication repl&lt;em&gt;user IP&lt;/em&gt;of_slave/32 md5
     EOF
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
@@ -48,32 +189,32 @@
 
 &lt;p&gt;On the master, create the replication user:
 &lt;pre&gt;&lt;code&gt;
-    psql -d postgres -U postgres -c &amp;quot;CREATE ROLE repl _ user LOGIN REPLICATION ENCRYPTED PASSWORD &amp;#39;secretpasswordhere&amp;#39;;&amp;quot;
+    psql -d postgres -U postgres -c &amp;quot;CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD &amp;#39;secretpasswordhere&amp;#39;;&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the master, create the replication slot for the slave:
 &lt;pre&gt;&lt;code&gt;
-    psql -d postgres -U postgres -c &amp;quot;SELECT * FROM pg _ create _ physical _ replication _ slot(&amp;#39;slave1&amp;#39;);&amp;quot;
+    psql -d postgres -U postgres -c &amp;quot;SELECT * FROM pg&lt;em&gt;create&lt;/em&gt;physical&lt;em&gt;replication&lt;/em&gt;slot(&amp;#39;slave1&amp;#39;);&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the slave, wipe the existing cluster:
 &lt;pre&gt;&lt;code&gt;
     cd /var/lib/pgsql/9.4/data
-    pg _ ctl -D $PWD -mf stop
+    pg_ctl -D $PWD -mf stop
     cd ..
     rm -rfv data
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
-&lt;p&gt;On the slave, use the &lt;code&gt;pg_basebackup&lt;/code&gt; command to clone the master (enter the repl _ user&amp;#39;s password from above when prompted):
+&lt;p&gt;On the slave, use the &lt;code&gt;pg_basebackup&lt;/code&gt; command to clone the master (enter the &lt;code&gt;repl_user&lt;/code&gt;&amp;#39;s password from above when prompted):
 &lt;pre&gt;&lt;code&gt;
-    pg _ basebackup -D data -Fp -R -Xs -c fast -l &amp;#39;initial clone&amp;#39; -P -v -h IP _ of _ master -U repl _ user
+    pg&lt;em&gt;basebackup -D data -Fp -R -Xs -c fast -l &amp;#39;initial clone&amp;#39; -P -v -h IP&lt;/em&gt;of&lt;em&gt;master -U repl&lt;/em&gt;user
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the slave, tweak the &lt;code&gt;recovery.conf&lt;/code&gt; that was created for you and add the replication slot name:
 &lt;pre&gt;&lt;code&gt;
     cd data
     cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; recovery.conf
-    primary _ slot _ name = &amp;#39;slave1&amp;#39;
+    primary&lt;em&gt;slot&lt;/em&gt;name = &amp;#39;slave1&amp;#39;
     EOF
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
