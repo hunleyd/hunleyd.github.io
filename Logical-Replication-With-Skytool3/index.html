@@ -193,19 +193,22 @@ londiste3 master.ini add-table --all
 <li><p>Ditto for the slave node:
 <pre><code>
 londiste3 slave.init add-table --all
-</pre></code>
-At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&#39;s all you need to do.</p></li>
+</pre></code></p></li>
 </ul>
+
+<p>At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&#39;s all you need to do.</p>
 
 <p>But what about the data that was already in the master db? You need to tell Londiste to &#39;catch things up&#39; by doing:
 <pre><code>
     londiste3 slave.ini resync --all
-</pre></code>
-If you want to check on the replication at any point, simply issue:
+</pre></code></p>
+
+<p>If you want to check on the replication at any point, simply issue:
 <pre><code>
     londiste3 slave.ini status
-</pre></code>
-Enjoy your new cross-version logical replication!</p>
+</pre></code></p>
+
+<p>Enjoy your new cross-version logical replication!</p>
 
   </div>
 
