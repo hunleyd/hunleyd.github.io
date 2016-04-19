@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-04-19T15:03:42-04:00</updated>
+ <updated>2016-04-19T15:06:39-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -183,7 +183,7 @@ londiste3 slave.init add-table --all
 
 &lt;p&gt;On the master, do the following:
 &lt;pre&gt;&lt;code&gt;
-    cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; postgresql.org
+    cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; postgresql.conf
     wal&lt;em&gt;level = hot&lt;/em&gt;standby
     full&lt;em&gt;page&lt;/em&gt;writes = on
     wal&lt;em&gt;log&lt;/em&gt;hints = on
