@@ -71,20 +71,20 @@
 <pre><code>
     cat &lt;&lt; EOF &gt;&gt; postgresql.org
     wal_level = hot_standby
-    full _ page _ writes = on
-    wal _ log _ hints = on
-    max _ wal _ senders = 6
-    max _ replication _ slots = 6
-    hot _ standby = on
-    hot _ standby _ feedback = on
+    full_page_writes = on
+    wal_log_hints = on
+    max_wal_senders = 6
+    max_replication_slots = 6
+    hot_standby = on
+    hot_standby_feedback = on
     EOF
 </code></pre></p>
 
 <p>On the master, add the external IP addresses of the servers to <code>pg_hba.conf</code>:
 <pre><code>
-    cat &lt;&lt; EOF &gt;&gt; pg _ hba.conf
-    host replication repl _ user IP _ of _ master/32 md5
-    host replication repl _ user IP _ of _ slave/32 md5
+    cat &lt;&lt; EOF &gt;&gt; pg_hba.conf
+    host replication repl_user IP_of_master/32 md5
+    host replication repl_user IP_of_slave/32 md5
     EOF
 </code></pre></p>
 
@@ -92,32 +92,32 @@
 
 <p>On the master, create the replication user:
 <pre><code>
-    psql -d postgres -U postgres -c &quot;CREATE ROLE repl _ user LOGIN REPLICATION ENCRYPTED PASSWORD &#39;secretpasswordhere&#39;;&quot;
+    psql -d postgres -U postgres -c &quot;CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD &#39;secretpasswordhere&#39;;&quot;
 </code></pre></p>
 
 <p>On the master, create the replication slot for the slave:
 <pre><code>
-    psql -d postgres -U postgres -c &quot;SELECT * FROM pg _ create _ physical _ replication _ slot(&#39;slave1&#39;);&quot;
+    psql -d postgres -U postgres -c &quot;SELECT * FROM pg_create_physical_replication_slot(&#39;slave1&#39;);&quot;
 </code></pre></p>
 
 <p>On the slave, wipe the existing cluster:
 <pre><code>
     cd /var/lib/pgsql/9.4/data
-    pg _ ctl -D $PWD -mf stop
+    pg_ctl -D $PWD -mf stop
     cd ..
     rm -rfv data
 </code></pre></p>
 
-<p>On the slave, use the <code>pg_basebackup</code> command to clone the master (enter the repl _ user&#39;s password from above when prompted):
+<p>On the slave, use the <code>pg_basebackup</code> command to clone the master (enter the repl_user&#39;s password from above when prompted):
 <pre><code>
-    pg _ basebackup -D data -Fp -R -Xs -c fast -l &#39;initial clone&#39; -P -v -h IP _ of _ master -U repl _ user
+    pg_basebackup -D data -Fp -R -Xs -c fast -l &#39;initial clone&#39; -P -v -h IP_of_master -U repl_user
 </code></pre></p>
 
 <p>On the slave, tweak the <code>recovery.conf</code> that was created for you and add the replication slot name:
 <pre><code>
     cd data
     cat &lt;&lt; EOF &gt;&gt; recovery.conf
-    primary _ slot _ name = &#39;slave1&#39;
+    primary_slot_name = &#39;slave1&#39;
     EOF
 </code></pre></p>
 
