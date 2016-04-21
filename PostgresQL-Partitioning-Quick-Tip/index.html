@@ -9,9 +9,9 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
 
     
-    <meta name="description" content="Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use pg_partman and be done with it. However, if you&#39;re trying to learn, can&#39;t use pg_partman, or are a masochist you&#39;ll probably be following the doc and thinking &#39;seriously? i have to create indexes on each child? why don&#39;t they copy the indexes of the parent? why isn&#39;t this easier?&#39;. Here&#39;s a little tip to make things slightly easier:
+    <meta name="description" content="Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use pg_partman and be done with it. However, if you&#39;re trying to learn, can&#39;t use pg_partman, or are a masochist you&#39;ll probably be following the docs and thinking &#39;seriously? i have to create indexes on each child? why don&#39;t they copy the indexes of the parent? why isn&#39;t this easier?&#39;. Here&#39;s a little tip to make things slightly easier:
 " />
-    <meta property="og:description" content="Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use pg_partman and be done with it. However, if you&#39;re trying to learn, can&#39;t use pg_partman, or are a masochist you&#39;ll probably be following the doc and thinking &#39;seriously? i have to create indexes on each child? why don&#39;t they copy the indexes of the parent? why isn&#39;t this easier?&#39;. Here&#39;s a little tip to make things slightly easier:
+    <meta property="og:description" content="Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use pg_partman and be done with it. However, if you&#39;re trying to learn, can&#39;t use pg_partman, or are a masochist you&#39;ll probably be following the docs and thinking &#39;seriously? i have to create indexes on each child? why don&#39;t they copy the indexes of the parent? why isn&#39;t this easier?&#39;. Here&#39;s a little tip to make things slightly easier:
 " />
     
     <meta name="author" content="Douglas J Hunley" />
@@ -59,7 +59,7 @@
   <div class="meta_wrapper"><time datetime="2016-04-21">April 21, 2016</time><ul class="tag_list_in_post"><li class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></li><li class="tag_list_item"><a class="tag_list_link" href="/tag/howto">howto</a></li></ul></div>
 
   <div class="entry">
-    <p><img src="http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg" align=right border=0>Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use <a href="https://github.com/keithf4/pg_partman">pg_partman</a> and be done with it. However, if you&#39;re trying to learn, can&#39;t use <code>pg_partman</code>, or are a masochist you&#39;ll probably be following the <a href="http://www.postgresql.org/docs/9.5/static/ddl-partitioning.html">doc</a> and thinking &#39;seriously? i have to create indexes on each child? why don&#39;t they copy the indexes of the parent? why isn&#39;t this easier?&#39;. Here&#39;s a little tip to make things slightly easier:</p>
+    <p><img src="http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg" align=right border=0>Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use <a href="https://github.com/keithf4/pg_partman">pg_partman</a> and be done with it. However, if you&#39;re trying to learn, can&#39;t use <code>pg_partman</code>, or are a masochist you&#39;ll probably be following the <a href="http://www.postgresql.org/docs/current/static/ddl-partitioning.html">docs</a> and thinking &#39;seriously? i have to create indexes on each child? why don&#39;t they copy the indexes of the parent? why isn&#39;t this easier?&#39;. Here&#39;s a little tip to make things slightly easier:</p>
 
 <p>Instead of creating your child tables like the doc says:
 <pre><code>
