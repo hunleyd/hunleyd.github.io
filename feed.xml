@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-04-21T09:27:31-04:00</updated>
+ <updated>2016-04-21T09:27:56-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -34,7 +34,7 @@ CHECK (blah blah)
 ) INHERITS (parent);
 &lt;/pre&gt;&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;and PostgeSQL w&lt;em&gt;will&lt;/em&gt; copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?&lt;/p&gt;
+&lt;p&gt;and PostgeSQL &lt;em&gt;will&lt;/em&gt; copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?&lt;/p&gt;
 
 &lt;p&gt;Enjoy.&lt;/p&gt;
 </content>
