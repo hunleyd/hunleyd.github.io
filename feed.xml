@@ -4,13 +4,39 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-04-19T15:12:50-04:00</updated>
+ <updated>2016-04-21T09:25:33-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>PostgreSQL Partitioning Quick Tip</title>
+   <link href="http://hunleyd.github.io/PostgresQL-Partitioning-Quick-Tip/"/>
+   <updated>2016-04-21T05:25:32-04:00</updated>
+   <id>http://hunleyd.github.io/PostgresQL-Partitioning-Quick-Tip</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg&quot; align=right border=0&gt;Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use &lt;a href=&quot;https://github.com/keithf4/pg_partman&quot;&gt;pg_partman&lt;/a&gt; and be done with it. However, if you&amp;#39;re trying to learn, can&amp;#39;t use &lt;code&gt;pg_partman&lt;/code&gt;, or are a masochist you&amp;#39;ll probably be following the &lt;a href=&quot;http://www.postgresql.org/docs/9.5/static/ddl-partitioning.html&quot;&gt;doc&lt;/a&gt; and thinking &amp;#39;seriously? i have to create indexes on each child? why don&amp;#39;t they copy the indexes of the parent? why isn&amp;#39;t this easier?&amp;#39;. Here&amp;#39;s a little tip to make things slightly easier:&lt;/p&gt;
+
+&lt;p&gt;Instead of creating your child tables like the doc says:
+&lt;pre&gt;&lt;code&gt;
+CREATE TABLE child1 (
+CHECK (blah blah)
+) INHERITS (parent);
+&lt;/pre&gt;&lt;/code&gt;
+Create your child tables thusly:
+&lt;pre&gt;&lt;code&gt;
+CREATE TABLE child1 (
+LIKE parent INCLUDING ALL,
+CHECK (blah blah)
+) INHERITS (parent);
+&lt;/pre&gt;&lt;/code&gt;
+and PostgeSQL w&lt;em&gt;will&lt;/em&gt; copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?&lt;/p&gt;
+
+&lt;p&gt;Enjoy.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Logical Replication with Skytools3</title>
