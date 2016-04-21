@@ -66,15 +66,17 @@
 CREATE TABLE child1 (
 CHECK (blah blah)
 ) INHERITS (parent);
-</pre></code>
-Create your child tables thusly:
+</pre></code></p>
+
+<p>Create your child tables thusly:
 <pre><code>
 CREATE TABLE child1 (
 LIKE parent INCLUDING ALL,
 CHECK (blah blah)
 ) INHERITS (parent);
-</pre></code>
-and PostgeSQL w<em>will</em> copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?</p>
+</pre></code></p>
+
+<p>and PostgeSQL w<em>will</em> copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?</p>
 
 <p>Enjoy.</p>
 
