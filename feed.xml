@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-04-24T22:23:09-04:00</updated>
+ <updated>2016-04-24T22:24:50-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -17,7 +17,7 @@
    <link href="http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2/"/>
    <updated>2016-04-24T18:18:56-04:00</updated>
    <id>http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=right style=&quot;PADDING-LEFT: 5px&quot;&gt;As mentioned in my previous &lt;a href=&quot;/Now-on-Tap-Android-N-DP2/&quot;&gt;post&lt;/a&gt; I&amp;#39;ve stumbled across two issues with the 2(sup)dn&lt;/sup&gt; Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won&amp;#39;t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=right style=&quot;PADDING-LEFT: 5px&quot;&gt;As mentioned in my previous &lt;a href=&quot;/Now-on-Tap-Android-N-DP2/&quot;&gt;post&lt;/a&gt; I&amp;#39;ve stumbled across two issues with the 2&lt;sup&gt;dn&lt;/sup&gt; Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won&amp;#39;t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.&lt;/p&gt;
 
 &lt;p&gt;I was immediately aware of &lt;em&gt;some&lt;/em&gt; kind of issue since the phone didn&amp;#39;t prompt me to setup Smaet Lock after pairing the watch. So I went into the Android Settings app, then Security, and went to tap on Smart Lock only to find it &lt;em&gt;gone&lt;/em&gt;. Thinking maybe Google had moved it somewherre else, I used the new &amp;#39;search Settings&amp;#39; feature and searched for Smart Lock, Lock, and Smart. None of them tuened up what I was looking for! After some Googling, I had enough clues to figure out what had happened to the option and how to restore it. &lt;/p&gt;
 
