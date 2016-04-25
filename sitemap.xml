@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://hunleyd.github.io/Now-on-Tap-Android-N-DP2/</loc>
+<lastmod>2016-04-24T17:53:06-04:00</lastmod>
+</url>
+<url>
 <loc>http://hunleyd.github.io/PostgresQL-Partitioning-Quick-Tip/</loc>
 <lastmod>2016-04-21T05:25:32-04:00</lastmod>
 </url>
@@ -97,5 +101,11 @@
 </url>
 <url>
 <loc>http://hunleyd.github.io/tag/howto/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/nexus5x/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/pro%2520tip/</loc>
 </url>
 </urlset>

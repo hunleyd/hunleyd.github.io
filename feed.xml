@@ -4,13 +4,37 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-04-21T09:27:56-04:00</updated>
+ <updated>2016-04-24T21:53:07-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Now on Tap on Android N DP2</title>
+   <link href="http://hunleyd.github.io/Now-on-Tap-Android-N-DP2/"/>
+   <updated>2016-04-24T17:53:06-04:00</updated>
+   <id>http://hunleyd.github.io/Now-on-Tap-Android-N-DP2</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=300 height=300 align=left&gt;Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program. And for the most part, it&amp;#39;s worked really well for me. I &lt;em&gt;really&lt;/em&gt; like Android N so far and can&amp;#39;t wait for the final release. However, after updating from Developer Preview 1 (DP1) to Developer Preview 2 (DP2) via OTA, I noticed two small issues. The first issue is that I could not, for the life of me, get Now On Tap to enable even though it was previously enabled on DP1.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;m happy to report that I figured out, and I thought I&amp;#39;d share it in case anyone else has run this issue and was stumped. Just to be clear, if you open the Google app, then go into Settings, and then into Now on Tap, there&amp;#39;s a toggle. Simply flipping it is &lt;em&gt;supposed&lt;/em&gt; to be enough to turn it on. But in my case, the toggle would &lt;em&gt;not&lt;/em&gt; flip on. It was permanently flipped to off.&lt;/p&gt;
+
+&lt;p&gt;To fix this:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;head into the Android Settings app&lt;/li&gt;
+&lt;li&gt;touch Apps&lt;/li&gt;
+&lt;li&gt;touch the gear icon on the top right corner&lt;/li&gt;
+&lt;li&gt;touch Assist &amp;amp; voice input&lt;/li&gt;
+&lt;li&gt;touch Assist App&lt;/li&gt;
+&lt;li&gt;chose Google&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Once you&amp;#39;ve done this, you&amp;#39;ll find that you can enable Now on Tap through the normal toggle.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>PostgreSQL Partitioning Quick Tip</title>
