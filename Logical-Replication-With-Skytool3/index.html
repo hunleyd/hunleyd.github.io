@@ -189,10 +189,12 @@ londiste3 -d slave.ini worker
 <li><p>Tell the master node that we want to replicate all the tables in the db:
 <pre><code>
 londiste3 master.ini add-table --all
+londiste3 master.ini add-seq --all
 </pre></code></p></li>
 <li><p>Ditto for the slave node:
 <pre><code>
 londiste3 slave.init add-table --all
+londiste3 slave.init add-seq --all
 </pre></code></p></li>
 </ul>
 

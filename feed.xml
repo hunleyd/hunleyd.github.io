@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-04-24T22:25:35-04:00</updated>
+ <updated>2016-04-27T08:33:05-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -222,10 +222,12 @@ londiste3 -d slave.ini worker
 &lt;li&gt;&lt;p&gt;Tell the master node that we want to replicate all the tables in the db:
 &lt;pre&gt;&lt;code&gt;
 londiste3 master.ini add-table --all
+londiste3 master.ini add-seq --all
 &lt;/pre&gt;&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Ditto for the slave node:
 &lt;pre&gt;&lt;code&gt;
 londiste3 slave.init add-table --all
+londiste3 slave.init add-seq --all
 &lt;/pre&gt;&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
