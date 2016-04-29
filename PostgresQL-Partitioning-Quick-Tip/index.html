@@ -60,14 +60,14 @@
     <p><img src="http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg" align=right border=0>Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use <a href="https://github.com/keithf4/pg_partman">pg_partman</a> and be done with it. However, if you&#39;re trying to learn, can&#39;t use <code>pg_partman</code>, or are a masochist you&#39;ll probably be following the <a href="http://www.postgresql.org/docs/current/static/ddl-partitioning.html">docs</a> and thinking &#39;seriously? i have to create indexes on each child? why don&#39;t they copy the indexes of the parent? why isn&#39;t this easier?&#39;. Here&#39;s a little tip to make things slightly easier:</p>
 
 <p>Instead of creating your child tables like the doc says:
-<pre><code>
+<pre><code class="codeblock">
 CREATE TABLE child1 (
 CHECK (blah blah)
 ) INHERITS (parent);
 </pre></code></p>
 
 <p>Create your child tables thusly:
-<pre><code>
+<pre><code class="codeblock">
 CREATE TABLE child1 (
 LIKE parent INCLUDING ALL,
 CHECK (blah blah)
