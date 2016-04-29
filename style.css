@@ -352,6 +352,7 @@ code {
   display: block;
   padding: 0.5em 0 0.5em 1em;
   line-height: 1;
+  white-space: pre-wrap;
 }
 
 .highlight {
