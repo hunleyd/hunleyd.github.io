@@ -338,7 +338,7 @@ li.tag_list_item {
   display: inline;
   line-height: 1;
   list-style: none;
-  margin: 0;
+  margin: 5px;
   padding: 0;
 }
 
