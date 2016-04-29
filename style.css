@@ -330,8 +330,8 @@ footer {
 
 ul.tag_list_in_post {
   display: inline;
+  padding: 0 0 0 10px;
   margin: 0;
-  padding: 0;
 }
 
 li.tag_list_item {
