@@ -346,7 +346,7 @@ code {
   color: #006000;
 }
 
-codeblock {
+.codeblock {
   background-color: #efefef;
   border: 1px solid #d3d3d3;
   display: block;
