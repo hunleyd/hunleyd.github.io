@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-04-29T13:08:51-04:00</updated>
+ <updated>2016-04-29T13:12:09-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -259,7 +259,7 @@ londiste3 slave.init add-seq --all
 &lt;p&gt;Let&amp;#39;s get started!&lt;/p&gt;
 
 &lt;p&gt;On the master, do the following:
-&lt;pre&gt;&lt;code&gt;
+&lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
     cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; postgresql.conf
     wal_level = hot_standby
     full_page_writes = on
@@ -272,7 +272,7 @@ londiste3 slave.init add-seq --all
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the master, add the external IP addresses of the servers to &lt;code&gt;pg_hba.conf&lt;/code&gt;:
-&lt;pre&gt;&lt;code&gt;
+&lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
     cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; pg_hba.conf
     host replication repl_user IP_of_master/32 md5
     host replication repl_user IP_of_standby/32 md5
@@ -282,17 +282,17 @@ londiste3 slave.init add-seq --all
 &lt;p&gt;Restart PostgreSQL on the master for the changes to take affect&lt;/p&gt;
 
 &lt;p&gt;On the master, create the replication user:
-&lt;pre&gt;&lt;code&gt;
+&lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
     psql -d postgres -U postgres -c &amp;quot;CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD &amp;#39;secretpasswordhere&amp;#39;;&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the master, create the replication slot for the standby:
-&lt;pre&gt;&lt;code&gt;
+&lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
     psql -d postgres -U postgres -c &amp;quot;SELECT * FROM pg_create_physical_replication_slot(&amp;#39;standby1&amp;#39;);&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the standby, wipe the existing cluster:
-&lt;pre&gt;&lt;code&gt;
+&lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
     cd /var/lib/pgsql/9.4/data
     pg_ctl -D $PWD -mf stop
     cd ..
@@ -300,12 +300,12 @@ londiste3 slave.init add-seq --all
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the standby, use the &lt;code&gt;pg_basebackup&lt;/code&gt; command to clone the master (enter the &lt;code&gt;repl_user&lt;/code&gt;&amp;#39;s password from above when prompted):
-&lt;pre&gt;&lt;code&gt;
+&lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
     pg_basebackup -D data -Fp -R -Xs -c fast -l &amp;#39;initial clone&amp;#39; -P -v -h IP_of_master -U repl_user
 &lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 
 &lt;p&gt;On the standby, tweak the &lt;code&gt;recovery.conf&lt;/code&gt; that was created for you and add the replication slot name:
-&lt;pre&gt;&lt;code&gt;
+&lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
     cd data
     cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; recovery.conf
     primary_slot_name = &amp;#39;standby1&amp;#39;

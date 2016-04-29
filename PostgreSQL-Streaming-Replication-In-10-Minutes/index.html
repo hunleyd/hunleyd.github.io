@@ -64,7 +64,7 @@
 <p>Let&#39;s get started!</p>
 
 <p>On the master, do the following:
-<pre><code>
+<pre><code class="codeblock">
     cat &lt;&lt; EOF &gt;&gt; postgresql.conf
     wal_level = hot_standby
     full_page_writes = on
@@ -77,7 +77,7 @@
 </code></pre></p>
 
 <p>On the master, add the external IP addresses of the servers to <code>pg_hba.conf</code>:
-<pre><code>
+<pre><code class="codeblock">
     cat &lt;&lt; EOF &gt;&gt; pg_hba.conf
     host replication repl_user IP_of_master/32 md5
     host replication repl_user IP_of_standby/32 md5
@@ -87,17 +87,17 @@
 <p>Restart PostgreSQL on the master for the changes to take affect</p>
 
 <p>On the master, create the replication user:
-<pre><code>
+<pre><code class="codeblock">
     psql -d postgres -U postgres -c &quot;CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD &#39;secretpasswordhere&#39;;&quot;
 </code></pre></p>
 
 <p>On the master, create the replication slot for the standby:
-<pre><code>
+<pre><code class="codeblock">
     psql -d postgres -U postgres -c &quot;SELECT * FROM pg_create_physical_replication_slot(&#39;standby1&#39;);&quot;
 </code></pre></p>
 
 <p>On the standby, wipe the existing cluster:
-<pre><code>
+<pre><code class="codeblock">
     cd /var/lib/pgsql/9.4/data
     pg_ctl -D $PWD -mf stop
     cd ..
@@ -105,12 +105,12 @@
 </code></pre></p>
 
 <p>On the standby, use the <code>pg_basebackup</code> command to clone the master (enter the <code>repl_user</code>&#39;s password from above when prompted):
-<pre><code>
+<pre><code class="codeblock">
     pg_basebackup -D data -Fp -R -Xs -c fast -l &#39;initial clone&#39; -P -v -h IP_of_master -U repl_user
 </code></pre></p>
 
 <p>On the standby, tweak the <code>recovery.conf</code> that was created for you and add the replication slot name:
-<pre><code>
+<pre><code class="codeblock">
     cd data
     cat &lt;&lt; EOF &gt;&gt; recovery.conf
     primary_slot_name = &#39;standby1&#39;
