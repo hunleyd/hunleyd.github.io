@@ -69,14 +69,14 @@
 <li><p>As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:
 <pre><code class="codeblock">
 SELECT
-    n.naspname as schema,
+    n.nspname as schema,
     c.relname as table
 FROM
     pg_class c
 JOIN
     pg_namespace n
 ON
-    n.oid = c.elnamespace
+    n.oid = c.relnamespace
 WHERE
     c.relkind = &#39;r&#39;
 AND NOT EXISTS (

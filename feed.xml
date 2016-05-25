@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-05-12T10:19:07-04:00</updated>
+ <updated>2016-05-25T09:50:45-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -113,14 +113,14 @@ CHECK (blah blah)
 &lt;li&gt;&lt;p&gt;As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:
 &lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
 SELECT
-    n.naspname as schema,
+    n.nspname as schema,
     c.relname as table
 FROM
     pg_class c
 JOIN
     pg_namespace n
 ON
-    n.oid = c.elnamespace
+    n.oid = c.relnamespace
 WHERE
     c.relkind = &amp;#39;r&amp;#39;
 AND NOT EXISTS (
