@@ -193,7 +193,7 @@ create-leaf slave &amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;#39; \
 <li><p>Check the slave.log to see if you have the line <code>INFO Node &quot;slave&quot; initialized for queue &quot;myappq&quot; with type &quot;branch&quot;</code></p></li>
 <li><p>Spin up the slave&#39;s replication worker process by running <code>londiste3 -d slave.ini worker</code></p></li>
 <li><p>Tell the master node that we want to replicate all the tables in the db (<code>londiste3 master.ini add-table --all</code>) as well as all the sequences (<code>londiste3 master.ini add-seq --all</code>)</p></li>
-<li><p>For the slave node, also replicate all the table (<code>londiste3 slave.init add-table --all</code>) and all the sequences (<code>londiste3 slave.init add-seq --all</code>)</p></li>
+<li><p>For the slave node, also replicate all the tables (<code>londiste3 slave.init add-table --all</code>) and all the sequences (<code>londiste3 slave.init add-seq --all</code>)</p></li>
 </ul>
 
 <p>At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&#39;s all you need to do.</p>
