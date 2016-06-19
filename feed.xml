@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-06-19T14:22:22-04:00</updated>
+ <updated>2016-06-19T14:26:18-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -76,19 +76,19 @@
    <content type="html">&lt;p&gt;&lt;img src=&quot;http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg&quot; align=right border=0&gt;Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use &lt;a href=&quot;https://github.com/keithf4/pg_partman&quot;&gt;pg_partman&lt;/a&gt; and be done with it. However, if you&amp;#39;re trying to learn, can&amp;#39;t use &lt;code&gt;pg_partman&lt;/code&gt;, or are a masochist you&amp;#39;ll probably be following the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/ddl-partitioning.html&quot;&gt;docs&lt;/a&gt; and thinking &amp;#39;seriously? i have to create indexes on each child? why don&amp;#39;t they copy the indexes of the parent? why isn&amp;#39;t this easier?&amp;#39;. Here&amp;#39;s a little tip to make things slightly easier:&lt;/p&gt;
 
 &lt;p&gt;Instead of creating your child tables like the doc says:
-&lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
+&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;
 CREATE TABLE child1 (
-CHECK (blah blah)
+  CHECK (blah blah)
 ) INHERITS (parent);
-&lt;/pre&gt;&lt;/code&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/0b1f8fa43534f53046eed4e63dc54e14.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Create your child tables thusly:
-&lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
+&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;
 CREATE TABLE child1 (
-LIKE parent INCLUDING ALL,
-CHECK (blah blah)
+  LIKE parent INCLUDING ALL,
+  CHECK (blah blah)
 ) INHERITS (parent);
-&lt;/pre&gt;&lt;/code&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/603c5f6961134422651e2e13b1c6398e.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;and PostgeSQL &lt;em&gt;will&lt;/em&gt; copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?&lt;/p&gt;
 
