@@ -64,7 +64,17 @@
 <p>Let&#39;s get started!</p>
 
 <p>On the master, do the following:
-{% gist 78f5bca50fb14e5a6525a5f63bb5bf47 %}</p>
+<noscript><pre><code>
+cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; postgresql.conf
+    wal_level = hot_standby
+    full_page_writes = on
+    wal_log_hints = on
+    max_wal_senders = 6
+    max_replication_slots = 6
+    hot_standby = on
+    hot_standby_feedback = on
+EOF
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script></p>
 
 <p>On the master, add the external IP addresses of the servers to <code>pg_hba.conf</code>:
 <pre><code class="codeblock">

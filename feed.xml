@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-06-19T13:52:46-04:00</updated>
+ <updated>2016-06-19T14:04:55-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -268,7 +268,17 @@ londiste3 slave.init add-seq --all
 &lt;p&gt;Let&amp;#39;s get started!&lt;/p&gt;
 
 &lt;p&gt;On the master, do the following:
-&amp;lt;% gist 78f5bca50fb14e5a6525a5f63bb5bf47&amp;gt;&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;
+cat &amp;amp;lt;&amp;amp;lt; EOF &amp;amp;gt;&amp;amp;gt; postgresql.conf
+    wal_level = hot_standby
+    full_page_writes = on
+    wal_log_hints = on
+    max_wal_senders = 6
+    max_replication_slots = 6
+    hot_standby = on
+    hot_standby_feedback = on
+EOF
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;On the master, add the external IP addresses of the servers to &lt;code&gt;pg_hba.conf&lt;/code&gt;:
 &lt;pre&gt;&lt;code class=&quot;codeblock&quot;&gt;
