@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://hunleyd.github.io/Making-use-of-gists/</loc>
+<lastmod>2016-06-19T11:42:19-04:00</lastmod>
+</url>
+<url>
 <loc>http://hunleyd.github.io/Happy-20th-PostgreSQL/</loc>
 <lastmod>2016-05-12T06:11:31-04:00</lastmod>
 </url>
@@ -115,5 +119,11 @@
 </url>
 <url>
 <loc>http://hunleyd.github.io/tag/pro%2520tip/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/blog/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/GitHub/</loc>
 </url>
 </urlset>
