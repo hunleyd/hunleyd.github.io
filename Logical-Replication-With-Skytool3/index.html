@@ -67,7 +67,7 @@
 
 <ul>
 <li><p>As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:
-<noscript><pre><code>
+<noscript><pre><code>sql
 SELECT
 n.nspname as schema,
 c.relname as table
@@ -100,14 +100,14 @@ ARRAY [
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/94d1096767e154486dbfe8dd47f48275.js"> </script></p></li>
 <li><p>On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we&#39;re done, right? You can use <code>pg_dumpall -g</code> on the PostgreSQL 8.4.x to get a listing of roles.</p></li>
 <li><p>Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I <em>think</em> you can actually get Londiste to do this for you as part of the replication, but I couldn&#39;t find anything online for sure, and I didn&#39;t have time to add more experimentation here (we&#39;re on the customer&#39;s dime here, remember). So, use <code>pg_dump</code> over the network and pipe it to <code>pg_restore</code> to transfer the schema thusly:
-<noscript><pre><code>
+<noscript><pre><code>bash
 pg_dump \
 -Fc \
 -C \
 -S \
--d myapp \
 -h IPofOldServer \
--U postgres | \
+-U postgres \
+myapp | \
 pg_restore \
 -d template1 \
 -v \
@@ -116,14 +116,14 @@ pg_restore \
 -s
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js"> </script></p></li>
 <li><p>Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:
-<noscript><pre><code>
+<noscript><pre><code>bash
 yum -y install \
 skytools-94 \
 skytools-94-modules
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js"> </script></p></li>
 <li><p>Restart the PostgreSQL 9.4.x cluster to be pedantic about loading the new libs and modules</p></li>
 <li><p>Install Skytools from source on the PostgreSQL 8.4.x server:
-<noscript><pre><code>
+<noscript><pre><code>bash
 yum -y install \
 python-devel \
 asciidoc \
@@ -140,7 +140,7 @@ make install
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js"> </script></p></li>
 <li><p>Restart the PostgreSQL 8.4.x cluster to be pedantic about loading the new libs and modules</p></li>
 <li><p>Now we configure the Londiste ticker. Note, we have <em>trust</em> setup for the postgres user in <code>pg_hba.conf</code> so there is no password= in the connection strings. Adjust to meet your setup:
-<noscript><pre>```
+<noscript><pre>```bash
 mkdir -pv ~postgres/londiste-config/{log,pid}
 cd ~postgres/londist-config
 cat &lt;&lt; EOF &gt; ticker.ini
@@ -150,10 +150,10 @@ database</em>list = myapp
 logfile = log/ticker.log
 pidfile = pid/ticker.pid
 EOF</pre></noscript><script src="https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js"> </script></p></li>
-<li><p>Start up the ticker, to provide the replication &quot;heartbeat&quot; by running <code>pgdq -d ticker.ini</code></p></li>
+<li><p>Start up the ticker, to provide the replication &quot;heartbeat&quot; by running <code>pgqd -d ticker.ini</code></p></li>
 <li><p>Check the <code>ticker.log</code> to ensure there are no warnings or errors! You can stop the ticker with <code>pgqd -s ticker.ini</code> while you fix things.</p></li>
 <li><p>Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
-<noscript><pre><code>
+<noscript><pre><code>bash
 cd ~postgres/londist-config
 cat &amp;lt;&amp;lt; EOF &amp;gt; master.ini
 db = user=postgres host=IPofOldServer dbname=myapp
@@ -164,7 +164,7 @@ pidfile = pid/master.pid
 EOF
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js"> </script></p></li>
 <li><p>We have to actually create the master node as the root node by doing:
-<noscript><pre><code>
+<noscript><pre><code>bash
 londiste3 \
 master.ini \
 create-root \
@@ -173,7 +173,7 @@ master &amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;#39;
 <li><p>Check the master.log to see if you have a line like <code>INFO Node &quot;master&quot; initialized for queue &quot;myappq&quot; with type &quot;root&quot;</code></p></li>
 <li><p>Now, spin up the master&#39;s replication worker process by running <code>londiste3 -d master.ini worker</code></p></li>
 <li><p>Next, we configure our slave node (same note applies about the lack of password in the connection string):
-<noscript><pre><code>
+<noscript><pre><code>bash
 cd ~postgres/londist-config
 cat &amp;lt;&amp;lt; EOF &amp;gt; slave.ini
 db = user=postgres host=127.0.0.1 dbname=myapp
@@ -184,7 +184,7 @@ pidfile = pid/slave.pid
 EOF
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js"> </script></p></li>
 <li><p>Like the master, we have to create the slave node. I created it as a <code>leaf</code> but I could have created it as a <code>branch</code> if we we&#39;re going to cascade replication:
-<noscript><pre><code>
+<noscript><pre><code>bash
 londiste3 \
 slave.ini \
 create-leaf slave &amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;#39; \

@@ -64,7 +64,7 @@
 <p>Let&#39;s get started!</p>
 
 <p>On the master, do the following:
-<noscript><pre><code>
+<noscript><pre><code>bash
 cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; postgresql.conf
     wal_level = hot_standby
     full_page_writes = on
@@ -77,7 +77,7 @@ EOF
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script></p>
 
 <p>On the master, add the external IP addresses of the servers to <code>pg_hba.conf</code>:
-<noscript><pre><code>
+<noscript><pre><code>bash
 cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; pg_hba.conf
     host replication repl_user IP_of_master/32 md5
     host replication repl_user IP_of_standby/32 md5
@@ -87,7 +87,7 @@ EOF
 <p>Restart PostgreSQL on the master for the changes to take affect</p>
 
 <p>On the master, create the replication user:
-<noscript><pre><code>
+<noscript><pre><code>bash
 psql \
   -d postgres \
   -U postgres \
@@ -95,7 +95,7 @@ psql \
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js"> </script></p>
 
 <p>On the master, create the replication slot for the standby:
-<noscript><pre><code>
+<noscript><pre><code>bash
 psql \
   -d postgres \
   -U postgres \
@@ -103,7 +103,7 @@ psql \
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js"> </script></p>
 
 <p>On the standby, wipe the existing cluster:
-<noscript><pre><code>
+<noscript><pre><code>bash
 cd /var/lib/pgsql/9.4/data
 pg_ctl -D $PWD -mf stop
 cd ..
@@ -111,7 +111,7 @@ rm -rfv data
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js"> </script></p>
 
 <p>On the standby, use the <code>pg_basebackup</code> command to clone the master (enter the <code>repl_user</code>&#39;s password from above when prompted):
-<noscript><pre><code>
+<noscript><pre><code>bash
 pg_basebackup \
   -D data \
   -Fp \
@@ -126,7 +126,7 @@ pg_basebackup \
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js"> </script></p>
 
 <p>On the standby, tweak the <code>recovery.conf</code> that was created for you and add the replication slot name:
-<noscript><pre><code>
+<noscript><pre><code>bash
 cd data
 cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; recovery.conf
 primary_slot_name = &amp;#39;standby1&amp;#39;
