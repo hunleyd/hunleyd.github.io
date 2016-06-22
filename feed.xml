@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-06-22T13:23:33-04:00</updated>
+ <updated>2016-06-22T13:43:56-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -195,7 +195,7 @@ make install
 &lt;li&gt;&lt;p&gt;Now we configure the Londiste ticker. Note, we have &lt;em&gt;trust&lt;/em&gt; setup for the postgres user in &lt;code&gt;pg_hba.conf&lt;/code&gt; so there is no password= in the connection strings. Adjust to meet your setup:
 &lt;noscript&gt;&lt;pre&gt;```bash
 mkdir -pv ~postgres/londiste-config/{log,pid}
-cd ~postgres/londist-config
+cd ~postgres/londiste-config
 cat &amp;lt;&amp;lt; EOF &amp;gt; ticker.ini
 [pgqd]
 base&lt;em&gt;connstr = user=postgres host=IPofOldServer
@@ -207,8 +207,9 @@ EOF&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hun
 &lt;li&gt;&lt;p&gt;Check the &lt;code&gt;ticker.log&lt;/code&gt; to ensure there are no warnings or errors! You can stop the ticker with &lt;code&gt;pgqd -s ticker.ini&lt;/code&gt; while you fix things.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
 &lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-cd ~postgres/londist-config
+cd ~postgres/londiste-config
 cat &amp;amp;lt;&amp;amp;lt; EOF &amp;amp;gt; master.ini
+[londiste3]
 db = user=postgres host=IPofOldServer dbname=myapp
 queue_name = myappq
 loop_delay = 0.5
@@ -227,8 +228,9 @@ master &amp;amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;amp;#39;
 &lt;li&gt;&lt;p&gt;Now, spin up the master&amp;#39;s replication worker process by running &lt;code&gt;londiste3 -d master.ini worker&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Next, we configure our slave node (same note applies about the lack of password in the connection string):
 &lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-cd ~postgres/londist-config
+cd ~postgres/londiste-config
 cat &amp;amp;lt;&amp;amp;lt; EOF &amp;amp;gt; slave.ini
+[londiste3]
 db = user=postgres host=127.0.0.1 dbname=myapp
 queue_name = myappq
 loop_delay = 0.5
@@ -246,7 +248,7 @@ create-leaf slave &amp;amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;amp
 &lt;li&gt;&lt;p&gt;Check the slave.log to see if you have the line &lt;code&gt;INFO Node &amp;quot;slave&amp;quot; initialized for queue &amp;quot;myappq&amp;quot; with type &amp;quot;branch&amp;quot;&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Spin up the slave&amp;#39;s replication worker process by running &lt;code&gt;londiste3 -d slave.ini worker&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Tell the master node that we want to replicate all the tables in the db (&lt;code&gt;londiste3 master.ini add-table --all&lt;/code&gt;) as well as all the sequences (&lt;code&gt;londiste3 master.ini add-seq --all&lt;/code&gt;)&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;For the slave node, also replicate all the tables (&lt;code&gt;londiste3 slave.init add-table --all&lt;/code&gt;) and all the sequences (&lt;code&gt;londiste3 slave.init add-seq --all&lt;/code&gt;)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;For the slave node, also replicate all the tables (&lt;code&gt;londiste3 slave.ini add-table --all&lt;/code&gt;) and all the sequences (&lt;code&gt;londiste3 slave.ini add-seq --all&lt;/code&gt;)&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&amp;#39;s all you need to do.&lt;/p&gt;

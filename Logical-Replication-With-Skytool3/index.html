@@ -142,7 +142,7 @@ make install
 <li><p>Now we configure the Londiste ticker. Note, we have <em>trust</em> setup for the postgres user in <code>pg_hba.conf</code> so there is no password= in the connection strings. Adjust to meet your setup:
 <noscript><pre>```bash
 mkdir -pv ~postgres/londiste-config/{log,pid}
-cd ~postgres/londist-config
+cd ~postgres/londiste-config
 cat &lt;&lt; EOF &gt; ticker.ini
 [pgqd]
 base<em>connstr = user=postgres host=IPofOldServer
@@ -154,8 +154,9 @@ EOF</pre></noscript><script src="https://gist.github.com/hunleyd/d65e5dfd27365b0
 <li><p>Check the <code>ticker.log</code> to ensure there are no warnings or errors! You can stop the ticker with <code>pgqd -s ticker.ini</code> while you fix things.</p></li>
 <li><p>Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
 <noscript><pre><code>bash
-cd ~postgres/londist-config
+cd ~postgres/londiste-config
 cat &amp;lt;&amp;lt; EOF &amp;gt; master.ini
+[londiste3]
 db = user=postgres host=IPofOldServer dbname=myapp
 queue_name = myappq
 loop_delay = 0.5
@@ -174,8 +175,9 @@ master &amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;#39;
 <li><p>Now, spin up the master&#39;s replication worker process by running <code>londiste3 -d master.ini worker</code></p></li>
 <li><p>Next, we configure our slave node (same note applies about the lack of password in the connection string):
 <noscript><pre><code>bash
-cd ~postgres/londist-config
+cd ~postgres/londiste-config
 cat &amp;lt;&amp;lt; EOF &amp;gt; slave.ini
+[londiste3]
 db = user=postgres host=127.0.0.1 dbname=myapp
 queue_name = myappq
 loop_delay = 0.5
@@ -193,7 +195,7 @@ create-leaf slave &amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;#39; \
 <li><p>Check the slave.log to see if you have the line <code>INFO Node &quot;slave&quot; initialized for queue &quot;myappq&quot; with type &quot;branch&quot;</code></p></li>
 <li><p>Spin up the slave&#39;s replication worker process by running <code>londiste3 -d slave.ini worker</code></p></li>
 <li><p>Tell the master node that we want to replicate all the tables in the db (<code>londiste3 master.ini add-table --all</code>) as well as all the sequences (<code>londiste3 master.ini add-seq --all</code>)</p></li>
-<li><p>For the slave node, also replicate all the tables (<code>londiste3 slave.init add-table --all</code>) and all the sequences (<code>londiste3 slave.init add-seq --all</code>)</p></li>
+<li><p>For the slave node, also replicate all the tables (<code>londiste3 slave.ini add-table --all</code>) and all the sequences (<code>londiste3 slave.ini add-seq --all</code>)</p></li>
 </ul>
 
 <p>At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&#39;s all you need to do.</p>
