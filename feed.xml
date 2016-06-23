@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-06-22T13:43:56-04:00</updated>
+ <updated>2016-06-23T08:18:14-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -110,7 +110,9 @@ CREATE TABLE child1 (
    <link href="http://hunleyd.github.io/Logical-Replication-With-Skytool3/"/>
    <updated>2016-04-19T09:55:11-04:00</updated>
    <id>http://hunleyd.github.io/Logical-Replication-With-Skytool3</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&quot; width=225 height=225 border=0 align=left&gt; I recently had to do a &lt;em&gt;near-zero downtime&lt;/em&gt; upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&amp;#39;t use streaming replication because of the change in major version (and because it&amp;#39;s simply not present in 8.x), so that left me looking at &lt;em&gt;logical replication&lt;/em&gt; options. Usually, everyone else would be thinking Slony right here. I&amp;#39;ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&quot; width=225 height=225 border=0 align=left&gt; UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it &lt;a href=&quot;https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I recently had to do a &lt;em&gt;near-zero downtime&lt;/em&gt; upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&amp;#39;t use streaming replication because of the change in major version (and because it&amp;#39;s simply not present in 8.x), so that left me looking at &lt;em&gt;logical replication&lt;/em&gt; options. Usually, everyone else would be thinking Slony right here. I&amp;#39;ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.&lt;/p&gt;
 
 &lt;p&gt;Londiste is part of the Skytools suite, originally developed by Skype back when they were a &amp;#39;no central node&amp;#39; setup. As such, the thing was literally born to be &amp;quot;master-master&amp;quot; and assumes nodes come and go at will, so it&amp;#39;s got all the tools to handle bringing nodes up/down, marking them active/inactive, catching them up, etc. It&amp;#39;s written in Python, and uses plain text ini files for configuration.&lt;/p&gt;
 

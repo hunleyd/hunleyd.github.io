@@ -9,9 +9,9 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
 
     
-    <meta name="description" content=" I recently had to do a near-zero downtime upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&#39;t use streaming replication because of the change in major version (and because it&#39;s simply not present in 8.x), so that left me looking at logical replication options. Usually, everyone else would be thinking Slony right here. I&#39;ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.
+    <meta name="description" content=" UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it here.
 " />
-    <meta property="og:description" content=" I recently had to do a near-zero downtime upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&#39;t use streaming replication because of the change in major version (and because it&#39;s simply not present in 8.x), so that left me looking at logical replication options. Usually, everyone else would be thinking Slony right here. I&#39;ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.
+    <meta property="og:description" content=" UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it here.
 " />
     
     <meta name="author" content="Douglas J Hunley" />
@@ -57,7 +57,9 @@
   <div class="meta_wrapper"><time datetime="2016-04-19">April 19, 2016</time><ul class="tag_list_in_post"><li class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></li><li class="tag_list_item"><a class="tag_list_link" href="/tag/replication">replication</a></li><li class="tag_list_item"><a class="tag_list_link" href="/tag/howto">howto</a></li></ul></div>
 
   <div class="entry">
-    <p><img src="https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png" width=225 height=225 border=0 align=left> I recently had to do a <em>near-zero downtime</em> upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&#39;t use streaming replication because of the change in major version (and because it&#39;s simply not present in 8.x), so that left me looking at <em>logical replication</em> options. Usually, everyone else would be thinking Slony right here. I&#39;ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.</p>
+    <p><img src="https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png" width=225 height=225 border=0 align=left> UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it <a href="https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh">here</a>.</p>
+
+<p>I recently had to do a <em>near-zero downtime</em> upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&#39;t use streaming replication because of the change in major version (and because it&#39;s simply not present in 8.x), so that left me looking at <em>logical replication</em> options. Usually, everyone else would be thinking Slony right here. I&#39;ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.</p>
 
 <p>Londiste is part of the Skytools suite, originally developed by Skype back when they were a &#39;no central node&#39; setup. As such, the thing was literally born to be &quot;master-master&quot; and assumes nodes come and go at will, so it&#39;s got all the tools to handle bringing nodes up/down, marking them active/inactive, catching them up, etc. It&#39;s written in Python, and uses plain text ini files for configuration.</p>
 
