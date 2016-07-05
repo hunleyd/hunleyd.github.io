@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-07-05T08:39:22-04:00</updated>
+ <updated>2016-07-05T08:41:43-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -254,9 +254,9 @@ create-leaf slave &amp;amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;amp
 
 &lt;p&gt;At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&amp;#39;s all you need to do.&lt;/p&gt;
 
-&lt;p&gt;But what about the data that was already in the master db? You need to tell Londiste to &amp;#39;catch things up&amp;#39; by doing &lt;code&gt;londiste3 slave.ini resync --all&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;But what about the data that was already in the master db? You don&amp;#39;t need to do anything. It&amp;#39;s already replicating. You can forcibly tell Londiste to &amp;#39;catch things up&amp;#39; by doing &lt;code&gt;londiste3 slave.ini resync --all&lt;/code&gt; if you like though.&lt;/p&gt;
 
-&lt;p&gt;If you want to check on the replication at any point, simply issue &lt;code&gt;londiste3 slave.ini status&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;If you want to check on the replication at any point, simply issue &lt;code&gt;londiste3 slave.ini status&lt;/code&gt; or to be more pedantic &lt;code&gt;londiste3 slave.ini compare&lt;/code&gt; which will examine row counts and md5sums between master and slave.&lt;/p&gt;
 
 &lt;p&gt;Enjoy your new cross-version logical replication!&lt;/p&gt;
 </content>

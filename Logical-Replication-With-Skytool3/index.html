@@ -201,9 +201,9 @@ create-leaf slave &amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;#39; \
 
 <p>At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&#39;s all you need to do.</p>
 
-<p>But what about the data that was already in the master db? You need to tell Londiste to &#39;catch things up&#39; by doing <code>londiste3 slave.ini resync --all</code></p>
+<p>But what about the data that was already in the master db? You don&#39;t need to do anything. It&#39;s already replicating. You can forcibly tell Londiste to &#39;catch things up&#39; by doing <code>londiste3 slave.ini resync --all</code> if you like though.</p>
 
-<p>If you want to check on the replication at any point, simply issue <code>londiste3 slave.ini status</code></p>
+<p>If you want to check on the replication at any point, simply issue <code>londiste3 slave.ini status</code> or to be more pedantic <code>londiste3 slave.ini compare</code> which will examine row counts and md5sums between master and slave.</p>
 
 <p>Enjoy your new cross-version logical replication!</p>
 
