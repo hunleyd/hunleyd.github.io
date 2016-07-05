@@ -123,7 +123,6 @@ yum -y install \
 skytools-94 \
 skytools-94-modules
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js"> </script></p></li>
-<li><p>Restart the PostgreSQL 9.4.x cluster to be pedantic about loading the new libs and modules</p></li>
 <li><p>Install Skytools from source on the PostgreSQL 8.4.x server:
 <noscript><pre><code>bash
 yum -y install \
@@ -140,7 +139,7 @@ git submodule update
 make
 make install
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js"> </script></p></li>
-<li><p>Restart the PostgreSQL 8.4.x cluster to be pedantic about loading the new libs and modules</p></li>
+<li><p>Restart the PostgreSQL 8.4.x cluster to load the new libs and modules</p></li>
 <li><p>Now we configure the Londiste ticker. Note, we have <em>trust</em> setup for the postgres user in <code>pg_hba.conf</code> so there is no password= in the connection strings. Adjust to meet your setup:
 <noscript><pre>```bash
 mkdir -pv ~postgres/londiste-config/{log,pid}
@@ -196,8 +195,8 @@ create-leaf slave &amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;#39; \
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js"> </script></p></li>
 <li><p>Check the slave.log to see if you have the line <code>INFO Node &quot;slave&quot; initialized for queue &quot;myappq&quot; with type &quot;branch&quot;</code></p></li>
 <li><p>Spin up the slave&#39;s replication worker process by running <code>londiste3 -d slave.ini worker</code></p></li>
-<li><p>Tell the master node that we want to replicate all the tables in the db (<code>londiste3 master.ini add-table --all</code>) as well as all the sequences (<code>londiste3 master.ini add-seq --all</code>)</p></li>
-<li><p>For the slave node, also replicate all the tables (<code>londiste3 slave.ini add-table --all</code>) and all the sequences (<code>londiste3 slave.ini add-seq --all</code>)</p></li>
+<li><p>Tell the master node that we want to replicate all the tables in the db (<code>londiste3 master.ini add-table --all</code>) as well as all the sequences (<code>londiste3 master.ini add-seq --all</code>). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to <code>londiste3 master.ini add-table tablename</code> to add them to replication. Ditto for new sequences.</p></li>
+<li><p>For the slave node, also replicate all the tables (<code>londiste3 slave.ini add-table --all</code>) and all the sequences (<code>londiste3 slave.ini add-seq --all</code>). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to <code>londiste3 slave.ini add-table tablename</code> to add them to replication. Ditto for new sequences.</p></li>
 </ul>
 
 <p>At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&#39;s all you need to do.</p>
