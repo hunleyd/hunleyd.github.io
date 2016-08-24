@@ -4,13 +4,77 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-07-05T08:41:43-04:00</updated>
+ <updated>2016-08-24T12:10:52-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Where Not To Put Your Tablespaces</title>
+   <link href="http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces/"/>
+   <updated>2016-08-24T07:55:12-04:00</updated>
+   <id>http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/ProhibitionSign2.svg/2000px-ProhibitionSign2.svg.png&quot; border=0 align=left width=200 height=200&gt; From the PostgreSQL &lt;a href=&quot;https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html&quot;&gt;docs&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.&lt;/p&gt;
+
+&lt;p&gt;By using tablespaces, an administrator can control the disk layout of a PostgreSQL installation. This is useful in at least two ways. First, if the partition or volume on which the cluster was initialized runs out of space and cannot be extended, a tablespace can be created on a different partition and used until the system can be reconfigured.&lt;/p&gt;
+
+&lt;p&gt;Second, tablespaces allow an administrator to use knowledge of the usage pattern of database objects to optimize performance. For example, an index which is very heavily used can be placed on a very fast, highly available disk, such as an expensive solid state device. At the same time a table storing archived data which is rarely used or not performance critical could be stored on a less expensive, slower disk system.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As you can see, while not as powerful as tablespaces in, say, Oracle, they do still have their uses in PostgreSQL. You can use them to make use of different filesystems, or different mount options, or different disk types and, in doing so, intelligently apply performance characteristics to subsets of your data. For example, you could put your highest volume tables in a tablespace that is mounted from SSDs while the rest of your db is mounted from spinning rust.&lt;/p&gt;
+
+&lt;p&gt;Sounds decent, right? Now you before you go off and be &amp;quot;clever&amp;quot; and create an SSD-backed mountpoint for your new tablespace, understand that there are places you &lt;em&gt;should not&lt;/em&gt; create the tablespace. You shouldn&amp;#39;t create tablespaces on any kind of ephemeral storage, for example on a &lt;code&gt;tmpfs&lt;/code&gt; or a &lt;code&gt;ramfs&lt;/code&gt; or similar. &lt;em&gt;You also should not create your new tablespaces under $PGDATA&lt;/em&gt;. Yes, I&amp;#39;m aware there is &lt;code&gt;$PGDATA/pg_tblspc&lt;/code&gt; but that directory is &lt;em&gt;not for you&lt;/em&gt;. The system will auto-populate that directory with pointers to the real location of your tablespaces!&lt;/p&gt;
+
+&lt;p&gt;So what happens when you create a tablespace inside $PGDATA? Let&amp;#39;s find out. First, we&amp;#39;ll create the directory for the tablespace:&lt;/p&gt;
+
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;404: Not Found
+&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/be0d33a02ae2d5ee515f7f0261d000c.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And we see that nothing bad has happened yet. So, let&amp;#39;s pop over into &lt;code&gt;psql&lt;/code&gt; and actually create the tablespace:&lt;/p&gt;
+
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;sql
+(doug.hunley@[local]:5432/doug.hunley) # CREATE TABLESPACE ts1 LOCATION &amp;amp;#39;/Users/doug.hunley/pgdata/tablespaces&amp;amp;#39;;
+WARNING:  42P17: tablespace location should not be inside the data directory
+LOCATION:  CreateTableSpace, tablespace.c:295
+CREATE TABLESPACE
+Time: 7.797 ms
+(doug.hunley@[local]:5432/doug.hunley) #
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you&amp;#39;ve got a problem. So where does the problem come in? &lt;/p&gt;
+
+&lt;p&gt;Let&amp;#39;s try to make a backup of our cluster:&lt;/p&gt;
+
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
+doug.hunley ~ $ pg_basebackup -D pgdata2 -Fp -R -Xs -c fast -l &amp;amp;#39;clone for slave&amp;amp;#39; -P -v
+transaction log start point: 2/17000028 on timeline 1
+pg_basebackup: directory &amp;amp;quot;/Users/doug.hunley/pgdata/tablespaces&amp;amp;quot; exists but is not empty
+doug.hunley ~ $
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;There it is.&lt;/p&gt;
+
+&lt;p&gt;When creating the backup, it tries to ensure the tablespace location is the same, but then it won&amp;#39;t write to a non-empty directory. My example is two different $PGDATA locations on the same box, but the issue is the same when using different machines because &lt;code&gt;pg_basebackup&lt;/code&gt; backs up &lt;em&gt;everything&lt;/em&gt; in $PGDATA which means your tablespace directory gets cloned before it gets to the actual cloning of the data in the tablespace so you end up with &amp;quot;stuff&amp;quot; in the dir, making it non-empty. Which gives you the same error and output.&lt;/p&gt;
+
+&lt;p&gt;OK, so it breaks backups. I can work around that by using another backup method. What else?&lt;/p&gt;
+
+&lt;p&gt;How about using &lt;code&gt;pg_upgrade&lt;/code&gt; to do an upgrade? No matter if you run in &lt;code&gt;link&lt;/code&gt; mode or not, &lt;code&gt;pg_upgrade&lt;/code&gt; &lt;em&gt;will not move&lt;/em&gt; your tablespace location. So you may have &lt;code&gt;~/pgdata95&lt;/code&gt; and &lt;code&gt;~/pgdata96&lt;/code&gt; after the upgrade, but your tablespaces &lt;em&gt;are still in&lt;/em&gt; &lt;code&gt;~/pgdata95/tablespaces&lt;/code&gt;. So, as per the &lt;a href=&quot;https://www.postgresql.org/docs/current/static/pgupgrade.html&quot;&gt;docs&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Once you are satisfied with the upgrade, you can delete the old cluster&amp;#39;s data directories by running the script mentioned when pg_upgrade completes.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;And &lt;em&gt;boom&lt;/em&gt; you&amp;#39;ve just deleted your tablespaces off disk. Congratulations!&lt;/p&gt;
+
+&lt;p&gt;So there you have it. Two very good reasons to not create tablespaces inside $PGDATA. Please, don&amp;#39;t do this. Everyone who admins that cluster going forward will thank you.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Making use of gists</title>
