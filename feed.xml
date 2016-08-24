@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-08-24T12:10:52-04:00</updated>
+ <updated>2016-08-24T12:13:20-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -81,7 +81,7 @@ doug.hunley ~ $
    <link href="http://hunleyd.github.io/Making-use-of-gists/"/>
    <updated>2016-06-19T11:42:19-04:00</updated>
    <id>http://hunleyd.github.io/Making-use-of-gists</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png&quot; align=right border=0 width=218 height=59&gt; After stumbling upon an example of how to do so, I&amp;#39;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I&amp;#39;ve chosen that platform for hosting by blog, right? :)&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png&quot; align=right border=0 width=218 height=59&gt; After stumbling upon an example of how to do so, I&amp;#39;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I&amp;#39;ve chosen that platform for hosting my blog, right? :)&lt;/p&gt;
 </content>
  </entry>
  
