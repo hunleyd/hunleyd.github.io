@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-08-24T12:15:42-04:00</updated>
+ <updated>2016-08-24T12:18:28-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -33,8 +33,12 @@
 
 &lt;p&gt;So what happens when you create a tablespace inside $PGDATA? Let&amp;#39;s find out. First, we&amp;#39;ll create the directory for the tablespace:&lt;/p&gt;
 
-&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;404: Not Found
-&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/be0d33a02ae2d5ee515f7f0261d000c.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
+doug.hunley ~ $ mkdir $PGDATA/tablespaces
+doug.hunley ~ $ cd $PGDATA/tablespaces
+doug.hunley ~/pgdata/tablespaces $ pwd
+/Users/doug.hunley/pgdata/tablespaces
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;And we see that nothing bad has happened yet. So, let&amp;#39;s pop over into &lt;code&gt;psql&lt;/code&gt; and actually create the tablespace:&lt;/p&gt;
 

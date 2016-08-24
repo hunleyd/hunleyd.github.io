@@ -73,8 +73,12 @@
 
 <p>So what happens when you create a tablespace inside $PGDATA? Let&#39;s find out. First, we&#39;ll create the directory for the tablespace:</p>
 
-<p><noscript><pre>404: Not Found
-</pre></noscript><script src="https://gist.github.com/hunleyd/be0d33a02ae2d5ee515f7f0261d000c.js"> </script></p>
+<p><noscript><pre><code>bash
+doug.hunley ~ $ mkdir $PGDATA/tablespaces
+doug.hunley ~ $ cd $PGDATA/tablespaces
+doug.hunley ~/pgdata/tablespaces $ pwd
+/Users/doug.hunley/pgdata/tablespaces
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script></p>
 
 <p>And we see that nothing bad has happened yet. So, let&#39;s pop over into <code>psql</code> and actually create the tablespace:</p>
 
