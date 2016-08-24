@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-08-24T12:13:20-04:00</updated>
+ <updated>2016-08-24T12:15:42-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -17,7 +17,7 @@
    <link href="http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces/"/>
    <updated>2016-08-24T07:55:12-04:00</updated>
    <id>http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/ProhibitionSign2.svg/2000px-ProhibitionSign2.svg.png&quot; border=0 align=left width=200 height=200&gt; From the PostgreSQL &lt;a href=&quot;https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html&quot;&gt;docs&lt;/a&gt;:&lt;/p&gt;
+   <content type="html">&lt;p&gt;From the PostgreSQL &lt;a href=&quot;https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html&quot;&gt;docs&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.&lt;/p&gt;
