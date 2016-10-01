@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-09-30T22:18:35-04:00</updated>
+ <updated>2016-09-30T22:25:00-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Where Not To Put Your Tablespaces</title>
-   <link href="http://hunleyd.github.io/2016/08/24/Where-Not-To-Put-Your-Tablespaces.html"/>
+   <link href="http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces/"/>
    <updated>2016-08-24T07:55:12-04:00</updated>
-   <id>http://hunleyd.github.io/2016/08/24/Where-Not-To-Put-Your-Tablespaces</id>
+   <id>http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces</id>
    <content type="html">&lt;p&gt;From the PostgreSQL &lt;a href=&quot;https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html&quot;&gt;docs&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
@@ -82,27 +82,27 @@ doug.hunley ~ $
  
  <entry>
    <title>Making use of gists</title>
-   <link href="http://hunleyd.github.io/2016/06/19/Making-use-of-gists.html"/>
+   <link href="http://hunleyd.github.io/Making-use-of-gists/"/>
    <updated>2016-06-19T11:42:19-04:00</updated>
-   <id>http://hunleyd.github.io/2016/06/19/Making-use-of-gists</id>
+   <id>http://hunleyd.github.io/Making-use-of-gists</id>
    <content type="html">&lt;p&gt;&lt;img src=&quot;https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png&quot; align=right border=0 width=218 height=59&gt; After stumbling upon an example of how to do so, I&amp;#39;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I&amp;#39;ve chosen that platform for hosting my blog, right? :)&lt;/p&gt;
 </content>
  </entry>
  
  <entry>
    <title>Happy 20th Birthday, PostgreSQL</title>
-   <link href="http://hunleyd.github.io/2016/05/12/Happy-20th-PostgreSQL.html"/>
+   <link href="http://hunleyd.github.io/Happy-20th-PostgreSQL/"/>
    <updated>2016-05-12T06:11:31-04:00</updated>
-   <id>http://hunleyd.github.io/2016/05/12/Happy-20th-PostgreSQL</id>
+   <id>http://hunleyd.github.io/Happy-20th-PostgreSQL</id>
    <content type="html">&lt;p&gt;&lt;img src=&quot;/images/pgsql_20th.png&quot; width=200 height=200 border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;Just a quick shout out to PostgreSQL, the world&amp;#39;s most advanced open source database, as it celebrates it&amp;#39;s 20&lt;sup&gt;th&lt;/sup&gt; year in existence. Happy birthday, y&amp;#39;all!&lt;/p&gt;
 </content>
  </entry>
  
  <entry>
    <title>Smart Lock on Android N DP2</title>
-   <link href="http://hunleyd.github.io/2016/04/24/Smart-Lock-on-Android-N-DP2.html"/>
+   <link href="http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2/"/>
    <updated>2016-04-24T18:18:56-04:00</updated>
-   <id>http://hunleyd.github.io/2016/04/24/Smart-Lock-on-Android-N-DP2</id>
+   <id>http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2</id>
    <content type="html">&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=right style=&quot;PADDING-LEFT: 5px&quot;&gt;As mentioned in my previous &lt;a href=&quot;/Now-on-Tap-Android-N-DP2/&quot;&gt;post&lt;/a&gt; I&amp;#39;ve stumbled across two issues with the 2&lt;sup&gt;nd&lt;/sup&gt; Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won&amp;#39;t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.&lt;/p&gt;
 
 &lt;p&gt;I was immediately aware of &lt;em&gt;some&lt;/em&gt; kind of issue since the phone didn&amp;#39;t prompt me to setup Smaet Lock after pairing the watch. So I went into the Android Settings app, then Security, and went to tap on Smart Lock only to find it &lt;em&gt;gone&lt;/em&gt;. Thinking maybe Google had moved it somewherre else, I used the new &amp;#39;search Settings&amp;#39; feature and searched for Smart Lock, Lock, and Smart. None of them tuened up what I was looking for! After some Googling, I had enough clues to figure out what had happened to the option and how to restore it. &lt;/p&gt;
@@ -123,9 +123,9 @@ doug.hunley ~ $
  
  <entry>
    <title>Now on Tap on Android N DP2</title>
-   <link href="http://hunleyd.github.io/2016/04/24/Now-on-Tap-Android-N-DP2.html"/>
+   <link href="http://hunleyd.github.io/Now-on-Tap-Android-N-DP2/"/>
    <updated>2016-04-24T17:53:06-04:00</updated>
-   <id>http://hunleyd.github.io/2016/04/24/Now-on-Tap-Android-N-DP2</id>
+   <id>http://hunleyd.github.io/Now-on-Tap-Android-N-DP2</id>
    <content type="html">&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program. And for the most part, it&amp;#39;s worked really well for me. I &lt;em&gt;really&lt;/em&gt; like Android N so far and can&amp;#39;t wait for the final release. However, after updating from Developer Preview 1 (DP1) to Developer Preview 2 (DP2) via OTA, I noticed two small issues. The first issue is that I could not, for the life of me, get Now On Tap to enable even though it was previously enabled on DP1.&lt;/p&gt;
 
 &lt;p&gt;I&amp;#39;m happy to report that I figured out, and I thought I&amp;#39;d share it in case anyone else has run this issue and was stumped. Just to be clear, if you open the Google app, then go into Settings, and then into Now on Tap, there&amp;#39;s a toggle. Simply flipping it is &lt;em&gt;supposed&lt;/em&gt; to be enough to turn it on. But in my case, the toggle would &lt;em&gt;not&lt;/em&gt; flip on. It was permanently flipped to off.&lt;/p&gt;
@@ -147,9 +147,9 @@ doug.hunley ~ $
  
  <entry>
    <title>PostgreSQL Partitioning Quick Tip</title>
-   <link href="http://hunleyd.github.io/2016/04/21/PostgresQL-Partitioning-Quick-Tip.html"/>
+   <link href="http://hunleyd.github.io/PostgresQL-Partitioning-Quick-Tip/"/>
    <updated>2016-04-21T05:25:32-04:00</updated>
-   <id>http://hunleyd.github.io/2016/04/21/PostgresQL-Partitioning-Quick-Tip</id>
+   <id>http://hunleyd.github.io/PostgresQL-Partitioning-Quick-Tip</id>
    <content type="html">&lt;p&gt;&lt;img src=&quot;http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg&quot; align=right border=0&gt;Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use &lt;a href=&quot;https://github.com/keithf4/pg_partman&quot;&gt;pg_partman&lt;/a&gt; and be done with it. However, if you&amp;#39;re trying to learn, can&amp;#39;t use &lt;code&gt;pg_partman&lt;/code&gt;, or are a masochist you&amp;#39;ll probably be following the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/ddl-partitioning.html&quot;&gt;docs&lt;/a&gt; and thinking &amp;#39;seriously? i have to create indexes on each child? why don&amp;#39;t they copy the indexes of the parent? why isn&amp;#39;t this easier?&amp;#39;. Here&amp;#39;s a little tip to make things slightly easier:&lt;/p&gt;
 
 &lt;p&gt;Instead of creating your child tables like the doc says:
@@ -175,9 +175,9 @@ CREATE TABLE child1 (
  
  <entry>
    <title>Logical Replication with Skytools3</title>
-   <link href="http://hunleyd.github.io/2016/04/19/Logical-Replication-With-Skytool3.html"/>
+   <link href="http://hunleyd.github.io/Logical-Replication-With-Skytool3/"/>
    <updated>2016-04-19T09:55:11-04:00</updated>
-   <id>http://hunleyd.github.io/2016/04/19/Logical-Replication-With-Skytool3</id>
+   <id>http://hunleyd.github.io/Logical-Replication-With-Skytool3</id>
    <content type="html">&lt;p&gt;&lt;img src=&quot;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&quot; width=225 height=225 border=0 align=left&gt; UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it &lt;a href=&quot;https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;I recently had to do a &lt;em&gt;near-zero downtime&lt;/em&gt; upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&amp;#39;t use streaming replication because of the change in major version (and because it&amp;#39;s simply not present in 8.x), so that left me looking at &lt;em&gt;logical replication&lt;/em&gt; options. Usually, everyone else would be thinking Slony right here. I&amp;#39;ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.&lt;/p&gt;
@@ -332,9 +332,9 @@ create-leaf slave &amp;amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;amp
  
  <entry>
    <title>PostgreSQL Streaming Replication in 10 Minutes</title>
-   <link href="http://hunleyd.github.io/2016/04/18/PostgreSQL-Streaming-Replication-In-10-Minutes.html"/>
+   <link href="http://hunleyd.github.io/PostgreSQL-Streaming-Replication-In-10-Minutes/"/>
    <updated>2016-04-18T10:47:10-04:00</updated>
-   <id>http://hunleyd.github.io/2016/04/18/PostgreSQL-Streaming-Replication-In-10-Minutes</id>
+   <id>http://hunleyd.github.io/PostgreSQL-Streaming-Replication-In-10-Minutes</id>
    <content type="html">&lt;p&gt;&lt;img src=&quot;https://unitedlayer.com/sites/default/files/dr-icons-01.png&quot; border=0 align=right&gt;While there&amp;#39;s absolutely nothing new in this blog post that isn&amp;#39;t covered by the wonderful &lt;a href=&quot;http://www.postgresql.org/docs/current/static/index.html&quot;&gt;docs&lt;/a&gt; I&amp;#39;ve been asked multiple times now by customers if we had some kind of &amp;#39;crib notes&amp;#39; format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well post it so that I can simply point people to it in the future. So here we are.&lt;/p&gt;
 
 &lt;p&gt;Now, let&amp;#39;s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity&amp;#39;s sake, we will these machines &amp;#39;master&amp;#39; and &amp;#39;standby&amp;#39;. Note too that I&amp;#39;m using &lt;code&gt;replication slots&lt;/code&gt; which needs PostgreSQL 9.4.0 or later; if you&amp;#39;re using something earlier, simply ignore the slot stuff.&lt;/p&gt;
@@ -419,9 +419,9 @@ EOF
  
  <entry>
    <title>Hello, eero</title>
-   <link href="http://hunleyd.github.io/2016/03/30/Hello_eero.html"/>
+   <link href="http://hunleyd.github.io/Hello_eero/"/>
    <updated>2016-03-30T10:00:25-04:00</updated>
-   <id>http://hunleyd.github.io/2016/03/30/Hello_eero</id>
+   <id>http://hunleyd.github.io/Hello_eero</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;https://www.eero.com&quot;&gt;&lt;img src=&quot;https://iotlist-production.s3-us-west-2.amazonaws.com/uploads/production/post_attachment/937/file/Eero1.jpg&quot; border=0 align=left&gt;&lt;/a&gt;I don&amp;#39;t normally back things on Indiegogo (I&amp;#39;m a Kickstarter snob), but I jumped &lt;em&gt;all over&lt;/em&gt; the eero. I have always had issues with the wifi coverage in my home. I&amp;#39;ve tried everything I can think of to alleviate the issues; differernt brands of routers, flashing different OSS firmwares, &amp;#39;upgrading&amp;#39; to SOHO equipment instead of consumer equipment, moving them all over the damn house, etc. Nothing solved all the issues. Until now.&lt;/p&gt;
 
 &lt;p&gt;I&amp;#39;ve actully had the eero up and running for a while now (almost two months already) but I held off saying anything because I wanted to see if issues would crop back up or not and I wanted to get past the initial &amp;#39;cool, it works!&amp;#39; feeling. So here I am ~60 days later, and I&amp;#39;m &lt;em&gt;still&lt;/em&gt; feeling the &amp;#39;this is cool&amp;#39; feeling towards the eero.&lt;/p&gt;
@@ -459,9 +459,9 @@ EOF
  
  <entry>
    <title>Glutton for Punishment</title>
-   <link href="http://hunleyd.github.io/2016/02/29/Glutton-for-punishment.html"/>
+   <link href="http://hunleyd.github.io/Glutton-for-punishment/"/>
    <updated>2016-02-29T05:14:50-05:00</updated>
-   <id>http://hunleyd.github.io/2016/02/29/Glutton-for-punishment</id>
+   <id>http://hunleyd.github.io/Glutton-for-punishment</id>
    <content type="html">&lt;p&gt;&lt;img src=&quot;http://www.theshell.guru/wp-content/uploads/2015/12/osx-logo3.png&quot; border=0 align=right&gt;I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing. As you probably know, I spent a lot of time and effort on the previous mbp to get &lt;a href=&quot;http://www.gentoo.org&quot;&gt;Gentoo&lt;/a&gt; up and running on it. I chose &lt;em&gt;not&lt;/em&gt; to do so with this one.&lt;/p&gt;
 
 &lt;p&gt;While I have looked into it and believe that I could get Gentoo up and running fairly easily, I&amp;#39;ve decided to skip it for now and try to live with OSX. I travel for work and never know what I&amp;#39;m going to be asked to do when onsite. Sometimes I have to present things on a projector while other times the customer only has 5Ghz wifi available. And thanks to the proprietary nature of these machines, these features are either non-functional or sub-optimal under Linux. I&amp;#39;m also getting tired of our IT staff telling me Linux isn&amp;#39;t supported whenever I have an issue, even if that issue clearly doesn&amp;#39;t have anything to do with the OS. And several other minor annoyances that have added up over my three yrs tenure here.&lt;/p&gt;
@@ -474,9 +474,9 @@ EOF
  
  <entry>
    <title>Flyover State</title>
-   <link href="http://hunleyd.github.io/2016/02/09/Flyover-state.html"/>
+   <link href="http://hunleyd.github.io/Flyover-state/"/>
    <updated>2016-02-09T11:59:24-05:00</updated>
-   <id>http://hunleyd.github.io/2016/02/09/Flyover-state</id>
+   <id>http://hunleyd.github.io/Flyover-state</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&quot;&gt;&lt;img src=&quot;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&quot; border=0 width=208 height=188&quot; align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;&lt;/a&gt;Being a native of Ohio, I can assure you that I&amp;#39;ve heard every form of &amp;#39;flyover state&amp;#39; insult you could care to level at me. And while I won&amp;#39;t debate the merits of Ohio in this post, I will take a minute to point out something that I&amp;#39;ve been saying for quite some time.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Ohio really is pretty centrally located to anywhere you might care to be other than the left coast.&lt;/em&gt;&lt;/p&gt;
@@ -491,9 +491,9 @@ EOF
  
  <entry>
    <title>Efficient, yet Creepy</title>
-   <link href="http://hunleyd.github.io/2016/01/21/Efficient-Yet-Creepy.html"/>
+   <link href="http://hunleyd.github.io/Efficient-Yet-Creepy/"/>
    <updated>2016-01-21T13:30:00-05:00</updated>
-   <id>http://hunleyd.github.io/2016/01/21/Efficient-Yet-Creepy</id>
+   <id>http://hunleyd.github.io/Efficient-Yet-Creepy</id>
    <content type="html">&lt;p&gt;So I&amp;#39;m sitting here seting up a new Internet connected device I bought recently (more on it later) and I can&amp;#39;t seem to get it to setup properly. I can create an account on their site, I can login to said account, I can power on said device and connect to it using the app and configure it to use my home wifi, but the device just won&amp;#39;t ever finish connecting and syncing w/ my account on the site.&lt;/p&gt;
 
 &lt;p&gt;I try this about half a dozen times, with a few reboots and even a reset of the device in there. Still no luck. So I power it off, set it aside, and go do some things IRL thinking &amp;quot;I&amp;#39;ll come back to it&amp;quot;. Not five minutes later, I get an email on my phone from Tech Support at the device&amp;#39;s company saying thusly:&lt;/p&gt;
@@ -514,9 +514,9 @@ have been updated.&lt;/p&gt;
  
  <entry>
    <title>Huawei Watch Review</title>
-   <link href="http://hunleyd.github.io/2016/01/21/Huawei-Watch-Review.html"/>
+   <link href="http://hunleyd.github.io/Huawei-Watch-Review/"/>
    <updated>2016-01-21T12:00:00-05:00</updated>
-   <id>http://hunleyd.github.io/2016/01/21/Huawei-Watch-Review</id>
+   <id>http://hunleyd.github.io/Huawei-Watch-Review</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;http://www.gethuawei.com/buy-huawei-watch&quot;&gt;&lt;img src=&quot;http://www.gethuawei.com/media/wysiwyg/pdpcms/huawei_watch/watches/stainless-leather1.png&quot; width=150 height=197 border=0 align=left&gt;&lt;/a&gt;A couple of my mates wanted me to let them know what I thought of the &lt;a href=&quot;http://www.huawei.com/en/&quot;&gt;Huawei&lt;/a&gt; Watch (hereafter, &amp;#39;H&amp;#39;) after upgrading from the &lt;a href=&quot;https://www.motorola.com/us/products/moto-360&quot;&gt;Moto 360&lt;/a&gt; (hereafter, 360) and spending some time getting to know the &amp;#39;H&amp;#39;. So here&amp;#39;s my thoughts.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Better than the 360 in every way that counts&lt;/p&gt;
@@ -535,9 +535,9 @@ have been updated.&lt;/p&gt;
  
  <entry>
    <title>I Have The Power</title>
-   <link href="http://hunleyd.github.io/2016/01/16/I-Have-The-Power.html"/>
+   <link href="http://hunleyd.github.io/I-Have-The-Power/"/>
    <updated>2016-01-16T19:00:00-05:00</updated>
-   <id>http://hunleyd.github.io/2016/01/16/I-Have-The-Power</id>
+   <id>http://hunleyd.github.io/I-Have-The-Power</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;https://www.snappower.com/snaprays-guidelight/&quot;&gt;&lt;img src=&quot;https://www.snappower.com/wp-content/themes/enfold-child/images/guidelight_review.jpg&quot; border=0 align=left height=262 width=262&gt;&lt;/a&gt;A while back, I ran across a little project on &lt;a href=&quot;http://www.kickstarter.com&quot;&gt;Kickstarter&lt;/a&gt; from a company called &lt;a href=&quot;http://www.snappower.com&quot;&gt;SnapPower&lt;/a&gt;. The project was for a product called Guidelights.&lt;/p&gt;
 
 &lt;p&gt;Now, I&amp;#39;m a &amp;quot;big boy&amp;quot; and don&amp;#39;t need a night light, but I do wander around the house after dark quite a bit and hate turning on the lights when I&amp;#39;m in a room for like a whole minute. So The concept of having LED lights embedded into the outlet cover and having them turn on/off based on the ambient light in the room sounded pretty cool. And the fact that there&amp;#39;s no wiring or anything was slick. So I ponied up and ordered some.&lt;/p&gt;
@@ -562,9 +562,9 @@ have been updated.&lt;/p&gt;
  
  <entry>
    <title>More Bloggy Goodness</title>
-   <link href="http://hunleyd.github.io/2016/01/15/More-Bloggy-Goodness.html"/>
+   <link href="http://hunleyd.github.io/More-Bloggy-Goodness/"/>
    <updated>2016-01-15T20:00:00-05:00</updated>
-   <id>http://hunleyd.github.io/2016/01/15/More-Bloggy-Goodness</id>
+   <id>http://hunleyd.github.io/More-Bloggy-Goodness</id>
    <content type="html">&lt;p&gt;It&amp;#39;s been a bit of a busy day for me and my blog. I&amp;#39;ve added:&lt;/p&gt;
 
 &lt;ul&gt;
@@ -580,9 +580,9 @@ have been updated.&lt;/p&gt;
  
  <entry>
    <title>Once More, With Feeling</title>
-   <link href="http://hunleyd.github.io/2016/01/15/Once-More-With-Feeling.html"/>
+   <link href="http://hunleyd.github.io/Once-More-With-Feeling/"/>
    <updated>2016-01-15T19:00:00-05:00</updated>
-   <id>http://hunleyd.github.io/2016/01/15/Once-More-With-Feeling</id>
+   <id>http://hunleyd.github.io/Once-More-With-Feeling</id>
    <content type="html">&lt;p&gt;Welcome to the new blog.&lt;/p&gt;
 
 &lt;p&gt;That&amp;#39;s right, I&amp;#39;m running my own blog &lt;em&gt;once again&lt;/em&gt;. I know, I know. It&amp;#39;s been a while. And I&amp;#39;ve picked &lt;em&gt;yet another&lt;/em&gt; platform for hosting my blog. But you know what? You&amp;#39;re just going to have to suck it up. I&amp;#39;ve been itching to make some new posts for a while now, and the platforms at my disposal, &lt;em&gt;cough&lt;/em&gt; &lt;em&gt;G+&lt;/em&gt; &lt;em&gt;cough&lt;/em&gt;, just haven&amp;#39;t really cut it. Sure, they sorta worked, but with the recent direction that platform is headed? Forget it.&lt;/p&gt;
