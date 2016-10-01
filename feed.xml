@@ -4,13 +4,24 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-09-30T23:23:58-04:00</updated>
+ <updated>2016-09-30T23:30:33-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Functional Blog Archives</title>
+   <link href="http://hunleyd.github.io/Functional-Blog-Archives/"/>
+   <updated>2016-09-30T19:30:19-04:00</updated>
+   <id>http://hunleyd.github.io/Functional-Blog-Archives</id>
+   <content type="html">&lt;p&gt;After an afternoon dicking around with Jekyll templates and Google serching, I&amp;#39;ve fixed up this site&amp;#39;s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I&amp;#39;ve also modified the tag cloud page to fit in the archive pages&amp;#39; look an feel. It&amp;#39;s not a true tag cloud in that I don&amp;#39;t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it&amp;#39;s own page showing all posts tagged as such.&lt;/p&gt;
+
+&lt;p&gt;So, yeah. Enjoy, or something.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Where Not To Put Your Tablespaces</title>
