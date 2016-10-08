@@ -4,13 +4,22 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-10-04T14:23:12-04:00</updated>
+ <updated>2016-10-08T15:20:00-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>I'm syndicated</title>
+   <link href="http://hunleyd.github.io/Im-Syndicated/"/>
+   <updated>2016-10-08T11:19:57-04:00</updated>
+   <id>http://hunleyd.github.io/Im-Syndicated</id>
+   <content type="html">&lt;p&gt;Someone at work thought it would be a good idea to give me access to the corporate blog so that I might &lt;a href=&quot;http://www.openscg.com/category/postgresql-blogs/doug-postgresql/&quot;&gt;post&lt;/a&gt; PostgreSQL-related things there and have them syndicted to &lt;a href=&quot;http://planet.postgresql.org/&quot;&gt;Planet PostgreSQL&lt;/a&gt;. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Linka</title>
