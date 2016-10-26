@@ -69,7 +69,7 @@
 <p>is how we turn on incremental mode. You&#39;ll note that we also need to specify an output dir:</p>
 <figure class="highlight"><pre><code class="language-apache" data-lang="apache">-O | --outdir path     : directory where out file must be saved
 </code></pre></figure>
-<p>I usually stick the pgBadger output into the <code>pg_log</code> directory. In my mind, have the logs and the report on the logs next to each makes sense, but feel free to stick yours wherever.</p>
+<p>I usually stick the pgBadger output into the <code>pg_log</code> directory. In my mind, having the logs and the report on the logs next to each makes sense, but feel free to stick yours wherever.</p>
 
 <p>Finally, we probably don&#39;t need pgBadger reports that are too old, and the docs say we can cull the cruft automatically:</p>
 <figure class="highlight"><pre><code class="language-apache" data-lang="apache">-R | --retention N     : number of week to keep in incremental mode. Default to 0, disabled. Used to set the number of weel to keep in output directory. Older weeks and days directory are automatically removed.

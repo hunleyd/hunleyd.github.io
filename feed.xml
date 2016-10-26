@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-10-26T14:53:19-04:00</updated>
+ <updated>2016-10-26T15:01:48-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -29,7 +29,7 @@
 &lt;p&gt;is how we turn on incremental mode. You&amp;#39;ll note that we also need to specify an output dir:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-apache&quot; data-lang=&quot;apache&quot;&gt;-O | --outdir path     : directory where out file must be saved
 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-&lt;p&gt;I usually stick the pgBadger output into the &lt;code&gt;pg_log&lt;/code&gt; directory. In my mind, have the logs and the report on the logs next to each makes sense, but feel free to stick yours wherever.&lt;/p&gt;
+&lt;p&gt;I usually stick the pgBadger output into the &lt;code&gt;pg_log&lt;/code&gt; directory. In my mind, having the logs and the report on the logs next to each makes sense, but feel free to stick yours wherever.&lt;/p&gt;
 
 &lt;p&gt;Finally, we probably don&amp;#39;t need pgBadger reports that are too old, and the docs say we can cull the cruft automatically:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-apache&quot; data-lang=&quot;apache&quot;&gt;-R | --retention N     : number of week to keep in incremental mode. Default to 0, disabled. Used to set the number of weel to keep in output directory. Older weeks and days directory are automatically removed.
