@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-10-26T15:01:48-04:00</updated>
+ <updated>2016-10-26T15:03:04-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -50,7 +50,7 @@ log_rotation_age = 1d
     $PGDATA/pg_log/postgresql-$(date --date yesterday +%a) \
     $PGDATA/pg_log/postgresql-$(date +%a)
 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-&lt;p&gt;which as you can see always feeds both yesterday&amp;#39;s and today&amp;#39;s log into pgBadger (since the cron runs at 2300 and then again at 0000). Since we&amp;#39;re running in incremental mode, it knows &lt;em&gt;at every run&lt;/em&gt; where it left off in the files the last time and does a &lt;code&gt;seek&lt;/code&gt; to skip over that data. This cuts the run time down &lt;em&gt;significantly&lt;/em&gt; even with the PostgreSQL logging &lt;em&gt;cranked up&lt;/em&gt;. You can see it here:&lt;/p&gt;
+&lt;p&gt;which as you can see always feeds both yesterday&amp;#39;s and today&amp;#39;s log into pgBadger (since the cron runs at 2300 and then again at 0000, we need yesterday&amp;#39;s log to catch that last hour). Since we&amp;#39;re running in incremental mode, it knows &lt;em&gt;at every run&lt;/em&gt; where it left off in the files the last time and does a &lt;code&gt;seek&lt;/code&gt; to skip over that data. This cuts the run time down &lt;em&gt;significantly&lt;/em&gt; even with the PostgreSQL logging &lt;em&gt;cranked up&lt;/em&gt;. You can see it here:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;...
 DEBUG: Starting reading file postgresql-Wed.log...
 DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
