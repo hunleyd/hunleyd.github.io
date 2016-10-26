@@ -4,7 +4,7 @@
  <title></title>
  <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
  <link href="http://hunleyd.github.io/"/>
- <updated>2016-10-26T14:46:16-04:00</updated>
+ <updated>2016-10-26T14:52:36-04:00</updated>
  <id>http://hunleyd.github.io</id>
  <author>
    <name></name>
@@ -17,7 +17,7 @@
    <link href="http://hunleyd.github.io/Incremental-pgBadger/"/>
    <updated>2016-10-26T10:46:09-04:00</updated>
    <id>http://hunleyd.github.io/Incremental-pgBadger</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;https://pbs.twimg.com/profile_images/498926908394860544/v15FftJs_400x400.png&quot; border=0 align=left height=200 width=200&gt; You&amp;#39;re probably already running &lt;a href=&quot;https://dalibo.github.io/pgbadger/index.html&quot;&gt;pgBadger&lt;/a&gt; to monitor your PostgreSQL logs. However, you&amp;#39;re probably &lt;em&gt;not&lt;/em&gt; running it incrementally throughout the day. Most likely, you&amp;#39;ve setup a &lt;code&gt;cron.daily&lt;/code&gt; job that runs pgBadger against yesterday&amp;#39;s log(s). And that&amp;#39;s great. Except when you get the dreaded &amp;quot;what just happened on the db?&amp;quot; email. Are you going to wait until tonight&amp;#39;s normal run of pgBadger to see what happened? Are you going to run a &amp;#39;one off&amp;#39; pgBadger against today&amp;#39;s logfile and wait for it to process the &lt;em&gt;entire&lt;/em&gt; log? Or are you going to copy the log off somewhere, edit it to cut it down, and &lt;em&gt;then&lt;/em&gt; run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://dalibo.github.io/pgbadger/logo_pgbadger.png&quot; border=0 align=left height=200 width=200&gt; You&amp;#39;re probably already running &lt;a href=&quot;https://dalibo.github.io/pgbadger/index.html&quot;&gt;pgBadger&lt;/a&gt; to monitor your PostgreSQL logs. However, you&amp;#39;re probably &lt;em&gt;not&lt;/em&gt; running it incrementally throughout the day. Most likely, you&amp;#39;ve setup a &lt;code&gt;cron.daily&lt;/code&gt; job that runs pgBadger against yesterday&amp;#39;s log(s). And that&amp;#39;s great. Except when you get the dreaded &amp;quot;what just happened on the db?&amp;quot; email. Are you going to wait until tonight&amp;#39;s normal run of pgBadger to see what happened? Are you going to run a &amp;#39;one off&amp;#39; pgBadger against today&amp;#39;s logfile and wait for it to process the &lt;em&gt;entire&lt;/em&gt; log? Or are you going to copy the log off somewhere, edit it to cut it down, and &lt;em&gt;then&lt;/em&gt; run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?&lt;/p&gt;
 
 &lt;p&gt;No, most likely you&amp;#39;re going to look at your actual monitoring tool that does real-time monitoring of your db and try to figure things out from there. You &lt;em&gt;are&lt;/em&gt; running some kind of db monitoring tool, right?&lt;/p&gt;
 
