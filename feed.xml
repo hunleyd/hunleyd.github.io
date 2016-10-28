@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-
- <title></title>
- <link href="http://hunleyd.github.io/feed.xml" rel="self"/>
- <link href="http://hunleyd.github.io/"/>
- <updated>2016-10-28T15:56:01-04:00</updated>
- <id>http://hunleyd.github.io</id>
- <author>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title></title>
+  <description>Doug's various musings</description>
+  <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
+  <link>http://hunleyd.github.io</link>
+  <updated>2016-10-28T16:30:16-04:00</updated>
+  <author>
    <name></name>
    <email></email>
- </author>
+  </author>
 
- 
- <entry>
-   <title>Incremental pgBadger</title>
-   <link href="http://hunleyd.github.io/Incremental-pgBadger/"/>
-   <updated>2016-10-26T10:46:09-04:00</updated>
-   <id>http://hunleyd.github.io/Incremental-pgBadger</id>
-   
-    <category>postgresql</category>
-   
-   <content type="html">&lt;p&gt;&lt;img src=&quot;https://dalibo.github.io/pgbadger/logo_pgbadger.png&quot; border=0 align=left&gt; You&amp;#39;re probably already running &lt;a href=&quot;https://dalibo.github.io/pgbadger/index.html&quot;&gt;pgBadger&lt;/a&gt; to monitor your PostgreSQL logs. However, you&amp;#39;re probably &lt;em&gt;not&lt;/em&gt; running it incrementally throughout the day. Most likely, you&amp;#39;ve setup a &lt;code&gt;cron.daily&lt;/code&gt; job that runs pgBadger against yesterday&amp;#39;s log(s). And that&amp;#39;s great. Except when you get the dreaded &amp;quot;what just happened on the db?&amp;quot; email. Are you going to wait until tonight&amp;#39;s normal run of pgBadger to see what happened? Are you going to run a &amp;#39;one off&amp;#39; pgBadger against today&amp;#39;s logfile and wait for it to process the &lt;em&gt;entire&lt;/em&gt; log? Or are you going to copy the log off somewhere, edit it to cut it down, and &lt;em&gt;then&lt;/em&gt; run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?&lt;/p&gt;
+  
+   <item>
+    <title>Incremental pgBadger</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://dalibo.github.io/pgbadger/logo_pgbadger.png&quot; border=0 align=left&gt; You&amp;#39;re probably already running &lt;a href=&quot;https://dalibo.github.io/pgbadger/index.html&quot;&gt;pgBadger&lt;/a&gt; to monitor your PostgreSQL logs. However, you&amp;#39;re probably &lt;em&gt;not&lt;/em&gt; running it incrementally throughout the day. Most likely, you&amp;#39;ve setup a &lt;code&gt;cron.daily&lt;/code&gt; job that runs pgBadger against yesterday&amp;#39;s log(s). And that&amp;#39;s great. Except when you get the dreaded &amp;quot;what just happened on the db?&amp;quot; email. Are you going to wait until tonight&amp;#39;s normal run of pgBadger to see what happened? Are you going to run a &amp;#39;one off&amp;#39; pgBadger against today&amp;#39;s logfile and wait for it to process the &lt;em&gt;entire&lt;/em&gt; log? Or are you going to copy the log off somewhere, edit it to cut it down, and &lt;em&gt;then&lt;/em&gt; run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?&lt;/p&gt;
 
 &lt;p&gt;No, most likely you&amp;#39;re going to look at your actual monitoring tool that does real-time monitoring of your db and try to figure things out from there. You &lt;em&gt;are&lt;/em&gt; running some kind of db monitoring tool, right?&lt;/p&gt;
 
@@ -67,52 +61,50 @@ DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
 &lt;p&gt;Keep in mind, this is also with a &lt;em&gt;single thread&lt;/em&gt;. pgBadger has the ability to run multi-threaded. See the &lt;code&gt;--help&lt;/code&gt; for details.&lt;/p&gt;
 
 &lt;p&gt;Enjoy!&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>I'm syndicated</title>
-   <link href="http://hunleyd.github.io/Im-Syndicated/"/>
-   <updated>2016-10-08T11:19:57-04:00</updated>
-   <id>http://hunleyd.github.io/Im-Syndicated</id>
-   
-    <category>work</category>
-   
-    <category>postgresql</category>
-   
-   <content type="html">&lt;p&gt;Someone at work thought it would be a good idea to give me access to the corporate blog so that I might &lt;a href=&quot;http://www.openscg.com/category/postgresql-blogs/doug-postgresql/&quot;&gt;post&lt;/a&gt; PostgreSQL-related things there and have them syndicted to &lt;a href=&quot;http://planet.postgresql.org/&quot;&gt;Planet PostgreSQL&lt;/a&gt;. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Linka</title>
-   <link href="http://hunleyd.github.io/Linka/"/>
-   <updated>2016-10-03T09:30:58-04:00</updated>
-   <id>http://hunleyd.github.io/Linka</id>
-   
-    <category>kickstarter</category>
-   
-    <category>biking</category>
-   
-   <content type="html">&lt;p&gt;&lt;img src=&quot;https://static1.squarespace.com/static/5527df31e4b022b79f2009ba/56d0e2c622482e09ee7d6032/56d0e2cca3360cb25587ca98/1456530250502/LifeStle_Silver_sm.jpg?format=500w&quot;  border=0 align=right style=&quot;PADDING-LEFT: 5px&quot;&gt;My &lt;a href=&quot;http://www.linkalock.com&quot;&gt;Linka&lt;/a&gt; smart bike lock from Kickstarter showed up today. Holy Hell is this thing solid and hefty! Like for reals, this is gonna throw the balance of the bike off :)&lt;/p&gt;
+</description>
+    <pubDate>2016-10-26T10:46:09-04:00</pubDate>
+    <link>http://hunleyd.github.io/Incremental-pgBadger/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Incremental-pgBadger/</guid>
+    
+     <category>postgresql</category>
+    
+   </item>
+  
+   <item>
+    <title>I'm syndicated</title>
+    <description>&lt;p&gt;Someone at work thought it would be a good idea to give me access to the corporate blog so that I might &lt;a href=&quot;http://www.openscg.com/category/postgresql-blogs/doug-postgresql/&quot;&gt;post&lt;/a&gt; PostgreSQL-related things there and have them syndicted to &lt;a href=&quot;http://planet.postgresql.org/&quot;&gt;Planet PostgreSQL&lt;/a&gt;. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!&lt;/p&gt;
+</description>
+    <pubDate>2016-10-08T11:19:57-04:00</pubDate>
+    <link>http://hunleyd.github.io/Im-Syndicated/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Im-Syndicated/</guid>
+    
+     <category>work</category>
+    
+     <category>postgresql</category>
+    
+   </item>
+  
+   <item>
+    <title>Linka</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://static1.squarespace.com/static/5527df31e4b022b79f2009ba/56d0e2c622482e09ee7d6032/56d0e2cca3360cb25587ca98/1456530250502/LifeStle_Silver_sm.jpg?format=500w&quot;  border=0 align=right style=&quot;PADDING-LEFT: 5px&quot;&gt;My &lt;a href=&quot;http://www.linkalock.com&quot;&gt;Linka&lt;/a&gt; smart bike lock from Kickstarter showed up today. Holy Hell is this thing solid and hefty! Like for reals, this is gonna throw the balance of the bike off :)&lt;/p&gt;
 
 &lt;p&gt;I know what you&amp;#39;re thinking. A &lt;em&gt;smart&lt;/em&gt; bike lock? Why? Yeah, I know. However, even without the smart gimmicks, this is a nice self-contained bike lock. It mounts directly to the frame, is hella hefty and thick (1.6 pounds). Has a built in &amp;#39;someone is fucking with me&amp;#39; alarm (that is quite ear piercing). It&amp;#39;s made of through-hardened steel and has a square cross-section. And it doesn&amp;#39;t stick out like a sore thumb when mounted.&lt;/p&gt;
 
 &lt;p&gt;Anyway, I&amp;#39;ll edit this post later with thoughts after use.&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Welcome to Cypheri</title>
-   <link href="http://hunleyd.github.io/Welcome-to-Cypheri/"/>
-   <updated>2016-10-01T07:23:56-04:00</updated>
-   <id>http://hunleyd.github.io/Welcome-to-Cypheri</id>
-   
-    <category>general</category>
-   
-    <category>gaming</category>
-   
-   <content type="html">&lt;p&gt;&lt;img src=&quot;https://www.nationstates.net/images/flags/uploads/cypheri__561515.jpg&quot; border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;I recently discovered the online game &lt;a href=&quot;https://www.nationstates.net&quot;&gt;NationStates&lt;/a&gt; thanks to a Reddit thread and was intrigued. So I logged in, created the nation of Cypheri and then used &lt;a href=&quot;https://blogtrottr.com&quot;&gt;BlogTrottr&lt;/a&gt; to feed the RSS feed into my inbox (which allows me offline play essentially. I ignore it until I get a notice). So far, it&amp;#39;s been a neat little experience. I&amp;#39;m pretty sure if you know me well enough to be reading this blog that I know you well enough to say you&amp;#39;ll enjoy it too.&lt;/p&gt;
+</description>
+    <pubDate>2016-10-03T09:30:58-04:00</pubDate>
+    <link>http://hunleyd.github.io/Linka/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Linka/</guid>
+    
+     <category>kickstarter</category>
+    
+     <category>biking</category>
+    
+   </item>
+  
+   <item>
+    <title>Welcome to Cypheri</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://www.nationstates.net/images/flags/uploads/cypheri__561515.jpg&quot; border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;I recently discovered the online game &lt;a href=&quot;https://www.nationstates.net&quot;&gt;NationStates&lt;/a&gt; thanks to a Reddit thread and was intrigued. So I logged in, created the nation of Cypheri and then used &lt;a href=&quot;https://blogtrottr.com&quot;&gt;BlogTrottr&lt;/a&gt; to feed the RSS feed into my inbox (which allows me offline play essentially. I ignore it until I get a notice). So far, it&amp;#39;s been a neat little experience. I&amp;#39;m pretty sure if you know me well enough to be reading this blog that I know you well enough to say you&amp;#39;ll enjoy it too.&lt;/p&gt;
 
 &lt;p&gt;Without further ado, let me welcome you to the Republic of Cypheri, a left-leaning college state. Our motto is &amp;quot;strength through freedom&amp;quot;.&lt;/p&gt;
 
@@ -123,32 +115,34 @@ DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
 &lt;p&gt;The Cypherian economy, worth 251 billion dollars a year, is fairly diversified and led by the Tourism industry, with major contributions from Automobile Manufacturing, Basket Weaving, and Retail. State-owned companies are common. Average income is 35,928 dollars, and evenly distributed, with the richest citizens earning only 2.0 times as much as the poorest.&lt;/p&gt;
 
 &lt;p&gt;Thanks for visiting, we hope you enjoyed your time here!&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Functional Blog Archives</title>
-   <link href="http://hunleyd.github.io/Functional-Blog-Archives/"/>
-   <updated>2016-09-30T19:30:19-04:00</updated>
-   <id>http://hunleyd.github.io/Functional-Blog-Archives</id>
-   
-    <category>general</category>
-   
-   <content type="html">&lt;p&gt;After an afternoon dicking around with Jekyll templates and Google serching, I&amp;#39;ve fixed up this site&amp;#39;s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I&amp;#39;ve also modified the tag cloud page to fit in the archive pages&amp;#39; look an feel. It&amp;#39;s not a true tag cloud in that I don&amp;#39;t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it&amp;#39;s own page showing all posts tagged as such.&lt;/p&gt;
+</description>
+    <pubDate>2016-10-01T07:23:56-04:00</pubDate>
+    <link>http://hunleyd.github.io/Welcome-to-Cypheri/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Welcome-to-Cypheri/</guid>
+    
+     <category>general</category>
+    
+     <category>gaming</category>
+    
+   </item>
+  
+   <item>
+    <title>Functional Blog Archives</title>
+    <description>&lt;p&gt;After an afternoon dicking around with Jekyll templates and Google serching, I&amp;#39;ve fixed up this site&amp;#39;s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I&amp;#39;ve also modified the tag cloud page to fit in the archive pages&amp;#39; look an feel. It&amp;#39;s not a true tag cloud in that I don&amp;#39;t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it&amp;#39;s own page showing all posts tagged as such.&lt;/p&gt;
 
 &lt;p&gt;So, yeah. Enjoy, or something.&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Where Not To Put Your Tablespaces</title>
-   <link href="http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces/"/>
-   <updated>2016-08-24T07:55:12-04:00</updated>
-   <id>http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces</id>
-   
-    <category>postgresql</category>
-   
-   <content type="html">&lt;p&gt;From the PostgreSQL &lt;a href=&quot;https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html&quot;&gt;docs&lt;/a&gt;:&lt;/p&gt;
+</description>
+    <pubDate>2016-09-30T19:30:19-04:00</pubDate>
+    <link>http://hunleyd.github.io/Functional-Blog-Archives/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Functional-Blog-Archives/</guid>
+    
+     <category>general</category>
+    
+   </item>
+  
+   <item>
+    <title>Where Not To Put Your Tablespaces</title>
+    <description>&lt;p&gt;From the PostgreSQL &lt;a href=&quot;https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html&quot;&gt;docs&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.&lt;/p&gt;
@@ -208,50 +202,46 @@ doug.hunley ~ $
 &lt;p&gt;And &lt;em&gt;boom&lt;/em&gt; you&amp;#39;ve just deleted your tablespaces off disk. Congratulations!&lt;/p&gt;
 
 &lt;p&gt;So there you have it. Two very good reasons to not create tablespaces inside $PGDATA. Please, don&amp;#39;t do this. Everyone who admins that cluster going forward will thank you.&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Making use of gists</title>
-   <link href="http://hunleyd.github.io/Making-use-of-gists/"/>
-   <updated>2016-06-19T11:42:19-04:00</updated>
-   <id>http://hunleyd.github.io/Making-use-of-gists</id>
-   
-    <category>general</category>
-   
-    <category>blog</category>
-   
-    <category>github</category>
-   
-   <content type="html">&lt;p&gt;&lt;img src=&quot;https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png&quot; align=right border=0 width=218 height=59&gt; After stumbling upon an example of how to do so, I&amp;#39;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I&amp;#39;ve chosen that platform for hosting my blog, right? :)&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Happy 20th Birthday, PostgreSQL</title>
-   <link href="http://hunleyd.github.io/Happy-20th-PostgreSQL/"/>
-   <updated>2016-05-12T06:11:31-04:00</updated>
-   <id>http://hunleyd.github.io/Happy-20th-PostgreSQL</id>
-   
-    <category>postgresql</category>
-   
-   <content type="html">&lt;p&gt;&lt;img src=&quot;/images/pgsql_20th.png&quot; width=200 height=200 border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;Just a quick shout out to PostgreSQL, the world&amp;#39;s most advanced open source database, as it celebrates it&amp;#39;s 20&lt;sup&gt;th&lt;/sup&gt; year in existence. Happy birthday, y&amp;#39;all!&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Smart Lock on Android N DP2</title>
-   <link href="http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2/"/>
-   <updated>2016-04-24T18:18:56-04:00</updated>
-   <id>http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2</id>
-   
-    <category>android</category>
-   
-    <category>nexus5x</category>
-   
-    <category>protip</category>
-   
-   <content type="html">&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=right style=&quot;PADDING-LEFT: 5px&quot;&gt;As mentioned in my previous &lt;a href=&quot;/Now-on-Tap-Android-N-DP2/&quot;&gt;post&lt;/a&gt; I&amp;#39;ve stumbled across two issues with the 2&lt;sup&gt;nd&lt;/sup&gt; Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won&amp;#39;t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.&lt;/p&gt;
+</description>
+    <pubDate>2016-08-24T07:55:12-04:00</pubDate>
+    <link>http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Where-Not-To-Put-Your-Tablespaces/</guid>
+    
+     <category>postgresql</category>
+    
+   </item>
+  
+   <item>
+    <title>Making use of gists</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png&quot; align=right border=0 width=218 height=59&gt; After stumbling upon an example of how to do so, I&amp;#39;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I&amp;#39;ve chosen that platform for hosting my blog, right? :)&lt;/p&gt;
+</description>
+    <pubDate>2016-06-19T11:42:19-04:00</pubDate>
+    <link>http://hunleyd.github.io/Making-use-of-gists/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Making-use-of-gists/</guid>
+    
+     <category>general</category>
+    
+     <category>blog</category>
+    
+     <category>github</category>
+    
+   </item>
+  
+   <item>
+    <title>Happy 20th Birthday, PostgreSQL</title>
+    <description>&lt;p&gt;&lt;img src=&quot;/images/pgsql_20th.png&quot; width=200 height=200 border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;Just a quick shout out to PostgreSQL, the world&amp;#39;s most advanced open source database, as it celebrates it&amp;#39;s 20&lt;sup&gt;th&lt;/sup&gt; year in existence. Happy birthday, y&amp;#39;all!&lt;/p&gt;
+</description>
+    <pubDate>2016-05-12T06:11:31-04:00</pubDate>
+    <link>http://hunleyd.github.io/Happy-20th-PostgreSQL/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Happy-20th-PostgreSQL/</guid>
+    
+     <category>postgresql</category>
+    
+   </item>
+  
+   <item>
+    <title>Smart Lock on Android N DP2</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=right style=&quot;PADDING-LEFT: 5px&quot;&gt;As mentioned in my previous &lt;a href=&quot;/Now-on-Tap-Android-N-DP2/&quot;&gt;post&lt;/a&gt; I&amp;#39;ve stumbled across two issues with the 2&lt;sup&gt;nd&lt;/sup&gt; Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won&amp;#39;t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.&lt;/p&gt;
 
 &lt;p&gt;I was immediately aware of &lt;em&gt;some&lt;/em&gt; kind of issue since the phone didn&amp;#39;t prompt me to setup Smaet Lock after pairing the watch. So I went into the Android Settings app, then Security, and went to tap on Smart Lock only to find it &lt;em&gt;gone&lt;/em&gt;. Thinking maybe Google had moved it somewherre else, I used the new &amp;#39;search Settings&amp;#39; feature and searched for Smart Lock, Lock, and Smart. None of them tuened up what I was looking for! After some Googling, I had enough clues to figure out what had happened to the option and how to restore it. &lt;/p&gt;
 
@@ -266,22 +256,22 @@ doug.hunley ~ $
 &lt;/ul&gt;
 
 &lt;p&gt;Now, when ypou back button to the Security settings, the Smart Lock option will be restored and function like before. I dont know wtf &amp;#39;unset&amp;#39; it as a Trust Agent provider in DP2 or why, but there you go.&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>Now on Tap on Android N DP2</title>
-   <link href="http://hunleyd.github.io/Now-on-Tap-Android-N-DP2/"/>
-   <updated>2016-04-24T17:53:06-04:00</updated>
-   <id>http://hunleyd.github.io/Now-on-Tap-Android-N-DP2</id>
-   
-    <category>android</category>
-   
-    <category>nexus5x</category>
-   
-    <category>protip</category>
-   
-   <content type="html">&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program. And for the most part, it&amp;#39;s worked really well for me. I &lt;em&gt;really&lt;/em&gt; like Android N so far and can&amp;#39;t wait for the final release. However, after updating from Developer Preview 1 (DP1) to Developer Preview 2 (DP2) via OTA, I noticed two small issues. The first issue is that I could not, for the life of me, get Now On Tap to enable even though it was previously enabled on DP1.&lt;/p&gt;
+</description>
+    <pubDate>2016-04-24T18:18:56-04:00</pubDate>
+    <link>http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2/</guid>
+    
+     <category>android</category>
+    
+     <category>nexus5x</category>
+    
+     <category>protip</category>
+    
+   </item>
+  
+   <item>
+    <title>Now on Tap on Android N DP2</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program. And for the most part, it&amp;#39;s worked really well for me. I &lt;em&gt;really&lt;/em&gt; like Android N so far and can&amp;#39;t wait for the final release. However, after updating from Developer Preview 1 (DP1) to Developer Preview 2 (DP2) via OTA, I noticed two small issues. The first issue is that I could not, for the life of me, get Now On Tap to enable even though it was previously enabled on DP1.&lt;/p&gt;
 
 &lt;p&gt;I&amp;#39;m happy to report that I figured out, and I thought I&amp;#39;d share it in case anyone else has run this issue and was stumped. Just to be clear, if you open the Google app, then go into Settings, and then into Now on Tap, there&amp;#39;s a toggle. Simply flipping it is &lt;em&gt;supposed&lt;/em&gt; to be enough to turn it on. But in my case, the toggle would &lt;em&gt;not&lt;/em&gt; flip on. It was permanently flipped to off.&lt;/p&gt;
 
@@ -297,7 +287,18 @@ doug.hunley ~ $
 &lt;/ul&gt;
 
 &lt;p&gt;Once you&amp;#39;ve done this, you&amp;#39;ll find that you can enable Now on Tap through the normal toggle.&lt;/p&gt;
-</content>
- </entry>
- 
-</feed>
+</description>
+    <pubDate>2016-04-24T17:53:06-04:00</pubDate>
+    <link>http://hunleyd.github.io/Now-on-Tap-Android-N-DP2/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Now-on-Tap-Android-N-DP2/</guid>
+    
+     <category>android</category>
+    
+     <category>nexus5x</category>
+    
+     <category>protip</category>
+    
+   </item>
+  
+ </channel>
+</rss>
