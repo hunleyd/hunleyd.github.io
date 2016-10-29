@@ -5,7 +5,7 @@
   <description>Doug's various musings</description>
   <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io</link>
-  <updated>2016-10-28T21:37:39-04:00</updated>
+  <updated>2016-10-29T17:47:12-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -54,7 +54,10 @@ DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
 [======================&amp;gt;  ] Parsed 413815537 bytes of 433543395 (95.45%), queries
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-&lt;p&gt;As you can see, it jumps right in at 95% of the file and only processes the newest 5%. In fact, this takes a mere &lt;code&gt;statistics gathering took:20 wallclock secs (19.44 usr +  0.17 sys = 19.61 CPU)&lt;/code&gt; on my overloaded Macbook!&lt;/p&gt;
+&lt;p&gt;As you can see, it jumps right in at 95% of the file and only processes the newest 5%. In fact, this takes a mere 20 seconds:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;statistics gathering took:20 wallclock secs (19.44 usr +  0.17 sys = 19.61 CPU)
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;on my overloaded Macbook!&lt;/p&gt;
 
 &lt;p&gt;So there you have it. Not counting the time it takes you to &lt;code&gt;ssh&lt;/code&gt; to your server, it would have taken all of &lt;em&gt;20 seconds&lt;/em&gt; to have an updated report of what just happened on your database!&lt;/p&gt;
 

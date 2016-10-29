@@ -97,7 +97,10 @@ DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
 [======================&gt;  ] Parsed 413815537 bytes of 433543395 (95.45%), queries
 ...
 </code></pre></figure>
-<p>As you can see, it jumps right in at 95% of the file and only processes the newest 5%. In fact, this takes a mere <code>statistics gathering took:20 wallclock secs (19.44 usr +  0.17 sys = 19.61 CPU)</code> on my overloaded Macbook!</p>
+<p>As you can see, it jumps right in at 95% of the file and only processes the newest 5%. In fact, this takes a mere 20 seconds:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">statistics gathering took:20 wallclock secs (19.44 usr +  0.17 sys = 19.61 CPU)
+</code></pre></figure>
+<p>on my overloaded Macbook!</p>
 
 <p>So there you have it. Not counting the time it takes you to <code>ssh</code> to your server, it would have taken all of <em>20 seconds</em> to have an updated report of what just happened on your database!</p>
 
