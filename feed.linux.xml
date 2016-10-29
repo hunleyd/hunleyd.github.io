@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title> - linux</title>
+  <description>Posts tagged as 'linux'</description>
+  <atom:link href="http://hunleyd.github.io/feed.linux.xml" rel="self" type="application/rss+xml" />
+  <link>http://hunleyd.github.io/tag/linux/</link>
+  <updated>2016-10-28T21:34:51-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>Glutton for Punishment</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.theshell.guru/wp-content/uploads/2015/12/osx-logo3.png&quot; border=0 align=right&gt;I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing. As you probably know, I spent a lot of time and effort on the previous mbp to get &lt;a href=&quot;http://www.gentoo.org&quot;&gt;Gentoo&lt;/a&gt; up and running on it. I chose &lt;em&gt;not&lt;/em&gt; to do so with this one.&lt;/p&gt;
+
+&lt;p&gt;While I have looked into it and believe that I could get Gentoo up and running fairly easily, I&amp;#39;ve decided to skip it for now and try to live with OSX. I travel for work and never know what I&amp;#39;m going to be asked to do when onsite. Sometimes I have to present things on a projector while other times the customer only has 5Ghz wifi available. And thanks to the proprietary nature of these machines, these features are either non-functional or sub-optimal under Linux. I&amp;#39;m also getting tired of our IT staff telling me Linux isn&amp;#39;t supported whenever I have an issue, even if that issue clearly doesn&amp;#39;t have anything to do with the OS. And several other minor annoyances that have added up over my three yrs tenure here.&lt;/p&gt;
+
+&lt;p&gt;So, yeah. I&amp;#39;ve decided to sign up for the pain of staying in OSX. So far, I think I&amp;#39;ve managed to coerce the system into a &amp;#39;feel-alike&amp;#39; of my prior KDE 5 Plasma environment but it&amp;#39;s taken a lot of tweaking and Googling and setting of magic CLI commands to get OSX to do my bidding. And I&amp;#39;ve had to buy more than a few apps to get functionality that I got for free on Linux, which chaps my ass.&lt;/p&gt;
+
+&lt;p&gt;So we&amp;#39;ll see how this lasts. Or doesn&amp;#39;t.&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Glutton-for-punishment/ </link>
+    <pubDate>2016-02-29T05:14:50-05:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Glutton-for-punishment/</guid>
+   </item>
+  
+ </channel>
+</rss>

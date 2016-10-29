@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title> - general</title>
+  <description>Posts tagged as 'general'</description>
+  <atom:link href="http://hunleyd.github.io/feed.general.xml" rel="self" type="application/rss+xml" />
+  <link>http://hunleyd.github.io/tag/general/</link>
+  <updated>2016-10-28T21:34:51-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>Welcome to Cypheri</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://www.nationstates.net/images/flags/uploads/cypheri__561515.jpg&quot; border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;I recently discovered the online game &lt;a href=&quot;https://www.nationstates.net&quot;&gt;NationStates&lt;/a&gt; thanks to a Reddit thread and was intrigued. So I logged in, created the nation of Cypheri and then used &lt;a href=&quot;https://blogtrottr.com&quot;&gt;BlogTrottr&lt;/a&gt; to feed the RSS feed into my inbox (which allows me offline play essentially. I ignore it until I get a notice). So far, it&amp;#39;s been a neat little experience. I&amp;#39;m pretty sure if you know me well enough to be reading this blog that I know you well enough to say you&amp;#39;ll enjoy it too.&lt;/p&gt;
+
+&lt;p&gt;Without further ado, let me welcome you to the Republic of Cypheri, a left-leaning college state. Our motto is &amp;quot;strength through freedom&amp;quot;.&lt;/p&gt;
+
+&lt;p&gt;The Republic of Cypheri is a tiny, genial nation, renowned for its compulsory military service and irreverence towards religion. The compassionate population of 7 million Cypherians enjoy extensive civil freedoms, particularly in social issues, while business tends to be more regulated.&lt;/p&gt;
+
+&lt;p&gt;The large government prioritizes Education, although Welfare, Defense, and Law &amp;amp; Order are also considered important, while Spirituality and Industry are ignored. The average income tax rate is 39.8%, but much higher for the wealthy.&lt;/p&gt;
+
+&lt;p&gt;The Cypherian economy, worth 251 billion dollars a year, is fairly diversified and led by the Tourism industry, with major contributions from Automobile Manufacturing, Basket Weaving, and Retail. State-owned companies are common. Average income is 35,928 dollars, and evenly distributed, with the richest citizens earning only 2.0 times as much as the poorest.&lt;/p&gt;
+
+&lt;p&gt;Thanks for visiting, we hope you enjoyed your time here!&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Welcome-to-Cypheri/ </link>
+    <pubDate>2016-10-01T07:23:56-04:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Welcome-to-Cypheri/</guid>
+   </item>
+  
+   <item>
+    <title>Functional Blog Archives</title>
+    <description>&lt;p&gt;After an afternoon dicking around with Jekyll templates and Google serching, I&amp;#39;ve fixed up this site&amp;#39;s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I&amp;#39;ve also modified the tag cloud page to fit in the archive pages&amp;#39; look an feel. It&amp;#39;s not a true tag cloud in that I don&amp;#39;t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it&amp;#39;s own page showing all posts tagged as such.&lt;/p&gt;
+
+&lt;p&gt;So, yeah. Enjoy, or something.&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Functional-Blog-Archives/ </link>
+    <pubDate>2016-09-30T19:30:19-04:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Functional-Blog-Archives/</guid>
+   </item>
+  
+   <item>
+    <title>Making use of gists</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png&quot; align=right border=0 width=218 height=59&gt; After stumbling upon an example of how to do so, I&amp;#39;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I&amp;#39;ve chosen that platform for hosting my blog, right? :)&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Making-use-of-gists/ </link>
+    <pubDate>2016-06-19T11:42:19-04:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Making-use-of-gists/</guid>
+   </item>
+  
+   <item>
+    <title>Hello, eero</title>
+    <description>&lt;p&gt;&lt;a href=&quot;https://www.eero.com&quot;&gt;&lt;img src=&quot;https://iotlist-production.s3-us-west-2.amazonaws.com/uploads/production/post_attachment/937/file/Eero1.jpg&quot; border=0 align=left&gt;&lt;/a&gt;I don&amp;#39;t normally back things on Indiegogo (I&amp;#39;m a Kickstarter snob), but I jumped &lt;em&gt;all over&lt;/em&gt; the eero. I have always had issues with the wifi coverage in my home. I&amp;#39;ve tried everything I can think of to alleviate the issues; differernt brands of routers, flashing different OSS firmwares, &amp;#39;upgrading&amp;#39; to SOHO equipment instead of consumer equipment, moving them all over the damn house, etc. Nothing solved all the issues. Until now.&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;ve actully had the eero up and running for a while now (almost two months already) but I held off saying anything because I wanted to see if issues would crop back up or not and I wanted to get past the initial &amp;#39;cool, it works!&amp;#39; feeling. So here I am ~60 days later, and I&amp;#39;m &lt;em&gt;still&lt;/em&gt; feeling the &amp;#39;this is cool&amp;#39; feeling towards the eero.&lt;/p&gt;
+
+&lt;p&gt;I bought the triple set, put the &amp;#39;main&amp;#39; one in the basement by the cable modem, the next one on the other end of the house on the first floor, and the final one in the middle of the house on the second floor. Setup was stupid simple and hassle free. Like, Tina or Emily could have done this, simple. Once up and talking to each other, they then scanned all the wifi leakage from the neighbors and picked a channel with the least amount of interference and started handing out DHCP leases to my devices. Easy peasy.&lt;/p&gt;
+
+&lt;p&gt;Speaking of &amp;#39;my devices&amp;#39;.. here&amp;#39;s everything I&amp;#39;ve got hooked up to the eero-powered wifi:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;1 x Nest thermostat&lt;/li&gt;
+&lt;li&gt;2 x &amp;quot;smart&amp;quot; tv&lt;/li&gt;
+&lt;li&gt;1 x &amp;quot;smart&amp;quot; bluray player&lt;/li&gt;
+&lt;li&gt;1 x Nexus Player /  Android TV&lt;/li&gt;
+&lt;li&gt;1 x PS3&lt;/li&gt;
+&lt;li&gt;2 x PS4&lt;/li&gt;
+&lt;li&gt;1 x Sonos speaker&lt;/li&gt;
+&lt;li&gt;2 x Macbook Pro&lt;/li&gt;
+&lt;li&gt;2 x Android phones&lt;/li&gt;
+&lt;li&gt;3 x Android tablets&lt;/li&gt;
+&lt;li&gt;2 x iPhone&lt;/li&gt;
+&lt;li&gt;1 x iPad mini&lt;/li&gt;
+&lt;li&gt;1 x Chromebook&lt;/li&gt;
+&lt;li&gt;1 x Lenovo laptop&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, I didn&amp;#39;t make that list to impress you, or to depress myself at how much money I&amp;#39;ve spent over the years. That list is to show what&amp;#39;s connected to the eero and to show that there is a big variety of devices. Some are 2.4GHz, some 5GHz, some both. Some do jumbo frames. Some support wifi media extensions. And they all work &lt;em&gt;flawlessly&lt;/em&gt; while connected to the eero. &lt;em&gt;No matter how many are connected simultaneoussly.&lt;/em&gt; Which is the first time ever. Seriously. It works so well, I went around and &lt;em&gt;unplugged&lt;/em&gt; Ethernet from devices that had it and put them on the wifi!&lt;/p&gt;
+
+&lt;p&gt;We can have multiple Netflix streams going while playing online in an FPS while streaming music to another room while someone else is on the laptop working. And no one even notices the other users. It&amp;#39;s epic. I now actually have a valid reason for buying the most expensive upload speed my ISP offers :)&lt;/p&gt;
+
+&lt;p&gt;As for gripes? Well, of course no system is perfect. In its quest to make things stupid simple, there&amp;#39;s a lot the eero mgmt app doesn&amp;#39;t let you do. You can&amp;#39;t, for example, blacklist a MAC. Or turn off uplink for certain MACs between certain hours of the day. You can&amp;#39;t throttle certain devices. Basically, all the things nerds love to mess with that just confuse the normal consumer. And I&amp;#39;m (mostly) OK with that. I&amp;#39;m sure some of the functionality is coming in future updates, but even if it doesn&amp;#39;t, I don&amp;#39;t care. It just works. And it works well and easy enough that I can talk the wife through an issue over the phone while I&amp;#39;m on the other side of the planet.&lt;/p&gt;
+
+&lt;p&gt;I &amp;lt;3 my eero.&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Hello_eero/ </link>
+    <pubDate>2016-03-30T10:00:25-04:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Hello_eero/</guid>
+   </item>
+  
+   <item>
+    <title>Flyover State</title>
+    <description>&lt;p&gt;&lt;a href=&quot;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&quot;&gt;&lt;img src=&quot;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&quot; border=0 width=208 height=188&quot; align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;&lt;/a&gt;Being a native of Ohio, I can assure you that I&amp;#39;ve heard every form of &amp;#39;flyover state&amp;#39; insult you could care to level at me. And while I won&amp;#39;t debate the merits of Ohio in this post, I will take a minute to point out something that I&amp;#39;ve been saying for quite some time.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Ohio really is pretty centrally located to anywhere you might care to be other than the left coast.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The map I&amp;#39;ve linked to in this post shows what $50 worth of gas means to someone from Columbus, OH as far as their ability to drive anywhere. Of course, it makes an assumption about the price of gas and the car&amp;#39;s mpg (24mpg, iirc) but the point stands.&lt;/p&gt;
+
+&lt;p&gt;And this is what I&amp;#39;ve been telling my coworker a lot lately. I travel periodically for business, and whenever I do, I &lt;strong&gt;drive&lt;/strong&gt; (unless it&amp;#39;s just way too impractical). It &lt;em&gt;alway&lt;/em&gt; trips people out when I do. I&amp;#39;d much rather grab a rental car, and spend a day on my own schedule seeing the country then being crammed in like cattle and dealing with the TSA. And this image shows that I&amp;#39;m generally saving the company money as well.&lt;/p&gt;
+
+&lt;p&gt;So, you all can keep flying over. In the meantime, I&amp;#39;ll be driving around enjoying myself,&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Flyover-state/ </link>
+    <pubDate>2016-02-09T11:59:24-05:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Flyover-state/</guid>
+   </item>
+  
+   <item>
+    <title>Efficient, yet Creepy</title>
+    <description>&lt;p&gt;So I&amp;#39;m sitting here seting up a new Internet connected device I bought recently (more on it later) and I can&amp;#39;t seem to get it to setup properly. I can create an account on their site, I can login to said account, I can power on said device and connect to it using the app and configure it to use my home wifi, but the device just won&amp;#39;t ever finish connecting and syncing w/ my account on the site.&lt;/p&gt;
+
+&lt;p&gt;I try this about half a dozen times, with a few reboots and even a reset of the device in there. Still no luck. So I power it off, set it aside, and go do some things IRL thinking &amp;quot;I&amp;#39;ll come back to it&amp;quot;. Not five minutes later, I get an email on my phone from Tech Support at the device&amp;#39;s company saying thusly:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;We noticed that you are having problems adding $device to your system.
+To assist you with the process, we would like to first push a firmware
+update to your $device. Please keep your $device plugged in and we
+will take care of the rest. We will send you another email when you
+have been updated.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Now &lt;em&gt;that&amp;#39;s&lt;/em&gt; efficient. And &lt;strong&gt;super creepy&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;I kinda like it :D&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Efficient-Yet-Creepy/ </link>
+    <pubDate>2016-01-21T13:30:00-05:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Efficient-Yet-Creepy/</guid>
+   </item>
+  
+   <item>
+    <title>More Bloggy Goodness</title>
+    <description>&lt;p&gt;It&amp;#39;s been a bit of a busy day for me and my blog. I&amp;#39;ve added:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;an RSS feed&lt;/li&gt;
+&lt;li&gt;an archive&lt;/li&gt;
+&lt;li&gt;tags&lt;/li&gt;
+&lt;li&gt;Disqus comments&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All with as little effort on my part as I&amp;#39;ve &lt;em&gt;ever&lt;/em&gt; put into a blog. I &lt;strong&gt;fucking&lt;/strong&gt; love this blogging platform!&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/More-Bloggy-Goodness/ </link>
+    <pubDate>2016-01-15T20:00:00-05:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/More-Bloggy-Goodness/</guid>
+   </item>
+  
+   <item>
+    <title>Once More, With Feeling</title>
+    <description>&lt;p&gt;Welcome to the new blog.&lt;/p&gt;
+
+&lt;p&gt;That&amp;#39;s right, I&amp;#39;m running my own blog &lt;em&gt;once again&lt;/em&gt;. I know, I know. It&amp;#39;s been a while. And I&amp;#39;ve picked &lt;em&gt;yet another&lt;/em&gt; platform for hosting my blog. But you know what? You&amp;#39;re just going to have to suck it up. I&amp;#39;ve been itching to make some new posts for a while now, and the platforms at my disposal, &lt;em&gt;cough&lt;/em&gt; &lt;em&gt;G+&lt;/em&gt; &lt;em&gt;cough&lt;/em&gt;, just haven&amp;#39;t really cut it. Sure, they sorta worked, but with the recent direction that platform is headed? Forget it.&lt;/p&gt;
+
+&lt;p&gt;So then a coworker mentioned standing up &lt;em&gt;his&lt;/em&gt; new blog using &lt;a href=&quot;https://www.github.com&quot;&gt;GitHub&lt;/a&gt; and &lt;a href=&quot;https://jekyllrb.com&quot;&gt;Jekyll&lt;/a&gt; and I was blown away at how it worked. It just &lt;em&gt;so totally fit&lt;/em&gt; with my workflow and preferences. So here we are. Everything old is new again. Or something.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://www.wired.com/wp-content/uploads/2014/08/poster.jpg&quot; border=0 alt=&quot;Yeah, it's that kinda blog&quot;&gt;&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Once-More-With-Feeling/ </link>
+    <pubDate>2016-01-15T19:00:00-05:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Once-More-With-Feeling/</guid>
+   </item>
+  
+ </channel>
+</rss>

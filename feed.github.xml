@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title> - github</title>
+  <description>Posts tagged as 'github'</description>
+  <atom:link href="http://hunleyd.github.io/feed.github.xml" rel="self" type="application/rss+xml" />
+  <link>http://hunleyd.github.io/tag/github/</link>
+  <updated>2016-10-28T21:34:51-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>Making use of gists</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png&quot; align=right border=0 width=218 height=59&gt; After stumbling upon an example of how to do so, I&amp;#39;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I&amp;#39;ve chosen that platform for hosting my blog, right? :)&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Making-use-of-gists/ </link>
+    <pubDate>2016-06-19T11:42:19-04:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Making-use-of-gists/</guid>
+   </item>
+  
+ </channel>
+</rss>
