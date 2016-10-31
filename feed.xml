@@ -5,12 +5,30 @@
   <description>Doug's various musings</description>
   <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io</link>
-  <updated>2016-10-29T17:47:12-04:00</updated>
+  <updated>2016-10-31T11:35:49-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Announcing pgCMH</title>
+    <description>&lt;p&gt;&lt;img src=&quot;/images/pgCMH.png&quot; border=no align=right&gt;I&amp;#39;ve been kicking around the idea of founding a Columbus-based PostgreSQL User Group for a while now. I even went so far as to float the idea to people at &lt;a href=&quot;http://www.ohiolinux.org&quot;&gt;OLF&lt;/a&gt; in &amp;#39;14. After much hemming and hawing (and no one else stepping up in the interim), I&amp;#39;ve finally gone and done it.&lt;/p&gt;
+
+&lt;p&gt;pgCMH is the name of my newly formed group, and we&amp;#39;re good to go. We&amp;#39;ve got our own Twitter (&lt;a href=&quot;http://www.twitter.com/pgCMH&quot;&gt;@pgCMH&lt;/a&gt;) as well as our own &lt;a href=&quot;http://www.meetup.com/postgresqlCMH&quot;&gt;MeetUp&lt;/a&gt; page. We&amp;#39;ve got a sponsor providing food, and another providing the meeting location. Our first meeting will be in Jan, thanks to all the scheduling conflicts the upcoming holidays create.&lt;/p&gt;
+
+&lt;p&gt;Watch this space for updates, follow our Twitter, and join the mailing list on MeetUp. I&amp;#39;d love to get your participation and input. Let&amp;#39;s make this group as wildly successful as we can!&lt;/p&gt;
+</description>
+    <pubDate>2016-10-31T07:35:22-04:00</pubDate>
+    <link>http://hunleyd.github.io/Announcing-pgCMH/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Announcing-pgCMH/</guid>
+    
+     <category>pgcmh</category>
+    
+     <category>postgresql</category>
+    
+   </item>
   
    <item>
     <title>Incremental pgBadger</title>
@@ -263,37 +281,6 @@ doug.hunley ~ $
     <pubDate>2016-04-24T18:18:56-04:00</pubDate>
     <link>http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2/</link>
     <guid isPermaLink="true">http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2/</guid>
-    
-     <category>android</category>
-    
-     <category>nexus5x</category>
-    
-     <category>protip</category>
-    
-   </item>
-  
-   <item>
-    <title>Now on Tap on Android N DP2</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program. And for the most part, it&amp;#39;s worked really well for me. I &lt;em&gt;really&lt;/em&gt; like Android N so far and can&amp;#39;t wait for the final release. However, after updating from Developer Preview 1 (DP1) to Developer Preview 2 (DP2) via OTA, I noticed two small issues. The first issue is that I could not, for the life of me, get Now On Tap to enable even though it was previously enabled on DP1.&lt;/p&gt;
-
-&lt;p&gt;I&amp;#39;m happy to report that I figured out, and I thought I&amp;#39;d share it in case anyone else has run this issue and was stumped. Just to be clear, if you open the Google app, then go into Settings, and then into Now on Tap, there&amp;#39;s a toggle. Simply flipping it is &lt;em&gt;supposed&lt;/em&gt; to be enough to turn it on. But in my case, the toggle would &lt;em&gt;not&lt;/em&gt; flip on. It was permanently flipped to off.&lt;/p&gt;
-
-&lt;p&gt;To fix this:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;head into the Android Settings app&lt;/li&gt;
-&lt;li&gt;touch Apps&lt;/li&gt;
-&lt;li&gt;touch the gear icon on the top right corner&lt;/li&gt;
-&lt;li&gt;touch Assist &amp;amp; voice input&lt;/li&gt;
-&lt;li&gt;touch Assist App&lt;/li&gt;
-&lt;li&gt;chose Google&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Once you&amp;#39;ve done this, you&amp;#39;ll find that you can enable Now on Tap through the normal toggle.&lt;/p&gt;
-</description>
-    <pubDate>2016-04-24T17:53:06-04:00</pubDate>
-    <link>http://hunleyd.github.io/Now-on-Tap-Android-N-DP2/</link>
-    <guid isPermaLink="true">http://hunleyd.github.io/Now-on-Tap-Android-N-DP2/</guid>
     
      <category>android</category>
     

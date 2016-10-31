@@ -5,12 +5,25 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="http://hunleyd.github.io/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/postgresql/</link>
-  <updated>2016-10-29T17:47:12-04:00</updated>
+  <updated>2016-10-31T11:35:49-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Announcing pgCMH</title>
+    <description>&lt;p&gt;&lt;img src=&quot;/images/pgCMH.png&quot; border=no align=right&gt;I&amp;#39;ve been kicking around the idea of founding a Columbus-based PostgreSQL User Group for a while now. I even went so far as to float the idea to people at &lt;a href=&quot;http://www.ohiolinux.org&quot;&gt;OLF&lt;/a&gt; in &amp;#39;14. After much hemming and hawing (and no one else stepping up in the interim), I&amp;#39;ve finally gone and done it.&lt;/p&gt;
+
+&lt;p&gt;pgCMH is the name of my newly formed group, and we&amp;#39;re good to go. We&amp;#39;ve got our own Twitter (&lt;a href=&quot;http://www.twitter.com/pgCMH&quot;&gt;@pgCMH&lt;/a&gt;) as well as our own &lt;a href=&quot;http://www.meetup.com/postgresqlCMH&quot;&gt;MeetUp&lt;/a&gt; page. We&amp;#39;ve got a sponsor providing food, and another providing the meeting location. Our first meeting will be in Jan, thanks to all the scheduling conflicts the upcoming holidays create.&lt;/p&gt;
+
+&lt;p&gt;Watch this space for updates, follow our Twitter, and join the mailing list on MeetUp. I&amp;#39;d love to get your participation and input. Let&amp;#39;s make this group as wildly successful as we can!&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Announcing-pgCMH/ </link>
+    <pubDate>2016-10-31T07:35:22-04:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Announcing-pgCMH/</guid>
+   </item>
   
    <item>
     <title>Incremental pgBadger</title>
