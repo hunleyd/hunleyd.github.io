@@ -5,7 +5,7 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="http://hunleyd.github.io/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/postgresql/</link>
-  <updated>2016-11-01T19:03:03-04:00</updated>
+  <updated>2016-11-01T19:12:34-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -18,7 +18,8 @@
 
 &lt;p&gt;pgCMH is the name of my newly formed group, and we&amp;#39;re good to go. We&amp;#39;ve got our own Twitter (&lt;a href=&quot;http://www.twitter.com/pgCMH&quot;&gt;@pgCMH&lt;/a&gt;)&lt;/p&gt;
 
-&lt;p&gt;https://twitter.com/pgCMH/status/791654418731065344&lt;/p&gt;
+&lt;div class='jekyll-twitter-plugin'&gt;&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://twitter.com/hashtag/PostgreSQL?src=hash&quot;&gt;#PostgreSQL&lt;/a&gt; 9.6.1, 9.5.5, 9.4.10, 9.3.15, 9.2.19 and 9.1.24 Released! &lt;a href=&quot;https://t.co/RH27To33gh&quot;&gt;https://t.co/RH27To33gh&lt;/a&gt;&lt;/p&gt;&amp;mdash; pgCMH (@pgCMH) &lt;a href=&quot;https://twitter.com/pgCMH/status/791654418731065344&quot;&gt;October 27, 2016&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;&lt;/div&gt;
 
 &lt;p&gt;as well as our own &lt;a href=&quot;http://www.meetup.com/postgresCMH&quot;&gt;MeetUp&lt;/a&gt; page. We&amp;#39;ve got a sponsor providing food, and another providing the meeting location. Our first meeting will be in Jan, thanks to all the scheduling conflicts the upcoming holidays create.&lt;/p&gt;
 
