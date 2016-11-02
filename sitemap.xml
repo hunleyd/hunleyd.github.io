@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://hunleyd.github.io/Mi-Box/</loc>
+<lastmod>2016-11-02T06:27:55-04:00</lastmod>
+</url>
+<url>
 <loc>http://hunleyd.github.io/Announcing-pgCMH/</loc>
 <lastmod>2016-10-31T07:35:22-04:00</lastmod>
 </url>
@@ -162,5 +166,9 @@
 </url>
 <url>
 <loc>http://hunleyd.github.io/tag/pgcmh/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/images/2016-10-21.html</loc>
+<lastmod>2016-11-02T09:52:18-04:00</lastmod>
 </url>
 </urlset>

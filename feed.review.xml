@@ -5,12 +5,29 @@
   <description>Posts tagged as 'review'</description>
   <atom:link href="http://hunleyd.github.io/feed.review.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/review/</link>
-  <updated>2016-11-01T19:30:23-04:00</updated>
+  <updated>2016-11-02T10:28:11-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Mi Box</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://i5.walmartimages.com/asr/a45c44b3-a6fc-465e-8231-16f42efc6347_1.474cf868352361552e656c2cfec1f962.jpeg&quot; border=0 height=200 width=200 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;I&amp;#39;m a fan of Android TV. While I didn&amp;#39;t blog about it, I ran out and bought a Nexus Player on day 1. And I loved it! OK, I loved it &lt;em&gt;more&lt;/em&gt; after the upgrade to Android 6.x, but still.&lt;/p&gt;
+
+&lt;p&gt;Well, now I&amp;#39;ve upgraded from the Nexus Player to the Mi Box. It&amp;#39;s a bit of a risk, since no one knows the upgrade history for Xiaomi, but I&amp;#39;m OK with that. Especially at a mere $70 for this thing. As much as I loved the Player, I am enjoying this device &lt;em&gt;so much more&lt;/em&gt;. It&amp;#39;s stupid fast, the remote is so much better, and I feel like I get a better picture out of it (which is silly, I don&amp;#39;t have a 4k TV so it should be the same 1080p HD picture I got from the Player).&lt;/p&gt;
+
+&lt;p&gt;This tiny little box (101 x 101 x 19.5mm) comes with an Amlogic Quad-core Cortex-A53 processor running at 2.0GHz, a Mali 450 GPU running at 750MHz, 2GB of ram, and 8GB of storage. On the back is an HDMI port, a headphone jack (why?), a power adaptor port (sadly, not a standard USB-C or MicroUSB), a single USB 2.0 port. It&amp;#39;s pretty sparse port wise, but really that&amp;#39;s all you need. There&amp;#39;s a subtly white LED on the very front of the device to show you that it&amp;#39;s powered on too. Otherwise, it&amp;#39;s just a sleek little black hockey puck sitting in my entertainment center.&lt;/p&gt;
+
+&lt;p&gt;Overall, I&amp;#39;m so pleased with this little thing that I convinced Stephanie to buy one, gave my Player to Tina, and I&amp;#39;m considering buying one of these for Emily when she moves out.&lt;/p&gt;
+
+&lt;p&gt;&amp;#9733;&amp;#9733;&amp;#9733;&amp;#9733;&amp;#9734;&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Mi-Box/ </link>
+    <pubDate>2016-11-02T06:27:55-04:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Mi-Box/</guid>
+   </item>
   
    <item>
     <title>Huawei Watch Review</title>

@@ -5,12 +5,34 @@
   <description>Doug's various musings</description>
   <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io</link>
-  <updated>2016-11-01T19:30:23-04:00</updated>
+  <updated>2016-11-02T10:28:11-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Mi Box</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://i5.walmartimages.com/asr/a45c44b3-a6fc-465e-8231-16f42efc6347_1.474cf868352361552e656c2cfec1f962.jpeg&quot; border=0 height=200 width=200 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;I&amp;#39;m a fan of Android TV. While I didn&amp;#39;t blog about it, I ran out and bought a Nexus Player on day 1. And I loved it! OK, I loved it &lt;em&gt;more&lt;/em&gt; after the upgrade to Android 6.x, but still.&lt;/p&gt;
+
+&lt;p&gt;Well, now I&amp;#39;ve upgraded from the Nexus Player to the Mi Box. It&amp;#39;s a bit of a risk, since no one knows the upgrade history for Xiaomi, but I&amp;#39;m OK with that. Especially at a mere $70 for this thing. As much as I loved the Player, I am enjoying this device &lt;em&gt;so much more&lt;/em&gt;. It&amp;#39;s stupid fast, the remote is so much better, and I feel like I get a better picture out of it (which is silly, I don&amp;#39;t have a 4k TV so it should be the same 1080p HD picture I got from the Player).&lt;/p&gt;
+
+&lt;p&gt;This tiny little box (101 x 101 x 19.5mm) comes with an Amlogic Quad-core Cortex-A53 processor running at 2.0GHz, a Mali 450 GPU running at 750MHz, 2GB of ram, and 8GB of storage. On the back is an HDMI port, a headphone jack (why?), a power adaptor port (sadly, not a standard USB-C or MicroUSB), a single USB 2.0 port. It&amp;#39;s pretty sparse port wise, but really that&amp;#39;s all you need. There&amp;#39;s a subtly white LED on the very front of the device to show you that it&amp;#39;s powered on too. Otherwise, it&amp;#39;s just a sleek little black hockey puck sitting in my entertainment center.&lt;/p&gt;
+
+&lt;p&gt;Overall, I&amp;#39;m so pleased with this little thing that I convinced Stephanie to buy one, gave my Player to Tina, and I&amp;#39;m considering buying one of these for Emily when she moves out.&lt;/p&gt;
+
+&lt;p&gt;&amp;#9733;&amp;#9733;&amp;#9733;&amp;#9733;&amp;#9734;&lt;/p&gt;
+</description>
+    <pubDate>2016-11-02T06:27:55-04:00</pubDate>
+    <link>http://hunleyd.github.io/Mi-Box/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Mi-Box/</guid>
+    
+     <category>android</category>
+    
+     <category>review</category>
+    
+   </item>
   
    <item>
     <title>Announcing pgCMH</title>
@@ -262,36 +284,6 @@ doug.hunley ~ $
     <guid isPermaLink="true">http://hunleyd.github.io/Happy-20th-PostgreSQL/</guid>
     
      <category>postgresql</category>
-    
-   </item>
-  
-   <item>
-    <title>Smart Lock on Android N DP2</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; border=0 width=240 height=240 align=right style=&quot;PADDING-LEFT: 5px&quot;&gt;As mentioned in my previous &lt;a href=&quot;/Now-on-Tap-Android-N-DP2/&quot;&gt;post&lt;/a&gt; I&amp;#39;ve stumbled across two issues with the 2&lt;sup&gt;nd&lt;/sup&gt; Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won&amp;#39;t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.&lt;/p&gt;
-
-&lt;p&gt;I was immediately aware of &lt;em&gt;some&lt;/em&gt; kind of issue since the phone didn&amp;#39;t prompt me to setup Smaet Lock after pairing the watch. So I went into the Android Settings app, then Security, and went to tap on Smart Lock only to find it &lt;em&gt;gone&lt;/em&gt;. Thinking maybe Google had moved it somewherre else, I used the new &amp;#39;search Settings&amp;#39; feature and searched for Smart Lock, Lock, and Smart. None of them tuened up what I was looking for! After some Googling, I had enough clues to figure out what had happened to the option and how to restore it. &lt;/p&gt;
-
-&lt;p&gt;To restore Smart Lock to the Security tab of the Settings app, do this:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;open the Android Settings app&lt;/li&gt;
-&lt;li&gt;tap Security&lt;/li&gt;
-&lt;li&gt;scroll down to the Advanced section&lt;/li&gt;
-&lt;li&gt;tap Trust Agents&lt;/li&gt;
-&lt;li&gt;toggle Smart Lock (Google)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now, when ypou back button to the Security settings, the Smart Lock option will be restored and function like before. I dont know wtf &amp;#39;unset&amp;#39; it as a Trust Agent provider in DP2 or why, but there you go.&lt;/p&gt;
-</description>
-    <pubDate>2016-04-24T18:18:56-04:00</pubDate>
-    <link>http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2/</link>
-    <guid isPermaLink="true">http://hunleyd.github.io/Smart-Lock-on-Android-N-DP2/</guid>
-    
-     <category>android</category>
-    
-     <category>nexus5x</category>
-    
-     <category>protip</category>
     
    </item>
   
