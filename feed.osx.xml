@@ -5,12 +5,68 @@
   <description>Posts tagged as 'osx'</description>
   <atom:link href="http://hunleyd.github.io/feed.osx.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/osx/</link>
-  <updated>2016-11-03T11:47:13-04:00</updated>
+  <updated>2016-11-04T13:30:15-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>PostgreSQL, Homebrew, and You</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;If you need to install &lt;a href=&quot;http://www.posatgresql.org&quot;&gt;PostgreSQL&lt;/a&gt; onto your Macbook, you have several options available to you nowadays. You could use the &lt;a href=&quot;https://bigsql.com/postgresql/installers.jsp&quot;&gt;BigSQL&lt;/a&gt; package, or you could use &lt;a href=&quot;http://postgresapp.com&quot;&gt;Postgres.app&lt;/a&gt;, or several others. However, if you&amp;#39;re a geek running OSX, you&amp;#39;ve probably already installed &lt;a href=&quot;http://brew.sh&quot;&gt;Homebrew&lt;/a&gt; and it has a wonderful PostgreSQL package. So let&amp;#39;s use it, shall we?&lt;/p&gt;
+
+&lt;p&gt;I&amp;#39;m not going to walk you through installing Homebrew, so let&amp;#39;s just assume it&amp;#39;s already up and running and you&amp;#39;ve followed all the directions. At this point, you have &lt;code&gt;/usr/local/bin/&lt;/code&gt; in your &lt;code&gt;$PATH&lt;/code&gt; and &lt;code&gt;brew&lt;/code&gt; is up and running. So, let&amp;#39;s tell &lt;code&gt;brew&lt;/code&gt; to install PostgreSQL:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;doug@Douglass-MacBook-Pro ~ » brew install postgresql
+==&amp;gt; Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.4_1.sierra.b
+Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.4_1.sierra.bottle.tar.gz
+==&amp;gt; Pouring postgresql-9.5.4_1.sierra.bottle.tar.gz
+==&amp;gt; Using the sandbox
+==&amp;gt; /usr/local/Cellar/postgresql/9.5.4_1/bigsqln/initdb /usr/local/var/postgres
+==&amp;gt; Caveats
+If builds of PostgreSQL 9 are failing and you have version 8.x installed,
+you may need to remove the previous version first. See:
+  https://github.com/Homebrew/homebrew/issues/2510
+
+To migrate existing data from a previous major version (pre-9.0) of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/upgrading.html
+
+To migrate existing data from a previous minor versionn (9.0-9.4) of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
+
+  You will need your previous PostgreSQL installation from brew to perform `pg_upgrade`.
+  Do not run `brew cleanup postgresql` until you have performed the migration.
+
+To have launchd start postgresql now and restart at login:
+  brew services start postgresql
+Or, if you don&amp;#39;t want/need a background service you can just run:
+  pg_ctl -D /usr/local/var/postgres start
+==&amp;gt; Summary
+🍺  /usr/local/Cellar/postgresql/9.5.4_1: 3,147 files, 35M
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;As you can see, it downloaded the package, installed the binaries, and ran &lt;code&gt;initdb&lt;/code&gt; for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;doug@Douglass-MacBook-Pro ~ » brew services start postgresql
+==&amp;gt; Successfully started `postgresql` (label: homebrew.mxcl.postgresql)
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;And if you check your process listing, you can see that the cluster is up and running under your id:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;doug@Douglass-MacBook-Pro ~ » ps -efw|grep postgres
+  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres -D /usr/local/var/postgres
+  501  6817  6808   0 11:03AM ??         0:00.00 postgres: logger process
+  501  6819  6808   0 11:03AM ??         0:00.00 postgres: checkpointer process
+  501  6820  6808   0 11:03AM ??         0:00.00 postgres: writer process
+  501  6821  6808   0 11:03AM ??         0:00.00 postgres: wal writer process
+  501  6822  6808   0 11:03AM ??         0:00.00 postgres: autovacuum launcher process
+  501  6823  6808   0 11:03AM ??         0:00.00 postgres: stats collector process
+doug@Douglass-MacBook-Pro ~ »
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;And just like that, you have PostgreSQL installed and running! Set &lt;code&gt;$PGDATA&lt;/code&gt; to &lt;code&gt;/usr/local/var/postgres&lt;/code&gt; and you&amp;#39;re all set.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/PostgreSQL-Homebrew-and-You/ </link>
+    <pubDate>2016-11-04T09:30:09-04:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/PostgreSQL-Homebrew-and-You/</guid>
+   </item>
   
    <item>
     <title>Glutton for Punishment</title>
