@@ -5,7 +5,7 @@
   <description>Posts tagged as 'osx'</description>
   <atom:link href="http://hunleyd.github.io/feed.osx.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/osx/</link>
-  <updated>2016-11-10T15:03:34-05:00</updated>
+  <updated>2016-11-10T15:07:05-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -474,7 +474,7 @@ doug@Douglass-MacBook-Pro ~ »
 &lt;p&gt;As you can see, the &lt;code&gt;ip4r&lt;/code&gt; extension was installed into my PostgreSQL 9.4 instance.&lt;/p&gt;
 
 &lt;p&gt;Now, you might be wondering how to deal with all these concurrent versions. If you type &lt;code&gt;pg_dump&lt;/code&gt; which one willl you get? How can you force it to use a specific version? Right now, you won&amp;#39;t get any version, since it&amp;#39;s not in your path. You will need to specify exactly what you want:&lt;/p&gt;
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
 psql (PostgreSQL) 9.6.1
 doug@Douglass-MacBook-Pro ~ »
 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
@@ -490,7 +490,7 @@ function pg()
 &lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;and then simply call &lt;code&gt;pg 9.5&lt;/code&gt; to set PostgreSQL 9.5 as your &amp;#39;active&amp;#39; instance:&lt;/p&gt;
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;doug@Douglass-MacBook-Pro ~ » pg 9.5
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;doug@Douglass-MacBook-Pro ~ » pg 9.5
 Linking /usr/local/Cellar/postgresql-9.5/9.5.5... 5484 symlinks created
 doug@Douglass-MacBook-Pro ~ » psql --version
 psql (PostgreSQL) 9.5.5

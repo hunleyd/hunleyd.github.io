@@ -517,7 +517,7 @@ doug@Douglass-MacBook-Pro ~ »
 <p>As you can see, the <code>ip4r</code> extension was installed into my PostgreSQL 9.4 instance.</p>
 
 <p>Now, you might be wondering how to deal with all these concurrent versions. If you type <code>pg_dump</code> which one willl you get? How can you force it to use a specific version? Right now, you won&#39;t get any version, since it&#39;s not in your path. You will need to specify exactly what you want:</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text">doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
 psql (PostgreSQL) 9.6.1
 doug@Douglass-MacBook-Pro ~ »
 </code></pre></figure>
@@ -533,7 +533,7 @@ function pg()
 </code></pre></noscript><script src="https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js"> </script></p>
 
 <p>and then simply call <code>pg 9.5</code> to set PostgreSQL 9.5 as your &#39;active&#39; instance:</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text">doug@Douglass-MacBook-Pro ~ » pg 9.5
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">doug@Douglass-MacBook-Pro ~ » pg 9.5
 Linking /usr/local/Cellar/postgresql-9.5/9.5.5... 5484 symlinks created
 doug@Douglass-MacBook-Pro ~ » psql --version
 psql (PostgreSQL) 9.5.5
