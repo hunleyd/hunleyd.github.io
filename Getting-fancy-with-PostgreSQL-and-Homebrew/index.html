@@ -448,7 +448,7 @@ doug@Douglass-MacBook-Pro ~ »</pre></noscript><script src="https://gist.github.
 
 <p>and you get all the extensions that are in &#39;contrib&#39; as well. However, if you find that you need to install another extension, I advocate using <code>pex</code>. You would install it like this:</p>
 
-<p><noscript><pre>```bash
+<p><noscript><pre>```text
 doug@Douglass-MacBook-Pro ~ » brew install pex
 ==&gt; Installing dependencies for pex: postgresql
 ==&gt; Installing pex dependency: postgresql
@@ -494,7 +494,7 @@ doug@Douglass-MacBook-Pro ~ »
 
 <p>Sadly, it will reinstall the default PostgreSQL brew recipe, but we&#39;ll simply pretend that it&#39;s not there going forward. Once installed, use <code>pex</code> like so:</p>
 
-<p><noscript><pre>```
+<p><noscript><pre>```bash
 doug@Douglass-MacBook-Pro ~ » pex -g /usr/local/opt/postgresql-9.4 install ip4r
 ==&gt; Downloading ip4r from https://github.com/RhodiumToad/ip4r/archive/2.0.3.tar.gz</p>
 
@@ -523,23 +523,56 @@ doug@Douglass-MacBook-Pro ~ »
 </code></pre></figure>
 <p>which is a huge pita. So, let&#39;s make a little convenience function in our shell. Edit your <code>.zshrc</code> or your <code>.bashrc</code> (or whatever) and add a function like this:</p>
 
-<p><noscript><pre><code>bash
-function pg()
-{
-  maj=$(echo ${1}|cut -d. -f1)
-  min=$(echo ${1}|cut -d. -f2)
-  brew link --force --overwrite postgresql-${maj}.${min}
+<p><noscript><pre>```bash
+    function pg()
+    {
+      ver=$1</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">  for i in /usr/local/var/postgres/*
+  do
+    running_ver=$(basename ${i})
+    is_running=$(ps -few|egrep -- &amp;quot;[p]ostgres.*-D.*${running_ver}&amp;quot;)
+    if [[ ! -z ${is_running} ]] ; then
+      echo -n &amp;quot;Stopping PostgreSQL ${running_ver}... &amp;quot;
+      /usr/local/opt/postgresql-${running_ver}/bin/pg_ctl \
+        -D $i stop -mf &amp;amp;&amp;gt;/dev/null
+      echo &amp;quot;done!&amp;quot;
+    fi
+  done
+
+  echo -n &amp;quot;Activating PostgreSQL ${ver}... &amp;quot;
+  brew unlink --force --overwrite postgresql-${ver} &amp;amp;&amp;gt;/dev/null
+  brew link --force --overwrite postgresql-${ver} &amp;amp;&amp;gt;/dev/null
+  echo &amp;quot;done!&amp;quot;
+
+  export PGDATA=/usr/local/var/postgres/${ver}
+
+  if [[ ! -d ${PGDATA} ]] ; then
+    echo -n &amp;quot;Initializing PostgreSQL ${ver} cluster... &amp;quot;
+    mkdir ${PGDATA}
+    initdb -k ${PGDATA} &amp;amp;&amp;gt;/dev/null || initdb ${PGDATA} &amp;amp;&amp;gt;/dev/null
+    echo &amp;quot;done!&amp;quot;
+  fi
+  echo -n &amp;quot;Starting PostgreSQL ${ver}... &amp;quot;
+  pg_ctl -D ${PGDATA} start &amp;amp;&amp;gt;/dev/null
+  echo &amp;quot;done!&amp;quot;
 }
-</code></pre></noscript><script src="https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js"> </script></p>
+</code></pre></figure>
+<p>```</pre></noscript><script src="https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js"> </script></p>
 
 <p>and then simply call <code>pg 9.5</code> to set PostgreSQL 9.5 as your &#39;active&#39; instance:</p>
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash">doug@Douglass-MacBook-Pro ~ » pg 9.5
-Linking /usr/local/Cellar/postgresql-9.5/9.5.5... 5484 symlinks created
-doug@Douglass-MacBook-Pro ~ » psql --version
-psql (PostgreSQL) 9.5.5
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">oug@Douglass-MacBook-Pro ~ » pg 9.5
+Stopping PostgreSQL 9.4... done!
+Activating PostgreSQL 9.5... done!
+Initializing PostgreSQL 9.5 cluster... done!
+Starting PostgreSQL 9.5... done!
 doug@Douglass-MacBook-Pro ~ »
 </code></pre></figure>
-<p>And there you be. Ain&#39;t it beautiful? :)</p>
+<p>Restore your data:</p>
+
+<p><noscript><pre>404: Not Found
+</pre></noscript><script src="https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js"> </script></p>
+
+<p>and there you be. Ain&#39;t it beautiful? :)</p>
 
   </div>
 

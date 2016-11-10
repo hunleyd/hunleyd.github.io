@@ -5,7 +5,7 @@
   <description>Doug's various musings</description>
   <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io</link>
-  <updated>2016-11-10T15:07:05-05:00</updated>
+  <updated>2016-11-10T17:55:23-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -405,7 +405,7 @@ doug@Douglass-MacBook-Pro ~ »&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;
 
 &lt;p&gt;and you get all the extensions that are in &amp;#39;contrib&amp;#39; as well. However, if you find that you need to install another extension, I advocate using &lt;code&gt;pex&lt;/code&gt;. You would install it like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```bash
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```text
 doug@Douglass-MacBook-Pro ~ » brew install pex
 ==&amp;gt; Installing dependencies for pex: postgresql
 ==&amp;gt; Installing pex dependency: postgresql
@@ -451,7 +451,7 @@ doug@Douglass-MacBook-Pro ~ »
 
 &lt;p&gt;Sadly, it will reinstall the default PostgreSQL brew recipe, but we&amp;#39;ll simply pretend that it&amp;#39;s not there going forward. Once installed, use &lt;code&gt;pex&lt;/code&gt; like so:&lt;/p&gt;
 
-&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```bash
 doug@Douglass-MacBook-Pro ~ » pex -g /usr/local/opt/postgresql-9.4 install ip4r
 ==&amp;gt; Downloading ip4r from https://github.com/RhodiumToad/ip4r/archive/2.0.3.tar.gz&lt;/p&gt;
 
@@ -480,23 +480,56 @@ doug@Douglass-MacBook-Pro ~ »
 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;which is a huge pita. So, let&amp;#39;s make a little convenience function in our shell. Edit your &lt;code&gt;.zshrc&lt;/code&gt; or your &lt;code&gt;.bashrc&lt;/code&gt; (or whatever) and add a function like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-function pg()
-{
-  maj=$(echo ${1}|cut -d. -f1)
-  min=$(echo ${1}|cut -d. -f2)
-  brew link --force --overwrite postgresql-${maj}.${min}
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```bash
+    function pg()
+    {
+      ver=$1&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;  for i in /usr/local/var/postgres/*
+  do
+    running_ver=$(basename ${i})
+    is_running=$(ps -few|egrep -- &amp;amp;quot;[p]ostgres.*-D.*${running_ver}&amp;amp;quot;)
+    if [[ ! -z ${is_running} ]] ; then
+      echo -n &amp;amp;quot;Stopping PostgreSQL ${running_ver}... &amp;amp;quot;
+      /usr/local/opt/postgresql-${running_ver}/bin/pg_ctl \
+        -D $i stop -mf &amp;amp;amp;&amp;amp;gt;/dev/null
+      echo &amp;amp;quot;done!&amp;amp;quot;
+    fi
+  done
+
+  echo -n &amp;amp;quot;Activating PostgreSQL ${ver}... &amp;amp;quot;
+  brew unlink --force --overwrite postgresql-${ver} &amp;amp;amp;&amp;amp;gt;/dev/null
+  brew link --force --overwrite postgresql-${ver} &amp;amp;amp;&amp;amp;gt;/dev/null
+  echo &amp;amp;quot;done!&amp;amp;quot;
+
+  export PGDATA=/usr/local/var/postgres/${ver}
+
+  if [[ ! -d ${PGDATA} ]] ; then
+    echo -n &amp;amp;quot;Initializing PostgreSQL ${ver} cluster... &amp;amp;quot;
+    mkdir ${PGDATA}
+    initdb -k ${PGDATA} &amp;amp;amp;&amp;amp;gt;/dev/null || initdb ${PGDATA} &amp;amp;amp;&amp;amp;gt;/dev/null
+    echo &amp;amp;quot;done!&amp;amp;quot;
+  fi
+  echo -n &amp;amp;quot;Starting PostgreSQL ${ver}... &amp;amp;quot;
+  pg_ctl -D ${PGDATA} start &amp;amp;amp;&amp;amp;gt;/dev/null
+  echo &amp;amp;quot;done!&amp;amp;quot;
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;```&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;and then simply call &lt;code&gt;pg 9.5&lt;/code&gt; to set PostgreSQL 9.5 as your &amp;#39;active&amp;#39; instance:&lt;/p&gt;
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;doug@Douglass-MacBook-Pro ~ » pg 9.5
-Linking /usr/local/Cellar/postgresql-9.5/9.5.5... 5484 symlinks created
-doug@Douglass-MacBook-Pro ~ » psql --version
-psql (PostgreSQL) 9.5.5
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;oug@Douglass-MacBook-Pro ~ » pg 9.5
+Stopping PostgreSQL 9.4... done!
+Activating PostgreSQL 9.5... done!
+Initializing PostgreSQL 9.5 cluster... done!
+Starting PostgreSQL 9.5... done!
 doug@Douglass-MacBook-Pro ~ »
 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-&lt;p&gt;And there you be. Ain&amp;#39;t it beautiful? :)&lt;/p&gt;
+&lt;p&gt;Restore your data:&lt;/p&gt;
+
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;404: Not Found
+&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;and there you be. Ain&amp;#39;t it beautiful? :)&lt;/p&gt;
 </description>
     <pubDate>2016-11-10T09:58:15-05:00</pubDate>
     <link>http://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/</link>
