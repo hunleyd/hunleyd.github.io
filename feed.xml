@@ -5,7 +5,7 @@
   <description>Doug's various musings</description>
   <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io</link>
-  <updated>2016-11-10T14:58:19-05:00</updated>
+  <updated>2016-11-10T15:03:34-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -106,7 +106,7 @@ Tapped 38 formulae (103 files, 121.4K)
 ==&amp;gt; Caveats
 This formula is keg-only, which means it was not symlinked into /usr/local.&lt;/p&gt;
 
-&lt;p&gt;macOS provides the BSD gettext library and some software gets confused if   ↪\  both are in the library path.&lt;/p&gt;
+&lt;p&gt;macOS provides the BSD gettext library and some software gets confused if both are in the library path.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
 own software and it requires this formula, you&amp;#39;ll need to add to your
