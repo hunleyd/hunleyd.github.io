@@ -5,12 +5,46 @@
   <description>Doug's various musings</description>
   <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io</link>
-  <updated>2016-11-10T17:55:23-05:00</updated>
+  <updated>2016-11-15T10:51:05-05:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Routing email through GMail on OSX</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.postfix.org/mysza.gif&quot; border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;Like most geeks, I have scripts that I&amp;#39;ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I&amp;#39;m going to commit the steps here for my future self to reference :)&lt;/p&gt;
+
+&lt;p&gt;The first thing we&amp;#39;re going to do is open an iTerm and &lt;code&gt;sudo -i&lt;/code&gt; to become root. Then we&amp;#39;re going to &lt;code&gt;vi /etc/postfix/main.cf&lt;/code&gt; and we&amp;#39;re going to add/set the following:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;myhostname = smtp.gmail.com
+relayhost = [smtp.gmail.com]:587
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps= hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_sasl_mechanism_filter = plain
+smtp_use_tls = yes
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an &amp;#39;app password&amp;#39;. Once I have that password in hand, we &lt;code&gt;vi /etc/postfix/sasl_passwd&lt;/code&gt; and add:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;[smtp.gmail.com]:587 username@gmail.com:app_passwd
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;Secure that file by running &lt;code&gt;chmod 0600 /etc/postfix/sasl_passwd&lt;/code&gt; and then have Postfix hash it by doing &lt;code&gt;postmap /etc/postfix/sasl_passwd&lt;/code&gt;. Finally, restart Postfix:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;launchctl stop org.postfix.master
+launchctl start org.postfix.master
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;And everything should work.&lt;/p&gt;
+</description>
+    <pubDate>2016-11-15T05:51:00-05:00</pubDate>
+    <link>http://hunleyd.github.io/Routing-email-through-GMail-on-OSX/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/Routing-email-through-GMail-on-OSX/</guid>
+    
+     <category>osx</category>
+    
+     <category>geek</category>
+    
+     <category>computers</category>
+    
+   </item>
   
    <item>
     <title>Getting fancy with PostgreSQL and Homebrew</title>
@@ -81,7 +115,7 @@ doug@Douglass-MacBook-Pro ~ »
 
 &lt;p&gt;As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let&amp;#39;s install the supported versions:&lt;/p&gt;
 
-&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```text
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```bash
 doug@Douglass-MacBook-Pro ~ »
 doug@Douglass-MacBook-Pro ~ » for i in $(seq 2 6)
 \ do
@@ -109,7 +143,7 @@ This formula is keg-only, which means it was not symlinked into /usr/local.&lt;/
 &lt;p&gt;macOS provides the BSD gettext library and some software gets confused if both are in the library path.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&amp;#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;LDFLAGS:  -L/usr/local/opt/gettext/lib
 CPPFLAGS: -I/usr/local/opt/gettext/include
@@ -129,7 +163,7 @@ This formula is keg-only, which means it was not symlinked into /usr/local.&lt;/
 parallel can cause all kinds of trouble.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&amp;#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;LDFLAGS:  -L/usr/local/opt/openldap/lib
 CPPFLAGS: -I/usr/local/opt/openldap/include
@@ -176,7 +210,7 @@ This formula is keg-only, which means it was not symlinked into /usr/local.&lt;/
 &lt;p&gt;Tk installs some X11 headers and OS X provides an (older) Tcl/Tk.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&amp;#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;LDFLAGS:  -L/usr/local/opt/tcl-tk/lib
 CPPFLAGS: -I/usr/local/opt/tcl-tk/include
@@ -213,7 +247,7 @@ To use this PostgreSQL installation, do one or more of the following:&lt;/p&gt;
 &lt;p&gt;The different provided versions of PostgreSQL conflict with each other.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&amp;#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;LDFLAGS:  -L/usr/local/opt/postgresql-9.2/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.2/include
@@ -255,7 +289,7 @@ To use this PostgreSQL installation, do one or more of the following:&lt;/p&gt;
 &lt;p&gt;The different provided versions of PostgreSQL conflict with each other.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&amp;#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;LDFLAGS:  -L/usr/local/opt/postgresql-9.3/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.3/include
@@ -274,10 +308,10 @@ PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.3/lib/pkgconfig
 ==&amp;gt; Caveats
 This formula is keg-only, which means it was not symlinked into /usr/local.&lt;/p&gt;
 
-&lt;p&gt;This brew installs several commands which override macOS-provided file      ↪\  system commands.&lt;/p&gt;
+&lt;p&gt;This brew installs several commands which override macOS-provided file system commands.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&amp;#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;LDFLAGS:  -L/usr/local/opt/e2fsprogs/lib
 CPPFLAGS: -I/usr/local/opt/e2fsprogs/include
@@ -312,7 +346,7 @@ To use this PostgreSQL installation, do one or more of the following:&lt;/p&gt;
 &lt;p&gt;The different provided versions of PostgreSQL conflict with each other.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&amp;#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;LDFLAGS:  -L/usr/local/opt/postgresql-9.4/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.4/include
@@ -347,7 +381,7 @@ To use this PostgreSQL installation, do one or more of the following:&lt;/p&gt;
 &lt;p&gt;The different provided versions of PostgreSQL conflict with each other.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&amp;#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;LDFLAGS:  -L/usr/local/opt/postgresql-9.5/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.5/include
@@ -382,7 +416,7 @@ To use this PostgreSQL installation, do one or more of the following:&lt;/p&gt;
 &lt;p&gt;The different provided versions of PostgreSQL conflict with each other.&lt;/p&gt;
 
 &lt;p&gt;Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&amp;#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;LDFLAGS:  -L/usr/local/opt/postgresql-9.6/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.6/include
@@ -405,7 +439,7 @@ doug@Douglass-MacBook-Pro ~ »&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;
 
 &lt;p&gt;and you get all the extensions that are in &amp;#39;contrib&amp;#39; as well. However, if you find that you need to install another extension, I advocate using &lt;code&gt;pex&lt;/code&gt;. You would install it like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```text
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```bash
 doug@Douglass-MacBook-Pro ~ » brew install pex
 ==&amp;gt; Installing dependencies for pex: postgresql
 ==&amp;gt; Installing pex dependency: postgresql
@@ -429,7 +463,7 @@ you may need to remove the previous version first. See:
    Do not run &lt;code&gt;brew cleanup postgresql&lt;/code&gt; until you have performed the migration.                                                                  1
 To have launchd start postgresql now and restart at login:
   brew services start postgresql
-Or, if you don&amp;#39;t want/need a background service you can just run:
+Or, if you do not want/need a background service you can just run:
   pg_ctl -D /usr/local/var/postgres start
 ==&amp;gt; Summary
 🍺   /usr/local/Cellar/postgresql/9.5.5: 3,154 files, 35.1M
@@ -440,7 +474,7 @@ Or, if you don&amp;#39;t want/need a background service you can just run:
 
 &lt;p&gt;==&amp;gt; Pouring pex-1.20140409.sierra.bottle.tar.gz
 ==&amp;gt; Caveats
-If installing for the first time, perform the following in order to setup   ↪\  the necessary directory structure:
+If installing for the first time, perform the following in order to setup the necessary directory structure:
   pex init
 ==&amp;gt; Summary
 🍺   /usr/local/Cellar/pex/1.20140409: 5 files, 31.6K
@@ -784,20 +818,6 @@ DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
      <category>general</category>
     
      <category>gaming</category>
-    
-   </item>
-  
-   <item>
-    <title>Functional Blog Archives</title>
-    <description>&lt;p&gt;After an afternoon dicking around with Jekyll templates and Google serching, I&amp;#39;ve fixed up this site&amp;#39;s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I&amp;#39;ve also modified the tag cloud page to fit in the archive pages&amp;#39; look an feel. It&amp;#39;s not a true tag cloud in that I don&amp;#39;t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it&amp;#39;s own page showing all posts tagged as such.&lt;/p&gt;
-
-&lt;p&gt;So, yeah. Enjoy, or something.&lt;/p&gt;
-</description>
-    <pubDate>2016-09-30T19:30:19-04:00</pubDate>
-    <link>http://hunleyd.github.io/Functional-Blog-Archives/</link>
-    <guid isPermaLink="true">http://hunleyd.github.io/Functional-Blog-Archives/</guid>
-    
-     <category>general</category>
     
    </item>
   

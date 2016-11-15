@@ -124,7 +124,7 @@ doug@Douglass-MacBook-Pro ~ »
 
 <p>As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let&#39;s install the supported versions:</p>
 
-<p><noscript><pre>```text
+<p><noscript><pre>```bash
 doug@Douglass-MacBook-Pro ~ »
 doug@Douglass-MacBook-Pro ~ » for i in $(seq 2 6)
 \ do
@@ -152,7 +152,7 @@ This formula is keg-only, which means it was not symlinked into /usr/local.</p>
 <p>macOS provides the BSD gettext library and some software gets confused if both are in the library path.</p>
 
 <p>Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:</p>
 <figure class="highlight"><pre><code class="language-text" data-lang="text">LDFLAGS:  -L/usr/local/opt/gettext/lib
 CPPFLAGS: -I/usr/local/opt/gettext/include
@@ -172,7 +172,7 @@ This formula is keg-only, which means it was not symlinked into /usr/local.</p>
 parallel can cause all kinds of trouble.</p>
 
 <p>Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:</p>
 <figure class="highlight"><pre><code class="language-text" data-lang="text">LDFLAGS:  -L/usr/local/opt/openldap/lib
 CPPFLAGS: -I/usr/local/opt/openldap/include
@@ -219,7 +219,7 @@ This formula is keg-only, which means it was not symlinked into /usr/local.</p>
 <p>Tk installs some X11 headers and OS X provides an (older) Tcl/Tk.</p>
 
 <p>Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:</p>
 <figure class="highlight"><pre><code class="language-text" data-lang="text">LDFLAGS:  -L/usr/local/opt/tcl-tk/lib
 CPPFLAGS: -I/usr/local/opt/tcl-tk/include
@@ -256,7 +256,7 @@ To use this PostgreSQL installation, do one or more of the following:</p>
 <p>The different provided versions of PostgreSQL conflict with each other.</p>
 
 <p>Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:</p>
 <figure class="highlight"><pre><code class="language-text" data-lang="text">LDFLAGS:  -L/usr/local/opt/postgresql-9.2/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.2/include
@@ -298,7 +298,7 @@ To use this PostgreSQL installation, do one or more of the following:</p>
 <p>The different provided versions of PostgreSQL conflict with each other.</p>
 
 <p>Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:</p>
 <figure class="highlight"><pre><code class="language-text" data-lang="text">LDFLAGS:  -L/usr/local/opt/postgresql-9.3/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.3/include
@@ -317,10 +317,10 @@ PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.3/lib/pkgconfig
 ==&gt; Caveats
 This formula is keg-only, which means it was not symlinked into /usr/local.</p>
 
-<p>This brew installs several commands which override macOS-provided file      ↪\  system commands.</p>
+<p>This brew installs several commands which override macOS-provided file system commands.</p>
 
 <p>Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:</p>
 <figure class="highlight"><pre><code class="language-text" data-lang="text">LDFLAGS:  -L/usr/local/opt/e2fsprogs/lib
 CPPFLAGS: -I/usr/local/opt/e2fsprogs/include
@@ -355,7 +355,7 @@ To use this PostgreSQL installation, do one or more of the following:</p>
 <p>The different provided versions of PostgreSQL conflict with each other.</p>
 
 <p>Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:</p>
 <figure class="highlight"><pre><code class="language-text" data-lang="text">LDFLAGS:  -L/usr/local/opt/postgresql-9.4/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.4/include
@@ -390,7 +390,7 @@ To use this PostgreSQL installation, do one or more of the following:</p>
 <p>The different provided versions of PostgreSQL conflict with each other.</p>
 
 <p>Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:</p>
 <figure class="highlight"><pre><code class="language-text" data-lang="text">LDFLAGS:  -L/usr/local/opt/postgresql-9.5/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.5/include
@@ -425,7 +425,7 @@ To use this PostgreSQL installation, do one or more of the following:</p>
 <p>The different provided versions of PostgreSQL conflict with each other.</p>
 
 <p>Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you&#39;ll need to add to your
+own software and it requires this formula, you will need to add to your
 build variables:</p>
 <figure class="highlight"><pre><code class="language-text" data-lang="text">LDFLAGS:  -L/usr/local/opt/postgresql-9.6/lib
 CPPFLAGS: -I/usr/local/opt/postgresql-9.6/include
@@ -448,7 +448,7 @@ doug@Douglass-MacBook-Pro ~ »</pre></noscript><script src="https://gist.github.
 
 <p>and you get all the extensions that are in &#39;contrib&#39; as well. However, if you find that you need to install another extension, I advocate using <code>pex</code>. You would install it like this:</p>
 
-<p><noscript><pre>```text
+<p><noscript><pre>```bash
 doug@Douglass-MacBook-Pro ~ » brew install pex
 ==&gt; Installing dependencies for pex: postgresql
 ==&gt; Installing pex dependency: postgresql
@@ -472,7 +472,7 @@ you may need to remove the previous version first. See:
    Do not run <code>brew cleanup postgresql</code> until you have performed the migration.                                                                  1
 To have launchd start postgresql now and restart at login:
   brew services start postgresql
-Or, if you don&#39;t want/need a background service you can just run:
+Or, if you do not want/need a background service you can just run:
   pg_ctl -D /usr/local/var/postgres start
 ==&gt; Summary
 🍺   /usr/local/Cellar/postgresql/9.5.5: 3,154 files, 35.1M
@@ -483,7 +483,7 @@ Or, if you don&#39;t want/need a background service you can just run:
 
 <p>==&gt; Pouring pex-1.20140409.sierra.bottle.tar.gz
 ==&gt; Caveats
-If installing for the first time, perform the following in order to setup   ↪\  the necessary directory structure:
+If installing for the first time, perform the following in order to setup the necessary directory structure:
   pex init
 ==&gt; Summary
 🍺   /usr/local/Cellar/pex/1.20140409: 5 files, 31.6K

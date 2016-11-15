@@ -5,12 +5,39 @@
   <description>Posts tagged as 'computers'</description>
   <atom:link href="http://hunleyd.github.io/feed.computers.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/computers/</link>
-  <updated>2016-11-10T17:55:23-05:00</updated>
+  <updated>2016-11-15T10:51:05-05:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Routing email through GMail on OSX</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.postfix.org/mysza.gif&quot; border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot;&gt;Like most geeks, I have scripts that I&amp;#39;ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I&amp;#39;m going to commit the steps here for my future self to reference :)&lt;/p&gt;
+
+&lt;p&gt;The first thing we&amp;#39;re going to do is open an iTerm and &lt;code&gt;sudo -i&lt;/code&gt; to become root. Then we&amp;#39;re going to &lt;code&gt;vi /etc/postfix/main.cf&lt;/code&gt; and we&amp;#39;re going to add/set the following:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;myhostname = smtp.gmail.com
+relayhost = [smtp.gmail.com]:587
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps= hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_sasl_mechanism_filter = plain
+smtp_use_tls = yes
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an &amp;#39;app password&amp;#39;. Once I have that password in hand, we &lt;code&gt;vi /etc/postfix/sasl_passwd&lt;/code&gt; and add:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-conf&quot; data-lang=&quot;conf&quot;&gt;[smtp.gmail.com]:587 username@gmail.com:app_passwd
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;Secure that file by running &lt;code&gt;chmod 0600 /etc/postfix/sasl_passwd&lt;/code&gt; and then have Postfix hash it by doing &lt;code&gt;postmap /etc/postfix/sasl_passwd&lt;/code&gt;. Finally, restart Postfix:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;launchctl stop org.postfix.master
+launchctl start org.postfix.master
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;And everything should work.&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Routing-email-through-GMail-on-OSX/ </link>
+    <pubDate>2016-11-15T05:51:00-05:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Routing-email-through-GMail-on-OSX/</guid>
+   </item>
   
    <item>
     <title>Glutton for Punishment</title>
