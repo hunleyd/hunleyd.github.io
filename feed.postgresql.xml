@@ -5,12 +5,151 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="http://hunleyd.github.io/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/postgresql/</link>
-  <updated>2016-11-15T10:51:05-05:00</updated>
+  <updated>2016-11-16T13:45:31-05:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Managing multiple PostgreSQL installs via Homebrew</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; border=0 align=right style=&quot;PADDING-LEFT: 5px&quot;&gt;Following on from &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;this&lt;/a&gt; post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I&amp;#39;m back with a full-fledged shell script to help manage all this. Without further ado, the script:&lt;/p&gt;
+
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;#!/bin/sh&lt;/p&gt;
+
+&lt;p&gt;wanted&lt;em&gt;ver=$1
+no&lt;/em&gt;restart=&lt;/p&gt;
+
+&lt;h1&gt;is the version requested installed?&lt;/h1&gt;
+
+&lt;p&gt;brew ls --version postgresql-${wanted&lt;em&gt;ver} &amp;amp;&amp;gt;/dev/null
+if [[ $? -eq 0 ]] ; then
+  # yes, carry on
+  :
+else
+  # nope, so install it
+  echo -n &amp;quot;Installing PostgreSQL ${wanted&lt;/em&gt;ver}... &amp;quot;
+  brew install postgresql-${wanted_ver} &amp;amp;&amp;gt;/tmp/brew.out
+  if [[ $? -eq 0 ]] ; then
+    echo &amp;quot;done&amp;quot;
+  else
+    echo &amp;quot;FAILED!&amp;quot;
+    cat /tmp/brew.out
+    exit
+fi&lt;/p&gt;
+
+&lt;h1&gt;is postgresql is running?&lt;/h1&gt;
+
+&lt;p&gt;for i in /usr/local/var/postgres/*
+do
+  check&lt;em&gt;ver=$(basename ${i})
+  is&lt;/em&gt;running=$(ps -few | egrep -- &amp;quot;[p]ostgres.&lt;em&gt;-D.&lt;/em&gt;${check_ver}&amp;quot;)&lt;/p&gt;
+
+&lt;p&gt;if [[ -z ${is&lt;em&gt;running} ]] ; then
+    # nope, carry on
+    :
+  else
+    # it is. is it the requested version?
+    if [[ &amp;quot;${wanted&lt;/em&gt;ver}&amp;quot; = &amp;quot;${check&lt;em&gt;ver}&amp;quot; ]] ; then
+      # yup, carry on
+      no&lt;/em&gt;restart=t
+    else
+      # nope, so kill it
+      echo -n &amp;quot;Stopping PostgreSQL ${check&lt;em&gt;ver}... &amp;quot;
+      /usr/local/opt/postgresql-${check&lt;/em&gt;ver}/bin/pg&lt;em&gt;ctl -D /usr/local/var/postgres/${check&lt;/em&gt;ver} stop -w -mf &amp;amp;&amp;gt;/tmp/stop.out
+      if [[ $? -eq 0 ]] ; then
+        echo &amp;quot;done!&amp;quot;
+      else
+        echo &amp;quot;FAILED!&amp;quot;
+        cat /tmp/stop.out
+      fi
+    fi
+  fi
+done&lt;/p&gt;
+
+&lt;h1&gt;what version is active?&lt;/h1&gt;
+
+&lt;p&gt;active_ver=$(/usr/bin/stat -f %Y /usr/local/bin/psql | cut -d\/ -f3 | cut -d- -f2)&lt;/p&gt;
+
+&lt;h1&gt;is the active version the requested version?&lt;/h1&gt;
+
+&lt;p&gt;if [[ &amp;quot;${active&lt;em&gt;ver}&amp;quot; = &amp;quot;${wanted&lt;/em&gt;ver}&amp;quot; ]] ; then
+  # yup, carry on
+  :
+else
+  # nope, so deactivate it
+  echo -n &amp;quot;Deactivating PostgreSQL ${active&lt;em&gt;ver}... &amp;quot;
+  brew unlink --force --overwrite postgresql-${active&lt;/em&gt;ver} &amp;amp;&amp;gt;/dev/null
+  echo &amp;quot;done!&amp;quot;
+  # and activate the correct version
+  echo -n &amp;quot;Activating PostgreSQL ${wanted&lt;em&gt;ver}... &amp;quot;
+  brew link --force --overwrite postgresql-${wanted&lt;/em&gt;ver} &amp;amp;&amp;gt;/dev/null
+  echo &amp;quot;done!&amp;quot;
+fi&lt;/p&gt;
+
+&lt;h1&gt;point to the correct data dir&lt;/h1&gt;
+
+&lt;p&gt;export PGDATA=/usr/local/var/postgres/${wanted_ver}&lt;/p&gt;
+
+&lt;h1&gt;should we be starting a cluster?&lt;/h1&gt;
+
+&lt;p&gt;if [[ &amp;quot;${no&lt;em&gt;restart}&amp;quot; = &amp;quot;t&amp;quot; ]] ; then
+  # nope, carry on
+  :
+else
+  # yup. has the cluster been initialized?
+  if [[ ! -d ${PGDATA} ]] ; then
+    # nope, so let&amp;#39;s do that
+    echo -n &amp;quot;Initializing PostgreSQL ${wanted&lt;/em&gt;ver} cluster... &amp;quot;
+    mkdir ${PGDATA}
+    initdb -k ${PGDATA} &amp;amp;&amp;gt;/dev/null || initdb ${PGDATA} &amp;amp;&amp;gt;/dev/null
+    echo &amp;quot;done!&amp;quot;
+  else
+    # yup, carry on
+    :
+  fi
+  # start the cluster
+  echo -n &amp;quot;Starting PostgreSQL ${wanted&lt;em&gt;ver}... &amp;quot;
+  pg&lt;/em&gt;ctl -D ${PGDATA} start &amp;amp;&amp;gt;/tmp/postmaster.out
+  if [[ $? -eq 0 ]] ; then
+    echo &amp;quot;done!&amp;quot;
+  else
+    echo &amp;quot;FAILED!&amp;quot;
+    cat /tmp/postmaster.out
+  fi
+  ret=1
+  while [[ ${ret} -eq 1 ]]
+  do
+    # wait for the cluster to be available before exiting
+    pg_isready -q
+    ret=$?
+  done
+fi&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;But what does it do? It&amp;#39;s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;doug@Douglass-MacBook-Pro ~ » pg 9.6
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;and then the script does the following:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;checks if the requested version is installed, and installs it if not&lt;/li&gt;
+&lt;li&gt;checks if another version of PostgreSQL is running, and stops it&lt;/li&gt;
+&lt;li&gt;checks if another version is linked as the active version, and unlinks it&lt;/li&gt;
+&lt;li&gt;links the requested version as the active version&lt;/li&gt;
+&lt;li&gt;sets PGDATA to point to the requested version&amp;#39;s data cluster&lt;/li&gt;
+&lt;li&gt;does an &lt;code&gt;initdb&lt;/code&gt; for the requested version if needed&lt;/li&gt;
+&lt;li&gt;starts the requested version&amp;#39;s cluster&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I&amp;#39;ll be the first to admit that the script could use additional work, but it&amp;#39;s functional enough to start using today. As I continue to improve the script, I&amp;#39;ll update the gist with those changes, so check back every so often.&lt;/p&gt;
+
+&lt;p&gt;Enjoy.&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Managing-multiple-PostgreSQL-installs-via-Homebrew/ </link>
+    <pubDate>2016-11-16T08:45:27-05:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Managing-multiple-PostgreSQL-installs-via-Homebrew/</guid>
+   </item>
   
    <item>
     <title>Getting fancy with PostgreSQL and Homebrew</title>
@@ -798,163 +937,6 @@ CREATE TABLE child1 (
     <link>http://hunleyd.github.io/PostgresQL-Partitioning-Quick-Tip/ </link>
     <pubDate>2016-04-21T05:25:32-04:00</pubDate>
     <guid isPermaLink="true">http://hunleyd.github.io/PostgresQL-Partitioning-Quick-Tip/</guid>
-   </item>
-  
-   <item>
-    <title>Logical Replication with Skytools3</title>
-    <description>&lt;p&gt;&lt;img src=&quot;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&quot; width=225 height=225 border=0 align=left&gt; UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it &lt;a href=&quot;https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;I recently had to do a &lt;em&gt;near-zero downtime&lt;/em&gt; upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&amp;#39;t use streaming replication because of the change in major version (and because it&amp;#39;s simply not present in 8.x), so that left me looking at &lt;em&gt;logical replication&lt;/em&gt; options. Usually, everyone else would be thinking Slony right here. I&amp;#39;ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.&lt;/p&gt;
-
-&lt;p&gt;Londiste is part of the Skytools suite, originally developed by Skype back when they were a &amp;#39;no central node&amp;#39; setup. As such, the thing was literally born to be &amp;quot;master-master&amp;quot; and assumes nodes come and go at will, so it&amp;#39;s got all the tools to handle bringing nodes up/down, marking them active/inactive, catching them up, etc. It&amp;#39;s written in Python, and uses plain text ini files for configuration.&lt;/p&gt;
-
-&lt;p&gt;There&amp;#39;s really only two hurdles that I found with using Londiste. First is that if you can&amp;#39;t get the rpms from the &lt;a href=&quot;http://yum.postgresql.org&quot;&gt;PGDG Yum Repo&lt;/a&gt; you&amp;#39;re looking at compiling from Git. And second, the online documentation for it is hard to find, hard to follow, and practically no one has used it so you can&amp;#39;t ask RandomPostgresPerson for help.&lt;/p&gt;
-
-&lt;p&gt;Which is exactly why I&amp;#39;m writing this blog post. Here&amp;#39;s what I needed to get me through the migration in question. I hope it helps you, should you consider using Londiste for your own replication needs. To whit:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;sql
-SELECT
-n.nspname as schema,
-c.relname as table
-FROM
-pg_class c
-JOIN
-pg_namespace n
-ON
-n.oid = c.relnamespace
-WHERE
-c.relkind = &amp;amp;#39;r&amp;amp;#39;
-AND NOT EXISTS (
-SELECT
-    1
-FROM
-    pg_constraint con
-WHERE
-    con.conrelid = c.oid
-AND
-    con.contype = &amp;amp;#39;p&amp;amp;#39;
-)
-AND n.nspname &amp;amp;lt;&amp;amp;gt; ALL (
-ARRAY [
-    &amp;amp;#39;pg_catalog&amp;amp;#39;,
-    &amp;amp;#39;sys&amp;amp;#39;,
-    &amp;amp;#39;dbo&amp;amp;#39;,
-    &amp;amp;#39;information_schema&amp;amp;#39;
-]
-);
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/94d1096767e154486dbfe8dd47f48275.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we&amp;#39;re done, right? You can use &lt;code&gt;pg_dumpall -g&lt;/code&gt; on the PostgreSQL 8.4.x to get a listing of roles.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I &lt;em&gt;think&lt;/em&gt; you can actually get Londiste to do this for you as part of the replication, but I couldn&amp;#39;t find anything online for sure, and I didn&amp;#39;t have time to add more experimentation here (we&amp;#39;re on the customer&amp;#39;s dime here, remember). So, use &lt;code&gt;pg_dump&lt;/code&gt; over the network and pipe it to &lt;code&gt;pg_restore&lt;/code&gt; to transfer the schema thusly:
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-pg_dump \
--Fc \
--C \
--S \
--h IPofOldServer \
--U postgres \
-myapp | \
-pg_restore \
--d template1 \
--v \
--C \
--e \
--s
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-yum -y install \
-skytools-94 \
-skytools-94-modules
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Install Skytools from source on the PostgreSQL 8.4.x server:
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-yum -y install \
-python-devel \
-asciidoc \
-xmlto \
-postgresql-devel
-git clone git://github.com/markokr/skytools.git
-cd skytools
-git submodule init
-git submodule update
-./autogen.sh
-./configure
-make
-make install
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Restart the PostgreSQL 8.4.x cluster to load the new libs and modules&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Now we configure the Londiste ticker. Note, we have &lt;em&gt;trust&lt;/em&gt; setup for the postgres user in &lt;code&gt;pg_hba.conf&lt;/code&gt; so there is no password= in the connection strings. Adjust to meet your setup:
-&lt;noscript&gt;&lt;pre&gt;```bash
-mkdir -pv ~postgres/londiste-config/{log,pid}
-cd ~postgres/londiste-config
-cat &amp;lt;&amp;lt; EOF &amp;gt; ticker.ini
-[pgqd]
-base&lt;em&gt;connstr = user=postgres host=IPofOldServer
-database&lt;/em&gt;list = myapp
-logfile = log/ticker.log
-pidfile = pid/ticker.pid
-EOF&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Start up the ticker, to provide the replication &amp;quot;heartbeat&amp;quot; by running &lt;code&gt;pgqd -d ticker.ini&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Check the &lt;code&gt;ticker.log&lt;/code&gt; to ensure there are no warnings or errors! You can stop the ticker with &lt;code&gt;pgqd -s ticker.ini&lt;/code&gt; while you fix things.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-cd ~postgres/londiste-config
-cat &amp;amp;lt;&amp;amp;lt; EOF &amp;amp;gt; master.ini
-[londiste3]
-db = user=postgres host=IPofOldServer dbname=myapp
-queue_name = myappq
-loop_delay = 0.5
-logfile = log/master.log
-pidfile = pid/master.pid
-EOF
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;We have to actually create the master node as the root node by doing:
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-londiste3 \
-master.ini \
-create-root \
-master &amp;amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;amp;#39;
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde1.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Check the master.log to see if you have a line like &lt;code&gt;INFO Node &amp;quot;master&amp;quot; initialized for queue &amp;quot;myappq&amp;quot; with type &amp;quot;root&amp;quot;&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Now, spin up the master&amp;#39;s replication worker process by running &lt;code&gt;londiste3 -d master.ini worker&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Next, we configure our slave node (same note applies about the lack of password in the connection string):
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-cd ~postgres/londiste-config
-cat &amp;amp;lt;&amp;amp;lt; EOF &amp;amp;gt; slave.ini
-[londiste3]
-db = user=postgres host=127.0.0.1 dbname=myapp
-queue_name = myappq
-loop_delay = 0.5
-logfile = log/slave.log
-pidfile = pid/slave.pid
-EOF
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Like the master, we have to create the slave node. I created it as a &lt;code&gt;leaf&lt;/code&gt; but I could have created it as a &lt;code&gt;branch&lt;/code&gt; if we we&amp;#39;re going to cascade replication:
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;bash
-londiste3 \
-slave.ini \
-create-leaf slave &amp;amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;amp;#39; \
---provider=&amp;amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;amp;#39;
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Check the slave.log to see if you have the line &lt;code&gt;INFO Node &amp;quot;slave&amp;quot; initialized for queue &amp;quot;myappq&amp;quot; with type &amp;quot;branch&amp;quot;&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Spin up the slave&amp;#39;s replication worker process by running &lt;code&gt;londiste3 -d slave.ini worker&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Tell the master node that we want to replicate all the tables in the db (&lt;code&gt;londiste3 master.ini add-table --all&lt;/code&gt;) as well as all the sequences (&lt;code&gt;londiste3 master.ini add-seq --all&lt;/code&gt;). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to &lt;code&gt;londiste3 master.ini add-table tablename&lt;/code&gt; to add them to replication. Ditto for new sequences.&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;For the slave node, also replicate all the tables (&lt;code&gt;londiste3 slave.ini add-table --all&lt;/code&gt;) and all the sequences (&lt;code&gt;londiste3 slave.ini add-seq --all&lt;/code&gt;). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to &lt;code&gt;londiste3 slave.ini add-table tablename&lt;/code&gt; to add them to replication. Ditto for new sequences.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&amp;#39;s all you need to do.&lt;/p&gt;
-
-&lt;p&gt;But what about the data that was already in the master db? You don&amp;#39;t need to do anything. It&amp;#39;s already replicating. You can forcibly tell Londiste to &amp;#39;catch things up&amp;#39; by doing &lt;code&gt;londiste3 slave.ini resync --all&lt;/code&gt; if you like though.&lt;/p&gt;
-
-&lt;p&gt;If you want to check on the replication at any point, simply issue &lt;code&gt;londiste3 slave.ini status&lt;/code&gt; or to be more pedantic &lt;code&gt;londiste3 slave.ini compare&lt;/code&gt; which will examine row counts and md5sums between master and slave.&lt;/p&gt;
-
-&lt;p&gt;Enjoy your new cross-version logical replication!&lt;/p&gt;
-</description>
-    <link>http://hunleyd.github.io/Logical-Replication-With-Skytool3/ </link>
-    <pubDate>2016-04-19T09:55:11-04:00</pubDate>
-    <guid isPermaLink="true">http://hunleyd.github.io/Logical-Replication-With-Skytool3/</guid>
    </item>
   
  </channel>
