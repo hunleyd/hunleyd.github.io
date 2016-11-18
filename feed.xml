@@ -5,7 +5,7 @@
   <description>Doug's various musings</description>
   <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io</link>
-  <updated>2016-11-18T12:54:50-05:00</updated>
+  <updated>2016-11-18T12:55:29-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -110,8 +110,6 @@ once you start the new server, consider running:
     <guid isPermaLink="true">http://hunleyd.github.io/Upgrading-PostgreSQL-5x-faster/</guid>
     
      <category>postgresql</category>
-    
-     <category>something</category>
     
    </item>
   
