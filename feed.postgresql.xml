@@ -5,12 +5,110 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="http://hunleyd.github.io/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/postgresql/</link>
-  <updated>2016-11-16T13:45:31-05:00</updated>
+  <updated>2016-11-18T12:51:46-05:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Upgrading PostgreSQL 5x faster</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.navops.io/img/launch-samsung-1.gif&quot; border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot; height=100 width=100&gt;Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;dump / reload the data&lt;/li&gt;
+&lt;li&gt;use one of the complex logical replication tools&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thankfully, the PostgreSQL team introduced &lt;code&gt;pg_upgrade&lt;/code&gt; back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, &lt;code&gt;pg_upgrade&lt;/code&gt; is able to re-use the existing datafiles (while manipulating some catalog entries) to &amp;quot;short circuit&amp;quot; the upgrade process. While this isn&amp;#39;t (yet) a true &amp;quot;in place upgrade&amp;quot; as done by some other databases, it&amp;#39;s pretty close. And it&amp;#39;s stupid fast. In my testing on my overworked Macbook Pro, it took &lt;em&gt;1/5&lt;/em&gt; as long to upgrade as a traditional dump and reload. So, let&amp;#39;s look at this process shall we?&lt;/p&gt;
+
+&lt;p&gt;First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt; if you need to do this). We&amp;#39;re going to use &lt;code&gt;pgbench&lt;/code&gt; to create some data in our PostgreSQL 9.5 instance:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;doug@Douglass-MacBook-Pro ~/foo » pg 9.5
+doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
+doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
+doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;Now that we&amp;#39;ve got data in our cluster, we can do the dump. If this were a production instance, &lt;em&gt;this is where you&amp;#39;d have to stop your application(s)&lt;/em&gt;.&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &amp;gt; data.sql
+pg_dumpall &amp;gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;We&amp;#39;ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let&amp;#39;s restore our data to the PostgreSQL 9.6 cluster now:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;doug@Douglass-MacBook-Pro ~/foo » pg 9.6
+doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
+psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;After 37 minutes, our data is back and we can start our applications back up. &lt;em&gt;An outage of approximately 56.5 minutes&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now, let&amp;#39;s blow away our PostgreSQL 9.6 cluster and use &lt;code&gt;pg_upgrade&lt;/code&gt; to complete the same task. You would do this with the application(s) down as well!&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
+doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
+doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
+doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
+pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;And we&amp;#39;re done &lt;em&gt;in 10.5 minutes&lt;/em&gt;. It took 1/5 the outage of the dump / load method. And that&amp;#39;s on my puny dataset with my overworked laptop! Pretty impressive, no?&lt;/p&gt;
+
+&lt;p&gt;For the curious, the &lt;code&gt;pg_upgrade&lt;/code&gt; output that I omitted above for readability&amp;#39;s sake is:&lt;/p&gt;
+
+&lt;p&gt;&lt;noscript&gt;&lt;pre&gt;```&lt;/p&gt;
+
+&lt;h2&gt;Performing Consistency Checks&lt;/h2&gt;
+
+&lt;p&gt;Checking cluster versions                                   ok
+Checking database user is the install user                  ok
+Checking database connection settings                       ok
+Checking for prepared transactions                          ok
+Checking for reg* system OID user data types                ok
+Checking for contrib/isn with bigint-passing mismatch       ok
+Checking for roles starting with &amp;#39;pg_&amp;#39;                      ok
+Creating dump of global objects                             ok
+Creating dump of database schemas
+                                                            ok
+Checking for presence of required libraries                 ok
+Checking database user is the install user                  ok
+Checking for prepared transactions                          ok&lt;/p&gt;
+
+&lt;p&gt;If pg_upgrade fails after this point, you must re-initdb the
+new cluster before continuing.&lt;/p&gt;
+
+&lt;h2&gt;Performing Upgrade&lt;/h2&gt;
+
+&lt;p&gt;Analyzing all rows in the new cluster                       ok
+Freezing all rows on the new cluster                        ok
+Deleting files from new pg&lt;em&gt;clog                             ok
+Copying old pg&lt;/em&gt;clog to new server                           ok
+Setting next transaction ID and epoch for new cluster       ok
+Deleting files from new pg&lt;em&gt;multixact/offsets                ok
+Copying old pg&lt;/em&gt;multixact/offsets to new server              ok
+Deleting files from new pg&lt;em&gt;multixact/members                ok
+Copying old pg&lt;/em&gt;multixact/members to new server              ok
+Setting next multixact ID and offset for new cluster        ok
+Resetting WAL archives                                      ok
+Setting frozenxid and minmxid counters in new cluster       ok
+Restoring global objects in the new cluster                 ok
+Restoring database schemas in the new cluster
+                                                            ok
+Copying user relation files                                 ok
+Setting next OID for new cluster                            ok
+Sync data directory to disk                                 ok
+Creating script to analyze new cluster                      ok
+Creating script to delete old cluster                       ok&lt;/p&gt;
+
+&lt;h2&gt;Upgrade Complete&lt;/h2&gt;
+
+&lt;p&gt;Optimizer statistics are not transferred by pg&lt;em&gt;upgrade so,
+once you start the new server, consider running:
+    ./analyze&lt;/em&gt;new_cluster.sh&lt;/p&gt;
+
+&lt;p&gt;Running this script will delete the old cluster&amp;#39;s data files:
+    ./delete&lt;em&gt;old&lt;/em&gt;cluster.sh
+```&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/Upgrading-PostgreSQL-5x-faster/ </link>
+    <pubDate>2016-11-18T07:18:28-05:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/Upgrading-PostgreSQL-5x-faster/</guid>
+   </item>
   
    <item>
     <title>Managing multiple PostgreSQL installs via Homebrew</title>
@@ -909,34 +1007,6 @@ doug.hunley ~ $
     <link>http://hunleyd.github.io/Happy-20th-PostgreSQL/ </link>
     <pubDate>2016-05-12T06:11:31-04:00</pubDate>
     <guid isPermaLink="true">http://hunleyd.github.io/Happy-20th-PostgreSQL/</guid>
-   </item>
-  
-   <item>
-    <title>PostgreSQL Partitioning Quick Tip</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg&quot; align=right border=0&gt;Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use &lt;a href=&quot;https://github.com/keithf4/pg_partman&quot;&gt;pg_partman&lt;/a&gt; and be done with it. However, if you&amp;#39;re trying to learn, can&amp;#39;t use &lt;code&gt;pg_partman&lt;/code&gt;, or are a masochist you&amp;#39;ll probably be following the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/ddl-partitioning.html&quot;&gt;docs&lt;/a&gt; and thinking &amp;#39;seriously? i have to create indexes on each child? why don&amp;#39;t they copy the indexes of the parent? why isn&amp;#39;t this easier?&amp;#39;. Here&amp;#39;s a little tip to make things slightly easier:&lt;/p&gt;
-
-&lt;p&gt;Instead of creating your child tables like the doc says:
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;sql
-CREATE TABLE child1 (
-  CHECK (blah blah)
-) INHERITS (parent);
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/0b1f8fa43534f53046eed4e63dc54e14.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Create your child tables thusly:
-&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;sql
-CREATE TABLE child1 (
-  LIKE parent INCLUDING ALL,
-  CHECK (blah blah)
-) INHERITS (parent);
-&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;script src=&quot;https://gist.github.com/hunleyd/603c5f6961134422651e2e13b1c6398e.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;and PostgeSQL &lt;em&gt;will&lt;/em&gt; copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?&lt;/p&gt;
-
-&lt;p&gt;Enjoy.&lt;/p&gt;
-</description>
-    <link>http://hunleyd.github.io/PostgresQL-Partitioning-Quick-Tip/ </link>
-    <pubDate>2016-04-21T05:25:32-04:00</pubDate>
-    <guid isPermaLink="true">http://hunleyd.github.io/PostgresQL-Partitioning-Quick-Tip/</guid>
    </item>
   
  </channel>

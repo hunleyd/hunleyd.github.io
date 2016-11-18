@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://hunleyd.github.io/Upgrading-PostgreSQL-5x-faster/</loc>
+<lastmod>2016-11-18T07:18:28-05:00</lastmod>
+</url>
+<url>
 <loc>http://hunleyd.github.io/Managing-multiple-PostgreSQL-installs-via-Homebrew/</loc>
 <lastmod>2016-11-16T08:45:27-05:00</lastmod>
 </url>
@@ -186,5 +190,8 @@
 </url>
 <url>
 <loc>http://hunleyd.github.io/tag/pgcmh/</loc>
+</url>
+<url>
+<loc>http://hunleyd.github.io/tag/something/</loc>
 </url>
 </urlset>
