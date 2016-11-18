@@ -345,13 +345,13 @@ li.tag_list_item {
 code {
   color: #000060;
   background-color: #efefef;
+  padding: 0.5em 0 0.5em 1em;
 }
 
 .codeblock {
   background-color: #efefef;
   border: 1px solid #d3d3d3;
   display: block;
-  padding: 0.5em 0 0.5em 1em;
   line-height: 1;
   white-space: pre-wrap;
 }
