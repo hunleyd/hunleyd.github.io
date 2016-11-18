@@ -9,9 +9,9 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
 
     
-    <meta name="description" content="Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options:
+    <meta name="description" content="Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.
 " />
-    <meta property="og:description" content="Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options:
+    <meta property="og:description" content="Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.
 " />
     
     <meta name="author" content="Douglas J Hunley" />
@@ -57,12 +57,7 @@
   <div class="meta_wrapper"><time datetime="2016-11-18">November 18, 2016</time><ul class="tag_list_in_post"><li class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></li></ul></div>
 
   <div class="entry">
-    <p><img src="http://www.navops.io/img/launch-samsung-1.gif" border=0 align=left style="PADDING-RIGHT: 5px" height=150 width=150>Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options:</p>
-
-<ul>
-<li>dump / reload the data</li>
-<li>use one of the complex logical replication tools</li>
-</ul>
+    <p><img src="http://www.navops.io/img/launch-samsung-1.gif" border=0 align=left style="PADDING-RIGHT: 5px" height=100 width=100>Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
 
 <p>Thankfully, the PostgreSQL team introduced <code>pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code>pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to &quot;short circuit&quot; the upgrade process. While this isn&#39;t (yet) a true &quot;in place upgrade&quot; as done by some other databases, it&#39;s pretty close. And it&#39;s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let&#39;s look at this process shall we?</p>
 

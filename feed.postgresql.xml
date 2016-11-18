@@ -5,7 +5,7 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="http://hunleyd.github.io/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/postgresql/</link>
-  <updated>2016-11-18T13:02:42-05:00</updated>
+  <updated>2016-11-18T13:04:20-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -14,12 +14,7 @@
   
    <item>
     <title>Upgrading PostgreSQL 5x faster</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://www.navops.io/img/launch-samsung-1.gif&quot; border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot; height=150 width=150&gt;Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;dump / reload the data&lt;/li&gt;
-&lt;li&gt;use one of the complex logical replication tools&lt;/li&gt;
-&lt;/ul&gt;
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.navops.io/img/launch-samsung-1.gif&quot; border=0 align=left style=&quot;PADDING-RIGHT: 5px&quot; height=100 width=100&gt;Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.&lt;/p&gt;
 
 &lt;p&gt;Thankfully, the PostgreSQL team introduced &lt;code&gt;pg_upgrade&lt;/code&gt; back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, &lt;code&gt;pg_upgrade&lt;/code&gt; is able to re-use the existing datafiles (while manipulating some catalog entries) to &amp;quot;short circuit&amp;quot; the upgrade process. While this isn&amp;#39;t (yet) a true &amp;quot;in place upgrade&amp;quot; as done by some other databases, it&amp;#39;s pretty close. And it&amp;#39;s stupid fast. In my testing on my overworked Macbook Pro, it took &lt;em&gt;1/5&lt;/em&gt; as long to upgrade as a traditional dump and reload. So, let&amp;#39;s look at this process shall we?&lt;/p&gt;
 
