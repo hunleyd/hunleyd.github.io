@@ -349,11 +349,9 @@ code {
 }
 
 .codeblock {
-  background-color: #efefef;
   border: 1px solid #d3d3d3;
   display: block;
-  line-height: 1;
-  padding: 0.5em 0.5em 0.5em 0.5em;
+  line-height: 1.5;
   white-space: pre-wrap;
 }
 
