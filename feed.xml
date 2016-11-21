@@ -5,12 +5,96 @@
   <description>Doug's various musings</description>
   <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io</link>
-  <updated>2016-11-18T13:13:32-05:00</updated>
+  <updated>2016-11-21T13:36:18-05:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>PostgreSQL logging, strftime, and you</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.metasource.com/images/content/data-processing-image.jpg&quot; border=0 align=right height=200 width=200 style=&quot;PADDING-LEFT: 5px&quot;&gt;PostgreSQL has a pretty extensive logging facility. I&amp;#39;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&amp;#39;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&amp;#39;t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;    The strftime() function formats the information from timeptr into the buffer s,
+    according to the string pointed to by format.
+
+    The format string consists of zero or more conversion specifications and ordi-
+    nary characters.  All ordinary characters are copied directly into the buffer.
+    A conversion specification consists of a percent sign ```%&amp;#39;&amp;#39;&amp;#39; and one other
+    character.
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;Say what? Essentially, given a timestamp and a format specification, you&amp;#39;ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems &lt;code&gt;libc&lt;/code&gt; implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it&amp;#39;s BSD libc. You really shouldn&amp;#39;t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we&amp;#39;ll use today&amp;#39;s date of Monday, November 21, 2016 with a timestamp of 1pm EST):&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-apache&quot; data-lang=&quot;apache&quot;&gt;    %A    is replaced by national representation of the full weekday name (&amp;quot;Monday&amp;quot;)
+    %a    is replaced by national representation of the abbreviated weekday name (&amp;quot;Mon&amp;quot;)
+    %B    is replaced by national representation of the full month name (&amp;quot;November&amp;quot;)
+    %b    is replaced by national representation of the abbreviated month name (&amp;quot;Nov&amp;quot;)
+    %C    is replaced by (year / 100) as decimal number; single digits are preceded by a zero (&amp;quot;20&amp;quot;)
+    %c    is replaced by national representation of time and date (&amp;quot;Mon Nov 21 13:00:00 2016&amp;quot;)
+    %D    is equivalent to ``%m/%d/%y&amp;#39;&amp;#39; (&amp;quot;11/21/16&amp;quot;)
+    %d    is replaced by the day of the month as a decimal number (01-31) (&amp;quot;21&amp;quot;)
+    %e    is replaced by the day of the month as a decimal number (1-31); single digits are preceded by a blank (&amp;quot;21&amp;quot;)
+    %F    is equivalent to ``%Y-%m-%d&amp;#39;&amp;#39; (&amp;quot;2016-11-21&amp;quot;)
+    %G    is replaced by a year as a decimal number with century.  This year is the one that contains the greater part of the week (Monday as the first day of the week) (&amp;quot;2016&amp;quot;)
+    %g    is replaced by the same year as in ``%G&amp;#39;&amp;#39;, but as a decimal number without century (00-99) (&amp;quot;16&amp;quot;)
+    %H    is replaced by the hour (24-hour clock) as a decimal number (00-23) (&amp;quot;12&amp;quot;)
+    %h    the same as %b (&amp;quot;Nov&amp;quot;)
+    %I    is replaced by the hour (12-hour clock) as a decimal number (01-12) (&amp;quot;12&amp;quot;)
+    %j    is replaced by the day of the year as a decimal number (001-366) (&amp;quot;326&amp;quot;)
+    %k    is replaced by the hour (24-hour clock) as a decimal number (0-23); single digits are preceded by a blank (&amp;quot;13&amp;quot;)
+    %l    is replaced by the hour (12-hour clock) as a decimal number (1-12); single digits are preceded by a blank (&amp;quot; 1&amp;quot;)
+    %M    is replaced by the minute as a decimal number (00-59) (&amp;quot;00&amp;quot;)
+    %m    is replaced by the month as a decimal number (01-12) (&amp;quot;11&amp;quot;)
+    %n    is replaced by a newline
+    %p    is replaced by national representation of either &amp;quot;ante meridiem&amp;quot; (a.m.) or &amp;quot;post meridiem&amp;quot; (p.m.)  as appropriate (&amp;quot;PM&amp;quot;)
+    %R    is equivalent to ``%H:%M&amp;#39;&amp;#39; (&amp;quot;13:00&amp;quot;)
+    %r    is equivalent to ``%I:%M:%S %p&amp;#39;&amp;#39; (&amp;quot;01:00:00 PM&amp;quot;)
+    %S    is replaced by the second as a decimal number (00-60) (&amp;quot;00&amp;quot;)
+    %s    is replaced by the number of seconds since the Epoch, UTC (&amp;quot;1479751200&amp;quot;)
+    %T    is equivalent to ``%H:%M:%S&amp;#39;&amp;#39; (&amp;quot;13:00:00&amp;quot;)
+    %t    is replaced by a tab
+    %U    is replaced by the week number of the year (Sunday as the first day of the week) as a decimal number (00-53) (&amp;quot;47&amp;quot;)
+    %u    is replaced by the weekday (Monday as the first day of the week) as a decimal number (1-7) (&amp;quot;1&amp;quot;)
+    %V    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (01-53).  If the week containing January 1 has four or more days in the new year, then it is week 1; otherwise it is the last week of the previous year, and the next week is week 1 (&amp;quot;47&amp;quot;)
+    %v    is equivalent to ``%e-%b-%Y&amp;#39;&amp;#39; (&amp;quot;21-Nov-2016&amp;quot;)
+    %W    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (00-53) (&amp;quot;47&amp;quot;)
+    %w    is replaced by the weekday (Sunday as the first day of the week) as a decimal number (0-6) (&amp;quot;1&amp;quot;)
+    %X    is replaced by national representation of the time (&amp;quot;13:00:00&amp;quot;)
+    %x    is replaced by national representation of the date (&amp;quot;11/21/2016&amp;quot;)
+    %Y    is replaced by the year with century as a decimal number (&amp;quot;2016&amp;quot;)
+    %y    is replaced by the year without century as a decimal number (00-99) (&amp;quot;16&amp;quot;)
+    %Z    is replaced by the time zone name (&amp;quot;EST&amp;quot;)
+    %z    is replaced by the time zone offset from UTC; a leading plus sign stands for east of UTC, a minus sign for west of UTC, hours and minutes follow with two digits each and no delimiter between them (&amp;quot;-0500&amp;quot;)
+    %%    is replaced by `%&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;Phew! That was a lot wasn&amp;#39;t it? And where exactly does this come into play? As the &lt;code&gt;postgresql.conf&lt;/code&gt; says:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;log_filename = &amp;#39;postgresql-%a.log&amp;#39;      # log file name pattern,
+                                        # can include strftime() escapes
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I&amp;#39;m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my &lt;code&gt;$PGDATA/pg_log&lt;/code&gt; directory will only ever contain:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
+postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
+postgresql-Sat.log
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;But wait! The key to all this is that &lt;em&gt;PostgreSQL only evaluates the filename when it first opens/creates the logfile&lt;/em&gt;. So, if you start your cluster on Mon and do not restart it and don&amp;#39;t have it configured to log rotate, you&amp;#39;ll still be writing to &lt;code&gt;postgresql-Mon.log&lt;/code&gt; forever. Fortunately, PostgreSQL has you covered here too:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;log_rotation_age = 1d      # Automatic rotation of logfiles will
+                           # happen after that time.  0 disables.
+log_rotation_size = 10MB   # Automatic rotation of logfiles will
+                           # happen after that much log output.
+                           # 0 disables.
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;So, using my &lt;code&gt;log_filename&lt;/code&gt; from above, I enable &lt;code&gt;log_rotation_age&lt;/code&gt; (set to 1 day) and disable &lt;code&gt;log_rotation_size&lt;/code&gt; and I automatically get a new log every day. If I wanted hourly logs, I could do something like:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;log_filename = &amp;#39;postgresql-%a-%H&amp;#39;
+log_rotation_age = 1h
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;which would give me logs of &lt;code&gt;postgresql-Mon-00&lt;/code&gt;, &lt;code&gt;postgresql-Mon-01&lt;/code&gt;, etc. You should be able to see how combining these three &lt;code&gt;postgresql.conf&lt;/code&gt; parameters and some crafty strftime() escapes gives you a &lt;em&gt;ton&lt;/em&gt; of flexibility in your logging. So go forth and tweak those logs!&lt;/p&gt;
+</description>
+    <pubDate>2016-11-21T07:17:03-05:00</pubDate>
+    <link>http://hunleyd.github.io/PostgreSQL-logging-strftime-and-you/</link>
+    <guid isPermaLink="true">http://hunleyd.github.io/PostgreSQL-logging-strftime-and-you/</guid>
+    
+     <category>postgresql</category>
+    
+   </item>
   
    <item>
     <title>Upgrading PostgreSQL 5x faster</title>
@@ -1000,20 +1084,6 @@ DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
     <pubDate>2016-10-26T10:46:09-04:00</pubDate>
     <link>http://hunleyd.github.io/Incremental-pgBadger/</link>
     <guid isPermaLink="true">http://hunleyd.github.io/Incremental-pgBadger/</guid>
-    
-     <category>postgresql</category>
-    
-   </item>
-  
-   <item>
-    <title>I'm syndicated</title>
-    <description>&lt;p&gt;Someone at work thought it would be a good idea to give me access to the corporate blog so that I might &lt;a href=&quot;http://www.openscg.com/category/postgresql-blogs/doug-postgresql/&quot;&gt;post&lt;/a&gt; PostgreSQL-related things there and have them syndicted to &lt;a href=&quot;http://planet.postgresql.org/&quot;&gt;Planet PostgreSQL&lt;/a&gt;. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!&lt;/p&gt;
-</description>
-    <pubDate>2016-10-08T11:19:57-04:00</pubDate>
-    <link>http://hunleyd.github.io/Im-Syndicated/</link>
-    <guid isPermaLink="true">http://hunleyd.github.io/Im-Syndicated/</guid>
-    
-     <category>work</category>
     
      <category>postgresql</category>
     
