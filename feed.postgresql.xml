@@ -5,7 +5,7 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="http://hunleyd.github.io/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/postgresql/</link>
-  <updated>2016-11-30T13:02:38-05:00</updated>
+  <updated>2016-11-30T13:04:36-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -79,9 +79,9 @@ Time: 23.565 ms
 
 &lt;p&gt;So, you can see that the &lt;code&gt;CREATE TABLE&lt;/code&gt; didn&amp;#39;t log anything through the &lt;code&gt;auto_explain&lt;/code&gt; module, but the &lt;code&gt;INSERT INTO&lt;/code&gt; did. This is a boring example, so let&amp;#39;s try a &lt;code&gt;SELECT&lt;/code&gt; against our table:&lt;/p&gt;
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;(doug@[local]:5432/doug[28838]) # SELECT * FROM x ORDER BY t LIMIT 10;
-┌───────┐
+┌──────-─┐
 │   t   │
-├───────┤
+├──────-─┤
 │ 1     │
 │ 10    │
 │ 100   │
@@ -92,7 +92,7 @@ Time: 23.565 ms
 │ 1003  │
 │ 1004  │
 │ 1005  │
-└───────┘
+└──────-─┘
 (10 rows)
 
 Time: 11.982 ms
