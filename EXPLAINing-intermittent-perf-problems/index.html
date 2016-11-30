@@ -122,9 +122,9 @@ Time: 23.565 ms
 
 <p>So, you can see that the <code>CREATE TABLE</code> didn&#39;t log anything through the <code>auto_explain</code> module, but the <code>INSERT INTO</code> did. This is a boring example, so let&#39;s try a <code>SELECT</code> against our table:</p>
 <figure class="highlight"><pre><code class="language-sql" data-lang="sql">(doug@[local]:5432/doug[28838]) # SELECT * FROM x ORDER BY t LIMIT 10;
-┌──────-─┐
+┌───────┐
 │   t   │
-├──────-─┤
+├───────┤
 │ 1     │
 │ 10    │
 │ 100   │
@@ -135,7 +135,7 @@ Time: 23.565 ms
 │ 1003  │
 │ 1004  │
 │ 1005  │
-└──────-─┘
+└───────┘
 (10 rows)
 
 Time: 11.982 ms
