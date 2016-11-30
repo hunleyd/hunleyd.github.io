@@ -353,6 +353,14 @@ code {
   line-height: 1;
 }
 
+.paginate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 sub, sup {
   /* Specified in % so that the sup/sup is the
      right size relative to the surrounding text */
