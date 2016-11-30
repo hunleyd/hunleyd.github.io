@@ -343,14 +343,13 @@ li.tag_list_item {
 }
 
 code {
-  background-color: #f0f060;
+  background-color: #a7cde5;
   color: #ffffff;
   padding: 0em 0.5em 0em 0.5em;
 }
 
 .language-text {
-  color: #000060;
-  background-color: #ffffff;
+  color: #a7cde5;
   line-height: 1;
   white-space: pre-wrap;
 }
