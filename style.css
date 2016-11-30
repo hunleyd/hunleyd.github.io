@@ -344,12 +344,10 @@ li.tag_list_item {
 
 code {
   color: #000060;
-  background-color: #efefef;
   border: 1px solid #000000;
 }
 
 .codeblock {
-  border: none;
   display: block;
   line-height: 1;
   padding: 0.5em 0.5em 0.5em 0.5em;
