@@ -5,7 +5,7 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="http://hunleyd.github.io/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/postgresql/</link>
-  <updated>2016-11-30T12:21:28-05:00</updated>
+  <updated>2016-11-30T12:22:31-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -21,7 +21,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;And now, you have all queries with long run times logged automatically. And these show up nicely in your pgBadger reports too!&lt;/p&gt;
 
-&lt;p&gt;If you&amp;#39;re lucky, you&amp;#39;ll be able to use &lt;code&gt;EXPLAIN&lt;/code&gt; to see why the query is behaving poorly. However, if your life if like mine, the explain plan will be reasonable and won&amp;#39;t have any smoking guns to speak of. Which means the performance is either load dependent or being influenced by other processes (something is blowing out your caches, for example). In these cases, what you really need is the &lt;code&gt;EXPLAIN&lt;/code&gt; output from the very instant that it performed poorly. However, you can&amp;#39;t go back in time to get it. But what you can do is make use of the &lt;code&gt;auto_explain&lt;/code&gt; module that ships with PostgreSQL. &lt;/p&gt;
+&lt;p&gt;If you&amp;#39;re lucky, you&amp;#39;ll be able to use &lt;code&gt;EXPLAIN&lt;/code&gt; to see why the query is behaving poorly. However, if your life is like mine, the explain plan will be reasonable and won&amp;#39;t have any smoking guns to speak of. Which means the performance is either load dependent or being influenced by other processes (something is blowing out your caches, for example). In these cases, what you really need is the &lt;code&gt;EXPLAIN&lt;/code&gt; output from the very instant that it performed poorly. However, you can&amp;#39;t go back in time to get it. But what you can do is make use of the &lt;code&gt;auto_explain&lt;/code&gt; module that ships with PostgreSQL.&lt;/p&gt;
 
 &lt;p&gt;In case the name wasn&amp;#39;t obvious enough, the &lt;code&gt;auto_explain&lt;/code&gt; module causes PostgreSQL to automatically run &lt;code&gt;EXPLAIN&lt;/code&gt; on queries according to thresholds that you configure. These automatically generated plans are then logged into the normal PostgreSQL logs. Let&amp;#39;s walk through setting it up and see how it works.&lt;/p&gt;
 
