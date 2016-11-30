@@ -349,6 +349,7 @@ code {
 }
 
 .language-text {
+  display: block;
   line-height: 1;
   white-space: pre-wrap;
 }
