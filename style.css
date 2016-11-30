@@ -345,6 +345,7 @@ li.tag_list_item {
 code {
   color: #000060;
   border: 1px solid #000000;
+  border-spacing: 2px;
 }
 
 .codeblock {
