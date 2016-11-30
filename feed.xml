@@ -5,7 +5,7 @@
   <description>Doug's various musings</description>
   <atom:link href="http://hunleyd.github.io/feed.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io</link>
-  <updated>2016-11-30T12:54:37-05:00</updated>
+  <updated>2016-11-30T12:55:31-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -97,9 +97,8 @@ Time: 23.565 ms
 
 Time: 11.982 ms
 &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-&lt;p&gt;and the logs look like:
-&lt;code&gt;
-2016-11-28 13:27:38 EST [322]: [7-1] user=,db=,app=,client= LOG:  checkpoint starting: time
+&lt;p&gt;and the logs look like:&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;2016-11-28 13:27:38 EST [322]: [7-1] user=,db=,app=,client= LOG:  checkpoint starting: time
 2016-11-28 13:27:46 EST [322]: [8-1] user=,db=,app=,client= LOG:  checkpoint complete: wrote 75 buffers (0.0%); 0 transaction log file(s) added, 0 removed, 0 recycled; write=7.569 s, sync=0.092 s, total=7.920 s; sync files=23, longest=0.092 s, average=0.004 s; distance=685 kB, estimate=685 kB
 2016-11-28 13:28:48 EST [28838]: [21-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.120 ms  plan:
   Query Text: SELECT * FROM x ORDER BY t LIMIT 10;
@@ -115,8 +114,7 @@ Time: 11.982 ms
                 Output: t
                 Buffers: shared hit=45
 2016-11-28 13:28:48 EST [28838]: [22-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.813 ms  statement: SELECT * FROM x ORDER BY t LIMIT 10;
-&lt;/code&gt;&lt;/p&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;(You can safely ignore the checkpoint lines at the top there)&lt;/p&gt;
 
 &lt;p&gt;There you have both the statement we ran, and the full &lt;code&gt;EXPLAIN&lt;/code&gt; plan. You can see we did a sequential scan on the table (looks like it was all in the &lt;code&gt;shared_buffers&lt;/code&gt; too) and then we passed that up to a &lt;code&gt;sort&lt;/code&gt; node for an in-memory sort, and then passed that result set up to the &lt;code&gt;limit&lt;/code&gt; node.&lt;/p&gt;
