@@ -5,12 +5,31 @@
   <description>Posts tagged as 'general'</description>
   <atom:link href="http://hunleyd.github.io/feed.general.xml" rel="self" type="application/rss+xml" />
   <link>http://hunleyd.github.io/tag/general/</link>
-  <updated>2016-12-01T16:11:02-05:00</updated>
+  <updated>2016-12-02T14:04:58-05:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Changes to the blog</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.cafecowboys.com/wp-content/uploads/2016/04/blogging-inside.gif&quot; border =0 align=right style=&quot;PADDING-LEFT: 5px&quot; height=200 width=200&gt;In case you haven&amp;#39;t already noticed, I&amp;#39;ve made some changes to my blog recently. Nothing really significant or drastic, but things that have been on the TODO list for a while.&lt;/p&gt;
+
+&lt;p&gt;I guess the most obvious change would be that I added pagination finally. If you scroll the homepage all the way down, instead of it going back through the entire blog&amp;#39;s history, it stops after five posts, and then gives a clickable page counter. Once I had this implemented, I then had to un-paginate the archive pages which was interesting.&lt;/p&gt;
+
+&lt;p&gt;The next most visible change would probably be the change I made to the CSS concerning CODE and CODEBLOCK. I&amp;#39;m still not 100% sure this is the final form, but I like it better than it was. For reference, it now looks like &lt;code&gt;this&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;My third change was to tweak the site&amp;#39;s header a bit. If you cast your gaze upwards, you can see that I now have &amp;#39;About&amp;#39;, &amp;#39;Archive&amp;#39;, and &amp;#39;Feeds&amp;#39; in the header. The &amp;#39;Feeds&amp;#39; link is new, as is the page that it links to. The actual RSS feeds themselves have existed for a while now, I just didn&amp;#39;t announce them.&lt;/p&gt;
+
+&lt;p&gt;And finally, I swapped out my photo for my new Bitmoji-based avatar.&lt;/p&gt;
+
+&lt;p&gt;So, uh, enjoy. Or something.&lt;/p&gt;
+</description>
+    <link>http://hunleyd.github.io/changes-to-the-blog/ </link>
+    <pubDate>2016-12-02T08:48:42-05:00</pubDate>
+    <guid isPermaLink="true">http://hunleyd.github.io/changes-to-the-blog/</guid>
+   </item>
   
    <item>
     <title>Welcome to Cypheri</title>
