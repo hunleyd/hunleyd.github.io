@@ -3,6 +3,8 @@
     <HEAD>
     <TITLE>
         
+          Incremental pgBadger
+        
         Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly
     </TITLE>
 
@@ -13,10 +15,15 @@
 <META name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
 
 
-  <META name='description' content='It's not that I'm anti-social; I'm just not user-friendly' />
-  <META property='og:description' content='It's not that I'm anti-social; I'm just not user-friendly' />
+  <META name='description' content=' You&#39;re probably already running pgBadger to monitor your PostgreSQL logs. However, you&#39;re probably not running it incrementally throughout the day. Most likely, you&#39;ve setup a cron.daily job that runs pgBadger against yesterday&#39;s log(s). And that&#39;s great. Except when you get the dreaded &quot;what just happened on the db?&quot; email. Are you going to wait until tonight&#39;s normal run of pgBadger to see what happened? Are you going to run a &#39;one off&#39; pgBadger against today&#39;s logfile and wait for it to process the entire log? Or are you going to copy the log off somewhere, edit it to cut it down, and then run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?
+' />
+  <META property='og:description' content=' You&#39;re probably already running pgBadger to monitor your PostgreSQL logs. However, you&#39;re probably not running it incrementally throughout the day. Most likely, you&#39;ve setup a cron.daily job that runs pgBadger against yesterday&#39;s log(s). And that&#39;s great. Except when you get the dreaded &quot;what just happened on the db?&quot; email. Are you going to wait until tonight&#39;s normal run of pgBadger to see what happened? Are you going to run a &#39;one off&#39; pgBadger against today&#39;s logfile and wait for it to process the entire log? Or are you going to copy the log off somewhere, edit it to cut it down, and then run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?
+' />
 
 
+
+  <META property='og:title' content='Incremental pgBadger' />
+  <META property='twitter:title' content='Incremental pgBadger' />
 
 
 
@@ -43,93 +50,101 @@
         <P class="site-description">It's not that I'm anti-social; I'm just not user-friendly</P>
     </DIV>
     <DIV class="posts_content_container">
-        <DIV class="posts_container">
-    
-      <H3>
-          <A href="/posts/New-look-same-content">
-              New look, same content
-          </A>
-      </H3>
-
-      <p><img class="lleader" src="http://www.awesome-t-shirts.com/img/T-shirts/you-look-different-not-better-just-different.jpg">As you&#39;ve probably noticed, I&#39;ve launched the new blog design. Everything that was here should still be here, but it might have moved. Sorry, but I broke the old permalinks. Bad blogger! However, I now have everything <em>exactly</em> where I want it, so it shouldn&#39;t ever change again. Famous last words, right there :)</p>
-
-
-      <H4>
-          <A href="/posts/New-look-same-content">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/changes-to-the-blog">
-              Changes to the blog
-          </A>
-      </H3>
-
-      <p><img src="http://www.cafecowboys.com/wp-content/uploads/2016/04/blogging-inside.gif" border =0 align=right style="PADDING-LEFT: 5px" height=200 width=200>In case you haven&#39;t already noticed, I&#39;ve made some changes to my blog recently. Nothing really significant or drastic, but things that have been on the TODO list for a while.</p>
-
-
-      <H4>
-          <A href="/posts/changes-to-the-blog">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/EXPLAINing-intermittent-perf-problems">
-              EXPLAINing intermittent perf problems
-          </A>
-      </H3>
-
-      <p><img src="http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg" class="lleader">We&#39;ve all gotten the dreaded email/call from a user stating that a query is &quot;slow sometimes&quot;. If you&#39;re lucky, the &quot;sometimes&quot; actually ends up being fairly consistent and you can fairly easily determine what&#39;s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?</p>
-
-
-      <H4>
-          <A href="/posts/EXPLAINing-intermittent-perf-problems">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/PostgreSQL-logging-strftime-and-you">
-              PostgreSQL logging, strftime, and you
-          </A>
-      </H3>
-
-      <p><img src="http://www.metasource.com/images/content/data-processing-image.jpg" class="rleader">PostgreSQL has a pretty extensive logging facility. I&#39;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&#39;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&#39;t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</p>
-
-
-      <H4>
-          <A href="/posts/PostgreSQL-logging-strftime-and-you">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster">
-              Upgrading PostgreSQL 5x faster
-          </A>
-      </H3>
-
-      <p><img src="http://www.navops.io/img/launch-samsung-1.gif" border=0 align=left style="PADDING-RIGHT: 5px" height=100 width=100>Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
-
-
-      <H4>
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster">
-              Read More
-          </A>
-      </H4>
-    
-
-    <DIV class="pagination">
+        <ARTICLE class="post">
+  <H1>Incremental pgBadger</H1>
+  
+    <DIV class="meta">
+      <TIME datetime="2016-10-26">
+        October 26, 2016
+      </TIME>
+      <UL class="tag_list_in_post">
         
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></LI>
         
-          <DIV class="rightpaginate">
-              <A href="/pages/2">Older &raquo;</A>
-          </DIV>
-        
+      </UL>
     </DIV>
-</DIV>
+  
+  <DIV class="entry">
+    <p><img src="https://dalibo.github.io/pgbadger/logo_pgbadger.png" border=0 align=left> You&#39;re probably already running <a href="https://dalibo.github.io/pgbadger/index.html">pgBadger</a> to monitor your PostgreSQL logs. However, you&#39;re probably <em>not</em> running it incrementally throughout the day. Most likely, you&#39;ve setup a <code>cron.daily</code> job that runs pgBadger against yesterday&#39;s log(s). And that&#39;s great. Except when you get the dreaded &quot;what just happened on the db?&quot; email. Are you going to wait until tonight&#39;s normal run of pgBadger to see what happened? Are you going to run a &#39;one off&#39; pgBadger against today&#39;s logfile and wait for it to process the <em>entire</em> log? Or are you going to copy the log off somewhere, edit it to cut it down, and <em>then</em> run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?</p>
+
+<p>No, most likely you&#39;re going to look at your actual monitoring tool that does real-time monitoring of your db and try to figure things out from there. You <em>are</em> running some kind of db monitoring tool, right?</p>
+
+<p>However, let&#39;s say that for, uh, reasons, you only have pgBadger at your disposal <em>right this instant</em>. Well, if you were making use of pgBadger&#39;s <em>incremental mode</em> you could simply fire off the next scheduled run and it would only process those log entries that were new since the last run. So, for example, if you had a <code>cron.hourly</code> run of pgBadger it would only process the last hour&#39;s worth of entries to update today&#39;s report. No waiting to process multiple hours of info that you don&#39;t need, no editing of the logfile to remove things outside the window you care about, just run it and done.</p>
+
+<p>Sounds nice, right? So let&#39;s set this up shall we? I&#39;m assuming you&#39;ve already setup <code>postgresql.conf</code> appropriately, but if you haven&#39;t please go that first. The pgBadger website has good documentation on how to do so. According to the docs:</p>
+<figure class="highlight"><pre><code class="language-apache" data-lang="apache">-I | --incremental     : use incremental mode, reports will be generated by days in a separate directory, --outdir must be set.
+</code></pre></figure>
+<p>is how we turn on incremental mode. You&#39;ll note that we also need to specify an output dir:</p>
+<figure class="highlight"><pre><code class="language-apache" data-lang="apache">-O | --outdir path     : directory where out file must be saved
+</code></pre></figure>
+<p>I usually stick the pgBadger output into the <code>pg_log</code> directory. In my mind, having the logs and the report on the logs next to each makes sense, but feel free to stick yours wherever.</p>
+
+<p>Finally, we probably don&#39;t need pgBadger reports that are too old, and the docs say we can cull the cruft automatically:</p>
+<figure class="highlight"><pre><code class="language-apache" data-lang="apache">-R | --retention N     : number of week to keep in incremental mode. Default to 0, disabled. Used to set the number of weel to keep in output directory. Older weeks and days directory are automatically removed.
+</code></pre></figure>
+<p>(Ignore the typo, it&#39;s that way in the code)</p>
+
+<p>On my servers, I have PostgreSQL setup to log into a different file for each day of the week, with automatic rotation and truncation:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">log_filename = &#39;postgresql-%a.log&#39;
+log_truncate_on_rotation = on
+log_rotation_age = 1d
+</code></pre></figure>
+<p>so my <code>cron.hourly</code> pgBadger looks like:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">pgbadger \
+    -I \
+    -O $PGDATA/pg_log \
+    -R 12 \
+    -q \
+    $PGDATA/pg_log/postgresql-$(date --date yesterday +%a) \
+    $PGDATA/pg_log/postgresql-$(date +%a)
+</code></pre></figure>
+<p>which as you can see always feeds both yesterday&#39;s and today&#39;s log into pgBadger (since the cron runs at 2300 and then again at 0000, we need yesterday&#39;s log to catch that last hour). Since we&#39;re running in incremental mode, it knows <em>at every run</em> where it left off in the files the last time and does a <code>seek</code> to skip over that data. This cuts the run time down <em>significantly</em> even with the PostgreSQL logging <em>cranked up</em>. You can see it here:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">...
+DEBUG: Starting reading file postgresql-Wed.log...
+DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
+[======================&gt;  ] Parsed 413815537 bytes of 433543395 (95.45%), queries
+...
+</code></pre></figure>
+<p>As you can see, it jumps right in at 95% of the file and only processes the newest 5%. In fact, this takes a mere 20 seconds:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">statistics gathering took:20 wallclock secs (19.44 usr +  0.17 sys = 19.61 CPU)
+</code></pre></figure>
+<p>on my overloaded Macbook!</p>
+
+<p>So there you have it. Not counting the time it takes you to <code>ssh</code> to your server, it would have taken all of <em>20 seconds</em> to have an updated report of what just happened on your database!</p>
+
+<p>Keep in mind, this is also with a <em>single thread</em>. pgBadger has the ability to run multi-threaded. See the <code>--help</code> for details.</p>
+
+<p>Enjoy!</p>
+
+  </DIV>
+  <FONT size=-1>
+    <A href="/">Home</A> /
+    <A href="">Incremental pgBadger</A>
+  </FONT>
+
+  
+  <DIV class="comments">
+    <DIV id="disqus_thread"></div>
+      <SCRIPT type="text/javascript">
+        var disqus_shortname = 'douglashunley';
+
+        (function() {
+          var dsq = document.createElement('script');
+          var dsq.type = 'text/javascript';
+          var dsq.async = true
+          var dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+      </SCRIPT>
+      <NOSCRIPT>
+        Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </NOSCRIPT>
+    </DIV>
+  </DIV>
+
+
+</ARTICLE>
 
     </DIV>
 </DIV>

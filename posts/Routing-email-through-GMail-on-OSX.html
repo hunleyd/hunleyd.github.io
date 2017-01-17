@@ -3,6 +3,8 @@
     <HEAD>
     <TITLE>
         
+          Routing email through GMail on OSX
+        
         Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly
     </TITLE>
 
@@ -13,10 +15,19 @@
 <META name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
 
 
-  <META name='description' content='It's not that I'm anti-social; I'm just not user-friendly' />
-  <META property='og:description' content='It's not that I'm anti-social; I'm just not user-friendly' />
+  <META name='description' content='Like most geeks, I have scripts that I&#39;ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I&#39;m going to commit the steps here for my future self to reference :)
+
+[smtp.gmail.com]:587 username@gmail.com:app_passwd
+' />
+  <META property='og:description' content='Like most geeks, I have scripts that I&#39;ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I&#39;m going to commit the steps here for my future self to reference :)
+
+[smtp.gmail.com]:587 username@gmail.com:app_passwd
+' />
 
 
+
+  <META property='og:title' content='Routing email through GMail on OSX' />
+  <META property='twitter:title' content='Routing email through GMail on OSX' />
 
 
 
@@ -43,93 +54,74 @@
         <P class="site-description">It's not that I'm anti-social; I'm just not user-friendly</P>
     </DIV>
     <DIV class="posts_content_container">
-        <DIV class="posts_container">
-    
-      <H3>
-          <A href="/posts/New-look-same-content">
-              New look, same content
-          </A>
-      </H3>
-
-      <p><img class="lleader" src="http://www.awesome-t-shirts.com/img/T-shirts/you-look-different-not-better-just-different.jpg">As you&#39;ve probably noticed, I&#39;ve launched the new blog design. Everything that was here should still be here, but it might have moved. Sorry, but I broke the old permalinks. Bad blogger! However, I now have everything <em>exactly</em> where I want it, so it shouldn&#39;t ever change again. Famous last words, right there :)</p>
-
-
-      <H4>
-          <A href="/posts/New-look-same-content">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/changes-to-the-blog">
-              Changes to the blog
-          </A>
-      </H3>
-
-      <p><img src="http://www.cafecowboys.com/wp-content/uploads/2016/04/blogging-inside.gif" border =0 align=right style="PADDING-LEFT: 5px" height=200 width=200>In case you haven&#39;t already noticed, I&#39;ve made some changes to my blog recently. Nothing really significant or drastic, but things that have been on the TODO list for a while.</p>
-
-
-      <H4>
-          <A href="/posts/changes-to-the-blog">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/EXPLAINing-intermittent-perf-problems">
-              EXPLAINing intermittent perf problems
-          </A>
-      </H3>
-
-      <p><img src="http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg" class="lleader">We&#39;ve all gotten the dreaded email/call from a user stating that a query is &quot;slow sometimes&quot;. If you&#39;re lucky, the &quot;sometimes&quot; actually ends up being fairly consistent and you can fairly easily determine what&#39;s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?</p>
-
-
-      <H4>
-          <A href="/posts/EXPLAINing-intermittent-perf-problems">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/PostgreSQL-logging-strftime-and-you">
-              PostgreSQL logging, strftime, and you
-          </A>
-      </H3>
-
-      <p><img src="http://www.metasource.com/images/content/data-processing-image.jpg" class="rleader">PostgreSQL has a pretty extensive logging facility. I&#39;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&#39;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&#39;t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</p>
-
-
-      <H4>
-          <A href="/posts/PostgreSQL-logging-strftime-and-you">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster">
-              Upgrading PostgreSQL 5x faster
-          </A>
-      </H3>
-
-      <p><img src="http://www.navops.io/img/launch-samsung-1.gif" border=0 align=left style="PADDING-RIGHT: 5px" height=100 width=100>Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
-
-
-      <H4>
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster">
-              Read More
-          </A>
-      </H4>
-    
-
-    <DIV class="pagination">
+        <ARTICLE class="post">
+  <H1>Routing email through GMail on OSX</H1>
+  
+    <DIV class="meta">
+      <TIME datetime="2016-11-15">
+        November 15, 2016
+      </TIME>
+      <UL class="tag_list_in_post">
         
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/osx">osx</a></LI>
         
-          <DIV class="rightpaginate">
-              <A href="/pages/2">Older &raquo;</A>
-          </DIV>
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/geek">geek</a></LI>
         
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/computers">computers</a></LI>
+        
+      </UL>
     </DIV>
-</DIV>
+  
+  <DIV class="entry">
+    <p><img src="http://www.postfix.org/mysza.gif" border=0 align=left style="PADDING-RIGHT: 5px">Like most geeks, I have scripts that I&#39;ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I&#39;m going to commit the steps here for my future self to reference :)</p>
+
+<p>The first thing we&#39;re going to do is open an iTerm and <code>sudo -i</code> to become root. Then we&#39;re going to <code>vi /etc/postfix/main.cf</code> and we&#39;re going to add/set the following:</p>
+<figure class="highlight"><pre><code class="language-conf" data-lang="conf">myhostname = smtp.gmail.com
+relayhost = [smtp.gmail.com]:587
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps= hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_sasl_mechanism_filter = plain
+smtp_use_tls = yes
+</code></pre></figure>
+<p>I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an &#39;app password&#39;. Once I have that password in hand, we <code>vi /etc/postfix/sasl_passwd</code> and add:</p>
+<figure class="highlight"><pre><code class="language-conf" data-lang="conf">[smtp.gmail.com]:587 username@gmail.com:app_passwd
+</code></pre></figure>
+<p>Secure that file by running <code>chmod 0600 /etc/postfix/sasl_passwd</code> and then have Postfix hash it by doing <code>postmap /etc/postfix/sasl_passwd</code>. Finally, restart Postfix:</p>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">launchctl stop org.postfix.master
+launchctl start org.postfix.master
+</code></pre></figure>
+<p>And everything should work.</p>
+
+  </DIV>
+  <FONT size=-1>
+    <A href="/">Home</A> /
+    <A href="">Routing email through GMail on OSX</A>
+  </FONT>
+
+  
+  <DIV class="comments">
+    <DIV id="disqus_thread"></div>
+      <SCRIPT type="text/javascript">
+        var disqus_shortname = 'douglashunley';
+
+        (function() {
+          var dsq = document.createElement('script');
+          var dsq.type = 'text/javascript';
+          var dsq.async = true
+          var dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+      </SCRIPT>
+      <NOSCRIPT>
+        Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </NOSCRIPT>
+    </DIV>
+  </DIV>
+
+
+</ARTICLE>
 
     </DIV>
 </DIV>

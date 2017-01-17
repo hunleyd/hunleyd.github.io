@@ -3,6 +3,8 @@
     <HEAD>
     <TITLE>
         
+          Functional Blog Archives
+        
         Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly
     </TITLE>
 
@@ -13,10 +15,15 @@
 <META name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
 
 
-  <META name='description' content='It's not that I'm anti-social; I'm just not user-friendly' />
-  <META property='og:description' content='It's not that I'm anti-social; I'm just not user-friendly' />
+  <META name='description' content='After an afternoon dicking around with Jekyll templates and Google serching, I&#39;ve fixed up this site&#39;s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I&#39;ve also modified the tag cloud page to fit in the archive pages&#39; look an feel. It&#39;s not a true tag cloud in that I don&#39;t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it&#39;s own page showing all posts tagged as such.
+' />
+  <META property='og:description' content='After an afternoon dicking around with Jekyll templates and Google serching, I&#39;ve fixed up this site&#39;s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I&#39;ve also modified the tag cloud page to fit in the archive pages&#39; look an feel. It&#39;s not a true tag cloud in that I don&#39;t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it&#39;s own page showing all posts tagged as such.
+' />
 
 
+
+  <META property='og:title' content='Functional Blog Archives' />
+  <META property='twitter:title' content='Functional Blog Archives' />
 
 
 
@@ -43,93 +50,54 @@
         <P class="site-description">It's not that I'm anti-social; I'm just not user-friendly</P>
     </DIV>
     <DIV class="posts_content_container">
-        <DIV class="posts_container">
-    
-      <H3>
-          <A href="/posts/New-look-same-content">
-              New look, same content
-          </A>
-      </H3>
-
-      <p><img class="lleader" src="http://www.awesome-t-shirts.com/img/T-shirts/you-look-different-not-better-just-different.jpg">As you&#39;ve probably noticed, I&#39;ve launched the new blog design. Everything that was here should still be here, but it might have moved. Sorry, but I broke the old permalinks. Bad blogger! However, I now have everything <em>exactly</em> where I want it, so it shouldn&#39;t ever change again. Famous last words, right there :)</p>
-
-
-      <H4>
-          <A href="/posts/New-look-same-content">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/changes-to-the-blog">
-              Changes to the blog
-          </A>
-      </H3>
-
-      <p><img src="http://www.cafecowboys.com/wp-content/uploads/2016/04/blogging-inside.gif" border =0 align=right style="PADDING-LEFT: 5px" height=200 width=200>In case you haven&#39;t already noticed, I&#39;ve made some changes to my blog recently. Nothing really significant or drastic, but things that have been on the TODO list for a while.</p>
-
-
-      <H4>
-          <A href="/posts/changes-to-the-blog">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/EXPLAINing-intermittent-perf-problems">
-              EXPLAINing intermittent perf problems
-          </A>
-      </H3>
-
-      <p><img src="http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg" class="lleader">We&#39;ve all gotten the dreaded email/call from a user stating that a query is &quot;slow sometimes&quot;. If you&#39;re lucky, the &quot;sometimes&quot; actually ends up being fairly consistent and you can fairly easily determine what&#39;s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?</p>
-
-
-      <H4>
-          <A href="/posts/EXPLAINing-intermittent-perf-problems">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/PostgreSQL-logging-strftime-and-you">
-              PostgreSQL logging, strftime, and you
-          </A>
-      </H3>
-
-      <p><img src="http://www.metasource.com/images/content/data-processing-image.jpg" class="rleader">PostgreSQL has a pretty extensive logging facility. I&#39;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&#39;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&#39;t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</p>
-
-
-      <H4>
-          <A href="/posts/PostgreSQL-logging-strftime-and-you">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster">
-              Upgrading PostgreSQL 5x faster
-          </A>
-      </H3>
-
-      <p><img src="http://www.navops.io/img/launch-samsung-1.gif" border=0 align=left style="PADDING-RIGHT: 5px" height=100 width=100>Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
-
-
-      <H4>
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster">
-              Read More
-          </A>
-      </H4>
-    
-
-    <DIV class="pagination">
+        <ARTICLE class="post">
+  <H1>Functional Blog Archives</H1>
+  
+    <DIV class="meta">
+      <TIME datetime="2016-09-30">
+        September 30, 2016
+      </TIME>
+      <UL class="tag_list_in_post">
         
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/general">general</a></LI>
         
-          <DIV class="rightpaginate">
-              <A href="/pages/2">Older &raquo;</A>
-          </DIV>
-        
+      </UL>
     </DIV>
-</DIV>
+  
+  <DIV class="entry">
+    <p>After an afternoon dicking around with Jekyll templates and Google serching, I&#39;ve fixed up this site&#39;s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I&#39;ve also modified the tag cloud page to fit in the archive pages&#39; look an feel. It&#39;s not a true tag cloud in that I don&#39;t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it&#39;s own page showing all posts tagged as such.</p>
+
+<p>So, yeah. Enjoy, or something.</p>
+
+  </DIV>
+  <FONT size=-1>
+    <A href="/">Home</A> /
+    <A href="">Functional Blog Archives</A>
+  </FONT>
+
+  
+  <DIV class="comments">
+    <DIV id="disqus_thread"></div>
+      <SCRIPT type="text/javascript">
+        var disqus_shortname = 'douglashunley';
+
+        (function() {
+          var dsq = document.createElement('script');
+          var dsq.type = 'text/javascript';
+          var dsq.async = true
+          var dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+      </SCRIPT>
+      <NOSCRIPT>
+        Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </NOSCRIPT>
+    </DIV>
+  </DIV>
+
+
+</ARTICLE>
 
     </DIV>
 </DIV>

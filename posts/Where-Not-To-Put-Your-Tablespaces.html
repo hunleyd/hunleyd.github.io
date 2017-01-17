@@ -3,6 +3,8 @@
     <HEAD>
     <TITLE>
         
+          Where Not To Put Your Tablespaces
+        
         Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly
     </TITLE>
 
@@ -13,10 +15,15 @@
 <META name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
 
 
-  <META name='description' content='It's not that I'm anti-social; I'm just not user-friendly' />
-  <META property='og:description' content='It's not that I'm anti-social; I'm just not user-friendly' />
+  <META name='description' content='From the PostgreSQL docs:
+' />
+  <META property='og:description' content='From the PostgreSQL docs:
+' />
 
 
+
+  <META property='og:title' content='Where Not To Put Your Tablespaces' />
+  <META property='twitter:title' content='Where Not To Put Your Tablespaces' />
 
 
 
@@ -43,93 +50,111 @@
         <P class="site-description">It's not that I'm anti-social; I'm just not user-friendly</P>
     </DIV>
     <DIV class="posts_content_container">
-        <DIV class="posts_container">
-    
-      <H3>
-          <A href="/posts/New-look-same-content">
-              New look, same content
-          </A>
-      </H3>
-
-      <p><img class="lleader" src="http://www.awesome-t-shirts.com/img/T-shirts/you-look-different-not-better-just-different.jpg">As you&#39;ve probably noticed, I&#39;ve launched the new blog design. Everything that was here should still be here, but it might have moved. Sorry, but I broke the old permalinks. Bad blogger! However, I now have everything <em>exactly</em> where I want it, so it shouldn&#39;t ever change again. Famous last words, right there :)</p>
-
-
-      <H4>
-          <A href="/posts/New-look-same-content">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/changes-to-the-blog">
-              Changes to the blog
-          </A>
-      </H3>
-
-      <p><img src="http://www.cafecowboys.com/wp-content/uploads/2016/04/blogging-inside.gif" border =0 align=right style="PADDING-LEFT: 5px" height=200 width=200>In case you haven&#39;t already noticed, I&#39;ve made some changes to my blog recently. Nothing really significant or drastic, but things that have been on the TODO list for a while.</p>
-
-
-      <H4>
-          <A href="/posts/changes-to-the-blog">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/EXPLAINing-intermittent-perf-problems">
-              EXPLAINing intermittent perf problems
-          </A>
-      </H3>
-
-      <p><img src="http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg" class="lleader">We&#39;ve all gotten the dreaded email/call from a user stating that a query is &quot;slow sometimes&quot;. If you&#39;re lucky, the &quot;sometimes&quot; actually ends up being fairly consistent and you can fairly easily determine what&#39;s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?</p>
-
-
-      <H4>
-          <A href="/posts/EXPLAINing-intermittent-perf-problems">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/PostgreSQL-logging-strftime-and-you">
-              PostgreSQL logging, strftime, and you
-          </A>
-      </H3>
-
-      <p><img src="http://www.metasource.com/images/content/data-processing-image.jpg" class="rleader">PostgreSQL has a pretty extensive logging facility. I&#39;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&#39;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&#39;t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</p>
-
-
-      <H4>
-          <A href="/posts/PostgreSQL-logging-strftime-and-you">
-              Read More
-          </A>
-      </H4>
-    
-      <H3>
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster">
-              Upgrading PostgreSQL 5x faster
-          </A>
-      </H3>
-
-      <p><img src="http://www.navops.io/img/launch-samsung-1.gif" border=0 align=left style="PADDING-RIGHT: 5px" height=100 width=100>Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
-
-
-      <H4>
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster">
-              Read More
-          </A>
-      </H4>
-    
-
-    <DIV class="pagination">
+        <ARTICLE class="post">
+  <H1>Where Not To Put Your Tablespaces</H1>
+  
+    <DIV class="meta">
+      <TIME datetime="2016-08-24">
+        August 24, 2016
+      </TIME>
+      <UL class="tag_list_in_post">
         
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></LI>
         
-          <DIV class="rightpaginate">
-              <A href="/pages/2">Older &raquo;</A>
-          </DIV>
-        
+      </UL>
     </DIV>
-</DIV>
+  
+  <DIV class="entry">
+    <p>From the PostgreSQL <a href="https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html">docs</a>:</p>
+
+<blockquote>
+<p>Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.</p>
+
+<p>By using tablespaces, an administrator can control the disk layout of a PostgreSQL installation. This is useful in at least two ways. First, if the partition or volume on which the cluster was initialized runs out of space and cannot be extended, a tablespace can be created on a different partition and used until the system can be reconfigured.</p>
+
+<p>Second, tablespaces allow an administrator to use knowledge of the usage pattern of database objects to optimize performance. For example, an index which is very heavily used can be placed on a very fast, highly available disk, such as an expensive solid state device. At the same time a table storing archived data which is rarely used or not performance critical could be stored on a less expensive, slower disk system.</p>
+</blockquote>
+
+<p>As you can see, while not as powerful as tablespaces in, say, Oracle, they do still have their uses in PostgreSQL. You can use them to make use of different filesystems, or different mount options, or different disk types and, in doing so, intelligently apply performance characteristics to subsets of your data. For example, you could put your highest volume tables in a tablespace that is mounted from SSDs while the rest of your db is mounted from spinning rust.</p>
+
+<p>Sounds decent, right? Now you before you go off and be &quot;clever&quot; and create an SSD-backed mountpoint for your new tablespace, understand that there are places you <em>should not</em> create the tablespace. You shouldn&#39;t create tablespaces on any kind of ephemeral storage, for example on a <code>tmpfs</code> or a <code>ramfs</code> or similar. <em>You also should not create your new tablespaces under $PGDATA</em>. Yes, I&#39;m aware there is <code>$PGDATA/pg_tblspc</code> but that directory is <em>not for you</em>. The system will auto-populate that directory with pointers to the real location of your tablespaces!</p>
+
+<p>So what happens when you create a tablespace inside $PGDATA? Let&#39;s find out. First, we&#39;ll create the directory for the tablespace:</p>
+
+<p><noscript><pre><code>bash
+doug.hunley ~ $ mkdir $PGDATA/tablespaces
+doug.hunley ~ $ cd $PGDATA/tablespaces
+doug.hunley ~/pgdata/tablespaces $ pwd
+/Users/doug.hunley/pgdata/tablespaces
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script></p>
+
+<p>And we see that nothing bad has happened yet. So, let&#39;s pop over into <code>psql</code> and actually create the tablespace:</p>
+
+<p><noscript><pre><code>sql
+(doug.hunley@[local]:5432/doug.hunley) # CREATE TABLESPACE ts1 LOCATION &amp;#39;/Users/doug.hunley/pgdata/tablespaces&amp;#39;;
+WARNING:  42P17: tablespace location should not be inside the data directory
+LOCATION:  CreateTableSpace, tablespace.c:295
+CREATE TABLESPACE
+Time: 7.797 ms
+(doug.hunley@[local]:5432/doug.hunley) #
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script></p>
+
+<p>We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you&#39;ve got a problem. So where does the problem come in? </p>
+
+<p>Let&#39;s try to make a backup of our cluster:</p>
+
+<p><noscript><pre><code>bash
+doug.hunley ~ $ pg_basebackup -D pgdata2 -Fp -R -Xs -c fast -l &amp;#39;clone for slave&amp;#39; -P -v
+transaction log start point: 2/17000028 on timeline 1
+pg_basebackup: directory &amp;quot;/Users/doug.hunley/pgdata/tablespaces&amp;quot; exists but is not empty
+doug.hunley ~ $
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script></p>
+
+<p>There it is.</p>
+
+<p>When creating the backup, it tries to ensure the tablespace location is the same, but then it won&#39;t write to a non-empty directory. My example is two different $PGDATA locations on the same box, but the issue is the same when using different machines because <code>pg_basebackup</code> backs up <em>everything</em> in $PGDATA which means your tablespace directory gets cloned before it gets to the actual cloning of the data in the tablespace so you end up with &quot;stuff&quot; in the dir, making it non-empty. Which gives you the same error and output.</p>
+
+<p>OK, so it breaks backups. I can work around that by using another backup method. What else?</p>
+
+<p>How about using <code>pg_upgrade</code> to do an upgrade? No matter if you run in <code>link</code> mode or not, <code>pg_upgrade</code> <em>will not move</em> your tablespace location. So you may have <code>~/pgdata95</code> and <code>~/pgdata96</code> after the upgrade, but your tablespaces <em>are still in</em> <code>~/pgdata95/tablespaces</code>. So, as per the <a href="https://www.postgresql.org/docs/current/static/pgupgrade.html">docs</a>:</p>
+
+<blockquote>
+<p>Once you are satisfied with the upgrade, you can delete the old cluster&#39;s data directories by running the script mentioned when pg_upgrade completes.</p>
+</blockquote>
+
+<p>And <em>boom</em> you&#39;ve just deleted your tablespaces off disk. Congratulations!</p>
+
+<p>So there you have it. Two very good reasons to not create tablespaces inside $PGDATA. Please, don&#39;t do this. Everyone who admins that cluster going forward will thank you.</p>
+
+  </DIV>
+  <FONT size=-1>
+    <A href="/">Home</A> /
+    <A href="">Where Not To Put Your Tablespaces</A>
+  </FONT>
+
+  
+  <DIV class="comments">
+    <DIV id="disqus_thread"></div>
+      <SCRIPT type="text/javascript">
+        var disqus_shortname = 'douglashunley';
+
+        (function() {
+          var dsq = document.createElement('script');
+          var dsq.type = 'text/javascript';
+          var dsq.async = true
+          var dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+      </SCRIPT>
+      <NOSCRIPT>
+        Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </NOSCRIPT>
+    </DIV>
+  </DIV>
+
+
+</ARTICLE>
 
     </DIV>
 </DIV>
