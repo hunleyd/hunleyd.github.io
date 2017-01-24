@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<HTML>
+    <HEAD>
+    <TITLE>
+        
+          Managing multiple PostgreSQL installs via Homebrew
+        
+        Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly
+    </TITLE>
+
+    <META charset='utf-8' />
+<META content='text/html; charset=utf-8' http-equiv='Content-Type' />
+<META http-equiv='X-UA-Compatible' content='IE=edge' />
+<META name='author' content='Douglas J Hunley' />
+<META name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+
+
+  <META name='description' content='Following on from this post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I&#39;m back with a full-fledged shell script to help manage all this. Without further ado, the script:
+' />
+  <META property='og:description' content='Following on from this post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I&#39;m back with a full-fledged shell script to help manage all this. Without further ado, the script:
+' />
+
+
+
+  <META property='og:title' content='Managing multiple PostgreSQL installs via Homebrew' />
+  <META property='twitter:title' content='Managing multiple PostgreSQL installs via Homebrew' />
+
+
+
+    <!--[if lt IE 9]>
+        <SCRIPT src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></SCRIPT>
+    <![endif]-->
+
+    <LINK rel="alternate" type="application/rss+xml" title="Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly" href="/feeds/feed.xml" />
+
+<LINK rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<LINK rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-mfizz/2.3.0/font-mfizz.css" />
+<LINK rel="stylesheet" type="text/css" href="/style.css" />
+
+</HEAD>
+
+    <BODY>
+    <DIV class="body_container">
+        <DIV class="content_container">
+    <DIV class="posts_container">
+    <DIV class="posts_header_container clearfix">
+        <H2 class="site-name">
+            <A href="/">Douglas J Hunley</A>
+        </H2>
+        <P class="site-description">It's not that I'm anti-social; I'm just not user-friendly</P>
+    </DIV>
+    <DIV class="posts_content_container">
+        <ARTICLE class="post">
+  <H1>Managing multiple PostgreSQL installs via Homebrew</H1>
+  
+    <DIV class="meta">
+      <TIME datetime="2016-11-16">
+        November 16, 2016
+      </TIME>
+      <UL class="tag_list_in_post">
+        
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></LI>
+        
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/osx">osx</a></LI>
+        
+      </UL>
+    </DIV>
+  
+  <DIV class="entry">
+    <p><img src="http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png" border=0 align=right style="PADDING-LEFT: 5px">Following on from <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">this</a> post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I&#39;m back with a full-fledged shell script to help manage all this. Without further ado, the script:</p>
+
+<p><noscript><pre>#!/bin/sh</p>
+
+<p>wanted<em>ver=$1
+no</em>restart=</p>
+
+<h1>is the version requested installed?</h1>
+
+<p>brew ls --version postgresql-${wanted<em>ver} &amp;&gt;/dev/null
+if [[ $? -eq 0 ]] ; then
+  # yes, carry on
+  :
+else
+  # nope, so install it
+  echo -n &quot;Installing PostgreSQL ${wanted</em>ver}... &quot;
+  brew install postgresql-${wanted_ver} &amp;&gt;/tmp/brew.out
+  if [[ $? -eq 0 ]] ; then
+    echo &quot;done&quot;
+  else
+    echo &quot;FAILED!&quot;
+    cat /tmp/brew.out
+    exit
+fi</p>
+
+<h1>is postgresql is running?</h1>
+
+<p>for i in /usr/local/var/postgres/*
+do
+  check<em>ver=$(basename ${i})
+  is</em>running=$(ps -few | egrep -- &quot;[p]ostgres.<em>-D.</em>${check_ver}&quot;)</p>
+
+<p>if [[ -z ${is<em>running} ]] ; then
+    # nope, carry on
+    :
+  else
+    # it is. is it the requested version?
+    if [[ &quot;${wanted</em>ver}&quot; = &quot;${check<em>ver}&quot; ]] ; then
+      # yup, carry on
+      no</em>restart=t
+    else
+      # nope, so kill it
+      echo -n &quot;Stopping PostgreSQL ${check<em>ver}... &quot;
+      /usr/local/opt/postgresql-${check</em>ver}/bin/pg<em>ctl -D /usr/local/var/postgres/${check</em>ver} stop -w -mf &amp;&gt;/tmp/stop.out
+      if [[ $? -eq 0 ]] ; then
+        echo &quot;done!&quot;
+      else
+        echo &quot;FAILED!&quot;
+        cat /tmp/stop.out
+      fi
+    fi
+  fi
+done</p>
+
+<h1>what version is active?</h1>
+
+<p>active_ver=$(/usr/bin/stat -f %Y /usr/local/bin/psql | cut -d\/ -f3 | cut -d- -f2)</p>
+
+<h1>is the active version the requested version?</h1>
+
+<p>if [[ &quot;${active<em>ver}&quot; = &quot;${wanted</em>ver}&quot; ]] ; then
+  # yup, carry on
+  :
+else
+  # nope, so deactivate it
+  echo -n &quot;Deactivating PostgreSQL ${active<em>ver}... &quot;
+  brew unlink --force --overwrite postgresql-${active</em>ver} &amp;&gt;/dev/null
+  echo &quot;done!&quot;
+  # and activate the correct version
+  echo -n &quot;Activating PostgreSQL ${wanted<em>ver}... &quot;
+  brew link --force --overwrite postgresql-${wanted</em>ver} &amp;&gt;/dev/null
+  echo &quot;done!&quot;
+fi</p>
+
+<h1>point to the correct data dir</h1>
+
+<p>export PGDATA=/usr/local/var/postgres/${wanted_ver}</p>
+
+<h1>should we be starting a cluster?</h1>
+
+<p>if [[ &quot;${no<em>restart}&quot; = &quot;t&quot; ]] ; then
+  # nope, carry on
+  :
+else
+  # yup. has the cluster been initialized?
+  if [[ ! -d ${PGDATA} ]] ; then
+    # nope, so let&#39;s do that
+    echo -n &quot;Initializing PostgreSQL ${wanted</em>ver} cluster... &quot;
+    mkdir ${PGDATA}
+    initdb -k ${PGDATA} &amp;&gt;/dev/null || initdb ${PGDATA} &amp;&gt;/dev/null
+    echo &quot;done!&quot;
+  else
+    # yup, carry on
+    :
+  fi
+  # start the cluster
+  echo -n &quot;Starting PostgreSQL ${wanted<em>ver}... &quot;
+  pg</em>ctl -D ${PGDATA} start &amp;&gt;/tmp/postmaster.out
+  if [[ $? -eq 0 ]] ; then
+    echo &quot;done!&quot;
+  else
+    echo &quot;FAILED!&quot;
+    cat /tmp/postmaster.out
+  fi
+  ret=1
+  while [[ ${ret} -eq 1 ]]
+  do
+    # wait for the cluster to be available before exiting
+    pg_isready -q
+    ret=$?
+  done
+fi</pre></noscript><script src="https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js"> </script></p>
+
+<p>But what does it do? It&#39;s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">doug@Douglass-MacBook-Pro ~ » pg 9.6
+</code></pre></figure>
+<p>and then the script does the following:</p>
+
+<ul>
+<li>checks if the requested version is installed, and installs it if not</li>
+<li>checks if another version of PostgreSQL is running, and stops it</li>
+<li>checks if another version is linked as the active version, and unlinks it</li>
+<li>links the requested version as the active version</li>
+<li>sets PGDATA to point to the requested version&#39;s data cluster</li>
+<li>does an <code>initdb</code> for the requested version if needed</li>
+<li>starts the requested version&#39;s cluster</li>
+</ul>
+
+<p>I&#39;ll be the first to admit that the script could use additional work, but it&#39;s functional enough to start using today. As I continue to improve the script, I&#39;ll update the gist with those changes, so check back every so often.</p>
+
+<p>Enjoy.</p>
+
+  </DIV>
+  <FONT size=-1>
+    <A href="/">Home</A> /
+    <A href="">Managing multiple PostgreSQL installs via Homebrew</A>
+  </FONT>
+
+  
+  <DIV class="comments">
+    <DIV id="disqus_thread"></div>
+      <SCRIPT type="text/javascript">
+        var disqus_shortname = 'douglashunley';
+
+        (function() {
+          var dsq = document.createElement('script');
+          var dsq.type = 'text/javascript';
+          var dsq.async = true
+          var dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+      </SCRIPT>
+      <NOSCRIPT>
+        Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </NOSCRIPT>
+    </DIV>
+  </DIV>
+
+
+</ARTICLE>
+
+    </DIV>
+</DIV>
+
+    <DIV class="sidebar_container clearfix">
+    <DIV class="sidebar_avatar_container">
+        <A href="/"><IMG class="avatar" src="/images/avatar.png" /></A>
+    </DIV>
+    <DIV style="float: center; margin: 0 4px 4px 4px; padding: 0 4px 4px 4px; color: White; line-height: 1; text-align: center;">
+        <I class="fa fa-mars" aria-hidden="true"></I>
+        <I class="fa fa-linux" aria-hidden="true"></I>
+        <I class="icon-postgres"></i>
+        <I class="fa fa-android" aria-hidden="true"></I>
+        <I class="fa fa-gamepad" aria-hidden="true"></I>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Feeds:
+            <BR/>&nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A href="/feeds/feed.xml">EVERYTHING</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.general.xml">general</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.geek.xml">geek</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.kickstarter.xml">kickstarter</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.review.xml">review</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.android.xml">android</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.work.xml">work</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.computers.xml">computers</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.osx.xml">osx</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.linux.xml">linux</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.networking.xml">networking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.crowdfunding.xml">crowdfunding</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.postgresql.xml">postgresql</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.replication.xml">replication</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.howto.xml">howto</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.nexus5x.xml">nexus5x</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.protip.xml">protip</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.blog.xml">blog</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.github.xml">github</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.gaming.xml">gaming</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.biking.xml">biking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.pgcmh.xml">pgcmh</A>
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Archives:
+            
+              
+              <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+              <A href="/archives/2017">2017</A>
+              
+            
+              
+                
+                
+                
+                <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+                <A href="/archives/2016">2016</A>
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        
+          <A style="font-size: 92%" href="/tags/general">general</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/geek">geek</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/kickstarter">kickstarter</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/review">review</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 69%" href="/tags/android">android</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/work">work</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/computers">computers</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 73%" href="/tags/osx">osx</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/linux">linux</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/networking">networking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/crowdfunding">crowdfunding</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 121%" href="/tags/postgresql">postgresql</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/replication">replication</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/howto">howto</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/nexus5x">nexus5x</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/protip">protip</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/blog">blog</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/github">github</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/gaming">gaming</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/biking">biking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/pgcmh">pgcmh</a> &centerdot;&nbsp;
+        
+    </DIV>
+</DIV>
+
+</DIV>
+
+        <DIV class="footer_container">
+    <UL class="tag_list_in_post">
+        
+            <LI class="tag_list_item">
+                <A href="https://dhunley.deviantart.com/"><I class="fa fa-deviantart" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://facebook.com/douglas.j.hunley"><I class="fa fa-facebook" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://github.com/hunleyd"><I class="fa fa-github" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://instagram.com/doughunley"><I class="fa fa-instagram" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="http://www.last.fm/user/hunleyd"><I class="fa fa-lastfm" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.linkedin.com/in/dhunley"><I class="fa fa-linkedin" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.meetup.com/members/43608152"><I class="fa fa-meetup" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://reddit.com//u/hunleyd"><I class="fa fa-reddit-alien" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://twitter.com/hunleyd"><I class="fa fa-twitter" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://youtube.com/user/doughunley"><I class="fa fa-youtube" aria-hidden="true"></I></A>
+            </LI>
+        
+    </UL>
+    <P style="font-size: 50%;">
+        Site built with <A href="https://jekyllrb.com">Jekyll</A> and served via <A href="https://github.com">GitHub</A>. 
+        <BR />
+        &copy; 2017. All rights reserved.
+    </P>
+</DIV>
+
+    </DIV>
+</BODY>
+
+</HTML>

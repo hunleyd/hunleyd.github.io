@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<HTML>
+    <HEAD>
+    <TITLE>
+        
+          PostgreSQL logging, strftime, and you
+        
+        Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly
+    </TITLE>
+
+    <META charset='utf-8' />
+<META content='text/html; charset=utf-8' http-equiv='Content-Type' />
+<META http-equiv='X-UA-Compatible' content='IE=edge' />
+<META name='author' content='Douglas J Hunley' />
+<META name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+
+
+  <META name='description' content='PostgreSQL has a pretty extensive logging facility. I&#39;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&#39;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&#39;t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?
+' />
+  <META property='og:description' content='PostgreSQL has a pretty extensive logging facility. I&#39;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&#39;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&#39;t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?
+' />
+
+
+
+  <META property='og:title' content='PostgreSQL logging, strftime, and you' />
+  <META property='twitter:title' content='PostgreSQL logging, strftime, and you' />
+
+
+
+    <!--[if lt IE 9]>
+        <SCRIPT src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></SCRIPT>
+    <![endif]-->
+
+    <LINK rel="alternate" type="application/rss+xml" title="Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly" href="/feeds/feed.xml" />
+
+<LINK rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<LINK rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-mfizz/2.3.0/font-mfizz.css" />
+<LINK rel="stylesheet" type="text/css" href="/style.css" />
+
+</HEAD>
+
+    <BODY>
+    <DIV class="body_container">
+        <DIV class="content_container">
+    <DIV class="posts_container">
+    <DIV class="posts_header_container clearfix">
+        <H2 class="site-name">
+            <A href="/">Douglas J Hunley</A>
+        </H2>
+        <P class="site-description">It's not that I'm anti-social; I'm just not user-friendly</P>
+    </DIV>
+    <DIV class="posts_content_container">
+        <ARTICLE class="post">
+  <H1>PostgreSQL logging, strftime, and you</H1>
+  
+    <DIV class="meta">
+      <TIME datetime="2016-11-21">
+        November 21, 2016
+      </TIME>
+      <UL class="tag_list_in_post">
+        
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></LI>
+        
+      </UL>
+    </DIV>
+  
+  <DIV class="entry">
+    <p><img src="http://www.metasource.com/images/content/data-processing-image.jpg" class="rleader">PostgreSQL has a pretty extensive logging facility. I&#39;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&#39;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&#39;t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">    The strftime() function formats the information from timeptr into the buffer s,
+    according to the string pointed to by format.
+
+    The format string consists of zero or more conversion specifications and ordi-
+    nary characters.  All ordinary characters are copied directly into the buffer.
+    A conversion specification consists of a percent sign ```%&#39;&#39;&#39; and one other
+    character.
+</code></pre></figure>
+<p>Say what? Essentially, given a timestamp and a format specification, you&#39;ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems <code>libc</code> implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it&#39;s BSD libc. You really shouldn&#39;t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we&#39;ll use today&#39;s date of Monday, November 21, 2016 with a timestamp of 1pm EST):</p>
+<figure class="highlight"><pre><code class="language-apache" data-lang="apache">    %A    is replaced by national representation of the full weekday name (&quot;Monday&quot;)
+    %a    is replaced by national representation of the abbreviated weekday name (&quot;Mon&quot;)
+    %B    is replaced by national representation of the full month name (&quot;November&quot;)
+    %b    is replaced by national representation of the abbreviated month name (&quot;Nov&quot;)
+    %C    is replaced by (year / 100) as decimal number; single digits are preceded by a zero (&quot;20&quot;)
+    %c    is replaced by national representation of time and date (&quot;Mon Nov 21 13:00:00 2016&quot;)
+    %D    is equivalent to ``%m/%d/%y&#39;&#39; (&quot;11/21/16&quot;)
+    %d    is replaced by the day of the month as a decimal number (01-31) (&quot;21&quot;)
+    %e    is replaced by the day of the month as a decimal number (1-31); single digits are preceded by a blank (&quot;21&quot;)
+    %F    is equivalent to ``%Y-%m-%d&#39;&#39; (&quot;2016-11-21&quot;)
+    %G    is replaced by a year as a decimal number with century.  This year is the one that contains the greater part of the week (Monday as the first day of the week) (&quot;2016&quot;)
+    %g    is replaced by the same year as in ``%G&#39;&#39;, but as a decimal number without century (00-99) (&quot;16&quot;)
+    %H    is replaced by the hour (24-hour clock) as a decimal number (00-23) (&quot;12&quot;)
+    %h    the same as %b (&quot;Nov&quot;)
+    %I    is replaced by the hour (12-hour clock) as a decimal number (01-12) (&quot;12&quot;)
+    %j    is replaced by the day of the year as a decimal number (001-366) (&quot;326&quot;)
+    %k    is replaced by the hour (24-hour clock) as a decimal number (0-23); single digits are preceded by a blank (&quot;13&quot;)
+    %l    is replaced by the hour (12-hour clock) as a decimal number (1-12); single digits are preceded by a blank (&quot; 1&quot;)
+    %M    is replaced by the minute as a decimal number (00-59) (&quot;00&quot;)
+    %m    is replaced by the month as a decimal number (01-12) (&quot;11&quot;)
+    %n    is replaced by a newline
+    %p    is replaced by national representation of either &quot;ante meridiem&quot; (a.m.) or &quot;post meridiem&quot; (p.m.)  as appropriate (&quot;PM&quot;)
+    %R    is equivalent to ``%H:%M&#39;&#39; (&quot;13:00&quot;)
+    %r    is equivalent to ``%I:%M:%S %p&#39;&#39; (&quot;01:00:00 PM&quot;)
+    %S    is replaced by the second as a decimal number (00-60) (&quot;00&quot;)
+    %s    is replaced by the number of seconds since the Epoch, UTC (&quot;1479751200&quot;)
+    %T    is equivalent to ``%H:%M:%S&#39;&#39; (&quot;13:00:00&quot;)
+    %t    is replaced by a tab
+    %U    is replaced by the week number of the year (Sunday as the first day of the week) as a decimal number (00-53) (&quot;47&quot;)
+    %u    is replaced by the weekday (Monday as the first day of the week) as a decimal number (1-7) (&quot;1&quot;)
+    %V    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (01-53).  If the week containing January 1 has four or more days in the new year, then it is week 1; otherwise it is the last week of the previous year, and the next week is week 1 (&quot;47&quot;)
+    %v    is equivalent to ``%e-%b-%Y&#39;&#39; (&quot;21-Nov-2016&quot;)
+    %W    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (00-53) (&quot;47&quot;)
+    %w    is replaced by the weekday (Sunday as the first day of the week) as a decimal number (0-6) (&quot;1&quot;)
+    %X    is replaced by national representation of the time (&quot;13:00:00&quot;)
+    %x    is replaced by national representation of the date (&quot;11/21/2016&quot;)
+    %Y    is replaced by the year with century as a decimal number (&quot;2016&quot;)
+    %y    is replaced by the year without century as a decimal number (00-99) (&quot;16&quot;)
+    %Z    is replaced by the time zone name (&quot;EST&quot;)
+    %z    is replaced by the time zone offset from UTC; a leading plus sign stands for east of UTC, a minus sign for west of UTC, hours and minutes follow with two digits each and no delimiter between them (&quot;-0500&quot;)
+    %%    is replaced by `%&#39;
+</code></pre></figure>
+<p>Phew! That was a lot wasn&#39;t it? And where exactly does this come into play? As the <code>postgresql.conf</code> says:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">log_filename = &#39;postgresql-%a.log&#39;      # log file name pattern,
+                                        # can include strftime() escapes
+</code></pre></figure>
+<p>So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I&#39;m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my <code>$PGDATA/pg_log</code> directory will only ever contain:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
+postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
+postgresql-Sat.log
+</code></pre></figure>
+<p>But wait! The key to all this is that <em>PostgreSQL only evaluates the filename when it first opens/creates the logfile</em>. So, if you start your cluster on Mon and do not restart it and don&#39;t have it configured to log rotate, you&#39;ll still be writing to <code>postgresql-Mon.log</code> forever. Fortunately, PostgreSQL has you covered here too:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">log_rotation_age = 1d      # Automatic rotation of logfiles will
+                           # happen after that time.  0 disables.
+log_rotation_size = 10MB   # Automatic rotation of logfiles will
+                           # happen after that much log output.
+                           # 0 disables.
+</code></pre></figure>
+<p>So, using my <code>log_filename</code> from above, I enable <code>log_rotation_age</code> (set to 1 day) and disable <code>log_rotation_size</code> and I automatically get a new log every day. If I wanted hourly logs, I could do something like:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">log_filename = &#39;postgresql-%a-%H&#39;
+log_rotation_age = 1h
+</code></pre></figure>
+<p>which would give me logs of <code>postgresql-Mon-00</code>, <code>postgresql-Mon-01</code>, etc. You should be able to see how combining these three <code>postgresql.conf</code> parameters and some crafty strftime() escapes gives you a <em>ton</em> of flexibility in your logging. So go forth and tweak those logs!</p>
+
+  </DIV>
+  <FONT size=-1>
+    <A href="/">Home</A> /
+    <A href="">PostgreSQL logging, strftime, and you</A>
+  </FONT>
+
+  
+  <DIV class="comments">
+    <DIV id="disqus_thread"></div>
+      <SCRIPT type="text/javascript">
+        var disqus_shortname = 'douglashunley';
+
+        (function() {
+          var dsq = document.createElement('script');
+          var dsq.type = 'text/javascript';
+          var dsq.async = true
+          var dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+      </SCRIPT>
+      <NOSCRIPT>
+        Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </NOSCRIPT>
+    </DIV>
+  </DIV>
+
+
+</ARTICLE>
+
+    </DIV>
+</DIV>
+
+    <DIV class="sidebar_container clearfix">
+    <DIV class="sidebar_avatar_container">
+        <A href="/"><IMG class="avatar" src="/images/avatar.png" /></A>
+    </DIV>
+    <DIV style="float: center; margin: 0 4px 4px 4px; padding: 0 4px 4px 4px; color: White; line-height: 1; text-align: center;">
+        <I class="fa fa-mars" aria-hidden="true"></I>
+        <I class="fa fa-linux" aria-hidden="true"></I>
+        <I class="icon-postgres"></i>
+        <I class="fa fa-android" aria-hidden="true"></I>
+        <I class="fa fa-gamepad" aria-hidden="true"></I>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Feeds:
+            <BR/>&nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A href="/feeds/feed.xml">EVERYTHING</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.general.xml">general</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.geek.xml">geek</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.kickstarter.xml">kickstarter</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.review.xml">review</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.android.xml">android</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.work.xml">work</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.computers.xml">computers</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.osx.xml">osx</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.linux.xml">linux</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.networking.xml">networking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.crowdfunding.xml">crowdfunding</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.postgresql.xml">postgresql</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.replication.xml">replication</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.howto.xml">howto</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.nexus5x.xml">nexus5x</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.protip.xml">protip</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.blog.xml">blog</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.github.xml">github</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.gaming.xml">gaming</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.biking.xml">biking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.pgcmh.xml">pgcmh</A>
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Archives:
+            
+              
+              <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+              <A href="/archives/2017">2017</A>
+              
+            
+              
+                
+                
+                
+                <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+                <A href="/archives/2016">2016</A>
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        
+          <A style="font-size: 92%" href="/tags/general">general</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/geek">geek</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/kickstarter">kickstarter</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/review">review</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 69%" href="/tags/android">android</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/work">work</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/computers">computers</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 73%" href="/tags/osx">osx</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/linux">linux</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/networking">networking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/crowdfunding">crowdfunding</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 121%" href="/tags/postgresql">postgresql</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/replication">replication</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/howto">howto</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/nexus5x">nexus5x</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/protip">protip</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/blog">blog</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/github">github</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/gaming">gaming</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/biking">biking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/pgcmh">pgcmh</a> &centerdot;&nbsp;
+        
+    </DIV>
+</DIV>
+
+</DIV>
+
+        <DIV class="footer_container">
+    <UL class="tag_list_in_post">
+        
+            <LI class="tag_list_item">
+                <A href="https://dhunley.deviantart.com/"><I class="fa fa-deviantart" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://facebook.com/douglas.j.hunley"><I class="fa fa-facebook" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://github.com/hunleyd"><I class="fa fa-github" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://instagram.com/doughunley"><I class="fa fa-instagram" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="http://www.last.fm/user/hunleyd"><I class="fa fa-lastfm" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.linkedin.com/in/dhunley"><I class="fa fa-linkedin" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.meetup.com/members/43608152"><I class="fa fa-meetup" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://reddit.com//u/hunleyd"><I class="fa fa-reddit-alien" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://twitter.com/hunleyd"><I class="fa fa-twitter" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://youtube.com/user/doughunley"><I class="fa fa-youtube" aria-hidden="true"></I></A>
+            </LI>
+        
+    </UL>
+    <P style="font-size: 50%;">
+        Site built with <A href="https://jekyllrb.com">Jekyll</A> and served via <A href="https://github.com">GitHub</A>. 
+        <BR />
+        &copy; 2017. All rights reserved.
+    </P>
+</DIV>
+
+    </DIV>
+</BODY>
+
+</HTML>

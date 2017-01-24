@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<HTML>
+    <HEAD>
+    <TITLE>
+        
+          Upgrading PostgreSQL 5x faster
+        
+        Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly
+    </TITLE>
+
+    <META charset='utf-8' />
+<META content='text/html; charset=utf-8' http-equiv='Content-Type' />
+<META http-equiv='X-UA-Compatible' content='IE=edge' />
+<META name='author' content='Douglas J Hunley' />
+<META name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+
+
+  <META name='description' content='Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.
+' />
+  <META property='og:description' content='Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.
+' />
+
+
+
+  <META property='og:title' content='Upgrading PostgreSQL 5x faster' />
+  <META property='twitter:title' content='Upgrading PostgreSQL 5x faster' />
+
+
+
+    <!--[if lt IE 9]>
+        <SCRIPT src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></SCRIPT>
+    <![endif]-->
+
+    <LINK rel="alternate" type="application/rss+xml" title="Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly" href="/feeds/feed.xml" />
+
+<LINK rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<LINK rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-mfizz/2.3.0/font-mfizz.css" />
+<LINK rel="stylesheet" type="text/css" href="/style.css" />
+
+</HEAD>
+
+    <BODY>
+    <DIV class="body_container">
+        <DIV class="content_container">
+    <DIV class="posts_container">
+    <DIV class="posts_header_container clearfix">
+        <H2 class="site-name">
+            <A href="/">Douglas J Hunley</A>
+        </H2>
+        <P class="site-description">It's not that I'm anti-social; I'm just not user-friendly</P>
+    </DIV>
+    <DIV class="posts_content_container">
+        <ARTICLE class="post">
+  <H1>Upgrading PostgreSQL 5x faster</H1>
+  
+    <DIV class="meta">
+      <TIME datetime="2016-11-18">
+        November 18, 2016
+      </TIME>
+      <UL class="tag_list_in_post">
+        
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></LI>
+        
+      </UL>
+    </DIV>
+  
+  <DIV class="entry">
+    <p><img src="http://www.navops.io/img/launch-samsung-1.gif" border=0 align=left style="PADDING-RIGHT: 5px" height=100 width=100>Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
+
+<p>Thankfully, the PostgreSQL team introduced <code>pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code>pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to &quot;short circuit&quot; the upgrade process. While this isn&#39;t (yet) a true &quot;in place upgrade&quot; as done by some other databases, it&#39;s pretty close. And it&#39;s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let&#39;s look at this process shall we?</p>
+
+<p>First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a> if you need to do this). We&#39;re going to use <code>pgbench</code> to create some data in our PostgreSQL 9.5 instance:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">doug@Douglass-MacBook-Pro ~/foo » pg 9.5
+doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
+doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
+doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
+</code></pre></figure>
+<p>Now that we&#39;ve got data in our cluster, we can do the dump. If this were a production instance, <em>this is where you&#39;d have to stop your application(s)</em>.</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &gt; data.sql
+pg_dumpall &gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
+</code></pre></figure>
+<p>We&#39;ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let&#39;s restore our data to the PostgreSQL 9.6 cluster now:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">doug@Douglass-MacBook-Pro ~/foo » pg 9.6
+doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
+psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
+</code></pre></figure>
+<p>After 37 minutes, our data is back and we can start our applications back up. <em>An outage of approximately 56.5 minutes</em>.</p>
+
+<p>Now, let&#39;s blow away our PostgreSQL 9.6 cluster and use <code>pg_upgrade</code> to complete the same task. You would do this with the application(s) down as well!</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text">doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
+doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
+doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
+doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
+pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
+</code></pre></figure>
+<p>And we&#39;re done <em>in 10.5 minutes</em>. It took 1/5 the outage of the dump / load method. And that&#39;s on my puny dataset with my overworked laptop! Pretty impressive, no?</p>
+
+<p>For the curious, the <code>pg_upgrade</code> output that I omitted above for readability&#39;s sake is:</p>
+
+<p><noscript><pre>```</p>
+
+<h2>Performing Consistency Checks</h2>
+
+<p>Checking cluster versions                                   ok
+Checking database user is the install user                  ok
+Checking database connection settings                       ok
+Checking for prepared transactions                          ok
+Checking for reg* system OID user data types                ok
+Checking for contrib/isn with bigint-passing mismatch       ok
+Checking for roles starting with &#39;pg_&#39;                      ok
+Creating dump of global objects                             ok
+Creating dump of database schemas
+                                                            ok
+Checking for presence of required libraries                 ok
+Checking database user is the install user                  ok
+Checking for prepared transactions                          ok</p>
+
+<p>If pg_upgrade fails after this point, you must re-initdb the
+new cluster before continuing.</p>
+
+<h2>Performing Upgrade</h2>
+
+<p>Analyzing all rows in the new cluster                       ok
+Freezing all rows on the new cluster                        ok
+Deleting files from new pg<em>clog                             ok
+Copying old pg</em>clog to new server                           ok
+Setting next transaction ID and epoch for new cluster       ok
+Deleting files from new pg<em>multixact/offsets                ok
+Copying old pg</em>multixact/offsets to new server              ok
+Deleting files from new pg<em>multixact/members                ok
+Copying old pg</em>multixact/members to new server              ok
+Setting next multixact ID and offset for new cluster        ok
+Resetting WAL archives                                      ok
+Setting frozenxid and minmxid counters in new cluster       ok
+Restoring global objects in the new cluster                 ok
+Restoring database schemas in the new cluster
+                                                            ok
+Copying user relation files                                 ok
+Setting next OID for new cluster                            ok
+Sync data directory to disk                                 ok
+Creating script to analyze new cluster                      ok
+Creating script to delete old cluster                       ok</p>
+
+<h2>Upgrade Complete</h2>
+
+<p>Optimizer statistics are not transferred by pg<em>upgrade so,
+once you start the new server, consider running:
+    ./analyze</em>new_cluster.sh</p>
+
+<p>Running this script will delete the old cluster&#39;s data files:
+    ./delete<em>old</em>cluster.sh
+```</pre></noscript><script src="https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js"> </script></p>
+
+  </DIV>
+  <FONT size=-1>
+    <A href="/">Home</A> /
+    <A href="">Upgrading PostgreSQL 5x faster</A>
+  </FONT>
+
+  
+  <DIV class="comments">
+    <DIV id="disqus_thread"></div>
+      <SCRIPT type="text/javascript">
+        var disqus_shortname = 'douglashunley';
+
+        (function() {
+          var dsq = document.createElement('script');
+          var dsq.type = 'text/javascript';
+          var dsq.async = true
+          var dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+      </SCRIPT>
+      <NOSCRIPT>
+        Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </NOSCRIPT>
+    </DIV>
+  </DIV>
+
+
+</ARTICLE>
+
+    </DIV>
+</DIV>
+
+    <DIV class="sidebar_container clearfix">
+    <DIV class="sidebar_avatar_container">
+        <A href="/"><IMG class="avatar" src="/images/avatar.png" /></A>
+    </DIV>
+    <DIV style="float: center; margin: 0 4px 4px 4px; padding: 0 4px 4px 4px; color: White; line-height: 1; text-align: center;">
+        <I class="fa fa-mars" aria-hidden="true"></I>
+        <I class="fa fa-linux" aria-hidden="true"></I>
+        <I class="icon-postgres"></i>
+        <I class="fa fa-android" aria-hidden="true"></I>
+        <I class="fa fa-gamepad" aria-hidden="true"></I>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Feeds:
+            <BR/>&nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A href="/feeds/feed.xml">EVERYTHING</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.general.xml">general</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.geek.xml">geek</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.kickstarter.xml">kickstarter</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.review.xml">review</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.android.xml">android</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.work.xml">work</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.computers.xml">computers</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.osx.xml">osx</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.linux.xml">linux</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.networking.xml">networking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.crowdfunding.xml">crowdfunding</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.postgresql.xml">postgresql</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.replication.xml">replication</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.howto.xml">howto</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.nexus5x.xml">nexus5x</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.protip.xml">protip</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.blog.xml">blog</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.github.xml">github</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.gaming.xml">gaming</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.biking.xml">biking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.pgcmh.xml">pgcmh</A>
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Archives:
+            
+              
+              <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+              <A href="/archives/2017">2017</A>
+              
+            
+              
+                
+                
+                
+                <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+                <A href="/archives/2016">2016</A>
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        
+          <A style="font-size: 92%" href="/tags/general">general</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/geek">geek</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/kickstarter">kickstarter</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/review">review</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 69%" href="/tags/android">android</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/work">work</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/computers">computers</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 73%" href="/tags/osx">osx</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/linux">linux</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/networking">networking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/crowdfunding">crowdfunding</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 121%" href="/tags/postgresql">postgresql</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/replication">replication</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/howto">howto</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/nexus5x">nexus5x</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/protip">protip</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/blog">blog</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/github">github</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/gaming">gaming</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/biking">biking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/pgcmh">pgcmh</a> &centerdot;&nbsp;
+        
+    </DIV>
+</DIV>
+
+</DIV>
+
+        <DIV class="footer_container">
+    <UL class="tag_list_in_post">
+        
+            <LI class="tag_list_item">
+                <A href="https://dhunley.deviantart.com/"><I class="fa fa-deviantart" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://facebook.com/douglas.j.hunley"><I class="fa fa-facebook" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://github.com/hunleyd"><I class="fa fa-github" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://instagram.com/doughunley"><I class="fa fa-instagram" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="http://www.last.fm/user/hunleyd"><I class="fa fa-lastfm" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.linkedin.com/in/dhunley"><I class="fa fa-linkedin" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.meetup.com/members/43608152"><I class="fa fa-meetup" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://reddit.com//u/hunleyd"><I class="fa fa-reddit-alien" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://twitter.com/hunleyd"><I class="fa fa-twitter" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://youtube.com/user/doughunley"><I class="fa fa-youtube" aria-hidden="true"></I></A>
+            </LI>
+        
+    </UL>
+    <P style="font-size: 50%;">
+        Site built with <A href="https://jekyllrb.com">Jekyll</A> and served via <A href="https://github.com">GitHub</A>. 
+        <BR />
+        &copy; 2017. All rights reserved.
+    </P>
+</DIV>
+
+    </DIV>
+</BODY>
+
+</HTML>

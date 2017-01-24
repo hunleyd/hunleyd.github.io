@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<HTML>
+    <HEAD>
+    <TITLE>
+        
+          Where Not To Put Your Tablespaces
+        
+        Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly
+    </TITLE>
+
+    <META charset='utf-8' />
+<META content='text/html; charset=utf-8' http-equiv='Content-Type' />
+<META http-equiv='X-UA-Compatible' content='IE=edge' />
+<META name='author' content='Douglas J Hunley' />
+<META name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+
+
+  <META name='description' content='From the PostgreSQL docs:
+' />
+  <META property='og:description' content='From the PostgreSQL docs:
+' />
+
+
+
+  <META property='og:title' content='Where Not To Put Your Tablespaces' />
+  <META property='twitter:title' content='Where Not To Put Your Tablespaces' />
+
+
+
+    <!--[if lt IE 9]>
+        <SCRIPT src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></SCRIPT>
+    <![endif]-->
+
+    <LINK rel="alternate" type="application/rss+xml" title="Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly" href="/feeds/feed.xml" />
+
+<LINK rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<LINK rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-mfizz/2.3.0/font-mfizz.css" />
+<LINK rel="stylesheet" type="text/css" href="/style.css" />
+
+</HEAD>
+
+    <BODY>
+    <DIV class="body_container">
+        <DIV class="content_container">
+    <DIV class="posts_container">
+    <DIV class="posts_header_container clearfix">
+        <H2 class="site-name">
+            <A href="/">Douglas J Hunley</A>
+        </H2>
+        <P class="site-description">It's not that I'm anti-social; I'm just not user-friendly</P>
+    </DIV>
+    <DIV class="posts_content_container">
+        <ARTICLE class="post">
+  <H1>Where Not To Put Your Tablespaces</H1>
+  
+    <DIV class="meta">
+      <TIME datetime="2016-08-24">
+        August 24, 2016
+      </TIME>
+      <UL class="tag_list_in_post">
+        
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></LI>
+        
+      </UL>
+    </DIV>
+  
+  <DIV class="entry">
+    <p>From the PostgreSQL <a href="https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html">docs</a>:</p>
+
+<blockquote>
+<p>Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.</p>
+
+<p>By using tablespaces, an administrator can control the disk layout of a PostgreSQL installation. This is useful in at least two ways. First, if the partition or volume on which the cluster was initialized runs out of space and cannot be extended, a tablespace can be created on a different partition and used until the system can be reconfigured.</p>
+
+<p>Second, tablespaces allow an administrator to use knowledge of the usage pattern of database objects to optimize performance. For example, an index which is very heavily used can be placed on a very fast, highly available disk, such as an expensive solid state device. At the same time a table storing archived data which is rarely used or not performance critical could be stored on a less expensive, slower disk system.</p>
+</blockquote>
+
+<p>As you can see, while not as powerful as tablespaces in, say, Oracle, they do still have their uses in PostgreSQL. You can use them to make use of different filesystems, or different mount options, or different disk types and, in doing so, intelligently apply performance characteristics to subsets of your data. For example, you could put your highest volume tables in a tablespace that is mounted from SSDs while the rest of your db is mounted from spinning rust.</p>
+
+<p>Sounds decent, right? Now you before you go off and be &quot;clever&quot; and create an SSD-backed mountpoint for your new tablespace, understand that there are places you <em>should not</em> create the tablespace. You shouldn&#39;t create tablespaces on any kind of ephemeral storage, for example on a <code>tmpfs</code> or a <code>ramfs</code> or similar. <em>You also should not create your new tablespaces under $PGDATA</em>. Yes, I&#39;m aware there is <code>$PGDATA/pg_tblspc</code> but that directory is <em>not for you</em>. The system will auto-populate that directory with pointers to the real location of your tablespaces!</p>
+
+<p>So what happens when you create a tablespace inside $PGDATA? Let&#39;s find out. First, we&#39;ll create the directory for the tablespace:</p>
+
+<p><noscript><pre><code>bash
+doug.hunley ~ $ mkdir $PGDATA/tablespaces
+doug.hunley ~ $ cd $PGDATA/tablespaces
+doug.hunley ~/pgdata/tablespaces $ pwd
+/Users/doug.hunley/pgdata/tablespaces
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script></p>
+
+<p>And we see that nothing bad has happened yet. So, let&#39;s pop over into <code>psql</code> and actually create the tablespace:</p>
+
+<p><noscript><pre><code>sql
+(doug.hunley@[local]:5432/doug.hunley) # CREATE TABLESPACE ts1 LOCATION &amp;#39;/Users/doug.hunley/pgdata/tablespaces&amp;#39;;
+WARNING:  42P17: tablespace location should not be inside the data directory
+LOCATION:  CreateTableSpace, tablespace.c:295
+CREATE TABLESPACE
+Time: 7.797 ms
+(doug.hunley@[local]:5432/doug.hunley) #
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script></p>
+
+<p>We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you&#39;ve got a problem. So where does the problem come in? </p>
+
+<p>Let&#39;s try to make a backup of our cluster:</p>
+
+<p><noscript><pre><code>bash
+doug.hunley ~ $ pg_basebackup -D pgdata2 -Fp -R -Xs -c fast -l &amp;#39;clone for slave&amp;#39; -P -v
+transaction log start point: 2/17000028 on timeline 1
+pg_basebackup: directory &amp;quot;/Users/doug.hunley/pgdata/tablespaces&amp;quot; exists but is not empty
+doug.hunley ~ $
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script></p>
+
+<p>There it is.</p>
+
+<p>When creating the backup, it tries to ensure the tablespace location is the same, but then it won&#39;t write to a non-empty directory. My example is two different $PGDATA locations on the same box, but the issue is the same when using different machines because <code>pg_basebackup</code> backs up <em>everything</em> in $PGDATA which means your tablespace directory gets cloned before it gets to the actual cloning of the data in the tablespace so you end up with &quot;stuff&quot; in the dir, making it non-empty. Which gives you the same error and output.</p>
+
+<p>OK, so it breaks backups. I can work around that by using another backup method. What else?</p>
+
+<p>How about using <code>pg_upgrade</code> to do an upgrade? No matter if you run in <code>link</code> mode or not, <code>pg_upgrade</code> <em>will not move</em> your tablespace location. So you may have <code>~/pgdata95</code> and <code>~/pgdata96</code> after the upgrade, but your tablespaces <em>are still in</em> <code>~/pgdata95/tablespaces</code>. So, as per the <a href="https://www.postgresql.org/docs/current/static/pgupgrade.html">docs</a>:</p>
+
+<blockquote>
+<p>Once you are satisfied with the upgrade, you can delete the old cluster&#39;s data directories by running the script mentioned when pg_upgrade completes.</p>
+</blockquote>
+
+<p>And <em>boom</em> you&#39;ve just deleted your tablespaces off disk. Congratulations!</p>
+
+<p>So there you have it. Two very good reasons to not create tablespaces inside $PGDATA. Please, don&#39;t do this. Everyone who admins that cluster going forward will thank you.</p>
+
+  </DIV>
+  <FONT size=-1>
+    <A href="/">Home</A> /
+    <A href="">Where Not To Put Your Tablespaces</A>
+  </FONT>
+
+  
+  <DIV class="comments">
+    <DIV id="disqus_thread"></div>
+      <SCRIPT type="text/javascript">
+        var disqus_shortname = 'douglashunley';
+
+        (function() {
+          var dsq = document.createElement('script');
+          var dsq.type = 'text/javascript';
+          var dsq.async = true
+          var dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+      </SCRIPT>
+      <NOSCRIPT>
+        Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </NOSCRIPT>
+    </DIV>
+  </DIV>
+
+
+</ARTICLE>
+
+    </DIV>
+</DIV>
+
+    <DIV class="sidebar_container clearfix">
+    <DIV class="sidebar_avatar_container">
+        <A href="/"><IMG class="avatar" src="/images/avatar.png" /></A>
+    </DIV>
+    <DIV style="float: center; margin: 0 4px 4px 4px; padding: 0 4px 4px 4px; color: White; line-height: 1; text-align: center;">
+        <I class="fa fa-mars" aria-hidden="true"></I>
+        <I class="fa fa-linux" aria-hidden="true"></I>
+        <I class="icon-postgres"></i>
+        <I class="fa fa-android" aria-hidden="true"></I>
+        <I class="fa fa-gamepad" aria-hidden="true"></I>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Feeds:
+            <BR/>&nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A href="/feeds/feed.xml">EVERYTHING</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.general.xml">general</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.geek.xml">geek</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.kickstarter.xml">kickstarter</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.review.xml">review</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.android.xml">android</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.work.xml">work</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.computers.xml">computers</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.osx.xml">osx</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.linux.xml">linux</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.networking.xml">networking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.crowdfunding.xml">crowdfunding</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.postgresql.xml">postgresql</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.replication.xml">replication</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.howto.xml">howto</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.nexus5x.xml">nexus5x</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.protip.xml">protip</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.blog.xml">blog</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.github.xml">github</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.gaming.xml">gaming</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.biking.xml">biking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.pgcmh.xml">pgcmh</A>
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Archives:
+            
+              
+              <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+              <A href="/archives/2017">2017</A>
+              
+            
+              
+                
+                
+                
+                <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+                <A href="/archives/2016">2016</A>
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        
+          <A style="font-size: 92%" href="/tags/general">general</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/geek">geek</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/kickstarter">kickstarter</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/review">review</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 69%" href="/tags/android">android</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/work">work</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/computers">computers</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 73%" href="/tags/osx">osx</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/linux">linux</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/networking">networking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/crowdfunding">crowdfunding</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 121%" href="/tags/postgresql">postgresql</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/replication">replication</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/howto">howto</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/nexus5x">nexus5x</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/protip">protip</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/blog">blog</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/github">github</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/gaming">gaming</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/biking">biking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/pgcmh">pgcmh</a> &centerdot;&nbsp;
+        
+    </DIV>
+</DIV>
+
+</DIV>
+
+        <DIV class="footer_container">
+    <UL class="tag_list_in_post">
+        
+            <LI class="tag_list_item">
+                <A href="https://dhunley.deviantart.com/"><I class="fa fa-deviantart" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://facebook.com/douglas.j.hunley"><I class="fa fa-facebook" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://github.com/hunleyd"><I class="fa fa-github" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://instagram.com/doughunley"><I class="fa fa-instagram" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="http://www.last.fm/user/hunleyd"><I class="fa fa-lastfm" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.linkedin.com/in/dhunley"><I class="fa fa-linkedin" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.meetup.com/members/43608152"><I class="fa fa-meetup" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://reddit.com//u/hunleyd"><I class="fa fa-reddit-alien" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://twitter.com/hunleyd"><I class="fa fa-twitter" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://youtube.com/user/doughunley"><I class="fa fa-youtube" aria-hidden="true"></I></A>
+            </LI>
+        
+    </UL>
+    <P style="font-size: 50%;">
+        Site built with <A href="https://jekyllrb.com">Jekyll</A> and served via <A href="https://github.com">GitHub</A>. 
+        <BR />
+        &copy; 2017. All rights reserved.
+    </P>
+</DIV>
+
+    </DIV>
+</BODY>
+
+</HTML>

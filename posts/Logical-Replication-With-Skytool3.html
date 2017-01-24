@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<HTML>
+    <HEAD>
+    <TITLE>
+        
+          Logical Replication with Skytools3
+        
+        Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly
+    </TITLE>
+
+    <META charset='utf-8' />
+<META content='text/html; charset=utf-8' http-equiv='Content-Type' />
+<META http-equiv='X-UA-Compatible' content='IE=edge' />
+<META name='author' content='Douglas J Hunley' />
+<META name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+
+
+  <META name='description' content=' UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it here.
+' />
+  <META property='og:description' content=' UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it here.
+' />
+
+
+
+  <META property='og:title' content='Logical Replication with Skytools3' />
+  <META property='twitter:title' content='Logical Replication with Skytools3' />
+
+
+
+    <!--[if lt IE 9]>
+        <SCRIPT src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></SCRIPT>
+    <![endif]-->
+
+    <LINK rel="alternate" type="application/rss+xml" title="Douglas J Hunley - It's not that I'm anti-social; I'm just not user-friendly" href="/feeds/feed.xml" />
+
+<LINK rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<LINK rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-mfizz/2.3.0/font-mfizz.css" />
+<LINK rel="stylesheet" type="text/css" href="/style.css" />
+
+</HEAD>
+
+    <BODY>
+    <DIV class="body_container">
+        <DIV class="content_container">
+    <DIV class="posts_container">
+    <DIV class="posts_header_container clearfix">
+        <H2 class="site-name">
+            <A href="/">Douglas J Hunley</A>
+        </H2>
+        <P class="site-description">It's not that I'm anti-social; I'm just not user-friendly</P>
+    </DIV>
+    <DIV class="posts_content_container">
+        <ARTICLE class="post">
+  <H1>Logical Replication with Skytools3</H1>
+  
+    <DIV class="meta">
+      <TIME datetime="2016-04-19">
+        April 19, 2016
+      </TIME>
+      <UL class="tag_list_in_post">
+        
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/postgresql">postgresql</a></LI>
+        
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/replication">replication</a></LI>
+        
+          <LI class="tag_list_item"><a class="tag_list_link" href="/tag/howto">howto</a></LI>
+        
+      </UL>
+    </DIV>
+  
+  <DIV class="entry">
+    <p><img src="https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png" width=225 height=225 border=0 align=left> UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it <a href="https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh">here</a>.</p>
+
+<p>I recently had to do a <em>near-zero downtime</em> upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn&#39;t use streaming replication because of the change in major version (and because it&#39;s simply not present in 8.x), so that left me looking at <em>logical replication</em> options. Usually, everyone else would be thinking Slony right here. I&#39;ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.</p>
+
+<p>Londiste is part of the Skytools suite, originally developed by Skype back when they were a &#39;no central node&#39; setup. As such, the thing was literally born to be &quot;master-master&quot; and assumes nodes come and go at will, so it&#39;s got all the tools to handle bringing nodes up/down, marking them active/inactive, catching them up, etc. It&#39;s written in Python, and uses plain text ini files for configuration.</p>
+
+<p>There&#39;s really only two hurdles that I found with using Londiste. First is that if you can&#39;t get the rpms from the <a href="http://yum.postgresql.org">PGDG Yum Repo</a> you&#39;re looking at compiling from Git. And second, the online documentation for it is hard to find, hard to follow, and practically no one has used it so you can&#39;t ask RandomPostgresPerson for help.</p>
+
+<p>Which is exactly why I&#39;m writing this blog post. Here&#39;s what I needed to get me through the migration in question. I hope it helps you, should you consider using Londiste for your own replication needs. To whit:</p>
+
+<ul>
+<li><p>As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:
+<noscript><pre><code>sql
+SELECT
+n.nspname as schema,
+c.relname as table
+FROM
+pg_class c
+JOIN
+pg_namespace n
+ON
+n.oid = c.relnamespace
+WHERE
+c.relkind = &amp;#39;r&amp;#39;
+AND NOT EXISTS (
+SELECT
+    1
+FROM
+    pg_constraint con
+WHERE
+    con.conrelid = c.oid
+AND
+    con.contype = &amp;#39;p&amp;#39;
+)
+AND n.nspname &amp;lt;&amp;gt; ALL (
+ARRAY [
+    &amp;#39;pg_catalog&amp;#39;,
+    &amp;#39;sys&amp;#39;,
+    &amp;#39;dbo&amp;#39;,
+    &amp;#39;information_schema&amp;#39;
+]
+);
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/94d1096767e154486dbfe8dd47f48275.js"> </script></p></li>
+<li><p>On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we&#39;re done, right? You can use <code>pg_dumpall -g</code> on the PostgreSQL 8.4.x to get a listing of roles.</p></li>
+<li><p>Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I <em>think</em> you can actually get Londiste to do this for you as part of the replication, but I couldn&#39;t find anything online for sure, and I didn&#39;t have time to add more experimentation here (we&#39;re on the customer&#39;s dime here, remember). So, use <code>pg_dump</code> over the network and pipe it to <code>pg_restore</code> to transfer the schema thusly:
+<noscript><pre><code>bash
+pg_dump \
+-Fc \
+-C \
+-S \
+-h IPofOldServer \
+-U postgres \
+myapp | \
+pg_restore \
+-d template1 \
+-v \
+-C \
+-e \
+-s
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js"> </script></p></li>
+<li><p>Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:
+<noscript><pre><code>bash
+yum -y install \
+skytools-94 \
+skytools-94-modules
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js"> </script></p></li>
+<li><p>Install Skytools from source on the PostgreSQL 8.4.x server:
+<noscript><pre><code>bash
+yum -y install \
+python-devel \
+asciidoc \
+xmlto \
+postgresql-devel
+git clone git://github.com/markokr/skytools.git
+cd skytools
+git submodule init
+git submodule update
+./autogen.sh
+./configure
+make
+make install
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js"> </script></p></li>
+<li><p>Restart the PostgreSQL 8.4.x cluster to load the new libs and modules</p></li>
+<li><p>Now we configure the Londiste ticker. Note, we have <em>trust</em> setup for the postgres user in <code>pg_hba.conf</code> so there is no password= in the connection strings. Adjust to meet your setup:
+<noscript><pre>```bash
+mkdir -pv ~postgres/londiste-config/{log,pid}
+cd ~postgres/londiste-config
+cat &lt;&lt; EOF &gt; ticker.ini
+[pgqd]
+base<em>connstr = user=postgres host=IPofOldServer
+database</em>list = myapp
+logfile = log/ticker.log
+pidfile = pid/ticker.pid
+EOF</pre></noscript><script src="https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js"> </script></p></li>
+<li><p>Start up the ticker, to provide the replication &quot;heartbeat&quot; by running <code>pgqd -d ticker.ini</code></p></li>
+<li><p>Check the <code>ticker.log</code> to ensure there are no warnings or errors! You can stop the ticker with <code>pgqd -s ticker.ini</code> while you fix things.</p></li>
+<li><p>Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
+<noscript><pre><code>bash
+cd ~postgres/londiste-config
+cat &amp;lt;&amp;lt; EOF &amp;gt; master.ini
+[londiste3]
+db = user=postgres host=IPofOldServer dbname=myapp
+queue_name = myappq
+loop_delay = 0.5
+logfile = log/master.log
+pidfile = pid/master.pid
+EOF
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js"> </script></p></li>
+<li><p>We have to actually create the master node as the root node by doing:
+<noscript><pre><code>bash
+londiste3 \
+master.ini \
+create-root \
+master &amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;#39;
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde1.js"> </script></p></li>
+<li><p>Check the master.log to see if you have a line like <code>INFO Node &quot;master&quot; initialized for queue &quot;myappq&quot; with type &quot;root&quot;</code></p></li>
+<li><p>Now, spin up the master&#39;s replication worker process by running <code>londiste3 -d master.ini worker</code></p></li>
+<li><p>Next, we configure our slave node (same note applies about the lack of password in the connection string):
+<noscript><pre><code>bash
+cd ~postgres/londiste-config
+cat &amp;lt;&amp;lt; EOF &amp;gt; slave.ini
+[londiste3]
+db = user=postgres host=127.0.0.1 dbname=myapp
+queue_name = myappq
+loop_delay = 0.5
+logfile = log/slave.log
+pidfile = pid/slave.pid
+EOF
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js"> </script></p></li>
+<li><p>Like the master, we have to create the slave node. I created it as a <code>leaf</code> but I could have created it as a <code>branch</code> if we we&#39;re going to cascade replication:
+<noscript><pre><code>bash
+londiste3 \
+slave.ini \
+create-leaf slave &amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;#39; \
+--provider=&amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;#39;
+</code></pre></noscript><script src="https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js"> </script></p></li>
+<li><p>Check the slave.log to see if you have the line <code>INFO Node &quot;slave&quot; initialized for queue &quot;myappq&quot; with type &quot;branch&quot;</code></p></li>
+<li><p>Spin up the slave&#39;s replication worker process by running <code>londiste3 -d slave.ini worker</code></p></li>
+<li><p>Tell the master node that we want to replicate all the tables in the db (<code>londiste3 master.ini add-table --all</code>) as well as all the sequences (<code>londiste3 master.ini add-seq --all</code>). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to <code>londiste3 master.ini add-table tablename</code> to add them to replication. Ditto for new sequences.</p></li>
+<li><p>For the slave node, also replicate all the tables (<code>londiste3 slave.ini add-table --all</code>) and all the sequences (<code>londiste3 slave.ini add-seq --all</code>). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to <code>londiste3 slave.ini add-table tablename</code> to add them to replication. Ditto for new sequences.</p></li>
+</ul>
+
+<p>At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That&#39;s all you need to do.</p>
+
+<p>But what about the data that was already in the master db? You don&#39;t need to do anything. It&#39;s already replicating. You can forcibly tell Londiste to &#39;catch things up&#39; by doing <code>londiste3 slave.ini resync --all</code> if you like though.</p>
+
+<p>If you want to check on the replication at any point, simply issue <code>londiste3 slave.ini status</code> or to be more pedantic <code>londiste3 slave.ini compare</code> which will examine row counts and md5sums between master and slave.</p>
+
+<p>Enjoy your new cross-version logical replication!</p>
+
+  </DIV>
+  <FONT size=-1>
+    <A href="/">Home</A> /
+    <A href="">Logical Replication with Skytools3</A>
+  </FONT>
+
+  
+  <DIV class="comments">
+    <DIV id="disqus_thread"></div>
+      <SCRIPT type="text/javascript">
+        var disqus_shortname = 'douglashunley';
+
+        (function() {
+          var dsq = document.createElement('script');
+          var dsq.type = 'text/javascript';
+          var dsq.async = true
+          var dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+      </SCRIPT>
+      <NOSCRIPT>
+        Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+      </NOSCRIPT>
+    </DIV>
+  </DIV>
+
+
+</ARTICLE>
+
+    </DIV>
+</DIV>
+
+    <DIV class="sidebar_container clearfix">
+    <DIV class="sidebar_avatar_container">
+        <A href="/"><IMG class="avatar" src="/images/avatar.png" /></A>
+    </DIV>
+    <DIV style="float: center; margin: 0 4px 4px 4px; padding: 0 4px 4px 4px; color: White; line-height: 1; text-align: center;">
+        <I class="fa fa-mars" aria-hidden="true"></I>
+        <I class="fa fa-linux" aria-hidden="true"></I>
+        <I class="icon-postgres"></i>
+        <I class="fa fa-android" aria-hidden="true"></I>
+        <I class="fa fa-gamepad" aria-hidden="true"></I>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Feeds:
+            <BR/>&nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A href="/feeds/feed.xml">EVERYTHING</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.general.xml">general</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.geek.xml">geek</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.kickstarter.xml">kickstarter</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.review.xml">review</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.android.xml">android</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.work.xml">work</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.computers.xml">computers</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.osx.xml">osx</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.linux.xml">linux</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.networking.xml">networking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.crowdfunding.xml">crowdfunding</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.postgresql.xml">postgresql</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.replication.xml">replication</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.howto.xml">howto</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.nexus5x.xml">nexus5x</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.protip.xml">protip</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.blog.xml">blog</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.github.xml">github</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.gaming.xml">gaming</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.biking.xml">biking</A>
+            
+              &nbsp;<I class="fa fa-rss" aria-hidden="true"></I>&nbsp;<A style="text-transform: uppercase" href="/feeds/feed.pgcmh.xml">pgcmh</A>
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        <FONT style="font-size: 50%">
+            Archives:
+            
+              
+              <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+              <A href="/archives/2017">2017</A>
+              
+            
+              
+                
+                
+                
+                <BR />&nbsp;<I class="fa fa-calendar" aria-hidden="true"></I>
+                <A href="/archives/2016">2016</A>
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+              
+                
+                
+                
+              
+            
+        </FONT>
+    </DIV>
+    <DIV style="background-color: White; float: center; margin: 4px; padding: 4px; color: SteelBlue; line-height: 1;">
+        
+          <A style="font-size: 92%" href="/tags/general">general</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/geek">geek</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/kickstarter">kickstarter</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/review">review</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 69%" href="/tags/android">android</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/work">work</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/computers">computers</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 73%" href="/tags/osx">osx</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/linux">linux</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/networking">networking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/crowdfunding">crowdfunding</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 121%" href="/tags/postgresql">postgresql</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/replication">replication</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/howto">howto</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/nexus5x">nexus5x</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/protip">protip</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 64%" href="/tags/blog">blog</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/github">github</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/gaming">gaming</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 54%" href="/tags/biking">biking</a> &centerdot;&nbsp;
+        
+          <A style="font-size: 59%" href="/tags/pgcmh">pgcmh</a> &centerdot;&nbsp;
+        
+    </DIV>
+</DIV>
+
+</DIV>
+
+        <DIV class="footer_container">
+    <UL class="tag_list_in_post">
+        
+            <LI class="tag_list_item">
+                <A href="https://dhunley.deviantart.com/"><I class="fa fa-deviantart" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://facebook.com/douglas.j.hunley"><I class="fa fa-facebook" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://github.com/hunleyd"><I class="fa fa-github" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://instagram.com/doughunley"><I class="fa fa-instagram" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="http://www.last.fm/user/hunleyd"><I class="fa fa-lastfm" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.linkedin.com/in/dhunley"><I class="fa fa-linkedin" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://www.meetup.com/members/43608152"><I class="fa fa-meetup" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://reddit.com//u/hunleyd"><I class="fa fa-reddit-alien" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://twitter.com/hunleyd"><I class="fa fa-twitter" aria-hidden="true"></I></A>
+            </LI>
+        
+        
+            <LI class="tag_list_item">
+                <A href="https://youtube.com/user/doughunley"><I class="fa fa-youtube" aria-hidden="true"></I></A>
+            </LI>
+        
+    </UL>
+    <P style="font-size: 50%;">
+        Site built with <A href="https://jekyllrb.com">Jekyll</A> and served via <A href="https://github.com">GitHub</A>. 
+        <BR />
+        &copy; 2017. All rights reserved.
+    </P>
+</DIV>
+
+    </DIV>
+</BODY>
+
+</HTML>
