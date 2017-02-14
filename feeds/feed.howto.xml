@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>Douglas J Hunley - howto</title>
+  <description>Posts tagged as 'howto'</description>
+  <atom:link href="/feeds/feed.howto.xml" rel="self" type="application/rss+xml" />
+  <link>/tag/howto/</link>
+  <updated>2017-02-14T11:02:52-05:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>PostgreSQL Partitioning Quick Tip</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg&quot; class=&quot;rleader&quot; /&gt;Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use &lt;a href=&quot;https://github.com/keithf4/pg_partman&quot;&gt;pg_partman&lt;/a&gt; and be done with it. However, if you’re trying to learn, can’t use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_partman&lt;/code&gt;, or are a masochist you’ll probably be following the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/ddl-partitioning.html&quot;&gt;docs&lt;/a&gt; and thinking ‘seriously? i have to create indexes on each child? why don’t they copy the indexes of the parent? why isn’t this easier?’. Here’s a little tip to make things slightly easier:&lt;/p&gt;
+
+&lt;p&gt;Instead of creating your child tables like the docs say:&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;```sql
+CREATE TABLE child1 (
+  CHECK (blah blah)
+) INHERITS (parent);
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/0b1f8fa43534f53046eed4e63dc54e14.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Create your child tables thusly:&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;```sql
+CREATE TABLE child1 (
+  LIKE parent INCLUDING ALL,
+  CHECK (blah blah)
+) INHERITS (parent);
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/603c5f6961134422651e2e13b1c6398e.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;and PostgeSQL &lt;em&gt;will&lt;/em&gt; copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?&lt;/p&gt;
+
+&lt;p&gt;Enjoy.&lt;/p&gt;
+</description>
+    <link>/posts/PostgresQL-Partitioning-Quick-Tip/ </link>
+    <pubDate>2016-04-21T05:25:32-04:00</pubDate>
+    <guid isPermaLink="true">/posts/PostgresQL-Partitioning-Quick-Tip/</guid>
+   </item>
+  
+   <item>
+    <title>Logical Replication with Skytools3</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&quot; class=&quot;lleader&quot; /&gt; UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it &lt;a href=&quot;https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I recently had to do a &lt;em&gt;near-zero downtime&lt;/em&gt; upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn’t use streaming replication because of the change in major version (and because it’s simply not present in 8.x), so that left me looking at &lt;em&gt;logical replication&lt;/em&gt; options. Usually, everyone else would be thinking Slony right here. I’ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.&lt;/p&gt;
+
+&lt;p&gt;Londiste is part of the Skytools suite, originally developed by Skype back when they were a ‘no central node’ setup. As such, the thing was literally born to be “master-master” and assumes nodes come and go at will, so it’s got all the tools to handle bringing nodes up/down, marking them active/inactive, catching them up, etc. It’s written in Python, and uses plain text ini files for configuration.&lt;/p&gt;
+
+&lt;p&gt;There’s really only two hurdles that I found with using Londiste. First is that if you can’t get the rpms from the &lt;a href=&quot;http://yum.postgresql.org&quot;&gt;PGDG Yum Repo&lt;/a&gt; you’re looking at compiling from Git. And second, the online documentation for it is hard to find, hard to follow, and practically no one has used it so you can’t ask RandomPostgresPerson for help.&lt;/p&gt;
+
+&lt;p&gt;Which is exactly why I’m writing this blog post. Here’s what I needed to get me through the migration in question. I hope it helps you, should you consider using Londiste for your own replication needs. To whit:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;pre&gt;```sql
+SELECT
+    n.nspname as schema,
+    c.relname as table
+FROM
+    pg_class c
+JOIN
+    pg_namespace n
+ON
+    n.oid = c.relnamespace
+WHERE
+    c.relkind = &amp;#39;r&amp;#39;
+AND NOT EXISTS (
+    SELECT
+        1
+    FROM
+        pg_constraint con
+    WHERE
+        con.conrelid = c.oid
+    AND
+        con.contype = &amp;#39;p&amp;#39;
+)
+AND n.nspname &amp;lt;&amp;gt; ALL (
+    ARRAY [
+        &amp;#39;pg_catalog&amp;#39;,
+        &amp;#39;sys&amp;#39;,
+        &amp;#39;dbo&amp;#39;,
+        &amp;#39;information_schema&amp;#39;
+    ]
+);
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/94d1096767e154486dbfe8dd47f48275.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we’re done, right? You can use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dumpall -g&lt;/code&gt; on the PostgreSQL 8.4.x to get a listing of roles.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I &lt;em&gt;think&lt;/em&gt; you can actually get Londiste to do this for you as part of the replication, but I couldn’t find anything online for sure, and I didn’t have time to add more experimentation here (we’re on the customer’s dime here, remember). So, use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; over the network and pipe it to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_restore&lt;/code&gt; to transfer the schema thusly:&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+pg_dump \
+  -Fc \
+  -C \
+  -S \
+  -h IPofOldServer \
+  -U postgres \
+  myapp | \
+pg_restore \
+  -d template1 \
+  -v \
+  -C \
+  -e \
+  -s
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+yum -y install \
+  skytools-94 \
+  skytools-94-modules
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Install Skytools from source on the PostgreSQL 8.4.x server:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+yum -y install \
+  python-devel \
+  asciidoc \
+  xmlto \
+  postgresql-devel
+git clone git://github.com/markokr/skytools.git
+cd skytools
+git submodule init
+git submodule update
+./autogen.sh
+./configure
+make
+make install
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Restart the PostgreSQL 8.4.x cluster to load the new libs and modules&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Now we configure the Londiste ticker. Note, we have &lt;em&gt;trust&lt;/em&gt; setup for the postgres user in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; so there is no password= in the connection strings. Adjust to meet your setup:&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+mkdir -pv ~postgres/londiste-config/{log,pid}
+cd ~postgres/londiste-config
+cat &amp;lt;&amp;lt; EOF &amp;gt; ticker.ini
+  [pgqd]
+  base_connstr = user=postgres host=IPofOldServer
+  database_list = myapp
+  logfile = log/ticker.log
+  pidfile = pid/ticker.pid
+EOF&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Start up the ticker, to provide the replication “heartbeat” by running &lt;code class=&quot;highlighter-rouge&quot;&gt;pgqd -d ticker.ini&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Check the &lt;code class=&quot;highlighter-rouge&quot;&gt;ticker.log&lt;/code&gt; to ensure there are no warnings or errors! You can stop the ticker with &lt;code class=&quot;highlighter-rouge&quot;&gt;pgqd -s ticker.ini&lt;/code&gt; while you fix things.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+cd ~postgres/londiste-config
+cat &amp;lt;&amp;lt; EOF &amp;gt; master.ini
+  [londiste3]
+  db = user=postgres host=IPofOldServer dbname=myapp
+  queue_name = myappq
+  loop_delay = 0.5
+  logfile = log/master.log
+  pidfile = pid/master.pid
+EOF
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;We have to actually create the master node as the root node by doing:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+londiste3 \
+  master.ini \
+  create-root \
+  master &amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;#39;
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde1.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Check the master.log to see if you have a line like &lt;code class=&quot;highlighter-rouge&quot;&gt;INFO Node &quot;master&quot; initialized for queue &quot;myappq&quot; with type &quot;root&quot;&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Now, spin up the master’s replication worker process by running &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 -d master.ini worker&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Next, we configure our slave node (same note applies about the lack of password in the connection string):&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+cd ~postgres/londiste-config
+cat &amp;lt;&amp;lt; EOF &amp;gt; slave.ini
+  [londiste3]
+  db = user=postgres host=127.0.0.1 dbname=myapp
+  queue_name = myappq
+  loop_delay = 0.5
+  logfile = log/slave.log
+  pidfile = pid/slave.pid
+EOF
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Like the master, we have to create the slave node. I created it as a &lt;code class=&quot;highlighter-rouge&quot;&gt;leaf&lt;/code&gt; but I could have created it as a &lt;code class=&quot;highlighter-rouge&quot;&gt;branch&lt;/code&gt; if we we’re going to cascade replication:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+londiste3 \
+  slave.ini \
+  create-leaf slave &amp;#39;user=postgres host=127.0.0.1 dbname=myapp&amp;#39; \
+    --provider=&amp;#39;user=postgres host=IPofOldServer dbname=myapp&amp;#39;
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js&quot;&gt; &lt;/script&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Check the slave.log to see if you have the line &lt;code class=&quot;highlighter-rouge&quot;&gt;INFO Node &quot;slave&quot; initialized for queue &quot;myappq&quot; with type &quot;branch&quot;&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Spin up the slave’s replication worker process by running &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 -d slave.ini worker&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Tell the master node that we want to replicate all the tables in the db (&lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 master.ini add-table --all&lt;/code&gt;) as well as all the sequences (&lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 master.ini add-seq --all&lt;/code&gt;). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 master.ini add-table tablename&lt;/code&gt; to add them to replication. Ditto for new sequences.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For the slave node, also replicate all the tables (&lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini add-table --all&lt;/code&gt;) and all the sequences (&lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini add-seq --all&lt;/code&gt;). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini add-table tablename&lt;/code&gt; to add them to replication. Ditto for new sequences.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That’s all you need to do.&lt;/p&gt;
+
+&lt;p&gt;But what about the data that was already in the master db? You don’t need to do anything. It’s already replicating. You can forcibly tell Londiste to ‘catch things up’ by doing &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini resync --all&lt;/code&gt; if you like though.&lt;/p&gt;
+
+&lt;p&gt;If you want to check on the replication at any point, simply issue &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini status&lt;/code&gt; or to be more pedantic &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini compare&lt;/code&gt; which will examine row counts and md5sums between master and slave.&lt;/p&gt;
+
+&lt;p&gt;Enjoy your new cross-version logical replication!&lt;/p&gt;
+</description>
+    <link>/posts/Logical-Replication-With-Skytool3/ </link>
+    <pubDate>2016-04-19T09:55:11-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Logical-Replication-With-Skytool3/</guid>
+   </item>
+  
+   <item>
+    <title>PostgreSQL Streaming Replication in 10 Minutes</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://unitedlayer.com/sites/default/files/dr-icons-01.png&quot; class=&quot;rleader&quot; /&gt;While there’s absolutely nothing new in this blog post that isn’t covered by the wonderful &lt;a href=&quot;http://www.postgresql.org/docs/current/static/index.html&quot;&gt;docs&lt;/a&gt; I’ve been asked multiple times now by customers if we had some kind of ‘crib notes’ format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well post it so that I can simply point people to it in the future. So here we are.&lt;/p&gt;
+
+&lt;p&gt;Now, let’s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity’s sake, we will call these machines ‘master’ and ‘standby’. Note too that I’m using &lt;code class=&quot;highlighter-rouge&quot;&gt;replication slots&lt;/code&gt; which needs PostgreSQL 9.4.0 or later; if you’re using something earlier, simply ignore the slot stuff.&lt;/p&gt;
+
+&lt;p&gt;Let’s get started!&lt;/p&gt;
+
+&lt;p&gt;On the master, do the following:&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; postgresql.conf
+    wal_level = hot_standby
+    full_page_writes = on
+    wal_log_hints = on
+    max_wal_senders = 6
+    max_replication_slots = 6
+    hot_standby = on
+    hot_standby_feedback = on
+EOF
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;On the master, add the external IP addresses of the servers to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;:&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; pg_hba.conf
+    host replication repl_user IP_of_master/32 md5
+    host replication repl_user IP_of_standby/32 md5
+EOF
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Restart PostgreSQL on the master for the changes to take affect&lt;/p&gt;
+
+&lt;p&gt;On the master, create the replication user:&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+psql \
+  -d postgres \
+  -U postgres \
+  -c &amp;quot;CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD &amp;#39;secretpasswordhere&amp;#39;;&amp;quot;
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;On the master, create the replication slot for the standby:&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+psql \
+  -d postgres \
+  -U postgres \
+  -c &amp;quot;SELECT * FROM pg_create_physical_replication_slot(&amp;#39;standby1&amp;#39;);&amp;quot;
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;On the standby, wipe the existing cluster:&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+cd /var/lib/pgsql/9.4/data
+pg_ctl -D $PWD -mf stop
+cd ..
+rm -rfv data
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;On the standby, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_basebackup&lt;/code&gt; command to clone the master (enter the &lt;code class=&quot;highlighter-rouge&quot;&gt;repl_user&lt;/code&gt;’s password from above when prompted):&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+pg_basebackup \
+  -D data \
+  -Fp \
+  -R \
+  -Xs \
+  -c fast \
+  -l &amp;#39;initial clone&amp;#39; \
+  -P \
+  -v \
+  -h IP_of_master \
+  -U repl_user
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;On the standby, tweak the &lt;code class=&quot;highlighter-rouge&quot;&gt;recovery.conf&lt;/code&gt; that was created for you and add the replication slot name:&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;```bash
+cd data
+cat &amp;lt;&amp;lt; EOF &amp;gt;&amp;gt; recovery.conf
+primary_slot_name = &amp;#39;standby1&amp;#39;
+EOF
+```&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Start the standby up&lt;/p&gt;
+
+&lt;p&gt;And that’s it. You should be all done. Easy, right?&lt;/p&gt;
+</description>
+    <link>/posts/PostgreSQL-Streaming-Replication-In-10-Minutes/ </link>
+    <pubDate>2016-04-18T10:47:10-04:00</pubDate>
+    <guid isPermaLink="true">/posts/PostgreSQL-Streaming-Replication-In-10-Minutes/</guid>
+   </item>
+  
+ </channel>
+</rss>

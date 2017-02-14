@@ -1,0 +1,358 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>PostgreSQL Streaming Replication in 10 Minutes &#8211; Douglas J Hunley</title>
+<meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
+<meta name="keywords" content="postgresql, replication, howto">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/images/db.jpg">
+
+<meta name="twitter:title" content="PostgreSQL Streaming Replication in 10 Minutes">
+<meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
+<meta name="twitter:creator" content="@hunleyd">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL Streaming Replication in 10 Minutes">
+<meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
+<meta property="og:url" content="/posts/PostgreSQL-Streaming-Replication-In-10-Minutes/">
+<meta property="og:site_name" content="Douglas J Hunley">
+
+
+
+
+
+<link rel="canonical" href="/posts/PostgreSQL-Streaming-Replication-In-10-Minutes/">
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<!-- Webfonts -->
+<link href="//fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic" rel="stylesheet" type="text/css">
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- Load Modernizr -->
+<script src="/assets/js/vendor/modernizr-2.6.2.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/apple-touch-icon-144x144-precomposed.png">
+
+
+
+</head>
+
+<body id="post" class="feature">
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+<NAV id="dl-menu" class="dl-menuwrapper" role="navigation">
+  <BUTTON class="dl-trigger">
+    Open Menu
+  </BUTTON>
+  <UL class="dl-menu">
+    <LI>
+      <A href="/">Home</A>
+    </LI>
+    <LI>
+      <A href="#">About</A>
+      <UL class="dl-submenu">
+        <LI>
+          <IMG src="/images/avatar.jpg" alt="Douglas J Hunley photo" class="author-photo" />
+          <H4>Douglas J Hunley</H4>
+          <P>Linux Sys Admin, Gentoo user, PostgreSQL advocate, Android fanboi, OSS supporter, PlayStation gamer</P>
+        </LI>
+        <LI>
+          <A href="/about/"><SPAN class="btn btn-inverse">Learn More</SPAN></A>
+        </LI>
+        
+          <LI>
+            <A href="https://dhunley.deviantart.com"><I class="fa fa-deviantart" aria-hidden="true"></I> DeviantArt</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="mailto:douglas.hunley@gmail.com"><I class="fa fa-envelope" aria-hidden="true"></I> Email</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://facebook.com/douglas.j.hunley"><I class="fa fa-facebook" aria-hidden="true"></I> Facebook</A>
+          </LI>
+        
+        
+        
+          <LI>
+            <A href="https://github.com/hunleyd"><I class="fa fa-github" aria-hidden="true"></I> GitHub</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://google.com/+DouglasHunley"><I class="fa fa-google-plus" aria-hidden="true"></I> Google+</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://instagram.com/doughunley"><I class="fa fa-instagram" aria-hidden="true"></I> Instagram</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://linkedin.com/in/dhunley"><I class="fa fa-linkedin" aria-hidden="true"></I> LinkedIn</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://meetup.com/members/43608152"><I class="fa fa-meetup" aria-hidden="true"></I> MeetUp</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://reddit.com/u/hunleyd"><I class="fa fa-reddit-alien" aria-hidden="true"></I> Reddit</A>
+          </LI>
+        
+        
+        
+        
+          <LI>
+            <A href="https://twitter.com/hunleyd"><I class="fa fa-twitter" aria-hidden="true"></I> Twitter</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://youtube.com/user/doughunley"><I class="fa fa-youtube" aria-hidden="true"></I> YouTube</A>
+          </LI>
+        
+      </UL><!-- /.dl-submenu -->
+    </LI>
+    <LI>
+      <A href="#">Posts</A>
+      <UL class="dl-submenu">
+        <LI>
+          <A href="/posts/">All Posts</A>
+        </LI>
+        <LI>
+          <A href="/tags/">All Tags</A>
+        </LI>
+      </UL>
+    </LI>
+    
+  </UL><!-- /.dl-menu -->
+</NAV><!-- /.dl-menuwrapper -->
+
+
+
+<div class="entry-header">
+  
+  <div class="entry-image">
+    <img src="/images/db.jpg" alt="PostgreSQL Streaming Replication in 10 Minutes">
+  </div><!-- /.entry-image -->
+</div><!-- /.entry-header -->
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    <header class="header-title">
+      <div class="header-title-wrap">
+        
+          <h1 class="entry-title"><a href="/posts/PostgreSQL-Streaming-Replication-In-10-Minutes/" rel="bookmark" title="PostgreSQL Streaming Replication in 10 Minutes">PostgreSQL Streaming Replication in 10 Minutes</a></h1>
+        
+        <h2><span class="entry-date date published"><time datetime="2016-04-18T10:47:10-04:00">April 18, 2016</time></span></h2>
+        
+        <p class="entry-reading-time">
+          <i class="fa fa-clock-o"></i>
+          
+Reading time ~1 minute
+        </p><!-- /.entry-reading-time -->
+        
+      </div><!-- /.header-title-wrap -->
+    </header>
+    <div class="entry-content">
+      <p><img src="https://unitedlayer.com/sites/default/files/dr-icons-01.png" class="rleader" />While there’s absolutely nothing new in this blog post that isn’t covered by the wonderful <a href="http://www.postgresql.org/docs/current/static/index.html">docs</a> I’ve been asked multiple times now by customers if we had some kind of ‘crib notes’ format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well post it so that I can simply point people to it in the future. So here we are.</p>
+
+<p>Now, let’s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity’s sake, we will call these machines ‘master’ and ‘standby’. Note too that I’m using <code class="highlighter-rouge">replication slots</code> which needs PostgreSQL 9.4.0 or later; if you’re using something earlier, simply ignore the slot stuff.</p>
+
+<p>Let’s get started!</p>
+
+<p>On the master, do the following:</p>
+<noscript><pre>```bash
+cat &lt;&lt; EOF &gt;&gt; postgresql.conf
+    wal_level = hot_standby
+    full_page_writes = on
+    wal_log_hints = on
+    max_wal_senders = 6
+    max_replication_slots = 6
+    hot_standby = on
+    hot_standby_feedback = on
+EOF
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script>
+
+<p>On the master, add the external IP addresses of the servers to <code class="highlighter-rouge">pg_hba.conf</code>:</p>
+<noscript><pre>```bash
+cat &lt;&lt; EOF &gt;&gt; pg_hba.conf
+    host replication repl_user IP_of_master/32 md5
+    host replication repl_user IP_of_standby/32 md5
+EOF
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js"> </script>
+
+<p>Restart PostgreSQL on the master for the changes to take affect</p>
+
+<p>On the master, create the replication user:</p>
+<noscript><pre>```bash
+psql \
+  -d postgres \
+  -U postgres \
+  -c &quot;CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD &#39;secretpasswordhere&#39;;&quot;
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js"> </script>
+
+<p>On the master, create the replication slot for the standby:</p>
+<noscript><pre>```bash
+psql \
+  -d postgres \
+  -U postgres \
+  -c &quot;SELECT * FROM pg_create_physical_replication_slot(&#39;standby1&#39;);&quot;
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js"> </script>
+
+<p>On the standby, wipe the existing cluster:</p>
+<noscript><pre>```bash
+cd /var/lib/pgsql/9.4/data
+pg_ctl -D $PWD -mf stop
+cd ..
+rm -rfv data
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js"> </script>
+
+<p>On the standby, use the <code class="highlighter-rouge">pg_basebackup</code> command to clone the master (enter the <code class="highlighter-rouge">repl_user</code>’s password from above when prompted):</p>
+<noscript><pre>```bash
+pg_basebackup \
+  -D data \
+  -Fp \
+  -R \
+  -Xs \
+  -c fast \
+  -l &#39;initial clone&#39; \
+  -P \
+  -v \
+  -h IP_of_master \
+  -U repl_user
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js"> </script>
+
+<p>On the standby, tweak the <code class="highlighter-rouge">recovery.conf</code> that was created for you and add the replication slot name:</p>
+<noscript><pre>```bash
+cd data
+cat &lt;&lt; EOF &gt;&gt; recovery.conf
+primary_slot_name = &#39;standby1&#39;
+EOF
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js"> </script>
+
+<p>Start the standby up</p>
+
+<p>And that’s it. You should be all done. Easy, right?</p>
+
+      <footer class="entry-meta">
+        <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a><a href="/tags/#replication" title="Pages tagged replication" class="tag"><span class="term">replication</span></a><a href="/tags/#howto" title="Pages tagged howto" class="tag"><span class="term">howto</span></a></span>
+        
+        <div class="social-share">
+  <ul class="socialcount socialcount-small inline-list">
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/PostgreSQL-Streaming-Replication-In-10-Minutes/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/PostgreSQL-Streaming-Replication-In-10-Minutes/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/PostgreSQL-Streaming-Replication-In-10-Minutes/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+  </ul>
+</div><!-- /.social-share -->
+      </footer>
+    </div><!-- /.entry-content -->
+    <section id="disqus_thread"></section><!-- /#disqus_thread -->
+    <div class="read-more">
+  
+    <div class="read-more-header">
+      <a href="/posts/Hello_eero/" class="read-more-btn">Read More</a>
+    </div><!-- /.read-more-header -->
+    <div class="read-more-content">
+      <h3><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h3>
+      <p>As you've probably noticed, I've launched the new blog design. Everything that was here should still be here, but it might have moved. So...&hellip; <a href="/posts/New-look-same-content/">Continue reading</a></p>
+    </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+      <div class="list-item">
+        <h4><a href="/posts/changes-to-the-blog/" title="Changes to the blog">Changes to the blog</a></h4>
+        <span>Published on December 02, 2016</span>
+      </div><!-- /.list-item -->
+    
+      <div class="list-item">
+        <h4><a href="/posts/EXPLAINing-intermittent-perf-problems/" title="EXPLAINing intermittent perf problems">EXPLAINing intermittent perf problems</a></h4>
+        <span>Published on November 28, 2016</span>
+      </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+</div><!-- /.read-more -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo">
+    <span>&copy; 2017 Douglas J Hunley.<BR /><FONT size=-1>Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a>. Served via <a href="https://github.com">GitHub</a>. Themed using <a href="https://mademistakes.com/work/hpstr-jekyll-theme/" rel="nofollow">HPSTR</a>.</FONT></span>
+
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/assets/js/scripts.min.js"></script>
+
+
+
+
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'douglashunley'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+	        
+
+</body>
+</html>
