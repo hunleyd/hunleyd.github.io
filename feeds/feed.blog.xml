@@ -5,7 +5,7 @@
   <description>Posts tagged as 'blog'</description>
   <atom:link href="/feeds/feed.blog.xml" rel="self" type="application/rss+xml" />
   <link>/tag/blog/</link>
-  <updated>2017-02-14T11:02:52-05:00</updated>
+  <updated>2017-02-15T12:43:56-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -14,7 +14,9 @@
   
    <item>
     <title>New look, same content</title>
-    <description>&lt;p&gt;&lt;img class=&quot;lleader&quot; src=&quot;http://www.awesome-t-shirts.com/img/T-shirts/you-look-different-not-better-just-different.jpg&quot; /&gt;As you’ve probably noticed, I’ve launched the new blog design. Everything that was here should still be here, but it might have moved. Sorry, but I broke the old permalinks. Bad blogger! However, I now have everything &lt;em&gt;exactly&lt;/em&gt; where I want it, so it shouldn’t ever change again. Famous last words, right there :)&lt;/p&gt;
+    <description>&lt;p&gt;UPDATE: I’ve switched out the theme entirely (again) so the CSS issues should no longer be present. The rest of this post still sands.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;lleader&quot; src=&quot;http://www.awesome-t-shirts.com/img/T-shirts/you-look-different-not-better-just-different.jpg&quot; /&gt;As you’ve probably noticed, I’ve launched the new blog design. Everything that was here should still be here, but it might have moved. Sorry, but I broke the old permalinks. Bad blogger! However, I now have everything &lt;em&gt;exactly&lt;/em&gt; where I want it, so it shouldn’t ever change again. Famous last words, right there :)&lt;/p&gt;
 
 &lt;p&gt;So anyway, let me know if you find issues w/ the site. I’m aware of some small CSS fuckery here and there, but I got tired of beating my head against it honestly. If anyone wants to tell me what’s wrong with it and how to fix it, I’ll buy you a virtual beer. If you want to let your opinion known about the new design (nice! it sucks! meh.) feel free to hit me up too. If enough people kvetch, I’ll tweak it.&lt;/p&gt;
 
