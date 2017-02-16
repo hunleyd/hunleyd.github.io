@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-02-15T12:43:56-05:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">New look, same content</title><link href="/posts/New-look-same-content/" rel="alternate" type="text/html" title="New look, same content" /><published>2017-01-17T09:26:51-05:00</published><updated>2017-01-17T09:26:51-05:00</updated><id>/posts/New-look-same-content</id><content type="html" xml:base="/posts/New-look-same-content/">&lt;p&gt;UPDATE: I’ve switched out the theme entirely (again) so the CSS issues should no longer be present. The rest of this post still sands.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-02-16T08:45:37-05:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">Goodbye, Loui boy</title><link href="/posts/Goodbye-Loui-boy/" rel="alternate" type="text/html" title="Goodbye, Loui boy" /><published>2017-02-16T03:35:19-05:00</published><updated>2017-02-16T03:35:19-05:00</updated><id>/posts/Goodbye-Loui-boy</id><content type="html" xml:base="/posts/Goodbye-Loui-boy/">&lt;p&gt;&lt;img src=&quot;/images/loui.jpg&quot; class=&quot;rleader&quot; /&gt;Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. &lt;em&gt;I will miss you.&lt;/em&gt;&lt;/p&gt;</content><category term="general" /><summary type="html">Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. I will miss you.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22alone_boy.jpg%22%7D" /></entry><entry><title type="html">New look, same content</title><link href="/posts/New-look-same-content/" rel="alternate" type="text/html" title="New look, same content" /><published>2017-01-17T09:26:51-05:00</published><updated>2017-01-17T09:26:51-05:00</updated><id>/posts/New-look-same-content</id><content type="html" xml:base="/posts/New-look-same-content/">&lt;p&gt;UPDATE: I’ve switched out the theme entirely (again) so the CSS issues should no longer be present. The rest of this post still sands.&lt;/p&gt;
 
 &lt;p&gt;&lt;img class=&quot;lleader&quot; src=&quot;http://www.awesome-t-shirts.com/img/T-shirts/you-look-different-not-better-just-different.jpg&quot; /&gt;As you’ve probably noticed, I’ve launched the new blog design. Everything that was here should still be here, but it might have moved. Sorry, but I broke the old permalinks. Bad blogger! However, I now have everything &lt;em&gt;exactly&lt;/em&gt; where I want it, so it shouldn’t ever change again. Famous last words, right there :)&lt;/p&gt;
 
@@ -279,165 +279,9 @@ pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40
 
 &lt;p&gt;For the curious, the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; output that I omitted above for readability’s sake is:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```
-Performing Consistency Checks
------------------------------
-Checking cluster versions                                   ok
-Checking database user is the install user                  ok
-Checking database connection settings                       ok
-Checking for prepared transactions                          ok
-Checking for reg* system OID user data types                ok
-Checking for contrib/isn with bigint-passing mismatch       ok
-Checking for roles starting with &amp;#39;pg_&amp;#39;                      ok
-Creating dump of global objects                             ok
-Creating dump of database schemas
-                                                            ok
-Checking for presence of required libraries                 ok
-Checking database user is the install user                  ok
-Checking for prepared transactions                          ok
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;</content><category term="postgresql" /><summary type="html">Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">Managing multiple PostgreSQL installs via Homebrew</title><link href="/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/" rel="alternate" type="text/html" title="Managing multiple PostgreSQL installs via Homebrew" /><published>2016-11-16T08:45:27-05:00</published><updated>2016-11-16T08:45:27-05:00</updated><id>/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew</id><content type="html" xml:base="/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/">&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;Following on from &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;this&lt;/a&gt; post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:&lt;/p&gt;
 
-If pg_upgrade fails after this point, you must re-initdb the
-new cluster before continuing.
-
-Performing Upgrade
-------------------
-Analyzing all rows in the new cluster                       ok
-Freezing all rows on the new cluster                        ok
-Deleting files from new pg_clog                             ok
-Copying old pg_clog to new server                           ok
-Setting next transaction ID and epoch for new cluster       ok
-Deleting files from new pg_multixact/offsets                ok
-Copying old pg_multixact/offsets to new server              ok
-Deleting files from new pg_multixact/members                ok
-Copying old pg_multixact/members to new server              ok
-Setting next multixact ID and offset for new cluster        ok
-Resetting WAL archives                                      ok
-Setting frozenxid and minmxid counters in new cluster       ok
-Restoring global objects in the new cluster                 ok
-Restoring database schemas in the new cluster
-                                                            ok
-Copying user relation files                                 ok
-Setting next OID for new cluster                            ok
-Sync data directory to disk                                 ok
-Creating script to analyze new cluster                      ok
-Creating script to delete old cluster                       ok
-
-Upgrade Complete
-----------------
-Optimizer statistics are not transferred by pg_upgrade so,
-once you start the new server, consider running:
-    ./analyze_new_cluster.sh
-
-Running this script will delete the old cluster&amp;#39;s data files:
-    ./delete_old_cluster.sh
-```&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js&quot;&gt; &lt;/script&gt;</content><category term="postgresql" /><summary type="html">Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">Managing multiple PostgreSQL installs via Homebrew</title><link href="/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/" rel="alternate" type="text/html" title="Managing multiple PostgreSQL installs via Homebrew" /><published>2016-11-16T08:45:27-05:00</published><updated>2016-11-16T08:45:27-05:00</updated><id>/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew</id><content type="html" xml:base="/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/">&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;Following on from &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;this&lt;/a&gt; post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:&lt;/p&gt;
-
-&lt;noscript&gt;&lt;pre&gt;#!/bin/sh
-
-wanted_ver=$1
-no_restart=
-
-# is the version requested installed?
-brew ls --version postgresql-${wanted_ver} &amp;amp;&amp;gt;/dev/null
-if [[ $? -eq 0 ]] ; then
-  # yes, carry on
-  :
-else
-  # nope, so install it
-  echo -n &amp;quot;Installing PostgreSQL ${wanted_ver}... &amp;quot;
-  brew install postgresql-${wanted_ver} &amp;amp;&amp;gt;/tmp/brew.out
-  if [[ $? -eq 0 ]] ; then
-    echo &amp;quot;done&amp;quot;
-  else
-    echo &amp;quot;FAILED!&amp;quot;
-    cat /tmp/brew.out
-    exit
-fi
-
-# is postgresql is running?
-for i in /usr/local/var/postgres/*
-do
-  check_ver=$(basename ${i})
-  is_running=$(ps -few | egrep -- &amp;quot;[p]ostgres.*-D.*${check_ver}&amp;quot;)
-
-  if [[ -z ${is_running} ]] ; then
-    # nope, carry on
-    :
-  else
-    # it is. is it the requested version?
-    if [[ &amp;quot;${wanted_ver}&amp;quot; = &amp;quot;${check_ver}&amp;quot; ]] ; then
-      # yup, carry on
-      no_restart=t
-    else
-      # nope, so kill it
-      echo -n &amp;quot;Stopping PostgreSQL ${check_ver}... &amp;quot;
-      /usr/local/opt/postgresql-${check_ver}/bin/pg_ctl -D /usr/local/var/postgres/${check_ver} stop -w -mf &amp;amp;&amp;gt;/tmp/stop.out
-      if [[ $? -eq 0 ]] ; then
-        echo &amp;quot;done!&amp;quot;
-      else
-        echo &amp;quot;FAILED!&amp;quot;
-        cat /tmp/stop.out
-      fi
-    fi
-  fi
-done
-
-# what version is active?
-active_ver=$(/usr/bin/stat -f %Y /usr/local/bin/psql | cut -d\/ -f3 | cut -d\- -f2)
-
-# is the active version the requested version?
-if [[ &amp;quot;${active_ver}&amp;quot; = &amp;quot;${wanted_ver}&amp;quot; ]] ; then
-  # yup, carry on
-  :
-else
-  # nope, so deactivate it
-  echo -n &amp;quot;Deactivating PostgreSQL ${active_ver}... &amp;quot;
-  brew unlink --force --overwrite postgresql-${active_ver} &amp;amp;&amp;gt;/dev/null
-  echo &amp;quot;done!&amp;quot;
-  # and activate the correct version
-  echo -n &amp;quot;Activating PostgreSQL ${wanted_ver}... &amp;quot;
-  brew link --force --overwrite postgresql-${wanted_ver} &amp;amp;&amp;gt;/dev/null
-  echo &amp;quot;done!&amp;quot;
-fi
-
-# point to the correct data dir
-export PGDATA=/usr/local/var/postgres/${wanted_ver}
-
-# should we be starting a cluster?
-if [[ &amp;quot;${no_restart}&amp;quot; = &amp;quot;t&amp;quot; ]] ; then
-  # nope, carry on
-  :
-else
-  # yup. has the cluster been initialized?
-  if [[ ! -d ${PGDATA} ]] ; then
-    # nope, so let&amp;#39;s do that
-    echo -n &amp;quot;Initializing PostgreSQL ${wanted_ver} cluster... &amp;quot;
-    mkdir ${PGDATA}
-    initdb -k ${PGDATA} &amp;amp;&amp;gt;/dev/null || initdb ${PGDATA} &amp;amp;&amp;gt;/dev/null
-    echo &amp;quot;done!&amp;quot;
-  else
-    # yup, carry on
-    :
-  fi
-  # start the cluster
-  echo -n &amp;quot;Starting PostgreSQL ${wanted_ver}... &amp;quot;
-  pg_ctl -D ${PGDATA} start &amp;amp;&amp;gt;/tmp/postmaster.out
-  if [[ $? -eq 0 ]] ; then
-    echo &amp;quot;done!&amp;quot;
-  else
-    echo &amp;quot;FAILED!&amp;quot;
-    cat /tmp/postmaster.out
-  fi
-  ret=1
-  while [[ ${ret} -eq 1 ]]
-  do
-    # wait for the cluster to be available before exiting
-    pg_isready -q
-    ret=$?
-  done
-fi&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:&lt;/p&gt;
 
@@ -490,437 +334,41 @@ launchctl start org.postfix.master
 
 &lt;p&gt;First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dumpall&lt;/code&gt; here since it’s quick-n-dirty:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-doug@Douglass-MacBook-Pro ~ »
-doug@Douglass-MacBook-Pro ~ » pg_dumpall -g &amp;gt; my_roles.sql
-doug@Douglass-MacBook-Pro ~ » pg_dumpall &amp;gt; my_data.sql
-doug@Douglass-MacBook-Pro ~ »
-```&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Now, we can stop our cluster:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-doug@Douglass-MacBook-Pro ~ »
-doug@Douglass-MacBook-Pro ~ » brew services stop postgresql
-Stopping `postgresql`... (might take a while)
-==&amp;gt; Successfully stopped `postgresql` (label: homebrew.mxcl.postgresql)
-doug@Douglass-MacBook-Pro ~ »
-```&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;And uninstall the current PostgreSQL:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-doug@Douglass-MacBook-Pro ~ »
-doug@Douglass-MacBook-Pro ~ » brew uninstall postgresql
-Uninstalling /usr/local/Cellar/postgresql/9.5.5... (3,154 files, 35.1M)
-doug@Douglass-MacBook-Pro ~ »
-```&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/4dffee8e9ebbf2c052162f2ecc36e812.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/4dffee8e9ebbf2c052162f2ecc36e812.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;And remove the remnants of our cluster:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-doug@Douglass-MacBook-Pro ~ »
-doug@Douglass-MacBook-Pro ~ » rm -rf /usr/local/var/postgres
-doug@Douglass-MacBook-Pro ~ »
-```
-&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/7c064e25c8916fa7fe0e3cdb846d3c78.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/7c064e25c8916fa7fe0e3cdb846d3c78.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Now we’ve got a clean slate. So, let’s tell Homebrew to stop using the default PostgreSQL and use Peter Eisentraut’s version (if you don’t know, Peter actually contributes to PostgreSQL):&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-doug@Douglass-MacBook-Pro ~ » 
-doug@Douglass-MacBook-Pro ~ » brew tap petere/postgresql
-Updating Homebrew...
-==&amp;gt; Auto-updated Homebrew!
-Updated 1 tap (homebrew/core).
-==&amp;gt; New Formulae
-[snip]
-==&amp;gt; Updated Formulae
-[snip]
-==&amp;gt; Deleted Formulae
-[snip]
-
-==&amp;gt; Tapping petere/postgresql
-Cloning into &amp;#39;/usr/local/Homebrew/Library/Taps/petere/homebrew-postgresql&amp;#39;...
-remote: Counting objects: 15, done.
-remote: Compressing objects: 100% (11/11), done.
-remote: Total 15 (delta 9), reused 5 (delta 4), pack-reused 0
-Unpacking objects: 100% (15/15), done.
-Checking connectivity... done.
-Tapped 11 formulae (49 files, 71.7K)
-doug@Douglass-MacBook-Pro ~ » 
-```&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/b099ff10c1cd1713f37ff40cf320adf3.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/b099ff10c1cd1713f37ff40cf320adf3.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let’s install the supported versions:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-doug@Douglass-MacBook-Pro ~ »
-doug@Douglass-MacBook-Pro ~ » for i in $(seq 2 6)
-\ do
-\ brew install postgresql-9.${i}
-\ done
-==&amp;gt; Installing postgresql-9.2 from petere/postgresql
-==&amp;gt; Tapping homebrew/dupes
-Cloning into &amp;#39;/usr/local/Homebrew/Library/Taps/homebrew/homebrew-dupes&amp;#39;...
-remote: Counting objects: 42, done.
-remote: Compressing objects: 100% (42/42), done.
-remote: Total 42 (delta 0), reused 4 (delta 0), pack-reused 0
-Unpacking objects: 100% (42/42), done.
-Checking connectivity... done.
-Tapped 38 formulae (103 files, 121.4K)
-==&amp;gt; Installing dependencies for petere/postgresql/postgresql-9.2: gettext, homebrew/dupes/openldap, ossp-uuid, homebrew/dupes/tcl-tk
-==&amp;gt; Installing petere/postgresql/postgresql-9.2 dependency: get
-==&amp;gt; Downloading https://homebrew.bintray.com/bottles/gettext-0.19.8.1.sierra.bot
-######################################################################## 100.0%
-==&amp;gt; Pouring gettext-0.19.8.1.sierra.bottle.tar.gz
-==&amp;gt; Caveats
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-macOS provides the BSD gettext library and some software gets confused if both are in the library path.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you will need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/gettext/lib
-    CPPFLAGS: -I/usr/local/opt/gettext/include
-
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/gettext/0.19.8.1: 1,934 files, 16.9M
-==&amp;gt; Installing petere/postgresql/postgresql-9.2 dependency: homebrew/dupes/
-==&amp;gt; Downloading https://homebrew.bintray.com/bottles-dupes/openldap-2.4.44.sierr
-######################################################################## 100.0%
-==&amp;gt; Pouring openldap-2.4.44.sierra.bottle.tar.gz
-==&amp;gt; Caveats
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-macOS already provides this software and installing another version in
-parallel can cause all kinds of trouble.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you will need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/openldap/lib
-    CPPFLAGS: -I/usr/local/opt/openldap/include
-
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/openldap/2.4.44: 295 files, 6.3M
-==&amp;gt; Installing petere/postgresql/postgresql-9.2 dependency: ossp-uuid
-==&amp;gt; Downloading https://homebrew.bintray.com/bottles/ossp-uuid-1.6.2_2.sierra.bo
-######################################################################## 100.0%
-==&amp;gt; Pouring ossp-uuid-1.6.2_2.sierra.bottle.tar.gz
-🍺   /usr/local/Cellar/ossp-uuid/1.6.2_2: 17 files, 206K
-==&amp;gt; Installing petere/postgresql/postgresql-9.2 dependency: homebrew/dupes/
-==&amp;gt; Using the sandbox
-==&amp;gt; Downloading https://downloads.sourceforge.net/project/tcl/Tcl/8.6.6/tcl8.6.6
-==&amp;gt; Downloading from http://iweb.dl.sourceforge.net/project/tcl/Tcl/8.6.6/tcl8.6
-######################################################################## 100.0%
-==&amp;gt; ./configure --prefix=/usr/local/Cellar/tcl-tk/8.6.6 --mandir=/usr/local/Cell
-==&amp;gt; make
-==&amp;gt; make install
-==&amp;gt; make install-private-headers
-==&amp;gt; Downloading https://downloads.sourceforge.net/project/tcl/Tcl/8.6.6/tk8.6.6-
-==&amp;gt; Downloading from http://heanet.dl.sourceforge.net/project/tcl/Tcl/8.6.6/tk8.
-######################################################################## 100.0%
-==&amp;gt; ./configure --prefix=/usr/local/Cellar/tcl-tk/8.6.6 --mandir=/usr/local/Cell
-==&amp;gt; make TK_LIBRARY=/usr/local/Cellar/tcl-tk/8.6.6/lib
-==&amp;gt; make install
-==&amp;gt; make install-private-headers
-==&amp;gt; Downloading https://github.com/tcltk/tcllib/archive/tcllib_1_18.tar.gz
-==&amp;gt; Downloading from https://codeload.github.com/tcltk/tcllib/tar.gz/tcllib_1_18
-######################################################################## 100.0%
-==&amp;gt; ./configure --prefix=/usr/local/Cellar/tcl-tk/8.6.6 --mandir=/usr/local/Cell
-==&amp;gt; make install
-==&amp;gt; Caveats
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-Tk installs some X11 headers and OS X provides an (older) Tcl/Tk.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you will need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/tcl-tk/lib
-    CPPFLAGS: -I/usr/local/opt/tcl-tk/include
-    PKG_CONFIG_PATH: /usr/local/opt/tcl-tk/lib/pkgconfig
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/tcl-tk/8.6.6: 2,847 files, 29.2M, built in 5 minutes 31 seconds
-==&amp;gt; Installing petere/postgresql/postgresql-9.2
-==&amp;gt; Downloading https://ftp.postgresql.org/pub/source/v9.2.19/postgresql-9.2.19.
-######################################################################## 100.0%
-==&amp;gt; Patching
-patching file contrib/uuid-ossp/uuid-ossp.c
-==&amp;gt; ./configure --prefix=/usr/local/Cellar/postgresql-9.2/9.2.19 --enable-dtrace
-==&amp;gt; make install-world
-==&amp;gt; Caveats
-To use this PostgreSQL installation, do one or more of the following:
-
-- Call all programs explicitly with /usr/local/opt/postgresql-9.2/bin/...
-- Add /usr/local/opt/postgresql-9.2/bin to your PATH
-- brew link -f postgresql-9.2
-- Install the postgresql-common package
-
-To access the man pages, do one or more of the following:
-- Refer to them by their full path, like `man /usr/local/opt/postgresql-9.2/share/man/man1/psql.1`
-- Add /usr/local/opt/postgresql-9.2/share/man to your MANPATH
-- brew link -f postgresql-9.2
-
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-The different provided versions of PostgreSQL conflict with each other.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you will need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/postgresql-9.2/lib
-    CPPFLAGS: -I/usr/local/opt/postgresql-9.2/include
-
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/postgresql-9.2/9.2.19: 3,120 files, 40M, built in 3 minutes 28 seconds
-Updating Homebrew...
-==&amp;gt; Auto-updated Homebrew!
-Updated 1 tap (homebrew/core).
-==&amp;gt; Updated Formulae
-[snip]
-
-==&amp;gt; Installing postgresql-9.3 from petere/postgresql
-==&amp;gt; Downloading https://ftp.postgresql.org/pub/source/v9.3.15/postgresql-9.3.15.
-######################################################################## 100.0%
-==&amp;gt; Patching
-patching file contrib/uuid-ossp/uuid-ossp.c
-==&amp;gt; ./configure --prefix=/usr/local/Cellar/postgresql-9.3/9.3.15 --enable-dtrace
-==&amp;gt; make install-world
-==&amp;gt; Caveats
-To use this PostgreSQL installation, do one or more of the following:
-
-- Call all programs explicitly with /usr/local/opt/postgresql-9.3/bin/...
-- Add /usr/local/opt/postgresql-9.3/bin to your PATH
-- brew link -f postgresql-9.3
-- Install the postgresql-common package
-
-To access the man pages, do one or more of the following:
-- Refer to them by their full path, like `man /usr/local/opt/postgresql-9.3/share/man/man1/psql.1`
-- Add /usr/local/opt/postgresql-9.3/share/man to your MANPATH
-- brew link -f postgresql-9.3
-
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-The different provided versions of PostgreSQL conflict with each other.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you will need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/postgresql-9.3/lib
-    CPPFLAGS: -I/usr/local/opt/postgresql-9.3/include
-    PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.3/lib/pkgconfig
-
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/postgresql-9.3/9.3.15: 3,190 files, 41M, built in 3 minutes 17 seconds
-==&amp;gt; Installing postgresql-9.4 from petere/postgresql
-==&amp;gt; Installing dependencies for petere/postgresql/postgresql-9.4: e2fsprogs
-==&amp;gt; Installing petere/postgresql/postgresql-9.4 dependency: e2fsprogs
-==&amp;gt; Downloading https://homebrew.bintray.com/bottles/e2fsprogs-1.42.13.sierra.bo
-######################################################################## 100.0%
-==&amp;gt; Pouring e2fsprogs-1.42.13.sierra.bottle.tar.gz
-==&amp;gt; Caveats
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-This brew installs several commands which override macOS-provided file system commands.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you will need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/e2fsprogs/lib
-    CPPFLAGS: -I/usr/local/opt/e2fsprogs/include
-    PKG_CONFIG_PATH: /usr/local/opt/e2fsprogs/lib/pkgconfig
-
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/e2fsprogs/1.42.13: 135 files, 5.0M
-==&amp;gt; Installing petere/postgresql/postgresql-9.4
-==&amp;gt; Downloading https://ftp.postgresql.org/pub/source/v9.4.10/postgresql-9.4.10.
-######################################################################## 100.0%
-==&amp;gt; ./configure --prefix=/usr/local/Cellar/postgresql-9.4/9.4.10 --enable-dtrace
-==&amp;gt; make install-world
-==&amp;gt; Caveats
-To use this PostgreSQL installation, do one or more of the following:
-
-- Call all programs explicitly with /usr/local/opt/postgresql-9.4/bin/...
-- Add /usr/local/opt/postgresql-9.4/bin to your PATH
-- brew link -f postgresql-9.4
-- Install the postgresql-common package
-
-To access the man pages, do one or more of the following:
-- Refer to them by their full path, like `man /usr/local/opt/postgresql-9.4/share/man/man1/psql.1`
-- Add /usr/local/opt/postgresql-9.4/share/man to your MANPATH
-- brew link -f postgresql-9.4
-
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-The different provided versions of PostgreSQL conflict with each other.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you will need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/postgresql-9.4/lib
-    CPPFLAGS: -I/usr/local/opt/postgresql-9.4/include
-    PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.4/lib/pkgconfig
-
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/postgresql-9.4/9.4.10: 3,261 files, 42.9M, built in 3 minutes 17 seconds
-==&amp;gt; Installing postgresql-9.5 from petere/postgresql
-==&amp;gt; Downloading https://ftp.postgresql.org/pub/source/v9.5.5/postgresql-9.5.5.ta
-######################################################################## 100.0%
-==&amp;gt; ./configure --prefix=/usr/local/Cellar/postgresql-9.5/9.5.5 --enable-dtrace
-==&amp;gt; make install-world
-==&amp;gt; Caveats
-To use this PostgreSQL installation, do one or more of the following:
-
-- Call all programs explicitly with /usr/local/opt/postgresql-9.5/bin/...
-- Add /usr/local/opt/postgresql-9.5/bin to your PATH
-- brew link -f postgresql-9.5
-- Install the postgresql-common package
-
-To access the man pages, do one or more of the following:
-- Refer to them by their full path, like `man /usr/local/opt/postgresql-9.5/share/man/man1/psql.1`
-- Add /usr/local/opt/postgresql-9.5/share/man to your MANPATH
-- brew link -f postgresql-9.5
-
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-The different provided versions of PostgreSQL conflict with each other.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you will need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/postgresql-9.5/lib
-    CPPFLAGS: -I/usr/local/opt/postgresql-9.5/include
-    PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.5/lib/pkgconfig
-
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/postgresql-9.5/9.5.5: 3,395 files, 45M, built in 3 minutes 30 seconds
-==&amp;gt; Installing postgresql-9.6 from petere/postgresql
-==&amp;gt; Downloading https://ftp.postgresql.org/pub/source/v9.6.1/postgresql-9.6.1.ta
-######################################################################## 100.0%
-==&amp;gt; ./configure --prefix=/usr/local/Cellar/postgresql-9.6/9.6.1 --enable-dtrace
-==&amp;gt; make install-world
-==&amp;gt; Caveats
-To use this PostgreSQL installation, do one or more of the following:
-
-- Call all programs explicitly with /usr/local/opt/postgresql-9.6/bin/...
-- Add /usr/local/opt/postgresql-9.6/bin to your PATH
-- brew link -f postgresql-9.6
-- Install the postgresql-common package
-
-To access the man pages, do one or more of the following:
-- Refer to them by their full path, like `man /usr/local/opt/postgresql-9.6/share/man/man1/psql.1`
-- Add /usr/local/opt/postgresql-9.6/share/man to your MANPATH
-- brew link -f postgresql-9.6
-
-This formula is keg-only, which means it was not symlinked into /usr/local.
-
-The different provided versions of PostgreSQL conflict with each other.
-
-Generally there are no consequences of this for you. If you build your
-own software and it requires this formula, you will need to add to your
-build variables:
-
-    LDFLAGS:  -L/usr/local/opt/postgresql-9.6/lib
-    CPPFLAGS: -I/usr/local/opt/postgresql-9.6/include
-    PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.6/lib/pkgconfig
-
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/postgresql-9.6/9.6.1: 3,485 files, 46.6M, built in 3 minutes 38 seconds
-doug@Douglass-MacBook-Pro ~ »
-```&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/bcc4e0e7c55e849b7adb647d9727674c.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/bcc4e0e7c55e849b7adb647d9727674c.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/opt/postgresql-9.1/&lt;/code&gt; etc.&lt;/p&gt;
 
 &lt;p&gt;Peter configures PostgreSQL with just about all the options turned on:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-doug@Douglass-MacBook-Pro ~ »
-oug@Douglass-MacBook-Pro ~ » pg_config |grep ^CONF
-CONFIGURE = &amp;#39;--prefix=/usr/local/Cellar/postgresql-9.6/9.6.1&amp;#39; &amp;#39;--enable-dtrace&amp;#39; &amp;#39;--enable-nls&amp;#39; &amp;#39;--with-bonjour&amp;#39; &amp;#39;--with-gssapi&amp;#39; &amp;#39;--with-ldap&amp;#39; &amp;#39;--with-libxml&amp;#39; &amp;#39;--with-libxslt&amp;#39; &amp;#39;--with-openssl&amp;#39; &amp;#39;--with-uuid=e2fs&amp;#39; &amp;#39;--with-pam&amp;#39; &amp;#39;--with-perl&amp;#39; &amp;#39;--with-python&amp;#39; &amp;#39;--with-tcl&amp;#39; &amp;#39;--with-includes=/usr/local/opt/gettext/include:/usr/local/opt/openldap/include:/usr/local/opt/openssl/include:/usr/local/opt/readline/include:/usr/local/opt/tcl-tk/include&amp;#39; &amp;#39;--with-libraries=/usr/local/opt/gettext/lib:/usr/local/opt/openldap/lib:/usr/local/opt/openssl/lib:/usr/local/opt/readline/lib:/usr/local/opt/tcl-tk/lib&amp;#39; &amp;#39;CC=clang&amp;#39;
-doug@Douglass-MacBook-Pro ~ »&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/c56727a3249042841c2609439209c8fd.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/c56727a3249042841c2609439209c8fd.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt;. You would install it like this:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-doug@Douglass-MacBook-Pro ~ » brew install pex
-==&amp;gt; Installing dependencies for pex: postgresql
-==&amp;gt; Installing pex dependency: postgresql
-==&amp;gt; Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.5.sierra.bot
-Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.5.sierra.bottle.tar.gz
-==&amp;gt; Pouring postgresql-9.5.5.sierra.bottle.tar.gz
-==&amp;gt; Using the sandbox
-==&amp;gt; /usr/local/Cellar/postgresql/9.5.5/bin/initdb /usr/local/var/postgres
-==&amp;gt; Caveats
-If builds of PostgreSQL 9 are failing and you have version 8.x installed,
-you may need to remove the previous version first. See:
-  https://github.com/Homebrew/homebrew/issues/2510
-
-To migrate existing data from a previous major version (pre-9.0) of PostgreSQL, see:
-  https://www.postgresql.org/docs/9.5/static/upgrading.html
-
-To migrate existing data from a previous minor version (9.0-9.4) of PostgreSQL, see:
-  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
-
-   You will need your previous PostgreSQL installation from brew to perform `pg_upgrade`.
-   Do not run `brew cleanup postgresql` until you have performed the migration.                                                                  1
-To have launchd start postgresql now and restart at login:
-  brew services start postgresql
-Or, if you do not want/need a background service you can just run:
-  pg_ctl -D /usr/local/var/postgres start
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/postgresql/9.5.5: 3,154 files, 35.1M
-==&amp;gt; Installing pex
-==&amp;gt; Downloading https://homebrew.bintray.com/bottles/pex-1.20140409.sierra.bottl
-######################################################################## 100.0%
-==&amp;gt; Pouring pex-1.20140409.sierra.bottle.tar.gz
-==&amp;gt; Caveats
-If installing for the first time, perform the following in order to setup the necessary directory structure:
-  pex init
-==&amp;gt; Summary
-🍺   /usr/local/Cellar/pex/1.20140409: 5 files, 31.6K
-doug@Douglass-MacBook-Pro ~ »
-doug@Douglass-MacBook-Pro ~ » pex init
-doug@Douglass-MacBook-Pro ~ »
-```&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/37c2e01a0d400c0a16c7fb7d9b8d1030.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/37c2e01a0d400c0a16c7fb7d9b8d1030.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt; like so:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-doug@Douglass-MacBook-Pro ~ » pex -g /usr/local/opt/postgresql-9.4 install ip4r
-==&amp;gt; Downloading ip4r from https://github.com/RhodiumToad/ip4r/archive/2.0.3.tar.gz
-######################################################################## 100.0%
-==&amp;gt; Unpacking ip4r
-[snip]
-==&amp;gt; Building ip4r
-[snip]
-==&amp;gt; Installing ip4r
-[snip]
-/usr/bin/install -c -m 755  ip4r.so &amp;#39;/usr/local/Cellar/postgresql-9.4/9.4.10/lib/ip4r.so&amp;#39;
-/usr/bin/install -c -m 644 ip4r.control &amp;#39;/usr/local/Cellar/postgresql-9.4/9.4.10/share/extension/&amp;#39;
-/usr/bin/install -c -m 644 ip4r--2.0.sql ip4r--unpackaged2.0--2.0.sql ip4r--unpackaged1--2.0.sql                                                  ↪\  &amp;#39;/usr/local/Cellar/postgresql-9.4/9.4.10/share/extension/&amp;#39;
-[snip]
-==&amp;gt; Package ip4r installed successfully
-doug@Douglass-MacBook-Pro ~ »
-```&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/d2d004871557adc49ae77b19181bd999.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/d2d004871557adc49ae77b19181bd999.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;As you can see, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ip4r&lt;/code&gt; extension was installed into my PostgreSQL 9.4 instance.&lt;/p&gt;
 
@@ -934,42 +382,7 @@ doug@Douglass-MacBook-Pro ~ »
 
 &lt;p&gt;which is a huge pita. So, let’s make a little convenience function in our shell. Edit your &lt;code class=&quot;highlighter-rouge&quot;&gt;.zshrc&lt;/code&gt; or your &lt;code class=&quot;highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; (or whatever) and add a function like this:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;```bash
-    function pg()
-    {
-      ver=$1
-
-      for i in /usr/local/var/postgres/*
-      do
-        running_ver=$(basename ${i})
-        is_running=$(ps -few|egrep -- &amp;quot;[p]ostgres.*-D.*${running_ver}&amp;quot;)
-        if [[ ! -z ${is_running} ]] ; then
-          echo -n &amp;quot;Stopping PostgreSQL ${running_ver}... &amp;quot;
-          /usr/local/opt/postgresql-${running_ver}/bin/pg_ctl \
-            -D $i stop -mf &amp;amp;&amp;gt;/dev/null
-          echo &amp;quot;done!&amp;quot;
-        fi
-      done
-
-      echo -n &amp;quot;Activating PostgreSQL ${ver}... &amp;quot;
-      brew unlink --force --overwrite postgresql-${ver} &amp;amp;&amp;gt;/dev/null
-      brew link --force --overwrite postgresql-${ver} &amp;amp;&amp;gt;/dev/null
-      echo &amp;quot;done!&amp;quot;
-
-      export PGDATA=/usr/local/var/postgres/${ver}
-
-      if [[ ! -d ${PGDATA} ]] ; then
-        echo -n &amp;quot;Initializing PostgreSQL ${ver} cluster... &amp;quot;
-        mkdir ${PGDATA}
-        initdb -k ${PGDATA} &amp;amp;&amp;gt;/dev/null || initdb ${PGDATA} &amp;amp;&amp;gt;/dev/null
-        echo &amp;quot;done!&amp;quot;
-      fi
-      echo -n &amp;quot;Starting PostgreSQL ${ver}... &amp;quot;
-      pg_ctl -D ${PGDATA} start &amp;amp;&amp;gt;/dev/null
-      echo &amp;quot;done!&amp;quot;
-    }
-```&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;and then simply call &lt;code class=&quot;highlighter-rouge&quot;&gt;pg 9.5&lt;/code&gt; to set PostgreSQL 9.5 as your ‘active’ instance:&lt;/p&gt;
 
@@ -984,9 +397,7 @@ doug@Douglass-MacBook-Pro ~ »
 
 &lt;p&gt;Restore your data:&lt;/p&gt;
 
-&lt;noscript&gt;&lt;pre&gt;404: Not Found
-&lt;/pre&gt;&lt;/noscript&gt;
-&lt;script src=&quot;https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js&quot;&gt; &lt;/script&gt;
+&lt;p&gt;true&lt;script src=&quot;https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;and there you be. Ain’t it beautiful? :)&lt;/p&gt;</content><category term="osx" /><category term="postgresql" /><summary type="html">In our previous post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we’re going to take the next step.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">PostgreSQL, Homebrew, and You</title><link href="/posts/PostgreSQL-Homebrew-and-You/" rel="alternate" type="text/html" title="PostgreSQL, Homebrew, and You" /><published>2016-11-04T09:30:09-04:00</published><updated>2016-11-04T09:30:09-04:00</updated><id>/posts/PostgreSQL-Homebrew-and-You</id><content type="html" xml:base="/posts/PostgreSQL-Homebrew-and-You/">&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;lleader&quot; /&gt;If you need to install &lt;a href=&quot;http://www.posatgresql.org&quot;&gt;PostgreSQL&lt;/a&gt; onto your Macbook, you have several options available to you nowadays. You could use the &lt;a href=&quot;https://bigsql.com/postgresql/installers.jsp&quot;&gt;BigSQL&lt;/a&gt; package, or you could use &lt;a href=&quot;http://postgresapp.com&quot;&gt;Postgres.app&lt;/a&gt;, or several others. However, if you’re a geek running OSX, you’ve probably already installed &lt;a href=&quot;http://brew.sh&quot;&gt;Homebrew&lt;/a&gt; and it has a wonderful PostgreSQL package. So let’s use it, shall we?&lt;/p&gt;
 
@@ -1044,13 +455,4 @@ doug@Douglass-MacBook-Pro ~ »
 
 &lt;p&gt;And just like that, you have PostgreSQL installed and running! Set &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/var/postgres&lt;/code&gt; and you’re all set.&lt;/p&gt;
 
-&lt;p&gt;Enjoy!&lt;/p&gt;</content><category term="osx" /><category term="postgresql" /><summary type="html">If you need to install PostgreSQL onto your Macbook, you have several options available to you nowadays. You could use the BigSQL package, or you could use Postgres.app, or several others. However, if you’re a geek running OSX, you’ve probably already installed Homebrew and it has a wonderful PostgreSQL package. So let’s use it, shall we?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">Inaugural pgCMH mtg scheduled</title><link href="/posts/Inaugural-pgCMH-mtg/" rel="alternate" type="text/html" title="Inaugural pgCMH mtg scheduled" /><published>2016-11-03T07:45:32-04:00</published><updated>2016-11-03T07:45:32-04:00</updated><id>/posts/Inaugural-pgCMH-mtg</id><content type="html" xml:base="/posts/Inaugural-pgCMH-mtg/">&lt;p&gt;&lt;img src=&quot;/images/pgCMH.png&quot; class=&quot;rleader&quot; /&gt; As announced on our &lt;a href=&quot;http://www.twitter.com/pgCMH&quot;&gt;Twitter&lt;/a&gt;, we’ve scheduled our inaugural meeting for Jan 24, 2017 at 1800 hrs. The folks at CoverMyMeds will graciously provide the meeting space (and parking garage) while OpenSCG is buying the pizza!&lt;/p&gt;
-
-&lt;p&gt;At this first meeting, we’ll be discussing what you, the members, would like to get from the meetings, we’ll talk about future topics, and general organizational things. I know it’s not exciting, but I need everyone’s input to make this group something you get value from.&lt;/p&gt;
-
-&lt;div class=&quot;jekyll-twitter-plugin&quot;&gt;&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Our first mtg is happening on Jan 24 at &lt;a href=&quot;https://twitter.com/CoverMyMeds&quot;&gt;@covermymeds&lt;/a&gt; with &lt;a href=&quot;https://twitter.com/OpenSCG&quot;&gt;@openscg&lt;/a&gt; buying pizza. Bring a friend! RSVP at &lt;a href=&quot;https://t.co/600ZNbPV8e&quot;&gt;https://t.co/600ZNbPV8e&lt;/a&gt;&lt;/p&gt;&amp;mdash; pgCMH (@pgCMH) &lt;a href=&quot;https://twitter.com/pgCMH/status/788780137630216192&quot;&gt;October 19, 2016&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async=&quot;&quot; src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;&lt;/div&gt;
-
-&lt;p&gt;Please RSVP via the &lt;a href=&quot;https://www.meetup.com/postgresCMH/events/234969649/&quot;&gt;MeetUP event&lt;/a&gt; so we have sufficient food and drink!&lt;/p&gt;
-
-&lt;p&gt;See you there!&lt;/p&gt;</content><category term="pgcmh" /><category term="postgresql" /><summary type="html">As announced on our Twitter, we’ve scheduled our inaugural meeting for Jan 24, 2017 at 1800 hrs. The folks at CoverMyMeds will graciously provide the meeting space (and parking garage) while OpenSCG is buying the pizza!</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22meetup.jpg%22%7D" /></entry></feed>
+&lt;p&gt;Enjoy!&lt;/p&gt;</content><category term="osx" /><category term="postgresql" /><summary type="html">If you need to install PostgreSQL onto your Macbook, you have several options available to you nowadays. You could use the BigSQL package, or you could use Postgres.app, or several others. However, if you’re a geek running OSX, you’ve probably already installed Homebrew and it has a wonderful PostgreSQL package. So let’s use it, shall we?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry></feed>

@@ -5,12 +5,22 @@
   <description>Posts tagged as 'general'</description>
   <atom:link href="/feeds/feed.general.xml" rel="self" type="application/rss+xml" />
   <link>/tag/general/</link>
-  <updated>2017-02-15T12:43:56-05:00</updated>
+  <updated>2017-02-16T08:45:37-05:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Goodbye, Loui boy</title>
+    <description>&lt;p&gt;&lt;img src=&quot;/images/loui.jpg&quot; class=&quot;rleader&quot; /&gt;Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. &lt;em&gt;I will miss you.&lt;/em&gt;&lt;/p&gt;
+
+</description>
+    <link>/posts/Goodbye-Loui-boy/ </link>
+    <pubDate>2017-02-16T03:35:19-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Goodbye-Loui-boy/</guid>
+   </item>
   
    <item>
     <title>Changes to the blog</title>

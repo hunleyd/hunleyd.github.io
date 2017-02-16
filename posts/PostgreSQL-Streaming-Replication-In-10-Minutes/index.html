@@ -196,82 +196,28 @@ Reading time ~1 minute
 
 <p>Let’s get started!</p>
 
-<p>On the master, do the following:</p>
-<noscript><pre>```bash
-cat &lt;&lt; EOF &gt;&gt; postgresql.conf
-    wal_level = hot_standby
-    full_page_writes = on
-    wal_log_hints = on
-    max_wal_senders = 6
-    max_replication_slots = 6
-    hot_standby = on
-    hot_standby_feedback = on
-EOF
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script>
+<p>On the master, do the following:
+true<script src="https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script></p>
 
-<p>On the master, add the external IP addresses of the servers to <code class="highlighter-rouge">pg_hba.conf</code>:</p>
-<noscript><pre>```bash
-cat &lt;&lt; EOF &gt;&gt; pg_hba.conf
-    host replication repl_user IP_of_master/32 md5
-    host replication repl_user IP_of_standby/32 md5
-EOF
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js"> </script>
+<p>On the master, add the external IP addresses of the servers to <code class="highlighter-rouge">pg_hba.conf</code>:
+true<script src="https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js"> </script></p>
 
 <p>Restart PostgreSQL on the master for the changes to take affect</p>
 
-<p>On the master, create the replication user:</p>
-<noscript><pre>```bash
-psql \
-  -d postgres \
-  -U postgres \
-  -c &quot;CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD &#39;secretpasswordhere&#39;;&quot;
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js"> </script>
+<p>On the master, create the replication user:
+true<script src="https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js"> </script></p>
 
-<p>On the master, create the replication slot for the standby:</p>
-<noscript><pre>```bash
-psql \
-  -d postgres \
-  -U postgres \
-  -c &quot;SELECT * FROM pg_create_physical_replication_slot(&#39;standby1&#39;);&quot;
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js"> </script>
+<p>On the master, create the replication slot for the standby:
+true<script src="https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js"> </script></p>
 
-<p>On the standby, wipe the existing cluster:</p>
-<noscript><pre>```bash
-cd /var/lib/pgsql/9.4/data
-pg_ctl -D $PWD -mf stop
-cd ..
-rm -rfv data
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js"> </script>
+<p>On the standby, wipe the existing cluster:
+true<script src="https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js"> </script></p>
 
-<p>On the standby, use the <code class="highlighter-rouge">pg_basebackup</code> command to clone the master (enter the <code class="highlighter-rouge">repl_user</code>’s password from above when prompted):</p>
-<noscript><pre>```bash
-pg_basebackup \
-  -D data \
-  -Fp \
-  -R \
-  -Xs \
-  -c fast \
-  -l &#39;initial clone&#39; \
-  -P \
-  -v \
-  -h IP_of_master \
-  -U repl_user
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js"> </script>
+<p>On the standby, use the <code class="highlighter-rouge">pg_basebackup</code> command to clone the master (enter the <code class="highlighter-rouge">repl_user</code>’s password from above when prompted):
+true<script src="https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js"> </script></p>
 
-<p>On the standby, tweak the <code class="highlighter-rouge">recovery.conf</code> that was created for you and add the replication slot name:</p>
-<noscript><pre>```bash
-cd data
-cat &lt;&lt; EOF &gt;&gt; recovery.conf
-primary_slot_name = &#39;standby1&#39;
-EOF
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js"> </script>
+<p>On the standby, tweak the <code class="highlighter-rouge">recovery.conf</code> that was created for you and add the replication slot name:
+true<script src="https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js"> </script></p>
 
 <p>Start the standby up</p>
 
@@ -296,20 +242,20 @@ EOF
       <a href="/posts/Hello_eero/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h3>
-      <p>UPDATE: I've switched out the theme entirely (again) so the CSS issues should no longer be present. The rest of this post still sands.As ...&hellip; <a href="/posts/New-look-same-content/">Continue reading</a></p>
+      <h3><a href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy">Goodbye, Loui boy</a></h3>
+      <p>Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. *I will miss you.*&hellip; <a href="/posts/Goodbye-Loui-boy/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/changes-to-the-blog/" title="Changes to the blog">Changes to the blog</a></h4>
-        <span>Published on December 02, 2016</span>
+        <h4><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h4>
+        <span>Published on January 17, 2017</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/EXPLAINing-intermittent-perf-problems/" title="EXPLAINing intermittent perf problems">EXPLAINing intermittent perf problems</a></h4>
-        <span>Published on November 28, 2016</span>
+        <h4><a href="/posts/changes-to-the-blog/" title="Changes to the blog">Changes to the blog</a></h4>
+        <span>Published on December 02, 2016</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

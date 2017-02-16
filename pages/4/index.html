@@ -184,6 +184,48 @@
     <HEADER>
       
         <DIV class="entry-image-index">
+          <A href="/posts/Linka/" title="Linka"><IMG src="/images/general.png" alt="Linka" /></A>
+        </DIV><!-- /.entry-image -->
+      
+      <DIV class="entry-meta">
+        <SPAN class="entry-date date published updated">
+          <TIME datetime="2016-10-03T09:30:58-04:00" />
+            <A href="/posts/Linka/">October 03, 2016</A>
+          </TIME>
+        </SPAN>
+        <SPAN class="author vcard">
+          <SPAN class="fn">
+            <A href="/about/" title="About Douglas J Hunley">Douglas J Hunley</A>
+          </SPAN>
+        </SPAN>
+        
+          <SPAN class="entry-reading-time">
+            <I class="fa fa-clock-o"></i>
+            
+Reading time ~1 minute
+          </SPAN><!-- /.entry-reading-time -->
+        
+      </DIV><!-- /.entry-meta -->
+      
+        <H1 class="entry-title">
+          <A href="/posts/Linka/" rel="bookmark" title="Linka" itemprop="url">Linka</A>
+        </H1>
+      
+    </HEADER>
+    <DIV class="entry-content">
+      <p><img src="https://static1.squarespace.com/static/5527df31e4b022b79f2009ba/56d0e2c622482e09ee7d6032/56d0e2cca3360cb25587ca98/1456530250502/LifeStle_Silver_sm.jpg?format=500w" class="rleader" />My <a href="http://www.linkalock.com">Linka</a> smart bike lock from Kickstarter showed up today. Holy Hell is this thing solid and hefty! Like for reals, this is gonna throw the balance of the bike off :)</p>
+
+<p>I know what you’re thinking. A <em>smart</em> bike lock? Why? Yeah, I know. However, even without the smart gimmicks, this is a nice self-contained bike lock. It mounts directly to the frame, is hella hefty and thick (1.6 pounds), has a built in ‘someone is fucking with me’ alarm (that is quite ear piercing), it’s made of through-hardened steel, has a square cross-section, and it doesn’t stick out like a sore thumb when mounted.</p>
+
+<p>Anyway, I’ll edit this post later with thoughts after use.</p>
+
+    </DIV><!-- /.entry-content -->
+  </ARTICLE><!-- /.hentry -->
+
+  <ARTICLE class="hentry">
+    <HEADER>
+      
+        <DIV class="entry-image-index">
           <A href="/posts/Welcome-to-Cypheri/" title="Welcome to Cypheri"><IMG src="/images/gaming.jpg" alt="Welcome to Cypheri" /></A>
         </DIV><!-- /.entry-image -->
       
@@ -321,37 +363,17 @@ Reading time ~3 minutes
 
 <p>So what happens when you create a tablespace inside $PGDATA? Let’s find out. First, we’ll create the directory for the tablespace:</p>
 
-<noscript><pre>```bash
-doug.hunley ~ $ mkdir $PGDATA/tablespaces
-doug.hunley ~ $ cd $PGDATA/tablespaces
-doug.hunley ~/pgdata/tablespaces $ pwd
-/Users/doug.hunley/pgdata/tablespaces
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script></p>
 
 <p>And we see that nothing bad has happened yet. So, let’s pop over into <code class="highlighter-rouge">psql</code> and actually create the tablespace:</p>
 
-<noscript><pre>```sql
-(doug.hunley@[local]:5432/doug.hunley) # CREATE TABLESPACE ts1 LOCATION &#39;/Users/doug.hunley/pgdata/tablespaces&#39;;
-WARNING:  42P17: tablespace location should not be inside the data directory
-LOCATION:  CreateTableSpace, tablespace.c:295
-CREATE TABLESPACE
-Time: 7.797 ms
-(doug.hunley@[local]:5432/doug.hunley) #
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script></p>
 
 <p>We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you’ve got a problem. So where does the problem come in?</p>
 
 <p>Let’s try to make a backup of our cluster:</p>
 
-<noscript><pre>```bash
-doug.hunley ~ $ pg_basebackup -D pgdata2 -Fp -R -Xs -c fast -l &#39;clone for slave&#39; -P -v
-transaction log start point: 2/17000028 on timeline 1
-pg_basebackup: directory &quot;/Users/doug.hunley/pgdata/tablespaces&quot; exists but is not empty
-doug.hunley ~ $
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script></p>
 
 <p>There it is.</p>
 
@@ -406,44 +428,6 @@ Reading time ~1 minute
     </HEADER>
     <DIV class="entry-content">
       <p><img src="https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png" class="rleader" /> After stumbling upon an example of how to do so, I’ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I’ve chosen that platform for hosting my blog, right? :)</p>
-
-    </DIV><!-- /.entry-content -->
-  </ARTICLE><!-- /.hentry -->
-
-  <ARTICLE class="hentry">
-    <HEADER>
-      
-        <DIV class="entry-image-index">
-          <A href="/posts/Happy-20th-PostgreSQL/" title="Happy 20th Birthday, PostgreSQL"><IMG src="/images/db.jpg" alt="Happy 20th Birthday, PostgreSQL" /></A>
-        </DIV><!-- /.entry-image -->
-      
-      <DIV class="entry-meta">
-        <SPAN class="entry-date date published updated">
-          <TIME datetime="2016-05-12T06:11:31-04:00" />
-            <A href="/posts/Happy-20th-PostgreSQL/">May 12, 2016</A>
-          </TIME>
-        </SPAN>
-        <SPAN class="author vcard">
-          <SPAN class="fn">
-            <A href="/about/" title="About Douglas J Hunley">Douglas J Hunley</A>
-          </SPAN>
-        </SPAN>
-        
-          <SPAN class="entry-reading-time">
-            <I class="fa fa-clock-o"></i>
-            
-Reading time ~1 minute
-          </SPAN><!-- /.entry-reading-time -->
-        
-      </DIV><!-- /.entry-meta -->
-      
-        <H1 class="entry-title">
-          <A href="/posts/Happy-20th-PostgreSQL/" rel="bookmark" title="Happy 20th Birthday, PostgreSQL" itemprop="url">Happy 20th Birthday, PostgreSQL</A>
-        </H1>
-      
-    </HEADER>
-    <DIV class="entry-content">
-      <p><img src="/images/pgsql_20th.png" class="lleader" />Just a quick shout out to PostgreSQL, the world’s most advanced open source database, as it celebrates it’s 20<sup>th</sup> year in existence. Happy birthday, y’all!</p>
 
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->

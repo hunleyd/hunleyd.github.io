@@ -210,37 +210,17 @@ Reading time ~3 minutes
 
 <p>So what happens when you create a tablespace inside $PGDATA? Let’s find out. First, we’ll create the directory for the tablespace:</p>
 
-<noscript><pre>```bash
-doug.hunley ~ $ mkdir $PGDATA/tablespaces
-doug.hunley ~ $ cd $PGDATA/tablespaces
-doug.hunley ~/pgdata/tablespaces $ pwd
-/Users/doug.hunley/pgdata/tablespaces
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script></p>
 
 <p>And we see that nothing bad has happened yet. So, let’s pop over into <code class="highlighter-rouge">psql</code> and actually create the tablespace:</p>
 
-<noscript><pre>```sql
-(doug.hunley@[local]:5432/doug.hunley) # CREATE TABLESPACE ts1 LOCATION &#39;/Users/doug.hunley/pgdata/tablespaces&#39;;
-WARNING:  42P17: tablespace location should not be inside the data directory
-LOCATION:  CreateTableSpace, tablespace.c:295
-CREATE TABLESPACE
-Time: 7.797 ms
-(doug.hunley@[local]:5432/doug.hunley) #
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script></p>
 
 <p>We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you’ve got a problem. So where does the problem come in?</p>
 
 <p>Let’s try to make a backup of our cluster:</p>
 
-<noscript><pre>```bash
-doug.hunley ~ $ pg_basebackup -D pgdata2 -Fp -R -Xs -c fast -l &#39;clone for slave&#39; -P -v
-transaction log start point: 2/17000028 on timeline 1
-pg_basebackup: directory &quot;/Users/doug.hunley/pgdata/tablespaces&quot; exists but is not empty
-doug.hunley ~ $
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script></p>
 
 <p>There it is.</p>
 
@@ -277,20 +257,20 @@ doug.hunley ~ $
       <a href="/posts/Making-use-of-gists/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h3>
-      <p>UPDATE: I've switched out the theme entirely (again) so the CSS issues should no longer be present. The rest of this post still sands.As ...&hellip; <a href="/posts/New-look-same-content/">Continue reading</a></p>
+      <h3><a href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy">Goodbye, Loui boy</a></h3>
+      <p>Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. *I will miss you.*&hellip; <a href="/posts/Goodbye-Loui-boy/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/changes-to-the-blog/" title="Changes to the blog">Changes to the blog</a></h4>
-        <span>Published on December 02, 2016</span>
+        <h4><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h4>
+        <span>Published on January 17, 2017</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/EXPLAINing-intermittent-perf-problems/" title="EXPLAINing intermittent perf problems">EXPLAINing intermittent perf problems</a></h4>
-        <span>Published on November 28, 2016</span>
+        <h4><a href="/posts/changes-to-the-blog/" title="Changes to the blog">Changes to the blog</a></h4>
+        <span>Published on December 02, 2016</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

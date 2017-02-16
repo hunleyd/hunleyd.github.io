@@ -184,6 +184,45 @@
     <HEADER>
       
         <DIV class="entry-image-index">
+          <A href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy"><IMG src="/images/alone_boy.jpg" alt="Goodbye, Loui boy" /></A>
+        </DIV><!-- /.entry-image -->
+      
+      <DIV class="entry-meta">
+        <SPAN class="entry-date date published updated">
+          <TIME datetime="2017-02-16T03:35:19-05:00" />
+            <A href="/posts/Goodbye-Loui-boy/">February 16, 2017</A>
+          </TIME>
+        </SPAN>
+        <SPAN class="author vcard">
+          <SPAN class="fn">
+            <A href="/about/" title="About Douglas J Hunley">Douglas J Hunley</A>
+          </SPAN>
+        </SPAN>
+        
+          <SPAN class="entry-reading-time">
+            <I class="fa fa-clock-o"></i>
+            
+Reading time ~1 minute
+          </SPAN><!-- /.entry-reading-time -->
+        
+      </DIV><!-- /.entry-meta -->
+      
+        <H1 class="entry-title">
+          <A href="/posts/Goodbye-Loui-boy/" rel="bookmark" title="Goodbye, Loui boy" itemprop="url">Goodbye, Loui boy</A>
+        </H1>
+      
+    </HEADER>
+    <DIV class="entry-content">
+      <p><img src="/images/loui.jpg" class="rleader" />Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. <em>I will miss you.</em></p>
+
+
+    </DIV><!-- /.entry-content -->
+  </ARTICLE><!-- /.hentry -->
+
+  <ARTICLE class="hentry">
+    <HEADER>
+      
+        <DIV class="entry-image-index">
           <A href="/posts/New-look-same-content/" title="New look, same content"><IMG src="/images/blog.png" alt="New look, same content" /></A>
         </DIV><!-- /.entry-image -->
       
@@ -565,141 +604,6 @@ log_rotation_age = 1h
 </div>
 
 <p>which would give me logs of <code class="highlighter-rouge">postgresql-Mon-00</code>, <code class="highlighter-rouge">postgresql-Mon-01</code>, etc. You should be able to see how combining these three <code class="highlighter-rouge">postgresql.conf</code> parameters and some crafty strftime() escapes gives you a <em>ton</em> of flexibility in your logging. So go forth and tweak those logs!</p>
-
-    </DIV><!-- /.entry-content -->
-  </ARTICLE><!-- /.hentry -->
-
-  <ARTICLE class="hentry">
-    <HEADER>
-      
-        <DIV class="entry-image-index">
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster/" title="Upgrading PostgreSQL 5x faster"><IMG src="/images/db.jpg" alt="Upgrading PostgreSQL 5x faster" /></A>
-        </DIV><!-- /.entry-image -->
-      
-      <DIV class="entry-meta">
-        <SPAN class="entry-date date published updated">
-          <TIME datetime="2016-11-18T07:18:28-05:00" />
-            <A href="/posts/Upgrading-PostgreSQL-5x-faster/">November 18, 2016</A>
-          </TIME>
-        </SPAN>
-        <SPAN class="author vcard">
-          <SPAN class="fn">
-            <A href="/about/" title="About Douglas J Hunley">Douglas J Hunley</A>
-          </SPAN>
-        </SPAN>
-        
-          <SPAN class="entry-reading-time">
-            <I class="fa fa-clock-o"></i>
-            
-Reading time ~3 minutes
-          </SPAN><!-- /.entry-reading-time -->
-        
-      </DIV><!-- /.entry-meta -->
-      
-        <H1 class="entry-title">
-          <A href="/posts/Upgrading-PostgreSQL-5x-faster/" rel="bookmark" title="Upgrading PostgreSQL 5x faster" itemprop="url">Upgrading PostgreSQL 5x faster</A>
-        </H1>
-      
-    </HEADER>
-    <DIV class="entry-content">
-      <p><img src="http://www.navops.io/img/launch-samsung-1.gif" class="lleader" />Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
-
-<p>Thankfully, the PostgreSQL team introduced <code class="highlighter-rouge">pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code class="highlighter-rouge">pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?</p>
-
-<p>First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a> if you need to do this). We’re going to use <code class="highlighter-rouge">pgbench</code> to create some data in our PostgreSQL 9.5 instance:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.5
-doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
-</code></pre>
-</div>
-
-<p>Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, <em>this is where you’d have to stop your application(s)</em>.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &gt; data.sql
-pg_dumpall &gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
-</code></pre>
-</div>
-
-<p>We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.6
-doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
-psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
-</code></pre>
-</div>
-
-<p>After 37 minutes, our data is back and we can start our applications back up. <em>An outage of approximately 56.5 minutes</em>.</p>
-
-<p>Now, let’s blow away our PostgreSQL 9.6 cluster and use <code class="highlighter-rouge">pg_upgrade</code> to complete the same task. You would do this with the application(s) down as well!</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
-doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
-doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
-doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
-pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
-</code></pre>
-</div>
-
-<p>And we’re done <em>in 10.5 minutes</em>. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?</p>
-
-<p>For the curious, the <code class="highlighter-rouge">pg_upgrade</code> output that I omitted above for readability’s sake is:</p>
-
-<noscript><pre>```
-Performing Consistency Checks
------------------------------
-Checking cluster versions                                   ok
-Checking database user is the install user                  ok
-Checking database connection settings                       ok
-Checking for prepared transactions                          ok
-Checking for reg* system OID user data types                ok
-Checking for contrib/isn with bigint-passing mismatch       ok
-Checking for roles starting with &#39;pg_&#39;                      ok
-Creating dump of global objects                             ok
-Creating dump of database schemas
-                                                            ok
-Checking for presence of required libraries                 ok
-Checking database user is the install user                  ok
-Checking for prepared transactions                          ok
-
-If pg_upgrade fails after this point, you must re-initdb the
-new cluster before continuing.
-
-Performing Upgrade
-------------------
-Analyzing all rows in the new cluster                       ok
-Freezing all rows on the new cluster                        ok
-Deleting files from new pg_clog                             ok
-Copying old pg_clog to new server                           ok
-Setting next transaction ID and epoch for new cluster       ok
-Deleting files from new pg_multixact/offsets                ok
-Copying old pg_multixact/offsets to new server              ok
-Deleting files from new pg_multixact/members                ok
-Copying old pg_multixact/members to new server              ok
-Setting next multixact ID and offset for new cluster        ok
-Resetting WAL archives                                      ok
-Setting frozenxid and minmxid counters in new cluster       ok
-Restoring global objects in the new cluster                 ok
-Restoring database schemas in the new cluster
-                                                            ok
-Copying user relation files                                 ok
-Setting next OID for new cluster                            ok
-Sync data directory to disk                                 ok
-Creating script to analyze new cluster                      ok
-Creating script to delete old cluster                       ok
-
-Upgrade Complete
-----------------
-Optimizer statistics are not transferred by pg_upgrade so,
-once you start the new server, consider running:
-    ./analyze_new_cluster.sh
-
-Running this script will delete the old cluster&#39;s data files:
-    ./delete_old_cluster.sh
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js"> </script>
-
 
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
