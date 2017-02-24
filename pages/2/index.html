@@ -202,7 +202,7 @@
           <SPAN class="entry-reading-time">
             <I class="fa fa-clock-o"></i>
             
-Reading time ~2 minutes
+Reading time ~3 minutes
           </SPAN><!-- /.entry-reading-time -->
         
       </DIV><!-- /.entry-meta -->
@@ -215,50 +215,14 @@ Reading time ~2 minutes
     <DIV class="entry-content">
       <p><img src="http://www.navops.io/img/launch-samsung-1.gif" class="lleader" />Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
 
-<p>Thankfully, the PostgreSQL team introduced <code class="highlighter-rouge">pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code class="highlighter-rouge">pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?</p>
 
-<p>First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a> if you need to do this). We’re going to use <code class="highlighter-rouge">pgbench</code> to create some data in our PostgreSQL 9.5 instance:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.5
-doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
-</code></pre>
-</div>
-
-<p>Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, <em>this is where you’d have to stop your application(s)</em>.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &gt; data.sql
-pg_dumpall &gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
-</code></pre>
-</div>
-
-<p>We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.6
-doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
-psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
-</code></pre>
-</div>
-
-<p>After 37 minutes, our data is back and we can start our applications back up. <em>An outage of approximately 56.5 minutes</em>.</p>
-
-<p>Now, let’s blow away our PostgreSQL 9.6 cluster and use <code class="highlighter-rouge">pg_upgrade</code> to complete the same task. You would do this with the application(s) down as well!</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
-doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
-doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
-doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
-pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
-</code></pre>
-</div>
-
-<p>And we’re done <em>in 10.5 minutes</em>. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?</p>
-
-<p>For the curious, the <code class="highlighter-rouge">pg_upgrade</code> output that I omitted above for readability’s sake is:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js"> </script></p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Upgrading-PostgreSQL-5x-faster/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -284,7 +248,7 @@ pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40
           <SPAN class="entry-reading-time">
             <I class="fa fa-clock-o"></i>
             
-Reading time ~1 minute
+Reading time ~2 minutes
           </SPAN><!-- /.entry-reading-time -->
         
       </DIV><!-- /.entry-meta -->
@@ -297,30 +261,14 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p><img src="http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png" class="rleader" />Following on from <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">this</a> post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:</p>
 
-<p>true<script src="https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js"> </script></p>
 
-<p>But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » pg 9.6
-</code></pre>
-</div>
-
-<p>and then the script does the following:</p>
-
-<ul>
-  <li>checks if the requested version is installed, and installs it if not</li>
-  <li>checks if another version of PostgreSQL is running, and stops it</li>
-  <li>checks if another version is linked as the active version, and unlinks it</li>
-  <li>links the requested version as the active version</li>
-  <li>sets PGDATA to point to the requested version’s data cluster</li>
-  <li>does an <code class="highlighter-rouge">initdb</code> for the requested version if needed</li>
-  <li>starts the requested version’s cluster</li>
-</ul>
-
-<p>I’ll be the first to admit that the script could use additional work, but it’s functional enough to start using today. As I continue to improve the script, I’ll update the gist with those changes, so check back every so often.</p>
-
-<p>Enjoy.</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -359,33 +307,14 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p><img src="http://www.postfix.org/mysza.gif" class="lleader" />Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)</p>
 
-<p>The first thing we’re going to do is open an iTerm and <code class="highlighter-rouge">sudo -i</code> to become root. Then we’re going to <code class="highlighter-rouge">vi /etc/postfix/main.cf</code> and we’re going to add/set the following:</p>
 
-<div class="language-conf highlighter-rouge"><pre class="highlight"><code><span class="n">myhostname</span> = <span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>
-<span class="n">relayhost</span> = [<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span>
-<span class="n">smtp_sasl_auth_enable</span> = <span class="n">yes</span>
-<span class="n">smtp_sasl_password_maps</span>= <span class="n">hash</span>:/<span class="n">etc</span>/<span class="n">postfix</span>/<span class="n">sasl_passwd</span>
-<span class="n">smtp_sasl_security_options</span> = <span class="n">noanonymous</span>
-<span class="n">smtp_sasl_mechanism_filter</span> = <span class="n">plain</span>
-<span class="n">smtp_use_tls</span> = <span class="n">yes</span>
-</code></pre>
-</div>
-
-<p>I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we <code class="highlighter-rouge">vi /etc/postfix/sasl_passwd</code> and add:</p>
-
-<div class="language-conf highlighter-rouge"><pre class="highlight"><code>[<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span> <span class="n">username</span>@<span class="n">gmail</span>.<span class="n">com</span>:<span class="n">app_passwd</span>
-</code></pre>
-</div>
-
-<p>Secure that file by running <code class="highlighter-rouge">chmod 0600 /etc/postfix/sasl_passwd</code> and then have Postfix hash it by doing <code class="highlighter-rouge">postmap /etc/postfix/sasl_passwd</code>. Finally, restart Postfix:</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>launchctl stop org.postfix.master
-launchctl start org.postfix.master
-</code></pre>
-</div>
-
-<p>And everything should work.</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Routing-email-through-GMail-on-OSX/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -411,7 +340,7 @@ launchctl start org.postfix.master
           <SPAN class="entry-reading-time">
             <I class="fa fa-clock-o"></i>
             
-Reading time ~2 minutes
+Reading time ~11 minutes
           </SPAN><!-- /.entry-reading-time -->
         
       </DIV><!-- /.entry-meta -->
@@ -424,75 +353,14 @@ Reading time ~2 minutes
     <DIV class="entry-content">
       <p><img src="http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png" class="rleader" />In our <a href="https://hunleyd.github.io/PostgreSQL-Homebrew-and-You/">previous</a> post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we’re going to take the next step.</p>
 
-<p>First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use <code class="highlighter-rouge">pg_dumpall</code> here since it’s quick-n-dirty:</p>
 
-<p>true<script src="https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js"> </script></p>
-
-<p>Now, we can stop our cluster:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js"> </script></p>
-
-<p>And uninstall the current PostgreSQL:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/4dffee8e9ebbf2c052162f2ecc36e812.js"> </script></p>
-
-<p>And remove the remnants of our cluster:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/7c064e25c8916fa7fe0e3cdb846d3c78.js"> </script></p>
-
-<p>Now we’ve got a clean slate. So, let’s tell Homebrew to stop using the default PostgreSQL and use Peter Eisentraut’s version (if you don’t know, Peter actually contributes to PostgreSQL):</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/b099ff10c1cd1713f37ff40cf320adf3.js"> </script></p>
-
-<p>As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let’s install the supported versions:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/bcc4e0e7c55e849b7adb647d9727674c.js"> </script></p>
-
-<p>As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories <code class="highlighter-rouge">/usr/local/opt/postgresql-9.1/</code> etc.</p>
-
-<p>Peter configures PostgreSQL with just about all the options turned on:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/c56727a3249042841c2609439209c8fd.js"> </script></p>
-
-<p>and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using <code class="highlighter-rouge">pex</code>. You would install it like this:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/37c2e01a0d400c0a16c7fb7d9b8d1030.js"> </script></p>
-
-<p>Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use <code class="highlighter-rouge">pex</code> like so:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/d2d004871557adc49ae77b19181bd999.js"> </script></p>
-
-<p>As you can see, the <code class="highlighter-rouge">ip4r</code> extension was installed into my PostgreSQL 9.4 instance.</p>
-
-<p>Now, you might be wondering how to deal with all these concurrent versions. If you type <code class="highlighter-rouge">pg_dump</code> which one willl you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
-psql <span class="o">(</span>PostgreSQL<span class="o">)</span> 9.6.1
-doug@Douglass-MacBook-Pro ~ »
-</code></pre>
-</div>
-
-<p>which is a huge pita. So, let’s make a little convenience function in our shell. Edit your <code class="highlighter-rouge">.zshrc</code> or your <code class="highlighter-rouge">.bashrc</code> (or whatever) and add a function like this:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js"> </script></p>
-
-<p>and then simply call <code class="highlighter-rouge">pg 9.5</code> to set PostgreSQL 9.5 as your ‘active’ instance:</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>oug@Douglass-MacBook-Pro ~ » pg 9.5
-Stopping PostgreSQL 9.4... <span class="k">done</span>!
-Activating PostgreSQL 9.5... <span class="k">done</span>!
-Initializing PostgreSQL 9.5 cluster... <span class="k">done</span>!
-Starting PostgreSQL 9.5... <span class="k">done</span>!
-doug@Douglass-MacBook-Pro ~ »
-</code></pre>
-</div>
-
-<p>Restore your data:</p>
-
-<p>true<script src="https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js"> </script></p>
-
-<p>and there you be. Ain’t it beautiful? :)</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -531,62 +399,14 @@ Reading time ~2 minutes
     <DIV class="entry-content">
       <p><img src="http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png" class="lleader" />If you need to install <a href="http://www.posatgresql.org">PostgreSQL</a> onto your Macbook, you have several options available to you nowadays. You could use the <a href="https://bigsql.com/postgresql/installers.jsp">BigSQL</a> package, or you could use <a href="http://postgresapp.com">Postgres.app</a>, or several others. However, if you’re a geek running OSX, you’ve probably already installed <a href="http://brew.sh">Homebrew</a> and it has a wonderful PostgreSQL package. So let’s use it, shall we?</p>
 
-<p>I’m not going to walk you through installing Homebrew, so let’s just assume it’s already up and running and you’ve followed all the directions. At this point, you have <code class="highlighter-rouge">/usr/local/bin/</code> in your <code class="highlighter-rouge">$PATH</code> and <code class="highlighter-rouge">brew</code> is up and running. So, let’s tell <code class="highlighter-rouge">brew</code> to install PostgreSQL:</p>
 
-<div class="language-text highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » brew install postgresql
-==&gt; Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.4_1.sierra.b
-Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.4_1.sierra.bottle.tar.gz
-==&gt; Pouring postgresql-9.5.4_1.sierra.bottle.tar.gz
-==&gt; Using the sandbox
-==&gt; /usr/local/Cellar/postgresql/9.5.4_1/bigsqln/initdb /usr/local/var/postgres
-==&gt; Caveats
-If builds of PostgreSQL 9 are failing and you have version 8.x installed,
-you may need to remove the previous version first. See:
-  https://github.com/Homebrew/homebrew/issues/2510
-
-To migrate existing data from a previous major version (pre-9.0) of PostgreSQL, see:
-  https://www.postgresql.org/docs/9.5/static/upgrading.html
-
-To migrate existing data from a previous minor versionn (9.0-9.4) of PostgreSQL, see:
-  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
-
-  You will need your previous PostgreSQL installation from brew to perform `pg_upgrade`.
-  Do not run `brew cleanup postgresql` until you have performed the migration.
-
-To have launchd start postgresql now and restart at login:
-  brew services start postgresql
-Or, if you don't want/need a background service you can just run:
-  pg_ctl -D /usr/local/var/postgres start
-==&gt; Summary
-🍺  /usr/local/Cellar/postgresql/9.5.4_1: 3,147 files, 35M
-</code></pre>
-</div>
-
-<p>As you can see, it downloaded the package, installed the binaries, and ran <code class="highlighter-rouge">initdb</code> for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » brew services start postgresql
-<span class="gp">==&gt; </span>Successfully started <span class="sb">`</span>postgresql<span class="sb">`</span> <span class="o">(</span>label: homebrew.mxcl.postgresql<span class="o">)</span>
-</code></pre>
-</div>
-
-<p>And if you check your process listing, you can see that the cluster is up and running under your id:</p>
-
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » ps -efw|grep postgres
-  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres -D /usr/local/var/postgres
-  501  6817  6808   0 11:03AM ??         0:00.00 postgres: logger process
-  501  6819  6808   0 11:03AM ??         0:00.00 postgres: checkpointer process
-  501  6820  6808   0 11:03AM ??         0:00.00 postgres: writer process
-  501  6821  6808   0 11:03AM ??         0:00.00 postgres: wal writer process
-  501  6822  6808   0 11:03AM ??         0:00.00 postgres: autovacuum launcher process
-  501  6823  6808   0 11:03AM ??         0:00.00 postgres: stats collector process
-doug@Douglass-MacBook-Pro ~ »
-</code></pre>
-</div>
-
-<p>And just like that, you have PostgreSQL installed and running! Set <code class="highlighter-rouge">$PGDATA</code> to <code class="highlighter-rouge">/usr/local/var/postgres</code> and you’re all set.</p>
-
-<p>Enjoy!</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/PostgreSQL-Homebrew-and-You/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 

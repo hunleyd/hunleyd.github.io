@@ -215,10 +215,14 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p><img src="https://static1.squarespace.com/static/5527df31e4b022b79f2009ba/56d0e2c622482e09ee7d6032/56d0e2cca3360cb25587ca98/1456530250502/LifeStle_Silver_sm.jpg?format=500w" class="rleader" />My <a href="http://www.linkalock.com">Linka</a> smart bike lock from Kickstarter showed up today. Holy Hell is this thing solid and hefty! Like for reals, this is gonna throw the balance of the bike off :)</p>
 
-<p>I know what you’re thinking. A <em>smart</em> bike lock? Why? Yeah, I know. However, even without the smart gimmicks, this is a nice self-contained bike lock. It mounts directly to the frame, is hella hefty and thick (1.6 pounds), has a built in ‘someone is fucking with me’ alarm (that is quite ear piercing), it’s made of through-hardened steel, has a square cross-section, and it doesn’t stick out like a sore thumb when mounted.</p>
 
-<p>Anyway, I’ll edit this post later with thoughts after use.</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Linka/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -257,16 +261,14 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p><img src="https://www.nationstates.net/images/flags/uploads/cypheri__561515.jpg" class="lleader" />I recently discovered the online game <a href="https://www.nationstates.net">NationStates</a> thanks to a Reddit thread and was intrigued. So I logged in, created the nation of Cypheri and then used <a href="https://blogtrottr.com">BlogTrottr</a> to feed the RSS feed into my inbox (which allows me offline play essentially. I ignore it until I get a notice). So far, it’s been a neat little experience. I’m pretty sure if you know me well enough to be reading this blog that I know you well enough to say you’ll enjoy it too.</p>
 
-<p>Without further ado, let me welcome you to the Republic of Cypheri, a left-leaning college state. Our motto is “strength through freedom”.</p>
 
-<p>The Republic of Cypheri is a tiny, genial nation, renowned for its compulsory military service and irreverence towards religion. The compassionate population of 7 million Cypherians enjoy extensive civil freedoms, particularly in social issues, while business tends to be more regulated.</p>
-
-<p>The large government prioritizes Education, although Welfare, Defense, and Law &amp; Order are also considered important, while Spirituality and Industry are ignored. The average income tax rate is 39.8%, but much higher for the wealthy.</p>
-
-<p>The Cypherian economy, worth 251 billion dollars a year, is fairly diversified and led by the Tourism industry, with major contributions from Automobile Manufacturing, Basket Weaving, and Retail. State-owned companies are common. Average income is 35,928 dollars, and evenly distributed, with the richest citizens earning only 2.0 times as much as the poorest.</p>
-
-<p>Thanks for visiting, we hope you enjoyed your time here!</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Welcome-to-Cypheri/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -305,8 +307,14 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p>After an afternoon dicking around with Jekyll templates and Google serching, I’ve fixed up this site’s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I’ve also modified the tag cloud page to fit in the archive pages’ look an feel. It’s not a true tag cloud in that I don’t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it’s own page showing all posts tagged as such.</p>
 
-<p>So, yeah. Enjoy, or something.</p>
 
+      
+      
+      
+        <P>
+          <A href="/posts/Functional-Blog-Archives/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -345,52 +353,14 @@ Reading time ~3 minutes
     <DIV class="entry-content">
       <p>From the PostgreSQL <a href="https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html">docs</a>:</p>
 
-<blockquote>
-  <p>Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.</p>
-</blockquote>
 
-<blockquote>
-  <p>By using tablespaces, an administrator can control the disk layout of a PostgreSQL installation. This is useful in at least two ways. First, if the partition or volume on which the cluster was initialized runs out of space and cannot be extended, a tablespace can be created on a different partition and used until the system can be reconfigured.</p>
-</blockquote>
-
-<blockquote>
-  <p>Second, tablespaces allow an administrator to use knowledge of the usage pattern of database objects to optimize performance. For example, an index which is very heavily used can be placed on a very fast, highly available disk, such as an expensive solid state device. At the same time a table storing archived data which is rarely used or not performance critical could be stored on a less expensive, slower disk system.</p>
-</blockquote>
-
-<p>As you can see, while not as powerful as tablespaces in, say, Oracle, they do still have their uses in PostgreSQL. You can use them to make use of different filesystems, or different mount options, or different disk types and, in doing so, intelligently apply performance characteristics to subsets of your data. For example, you could put your highest volume tables in a tablespace that is mounted from SSDs while the rest of your db is mounted from spinning rust.</p>
-
-<p>Sounds decent, right? Now you before you go off and be “clever” and create an SSD-backed mountpoint for your new tablespace, understand that there are places you <em>should not</em> create the tablespace. You shouldn’t create tablespaces on any kind of ephemeral storage, for example on a <code class="highlighter-rouge">tmpfs</code> or a <code class="highlighter-rouge">ramfs</code> or similar. <em>You also should not create your new tablespaces under $PGDATA</em>. Yes, I’m aware there is <code class="highlighter-rouge">$PGDATA/pg_tblspc</code> but that directory is <em>not for you</em>. The system will auto-populate that directory with pointers to the real location of your tablespaces!</p>
-
-<p>So what happens when you create a tablespace inside $PGDATA? Let’s find out. First, we’ll create the directory for the tablespace:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script></p>
-
-<p>And we see that nothing bad has happened yet. So, let’s pop over into <code class="highlighter-rouge">psql</code> and actually create the tablespace:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script></p>
-
-<p>We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you’ve got a problem. So where does the problem come in?</p>
-
-<p>Let’s try to make a backup of our cluster:</p>
-
-<p>true<script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script></p>
-
-<p>There it is.</p>
-
-<p>When creating the backup, it tries to ensure the tablespace location is the same, but then it won’t write to a non-empty directory. My example is two different $PGDATA locations on the same box, but the issue is the same when using different machines because <code class="highlighter-rouge">pg_basebackup</code> backs up <em>everything</em> in $PGDATA which means your tablespace directory gets cloned before it gets to the actual cloning of the data in the tablespace so you end up with “stuff” in the dir, making it non-empty. Which gives you the same error and output.</p>
-
-<p>OK, so it breaks backups. I can work around that by using another backup method. What else?</p>
-
-<p>How about using <code class="highlighter-rouge">pg_upgrade</code> to do an upgrade? No matter if you run in <code class="highlighter-rouge">link</code> mode or not, <code class="highlighter-rouge">pg_upgrade</code> <em>will not move</em> your tablespace location. So you may have <code class="highlighter-rouge">~/pgdata95</code> and <code class="highlighter-rouge">~/pgdata96</code> after the upgrade, but your tablespaces <em>are still in</em> <code class="highlighter-rouge">~/pgdata95/tablespaces</code>. So, as per the <a href="https://www.postgresql.org/docs/current/static/pgupgrade.html">docs</a>:</p>
-
-<blockquote>
-  <p>Once you are satisfied with the upgrade, you can delete the old cluster’s data directories by running the script mentioned when pg_upgrade completes.</p>
-</blockquote>
-
-<p>And <em>boom</em> you’ve just deleted your tablespaces off disk. Congratulations!</p>
-
-<p>So there you have it. Two very good reasons to not create tablespaces inside $PGDATA. Please, don’t do this. Everyone who admins that cluster going forward will thank you.</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Where-Not-To-Put-Your-Tablespaces/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -429,6 +399,9 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p><img src="https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png" class="rleader" /> After stumbling upon an example of how to do so, I’ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I’ve chosen that platform for hosting my blog, right? :)</p>
 
+      
+      
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 

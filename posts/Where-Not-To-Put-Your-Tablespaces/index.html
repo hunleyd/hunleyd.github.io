@@ -210,17 +210,37 @@ Reading time ~3 minutes
 
 <p>So what happens when you create a tablespace inside $PGDATA? Let’s find out. First, we’ll create the directory for the tablespace:</p>
 
-<p>true<script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script></p>
+<noscript><pre>```bash
+doug.hunley ~ $ mkdir $PGDATA/tablespaces
+doug.hunley ~ $ cd $PGDATA/tablespaces
+doug.hunley ~/pgdata/tablespaces $ pwd
+/Users/doug.hunley/pgdata/tablespaces
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script>
 
 <p>And we see that nothing bad has happened yet. So, let’s pop over into <code class="highlighter-rouge">psql</code> and actually create the tablespace:</p>
 
-<p>true<script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script></p>
+<noscript><pre>```sql
+(doug.hunley@[local]:5432/doug.hunley) # CREATE TABLESPACE ts1 LOCATION &#39;/Users/doug.hunley/pgdata/tablespaces&#39;;
+WARNING:  42P17: tablespace location should not be inside the data directory
+LOCATION:  CreateTableSpace, tablespace.c:295
+CREATE TABLESPACE
+Time: 7.797 ms
+(doug.hunley@[local]:5432/doug.hunley) #
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script>
 
 <p>We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you’ve got a problem. So where does the problem come in?</p>
 
 <p>Let’s try to make a backup of our cluster:</p>
 
-<p>true<script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script></p>
+<noscript><pre>```bash
+doug.hunley ~ $ pg_basebackup -D pgdata2 -Fp -R -Xs -c fast -l &#39;clone for slave&#39; -P -v
+transaction log start point: 2/17000028 on timeline 1
+pg_basebackup: directory &quot;/Users/doug.hunley/pgdata/tablespaces&quot; exists but is not empty
+doug.hunley ~ $
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script>
 
 <p>There it is.</p>
 

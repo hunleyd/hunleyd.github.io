@@ -215,6 +215,9 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p><img src="/images/pgsql_20th.png" class="lleader" />Just a quick shout out to PostgreSQL, the world’s most advanced open source database, as it celebrates it’s 20<sup>th</sup> year in existence. Happy birthday, y’all!</p>
 
+      
+      
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -253,20 +256,14 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p><img src="http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png" class="rleader" />As mentioned in my previous <a href="/Now-on-Tap-Android-N-DP2/">post</a> I’ve stumbled across two issues with the 2<sup>nd</sup> Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won’t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.</p>
 
-<p>I was immediately aware of <em>some</em> kind of issue since the phone didn’t prompt me to setup Smaet Lock after pairing the watch. So I went into the Android Settings app, then Security, and went to tap on Smart Lock only to find it <em>gone</em>. Thinking maybe Google had moved it somewherre else, I used the new ‘search Settings’ feature and searched for Smart Lock, Lock, and Smart. None of them tuened up what I was looking for! After some Googling, I had enough clues to figure out what had happened to the option and how to restore it.</p>
 
-<p>To restore Smart Lock to the Security tab of the Settings app, do this:</p>
-
-<ul>
-  <li>open the Android Settings app</li>
-  <li>tap Security</li>
-  <li>scroll down to the Advanced section</li>
-  <li>tap Trust Agents</li>
-  <li>toggle Smart Lock (Google)</li>
-</ul>
-
-<p>Now, when ypou back button to the Security settings, the Smart Lock option will be restored and function like before. I dont know wtf ‘unset’ it as a Trust Agent provider in DP2 or why, but there you go.</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Smart-Lock-on-Android-N-DP2/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -305,21 +302,14 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p><img src="http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png" class="lleader" />Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program. And for the most part, it’s worked really well for me. I <em>really</em> like Android N so far and can’t wait for the final release. However, after updating from Developer Preview 1 (DP1) to Developer Preview 2 (DP2) via OTA, I noticed two small issues. The first issue is that I could not, for the life of me, get Now On Tap to enable even though it was previously enabled on DP1.</p>
 
-<p>I’m happy to report that I figured out, and I thought I’d share it in case anyone else has run this issue and was stumped. Just to be clear, if you open the Google app, then go into Settings, and then into Now on Tap, there’s a toggle. Simply flipping it is <em>supposed</em> to be enough to turn it on. But in my case, the toggle would <em>not</em> flip on. It was permanently flipped to off.</p>
 
-<p>To fix this:</p>
-
-<ul>
-  <li>head into the Android Settings app</li>
-  <li>touch Apps</li>
-  <li>touch the gear icon on the top right corner</li>
-  <li>touch Assist &amp; voice input</li>
-  <li>touch Assist App</li>
-  <li>chose Google</li>
-</ul>
-
-<p>Once you’ve done this, you’ll find that you can enable Now on Tap through the normal toggle.</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Now-on-Tap-Android-N-DP2/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -358,16 +348,14 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p><img src="http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg" class="rleader" />Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use <a href="https://github.com/keithf4/pg_partman">pg_partman</a> and be done with it. However, if you’re trying to learn, can’t use <code class="highlighter-rouge">pg_partman</code>, or are a masochist you’ll probably be following the <a href="http://www.postgresql.org/docs/current/static/ddl-partitioning.html">docs</a> and thinking ‘seriously? i have to create indexes on each child? why don’t they copy the indexes of the parent? why isn’t this easier?’. Here’s a little tip to make things slightly easier:</p>
 
-<p>Instead of creating your child tables like the docs say:
-true<script src="https://gist.github.com/hunleyd/0b1f8fa43534f53046eed4e63dc54e14.js"> </script></p>
 
-<p>Create your child tables thusly:
-true<script src="https://gist.github.com/hunleyd/603c5f6961134422651e2e13b1c6398e.js"> </script></p>
-
-<p>and PostgeSQL <em>will</em> copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?</p>
-
-<p>Enjoy.</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/PostgresQL-Partitioning-Quick-Tip/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 
@@ -393,7 +381,7 @@ true<script src="https://gist.github.com/hunleyd/603c5f6961134422651e2e13b1c6398
           <SPAN class="entry-reading-time">
             <I class="fa fa-clock-o"></i>
             
-Reading time ~4 minutes
+Reading time ~5 minutes
           </SPAN><!-- /.entry-reading-time -->
         
       </DIV><!-- /.entry-meta -->
@@ -406,123 +394,14 @@ Reading time ~4 minutes
     <DIV class="entry-content">
       <p><img src="https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png" class="lleader" /> UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it <a href="https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh">here</a>.</p>
 
-<p>I recently had to do a <em>near-zero downtime</em> upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn’t use streaming replication because of the change in major version (and because it’s simply not present in 8.x), so that left me looking at <em>logical replication</em> options. Usually, everyone else would be thinking Slony right here. I’ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.</p>
 
-<p>Londiste is part of the Skytools suite, originally developed by Skype back when they were a ‘no central node’ setup. As such, the thing was literally born to be “master-master” and assumes nodes come and go at will, so it’s got all the tools to handle bringing nodes up/down, marking them active/inactive, catching them up, etc. It’s written in Python, and uses plain text ini files for configuration.</p>
-
-<p>There’s really only two hurdles that I found with using Londiste. First is that if you can’t get the rpms from the <a href="http://yum.postgresql.org">PGDG Yum Repo</a> you’re looking at compiling from Git. And second, the online documentation for it is hard to find, hard to follow, and practically no one has used it so you can’t ask RandomPostgresPerson for help.</p>
-
-<p>Which is exactly why I’m writing this blog post. Here’s what I needed to get me through the migration in question. I hope it helps you, should you consider using Londiste for your own replication needs. To whit:</p>
-
-<ul>
-  <li>As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:</li>
-</ul>
-<noscript><pre>```sql
-SELECT
-    n.nspname as schema,
-    c.relname as table
-FROM
-    pg_class c
-JOIN
-    pg_namespace n
-ON
-    n.oid = c.relnamespace
-WHERE
-    c.relkind = &#39;r&#39;
-AND NOT EXISTS (
-    SELECT
-        1
-    FROM
-        pg_constraint con
-    WHERE
-        con.conrelid = c.oid
-    AND
-        con.contype = &#39;p&#39;
-)
-AND n.nspname &lt;&gt; ALL (
-    ARRAY [
-        &#39;pg_catalog&#39;,
-        &#39;sys&#39;,
-        &#39;dbo&#39;,
-        &#39;information_schema&#39;
-    ]
-);
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/94d1096767e154486dbfe8dd47f48275.js"> </script>
-
-<ul>
-  <li>
-    <p>On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we’re done, right? You can use <code class="highlighter-rouge">pg_dumpall -g</code> on the PostgreSQL 8.4.x to get a listing of roles.</p>
-  </li>
-  <li>
-    <p>Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I <em>think</em> you can actually get Londiste to do this for you as part of the replication, but I couldn’t find anything online for sure, and I didn’t have time to add more experimentation here (we’re on the customer’s dime here, remember). So, use <code class="highlighter-rouge">pg_dump</code> over the network and pipe it to <code class="highlighter-rouge">pg_restore</code> to transfer the schema thusly:
-true<script src="https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js"> </script></p>
-  </li>
-  <li>
-    <p>Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:
-true<script src="https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js"> </script></p>
-  </li>
-  <li>
-    <p>Install Skytools from source on the PostgreSQL 8.4.x server:
-true<script src="https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js"> </script></p>
-  </li>
-  <li>
-    <p>Restart the PostgreSQL 8.4.x cluster to load the new libs and modules</p>
-  </li>
-  <li>
-    <p>Now we configure the Londiste ticker. Note, we have <em>trust</em> setup for the postgres user in <code class="highlighter-rouge">pg_hba.conf</code> so there is no password= in the connection strings. Adjust to meet your setup:
-true<script src="https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js"> </script></p>
-  </li>
-  <li>
-    <p>Start up the ticker, to provide the replication “heartbeat” by running <code class="highlighter-rouge">pgqd -d ticker.ini</code></p>
-  </li>
-  <li>
-    <p>Check the <code class="highlighter-rouge">ticker.log</code> to ensure there are no warnings or errors! You can stop the ticker with <code class="highlighter-rouge">pgqd -s ticker.ini</code> while you fix things.</p>
-  </li>
-  <li>
-    <p>Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
-true<script src="https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js"> </script></p>
-  </li>
-  <li>
-    <p>We have to actually create the master node as the root node by doing:
-true<script src="https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde1.js"> </script></p>
-  </li>
-  <li>
-    <p>Check the master.log to see if you have a line like <code class="highlighter-rouge">INFO Node "master" initialized for queue "myappq" with type "root"</code></p>
-  </li>
-  <li>
-    <p>Now, spin up the master’s replication worker process by running <code class="highlighter-rouge">londiste3 -d master.ini worker</code></p>
-  </li>
-  <li>
-    <p>Next, we configure our slave node (same note applies about the lack of password in the connection string):
-true<script src="https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js"> </script></p>
-  </li>
-  <li>
-    <p>Like the master, we have to create the slave node. I created it as a <code class="highlighter-rouge">leaf</code> but I could have created it as a <code class="highlighter-rouge">branch</code> if we we’re going to cascade replication:
-true<script src="https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js"> </script></p>
-  </li>
-  <li>
-    <p>Check the slave.log to see if you have the line <code class="highlighter-rouge">INFO Node "slave" initialized for queue "myappq" with type "branch"</code></p>
-  </li>
-  <li>
-    <p>Spin up the slave’s replication worker process by running <code class="highlighter-rouge">londiste3 -d slave.ini worker</code></p>
-  </li>
-  <li>
-    <p>Tell the master node that we want to replicate all the tables in the db (<code class="highlighter-rouge">londiste3 master.ini add-table --all</code>) as well as all the sequences (<code class="highlighter-rouge">londiste3 master.ini add-seq --all</code>). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to <code class="highlighter-rouge">londiste3 master.ini add-table tablename</code> to add them to replication. Ditto for new sequences.</p>
-  </li>
-  <li>
-    <p>For the slave node, also replicate all the tables (<code class="highlighter-rouge">londiste3 slave.ini add-table --all</code>) and all the sequences (<code class="highlighter-rouge">londiste3 slave.ini add-seq --all</code>). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to <code class="highlighter-rouge">londiste3 slave.ini add-table tablename</code> to add them to replication. Ditto for new sequences.</p>
-  </li>
-</ul>
-
-<p>At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That’s all you need to do.</p>
-
-<p>But what about the data that was already in the master db? You don’t need to do anything. It’s already replicating. You can forcibly tell Londiste to ‘catch things up’ by doing <code class="highlighter-rouge">londiste3 slave.ini resync --all</code> if you like though.</p>
-
-<p>If you want to check on the replication at any point, simply issue <code class="highlighter-rouge">londiste3 slave.ini status</code> or to be more pedantic <code class="highlighter-rouge">londiste3 slave.ini compare</code> which will examine row counts and md5sums between master and slave.</p>
-
-<p>Enjoy your new cross-version logical replication!</p>
-
+      
+      
+      
+        <P>
+          <A href="/posts/Logical-Replication-With-Skytool3/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
     </DIV><!-- /.entry-content -->
   </ARTICLE><!-- /.hentry -->
 

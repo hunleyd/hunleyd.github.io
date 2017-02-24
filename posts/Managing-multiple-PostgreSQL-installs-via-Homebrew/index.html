@@ -184,7 +184,7 @@
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
           
-Reading time ~1 minute
+Reading time ~2 minutes
         </p><!-- /.entry-reading-time -->
         
       </div><!-- /.header-title-wrap -->
@@ -192,7 +192,111 @@ Reading time ~1 minute
     <div class="entry-content">
       <p><img src="http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png" class="rleader" />Following on from <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">this</a> post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:</p>
 
-<p>true<script src="https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js"> </script></p>
+<noscript><pre>#!/bin/sh
+
+wanted_ver=$1
+no_restart=
+
+# is the version requested installed?
+brew ls --version postgresql-${wanted_ver} &amp;&gt;/dev/null
+if [[ $? -eq 0 ]] ; then
+  # yes, carry on
+  :
+else
+  # nope, so install it
+  echo -n &quot;Installing PostgreSQL ${wanted_ver}... &quot;
+  brew install postgresql-${wanted_ver} &amp;&gt;/tmp/brew.out
+  if [[ $? -eq 0 ]] ; then
+    echo &quot;done&quot;
+  else
+    echo &quot;FAILED!&quot;
+    cat /tmp/brew.out
+    exit
+fi
+
+# is postgresql is running?
+for i in /usr/local/var/postgres/*
+do
+  check_ver=$(basename ${i})
+  is_running=$(ps -few | egrep -- &quot;[p]ostgres.*-D.*${check_ver}&quot;)
+
+  if [[ -z ${is_running} ]] ; then
+    # nope, carry on
+    :
+  else
+    # it is. is it the requested version?
+    if [[ &quot;${wanted_ver}&quot; = &quot;${check_ver}&quot; ]] ; then
+      # yup, carry on
+      no_restart=t
+    else
+      # nope, so kill it
+      echo -n &quot;Stopping PostgreSQL ${check_ver}... &quot;
+      /usr/local/opt/postgresql-${check_ver}/bin/pg_ctl -D /usr/local/var/postgres/${check_ver} stop -w -mf &amp;&gt;/tmp/stop.out
+      if [[ $? -eq 0 ]] ; then
+        echo &quot;done!&quot;
+      else
+        echo &quot;FAILED!&quot;
+        cat /tmp/stop.out
+      fi
+    fi
+  fi
+done
+
+# what version is active?
+active_ver=$(/usr/bin/stat -f %Y /usr/local/bin/psql | cut -d\/ -f3 | cut -d\- -f2)
+
+# is the active version the requested version?
+if [[ &quot;${active_ver}&quot; = &quot;${wanted_ver}&quot; ]] ; then
+  # yup, carry on
+  :
+else
+  # nope, so deactivate it
+  echo -n &quot;Deactivating PostgreSQL ${active_ver}... &quot;
+  brew unlink --force --overwrite postgresql-${active_ver} &amp;&gt;/dev/null
+  echo &quot;done!&quot;
+  # and activate the correct version
+  echo -n &quot;Activating PostgreSQL ${wanted_ver}... &quot;
+  brew link --force --overwrite postgresql-${wanted_ver} &amp;&gt;/dev/null
+  echo &quot;done!&quot;
+fi
+
+# point to the correct data dir
+export PGDATA=/usr/local/var/postgres/${wanted_ver}
+
+# should we be starting a cluster?
+if [[ &quot;${no_restart}&quot; = &quot;t&quot; ]] ; then
+  # nope, carry on
+  :
+else
+  # yup. has the cluster been initialized?
+  if [[ ! -d ${PGDATA} ]] ; then
+    # nope, so let&#39;s do that
+    echo -n &quot;Initializing PostgreSQL ${wanted_ver} cluster... &quot;
+    mkdir ${PGDATA}
+    initdb -k ${PGDATA} &amp;&gt;/dev/null || initdb ${PGDATA} &amp;&gt;/dev/null
+    echo &quot;done!&quot;
+  else
+    # yup, carry on
+    :
+  fi
+  # start the cluster
+  echo -n &quot;Starting PostgreSQL ${wanted_ver}... &quot;
+  pg_ctl -D ${PGDATA} start &amp;&gt;/tmp/postmaster.out
+  if [[ $? -eq 0 ]] ; then
+    echo &quot;done!&quot;
+  else
+    echo &quot;FAILED!&quot;
+    cat /tmp/postmaster.out
+  fi
+  ret=1
+  while [[ ${ret} -eq 1 ]]
+  do
+    # wait for the cluster to be available before exiting
+    pg_isready -q
+    ret=$?
+  done
+fi</pre></noscript>
+<script src="https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js"> </script>
 
 <p>But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:</p>
 

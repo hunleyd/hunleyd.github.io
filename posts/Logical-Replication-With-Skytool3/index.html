@@ -184,7 +184,7 @@
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
           
-Reading time ~4 minutes
+Reading time ~5 minutes
         </p><!-- /.entry-reading-time -->
         
       </div><!-- /.header-title-wrap -->
@@ -241,24 +241,77 @@ AND n.nspname &lt;&gt; ALL (
     <p>On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we’re done, right? You can use <code class="highlighter-rouge">pg_dumpall -g</code> on the PostgreSQL 8.4.x to get a listing of roles.</p>
   </li>
   <li>
-    <p>Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I <em>think</em> you can actually get Londiste to do this for you as part of the replication, but I couldn’t find anything online for sure, and I didn’t have time to add more experimentation here (we’re on the customer’s dime here, remember). So, use <code class="highlighter-rouge">pg_dump</code> over the network and pipe it to <code class="highlighter-rouge">pg_restore</code> to transfer the schema thusly:
-true<script src="https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js"> </script></p>
+    <p>Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I <em>think</em> you can actually get Londiste to do this for you as part of the replication, but I couldn’t find anything online for sure, and I didn’t have time to add more experimentation here (we’re on the customer’s dime here, remember). So, use <code class="highlighter-rouge">pg_dump</code> over the network and pipe it to <code class="highlighter-rouge">pg_restore</code> to transfer the schema thusly:</p>
   </li>
-  <li>
-    <p>Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:
-true<script src="https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js"> </script></p>
-  </li>
-  <li>
-    <p>Install Skytools from source on the PostgreSQL 8.4.x server:
-true<script src="https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js"> </script></p>
-  </li>
+</ul>
+<noscript><pre>```bash
+pg_dump \
+  -Fc \
+  -C \
+  -S \
+  -h IPofOldServer \
+  -U postgres \
+  myapp | \
+pg_restore \
+  -d template1 \
+  -v \
+  -C \
+  -e \
+  -s
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js"> </script>
+
+<ul>
+  <li>Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:</li>
+</ul>
+<noscript><pre>```bash
+yum -y install \
+  skytools-94 \
+  skytools-94-modules
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js"> </script>
+
+<ul>
+  <li>Install Skytools from source on the PostgreSQL 8.4.x server:</li>
+</ul>
+<noscript><pre>```bash
+yum -y install \
+  python-devel \
+  asciidoc \
+  xmlto \
+  postgresql-devel
+git clone git://github.com/markokr/skytools.git
+cd skytools
+git submodule init
+git submodule update
+./autogen.sh
+./configure
+make
+make install
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js"> </script>
+
+<ul>
   <li>
     <p>Restart the PostgreSQL 8.4.x cluster to load the new libs and modules</p>
   </li>
   <li>
-    <p>Now we configure the Londiste ticker. Note, we have <em>trust</em> setup for the postgres user in <code class="highlighter-rouge">pg_hba.conf</code> so there is no password= in the connection strings. Adjust to meet your setup:
-true<script src="https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js"> </script></p>
+    <p>Now we configure the Londiste ticker. Note, we have <em>trust</em> setup for the postgres user in <code class="highlighter-rouge">pg_hba.conf</code> so there is no password= in the connection strings. Adjust to meet your setup:</p>
   </li>
+</ul>
+<noscript><pre>```bash
+mkdir -pv ~postgres/londiste-config/{log,pid}
+cd ~postgres/londiste-config
+cat &lt;&lt; EOF &gt; ticker.ini
+  [pgqd]
+  base_connstr = user=postgres host=IPofOldServer
+  database_list = myapp
+  logfile = log/ticker.log
+  pidfile = pid/ticker.pid
+EOF</pre></noscript>
+<script src="https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js"> </script>
+
+<ul>
   <li>
     <p>Start up the ticker, to provide the replication “heartbeat” by running <code class="highlighter-rouge">pgqd -d ticker.ini</code></p>
   </li>
@@ -266,13 +319,34 @@ true<script src="https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d58630
     <p>Check the <code class="highlighter-rouge">ticker.log</code> to ensure there are no warnings or errors! You can stop the ticker with <code class="highlighter-rouge">pgqd -s ticker.ini</code> while you fix things.</p>
   </li>
   <li>
-    <p>Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
-true<script src="https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js"> </script></p>
+    <p>Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):</p>
   </li>
-  <li>
-    <p>We have to actually create the master node as the root node by doing:
-true<script src="https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde1.js"> </script></p>
-  </li>
+</ul>
+<noscript><pre>```bash
+cd ~postgres/londiste-config
+cat &lt;&lt; EOF &gt; master.ini
+  [londiste3]
+  db = user=postgres host=IPofOldServer dbname=myapp
+  queue_name = myappq
+  loop_delay = 0.5
+  logfile = log/master.log
+  pidfile = pid/master.pid
+EOF
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js"> </script>
+
+<ul>
+  <li>We have to actually create the master node as the root node by doing:</li>
+</ul>
+<noscript><pre>```bash
+londiste3 \
+  master.ini \
+  create-root \
+  master &#39;user=postgres host=IPofOldServer dbname=myapp&#39;
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde1.js"> </script>
+
+<ul>
   <li>
     <p>Check the master.log to see if you have a line like <code class="highlighter-rouge">INFO Node "master" initialized for queue "myappq" with type "root"</code></p>
   </li>
@@ -280,13 +354,34 @@ true<script src="https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde
     <p>Now, spin up the master’s replication worker process by running <code class="highlighter-rouge">londiste3 -d master.ini worker</code></p>
   </li>
   <li>
-    <p>Next, we configure our slave node (same note applies about the lack of password in the connection string):
-true<script src="https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js"> </script></p>
+    <p>Next, we configure our slave node (same note applies about the lack of password in the connection string):</p>
   </li>
-  <li>
-    <p>Like the master, we have to create the slave node. I created it as a <code class="highlighter-rouge">leaf</code> but I could have created it as a <code class="highlighter-rouge">branch</code> if we we’re going to cascade replication:
-true<script src="https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js"> </script></p>
-  </li>
+</ul>
+<noscript><pre>```bash
+cd ~postgres/londiste-config
+cat &lt;&lt; EOF &gt; slave.ini
+  [londiste3]
+  db = user=postgres host=127.0.0.1 dbname=myapp
+  queue_name = myappq
+  loop_delay = 0.5
+  logfile = log/slave.log
+  pidfile = pid/slave.pid
+EOF
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js"> </script>
+
+<ul>
+  <li>Like the master, we have to create the slave node. I created it as a <code class="highlighter-rouge">leaf</code> but I could have created it as a <code class="highlighter-rouge">branch</code> if we we’re going to cascade replication:</li>
+</ul>
+<noscript><pre>```bash
+londiste3 \
+  slave.ini \
+  create-leaf slave &#39;user=postgres host=127.0.0.1 dbname=myapp&#39; \
+    --provider=&#39;user=postgres host=IPofOldServer dbname=myapp&#39;
+```</pre></noscript>
+<script src="https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js"> </script>
+
+<ul>
   <li>
     <p>Check the slave.log to see if you have the line <code class="highlighter-rouge">INFO Node "slave" initialized for queue "myappq" with type "branch"</code></p>
   </li>
