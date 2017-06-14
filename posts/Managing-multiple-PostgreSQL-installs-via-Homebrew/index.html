@@ -184,7 +184,7 @@
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
           
-Reading time ~2 minutes
+Reading time ~1 minute
         </p><!-- /.entry-reading-time -->
         
       </div><!-- /.header-title-wrap -->
@@ -192,111 +192,7 @@ Reading time ~2 minutes
     <div class="entry-content">
       <p><img src="http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png" class="rleader" />Following on from <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">this</a> post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:</p>
 
-<noscript><pre>#!/bin/sh
-
-wanted_ver=$1
-no_restart=
-
-# is the version requested installed?
-brew ls --version postgresql-${wanted_ver} &amp;&gt;/dev/null
-if [[ $? -eq 0 ]] ; then
-  # yes, carry on
-  :
-else
-  # nope, so install it
-  echo -n &quot;Installing PostgreSQL ${wanted_ver}... &quot;
-  brew install postgresql-${wanted_ver} &amp;&gt;/tmp/brew.out
-  if [[ $? -eq 0 ]] ; then
-    echo &quot;done&quot;
-  else
-    echo &quot;FAILED!&quot;
-    cat /tmp/brew.out
-    exit
-fi
-
-# is postgresql is running?
-for i in /usr/local/var/postgres/*
-do
-  check_ver=$(basename ${i})
-  is_running=$(ps -few | egrep -- &quot;[p]ostgres.*-D.*${check_ver}&quot;)
-
-  if [[ -z ${is_running} ]] ; then
-    # nope, carry on
-    :
-  else
-    # it is. is it the requested version?
-    if [[ &quot;${wanted_ver}&quot; = &quot;${check_ver}&quot; ]] ; then
-      # yup, carry on
-      no_restart=t
-    else
-      # nope, so kill it
-      echo -n &quot;Stopping PostgreSQL ${check_ver}... &quot;
-      /usr/local/opt/postgresql-${check_ver}/bin/pg_ctl -D /usr/local/var/postgres/${check_ver} stop -w -mf &amp;&gt;/tmp/stop.out
-      if [[ $? -eq 0 ]] ; then
-        echo &quot;done!&quot;
-      else
-        echo &quot;FAILED!&quot;
-        cat /tmp/stop.out
-      fi
-    fi
-  fi
-done
-
-# what version is active?
-active_ver=$(/usr/bin/stat -f %Y /usr/local/bin/psql | cut -d\/ -f3 | cut -d\- -f2)
-
-# is the active version the requested version?
-if [[ &quot;${active_ver}&quot; = &quot;${wanted_ver}&quot; ]] ; then
-  # yup, carry on
-  :
-else
-  # nope, so deactivate it
-  echo -n &quot;Deactivating PostgreSQL ${active_ver}... &quot;
-  brew unlink --force --overwrite postgresql-${active_ver} &amp;&gt;/dev/null
-  echo &quot;done!&quot;
-  # and activate the correct version
-  echo -n &quot;Activating PostgreSQL ${wanted_ver}... &quot;
-  brew link --force --overwrite postgresql-${wanted_ver} &amp;&gt;/dev/null
-  echo &quot;done!&quot;
-fi
-
-# point to the correct data dir
-export PGDATA=/usr/local/var/postgres/${wanted_ver}
-
-# should we be starting a cluster?
-if [[ &quot;${no_restart}&quot; = &quot;t&quot; ]] ; then
-  # nope, carry on
-  :
-else
-  # yup. has the cluster been initialized?
-  if [[ ! -d ${PGDATA} ]] ; then
-    # nope, so let&#39;s do that
-    echo -n &quot;Initializing PostgreSQL ${wanted_ver} cluster... &quot;
-    mkdir ${PGDATA}
-    initdb -k ${PGDATA} &amp;&gt;/dev/null || initdb ${PGDATA} &amp;&gt;/dev/null
-    echo &quot;done!&quot;
-  else
-    # yup, carry on
-    :
-  fi
-  # start the cluster
-  echo -n &quot;Starting PostgreSQL ${wanted_ver}... &quot;
-  pg_ctl -D ${PGDATA} start &amp;&gt;/tmp/postmaster.out
-  if [[ $? -eq 0 ]] ; then
-    echo &quot;done!&quot;
-  else
-    echo &quot;FAILED!&quot;
-    cat /tmp/postmaster.out
-  fi
-  ret=1
-  while [[ ${ret} -eq 1 ]]
-  do
-    # wait for the cluster to be available before exiting
-    pg_isready -q
-    ret=$?
-  done
-fi</pre></noscript>
-<script src="https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js"> </script></p>
 
 <p>But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:</p>
 
@@ -339,20 +235,20 @@ fi</pre></noscript>
       <a href="/posts/Routing-email-through-GMail-on-OSX/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy">Goodbye, Loui boy</a></h3>
-      <p>Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. *I will miss you.*&hellip; <a href="/posts/Goodbye-Loui-boy/">Continue reading</a></p>
+      <h3><a href="/posts/Installing-pgBackRest-on-OSX/" title="Installing pgBackRest on OSX">Installing pgBackRest on OSX</a></h3>
+      <p>If you've followed my previous posts ([here](https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/) and [here](https://hunleyd.git...&hellip; <a href="/posts/Installing-pgBackRest-on-OSX/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h4>
-        <span>Published on January 17, 2017</span>
+        <h4><a href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy">Goodbye, Loui boy</a></h4>
+        <span>Published on February 16, 2017</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/changes-to-the-blog/" title="Changes to the blog">Changes to the blog</a></h4>
-        <span>Published on December 02, 2016</span>
+        <h4><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h4>
+        <span>Published on January 17, 2017</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

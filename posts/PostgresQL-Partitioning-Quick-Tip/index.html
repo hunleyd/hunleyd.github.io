@@ -192,22 +192,11 @@ Reading time ~1 minute
     <div class="entry-content">
       <p><img src="http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg" class="rleader" />Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use <a href="https://github.com/keithf4/pg_partman">pg_partman</a> and be done with it. However, if you’re trying to learn, can’t use <code class="highlighter-rouge">pg_partman</code>, or are a masochist you’ll probably be following the <a href="http://www.postgresql.org/docs/current/static/ddl-partitioning.html">docs</a> and thinking ‘seriously? i have to create indexes on each child? why don’t they copy the indexes of the parent? why isn’t this easier?’. Here’s a little tip to make things slightly easier:</p>
 
-<p>Instead of creating your child tables like the docs say:</p>
-<noscript><pre>```sql
-CREATE TABLE child1 (
-  CHECK (blah blah)
-) INHERITS (parent);
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/0b1f8fa43534f53046eed4e63dc54e14.js"> </script>
+<p>Instead of creating your child tables like the docs say:
+true<script src="https://gist.github.com/hunleyd/0b1f8fa43534f53046eed4e63dc54e14.js"> </script></p>
 
-<p>Create your child tables thusly:</p>
-<noscript><pre>```sql
-CREATE TABLE child1 (
-  LIKE parent INCLUDING ALL,
-  CHECK (blah blah)
-) INHERITS (parent);
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/603c5f6961134422651e2e13b1c6398e.js"> </script>
+<p>Create your child tables thusly:
+true<script src="https://gist.github.com/hunleyd/603c5f6961134422651e2e13b1c6398e.js"> </script></p>
 
 <p>and PostgeSQL <em>will</em> copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?</p>
 
@@ -232,20 +221,20 @@ CREATE TABLE child1 (
       <a href="/posts/Logical-Replication-With-Skytool3/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy">Goodbye, Loui boy</a></h3>
-      <p>Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. *I will miss you.*&hellip; <a href="/posts/Goodbye-Loui-boy/">Continue reading</a></p>
+      <h3><a href="/posts/Installing-pgBackRest-on-OSX/" title="Installing pgBackRest on OSX">Installing pgBackRest on OSX</a></h3>
+      <p>If you've followed my previous posts ([here](https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/) and [here](https://hunleyd.git...&hellip; <a href="/posts/Installing-pgBackRest-on-OSX/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h4>
-        <span>Published on January 17, 2017</span>
+        <h4><a href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy">Goodbye, Loui boy</a></h4>
+        <span>Published on February 16, 2017</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/changes-to-the-blog/" title="Changes to the blog">Changes to the blog</a></h4>
-        <span>Published on December 02, 2016</span>
+        <h4><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h4>
+        <span>Published on January 17, 2017</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

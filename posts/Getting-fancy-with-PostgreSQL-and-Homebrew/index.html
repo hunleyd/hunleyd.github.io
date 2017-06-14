@@ -184,7 +184,7 @@
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
           
-Reading time ~11 minutes
+Reading time ~10 minutes
         </p><!-- /.entry-reading-time -->
         
       </div><!-- /.header-title-wrap -->
@@ -194,24 +194,11 @@ Reading time ~11 minutes
 
 <p>First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use <code class="highlighter-rouge">pg_dumpall</code> here since it’s quick-n-dirty:</p>
 
-<noscript><pre>```bash
-doug@Douglass-MacBook-Pro ~ »
-doug@Douglass-MacBook-Pro ~ » pg_dumpall -g &gt; my_roles.sql
-doug@Douglass-MacBook-Pro ~ » pg_dumpall &gt; my_data.sql
-doug@Douglass-MacBook-Pro ~ »
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js"> </script></p>
 
 <p>Now, we can stop our cluster:</p>
 
-<noscript><pre>```bash
-doug@Douglass-MacBook-Pro ~ »
-doug@Douglass-MacBook-Pro ~ » brew services stop postgresql
-Stopping `postgresql`... (might take a while)
-==&gt; Successfully stopped `postgresql` (label: homebrew.mxcl.postgresql)
-doug@Douglass-MacBook-Pro ~ »
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js"> </script></p>
 
 <p>And uninstall the current PostgreSQL:</p>
 
@@ -638,42 +625,7 @@ doug@Douglass-MacBook-Pro ~ »
 
 <p>which is a huge pita. So, let’s make a little convenience function in our shell. Edit your <code class="highlighter-rouge">.zshrc</code> or your <code class="highlighter-rouge">.bashrc</code> (or whatever) and add a function like this:</p>
 
-<noscript><pre>```bash
-    function pg()
-    {
-      ver=$1
-
-      for i in /usr/local/var/postgres/*
-      do
-        running_ver=$(basename ${i})
-        is_running=$(ps -few|egrep -- &quot;[p]ostgres.*-D.*${running_ver}&quot;)
-        if [[ ! -z ${is_running} ]] ; then
-          echo -n &quot;Stopping PostgreSQL ${running_ver}... &quot;
-          /usr/local/opt/postgresql-${running_ver}/bin/pg_ctl \
-            -D $i stop -mf &amp;&gt;/dev/null
-          echo &quot;done!&quot;
-        fi
-      done
-
-      echo -n &quot;Activating PostgreSQL ${ver}... &quot;
-      brew unlink --force --overwrite postgresql-${ver} &amp;&gt;/dev/null
-      brew link --force --overwrite postgresql-${ver} &amp;&gt;/dev/null
-      echo &quot;done!&quot;
-
-      export PGDATA=/usr/local/var/postgres/${ver}
-
-      if [[ ! -d ${PGDATA} ]] ; then
-        echo -n &quot;Initializing PostgreSQL ${ver} cluster... &quot;
-        mkdir ${PGDATA}
-        initdb -k ${PGDATA} &amp;&gt;/dev/null || initdb ${PGDATA} &amp;&gt;/dev/null
-        echo &quot;done!&quot;
-      fi
-      echo -n &quot;Starting PostgreSQL ${ver}... &quot;
-      pg_ctl -D ${PGDATA} start &amp;&gt;/dev/null
-      echo &quot;done!&quot;
-    }
-```</pre></noscript>
-<script src="https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js"> </script>
+<p>true<script src="https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js"> </script></p>
 
 <p>and then simply call <code class="highlighter-rouge">pg 9.5</code> to set PostgreSQL 9.5 as your ‘active’ instance:</p>
 
@@ -688,9 +640,7 @@ doug@Douglass-MacBook-Pro ~ »
 
 <p>Restore your data:</p>
 
-<noscript><pre>404: Not Found
-</pre></noscript>
-<script src="https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js"> </script>
+<p>true<script src="https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js"> </script></p>
 
 <p>and there you be. Ain’t it beautiful? :)</p>
 
@@ -713,20 +663,20 @@ doug@Douglass-MacBook-Pro ~ »
       <a href="/posts/PostgreSQL-Homebrew-and-You/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy">Goodbye, Loui boy</a></h3>
-      <p>Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. *I will miss you.*&hellip; <a href="/posts/Goodbye-Loui-boy/">Continue reading</a></p>
+      <h3><a href="/posts/Installing-pgBackRest-on-OSX/" title="Installing pgBackRest on OSX">Installing pgBackRest on OSX</a></h3>
+      <p>If you've followed my previous posts ([here](https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/) and [here](https://hunleyd.git...&hellip; <a href="/posts/Installing-pgBackRest-on-OSX/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h4>
-        <span>Published on January 17, 2017</span>
+        <h4><a href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy">Goodbye, Loui boy</a></h4>
+        <span>Published on February 16, 2017</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/changes-to-the-blog/" title="Changes to the blog">Changes to the blog</a></h4>
-        <span>Published on December 02, 2016</span>
+        <h4><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h4>
+        <span>Published on January 17, 2017</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
