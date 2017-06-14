@@ -197,27 +197,27 @@ Reading time ~1 minute
 <p>Let’s get started!</p>
 
 <p>On the master, do the following:
-true<script src="https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script></p>
+<script src="https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script></p>
 
 <p>On the master, add the external IP addresses of the servers to <code class="highlighter-rouge">pg_hba.conf</code>:
-true<script src="https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js"> </script></p>
+<script src="https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js"> </script></p>
 
 <p>Restart PostgreSQL on the master for the changes to take affect</p>
 
 <p>On the master, create the replication user:
-true<script src="https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js"> </script></p>
+<script src="https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js"> </script></p>
 
 <p>On the master, create the replication slot for the standby:
-true<script src="https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js"> </script></p>
+<script src="https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js"> </script></p>
 
 <p>On the standby, wipe the existing cluster:
-true<script src="https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js"> </script></p>
+<script src="https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js"> </script></p>
 
 <p>On the standby, use the <code class="highlighter-rouge">pg_basebackup</code> command to clone the master (enter the <code class="highlighter-rouge">repl_user</code>’s password from above when prompted):
-true<script src="https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js"> </script></p>
+<script src="https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js"> </script></p>
 
 <p>On the standby, tweak the <code class="highlighter-rouge">recovery.conf</code> that was created for you and add the replication slot name:
-true<script src="https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js"> </script></p>
+<script src="https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js"> </script></p>
 
 <p>Start the standby up</p>
 

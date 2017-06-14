@@ -5,7 +5,7 @@
   <description>Posts tagged as 'replication'</description>
   <atom:link href="/feeds/feed.replication.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#replication/</link>
-  <updated>2017-06-14T15:08:21-04:00</updated>
+  <updated>2017-06-14T16:09:01-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -27,29 +27,29 @@
 &lt;ul&gt;
   &lt;li&gt;
     &lt;p&gt;As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/94d1096767e154486dbfe8dd47f48275.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/94d1096767e154486dbfe8dd47f48275.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we’re done, right? You can use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dumpall -g&lt;/code&gt; on the PostgreSQL 8.4.x to get a listing of roles.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I &lt;em&gt;think&lt;/em&gt; you can actually get Londiste to do this for you as part of the replication, but I couldn’t find anything online for sure, and I didn’t have time to add more experimentation here (we’re on the customer’s dime here, remember). So, use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; over the network and pipe it to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_restore&lt;/code&gt; to transfer the schema thusly:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Install Skytools from source on the PostgreSQL 8.4.x server:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Restart the PostgreSQL 8.4.x cluster to load the new libs and modules&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Now we configure the Londiste ticker. Note, we have &lt;em&gt;trust&lt;/em&gt; setup for the postgres user in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; so there is no password= in the connection strings. Adjust to meet your setup:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Start up the ticker, to provide the replication “heartbeat” by running &lt;code class=&quot;highlighter-rouge&quot;&gt;pgqd -d ticker.ini&lt;/code&gt;&lt;/p&gt;
@@ -59,11 +59,11 @@ true&lt;script src=&quot;https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb1
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
-true&lt;script src=&quot;https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;We have to actually create the master node as the root node by doing:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde1.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde1.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Check the master.log to see if you have a line like &lt;code class=&quot;highlighter-rouge&quot;&gt;INFO Node &quot;master&quot; initialized for queue &quot;myappq&quot; with type &quot;root&quot;&lt;/code&gt;&lt;/p&gt;
@@ -73,11 +73,11 @@ true&lt;script src=&quot;https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Next, we configure our slave node (same note applies about the lack of password in the connection string):
-true&lt;script src=&quot;https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Like the master, we have to create the slave node. I created it as a &lt;code class=&quot;highlighter-rouge&quot;&gt;leaf&lt;/code&gt; but I could have created it as a &lt;code class=&quot;highlighter-rouge&quot;&gt;branch&lt;/code&gt; if we we’re going to cascade replication:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Check the slave.log to see if you have the line &lt;code class=&quot;highlighter-rouge&quot;&gt;INFO Node &quot;slave&quot; initialized for queue &quot;myappq&quot; with type &quot;branch&quot;&lt;/code&gt;&lt;/p&gt;
@@ -115,27 +115,27 @@ true&lt;script src=&quot;https://gist.github.com/hunleyd/bdcd1644a185863f823749d
 &lt;p&gt;Let’s get started!&lt;/p&gt;
 
 &lt;p&gt;On the master, do the following:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;On the master, add the external IP addresses of the servers to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Restart PostgreSQL on the master for the changes to take affect&lt;/p&gt;
 
 &lt;p&gt;On the master, create the replication user:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;On the master, create the replication slot for the standby:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;On the standby, wipe the existing cluster:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;On the standby, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_basebackup&lt;/code&gt; command to clone the master (enter the &lt;code class=&quot;highlighter-rouge&quot;&gt;repl_user&lt;/code&gt;’s password from above when prompted):
-true&lt;script src=&quot;https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;On the standby, tweak the &lt;code class=&quot;highlighter-rouge&quot;&gt;recovery.conf&lt;/code&gt; that was created for you and add the replication slot name:
-true&lt;script src=&quot;https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Start the standby up&lt;/p&gt;
 
