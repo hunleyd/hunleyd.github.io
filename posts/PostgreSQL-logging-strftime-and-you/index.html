@@ -1,0 +1,363 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>PostgreSQL logging, strftime, and you &#8211; Douglas J Hunley</title>
+<meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
+<meta name="keywords" content="postgresql">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/images/db.jpg">
+
+<meta name="twitter:title" content="PostgreSQL logging, strftime, and you">
+<meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
+<meta name="twitter:creator" content="@hunleyd">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL logging, strftime, and you">
+<meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
+<meta property="og:url" content="/posts/PostgreSQL-logging-strftime-and-you/">
+<meta property="og:site_name" content="Douglas J Hunley">
+
+
+
+
+
+<link rel="canonical" href="/posts/PostgreSQL-logging-strftime-and-you/">
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<!-- Webfonts -->
+<link href="//fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic" rel="stylesheet" type="text/css">
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- Load Modernizr -->
+<script src="/assets/js/vendor/modernizr-2.6.2.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/apple-touch-icon-144x144-precomposed.png">
+
+
+
+</head>
+
+<body id="post" class="feature">
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+<NAV id="dl-menu" class="dl-menuwrapper" role="navigation">
+  <BUTTON class="dl-trigger">
+    Open Menu
+  </BUTTON>
+  <UL class="dl-menu">
+    <LI>
+      <A href="/">Home</A>
+    </LI>
+    <LI>
+      <A href="#">About</A>
+      <UL class="dl-submenu">
+        <LI>
+          <IMG src="/images/avatar.jpg" alt="Douglas J Hunley photo" class="author-photo" />
+          <H4>Douglas J Hunley</H4>
+          <P>Linux Sys Admin, Gentoo user, PostgreSQL advocate, Android fanboi, OSS supporter, PlayStation gamer</P>
+        </LI>
+        <LI>
+          <A href="/about/"><SPAN class="btn btn-inverse">Learn More</SPAN></A>
+        </LI>
+        
+          <LI>
+            <A href="https://dhunley.deviantart.com"><I class="fa fa-deviantart" aria-hidden="true"></I> DeviantArt</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="mailto:douglas.hunley@gmail.com"><I class="fa fa-envelope" aria-hidden="true"></I> Email</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://facebook.com/douglas.j.hunley"><I class="fa fa-facebook" aria-hidden="true"></I> Facebook</A>
+          </LI>
+        
+        
+        
+          <LI>
+            <A href="https://github.com/hunleyd"><I class="fa fa-github" aria-hidden="true"></I> GitHub</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://google.com/+DouglasHunley"><I class="fa fa-google-plus" aria-hidden="true"></I> Google+</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://instagram.com/doughunley"><I class="fa fa-instagram" aria-hidden="true"></I> Instagram</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://linkedin.com/in/dhunley"><I class="fa fa-linkedin" aria-hidden="true"></I> LinkedIn</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://meetup.com/members/43608152"><I class="fa fa-meetup" aria-hidden="true"></I> MeetUp</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://reddit.com/u/hunleyd"><I class="fa fa-reddit-alien" aria-hidden="true"></I> Reddit</A>
+          </LI>
+        
+        
+        
+        
+          <LI>
+            <A href="https://twitter.com/hunleyd"><I class="fa fa-twitter" aria-hidden="true"></I> Twitter</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://youtube.com/user/doughunley"><I class="fa fa-youtube" aria-hidden="true"></I> YouTube</A>
+          </LI>
+        
+      </UL><!-- /.dl-submenu -->
+    </LI>
+    <LI>
+      <A href="#">Posts</A>
+      <UL class="dl-submenu">
+        <LI>
+          <A href="/posts/">All Posts</A>
+        </LI>
+        <LI>
+          <A href="/tags/">All Tags</A>
+        </LI>
+      </UL>
+    </LI>
+    
+  </UL><!-- /.dl-menu -->
+</NAV><!-- /.dl-menuwrapper -->
+
+
+
+<div class="entry-header">
+  
+  <div class="entry-image">
+    <img src="/images/db.jpg" alt="PostgreSQL logging, strftime, and you">
+  </div><!-- /.entry-image -->
+</div><!-- /.entry-header -->
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    <header class="header-title">
+      <div class="header-title-wrap">
+        
+          <h1 class="entry-title"><a href="/posts/PostgreSQL-logging-strftime-and-you/" rel="bookmark" title="PostgreSQL logging, strftime, and you">PostgreSQL logging, strftime, and you</a></h1>
+        
+        <h2><span class="entry-date date published"><time datetime="2016-11-21T07:17:03-05:00">November 21, 2016</time></span></h2>
+        
+        <p class="entry-reading-time">
+          <i class="fa fa-clock-o"></i>
+          
+Reading time ~5 minutes
+        </p><!-- /.entry-reading-time -->
+        
+      </div><!-- /.header-title-wrap -->
+    </header>
+    <div class="entry-content">
+      <p><img src="http://www.metasource.com/images/content/data-processing-image.jpg" class="rleader" />PostgreSQL has a pretty extensive logging facility. I’ve talked briefly about configuring it to get the most out of pgBadger before, but today I’m gonna talk a bit about the naming of the log file itself. The chosen filename doesn’t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</p>
+
+<div class="language-text highlighter-rouge"><pre class="highlight"><code>    The strftime() function formats the information from timeptr into the buffer s,
+    according to the string pointed to by format.
+
+    The format string consists of zero or more conversion specifications and ordi-
+    nary characters.  All ordinary characters are copied directly into the buffer.
+    A conversion specification consists of a percent sign ```%''' and one other
+    character.
+</code></pre>
+</div>
+
+<p>Say what? Essentially, given a timestamp and a format specification, you’ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems <code class="highlighter-rouge">libc</code> implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it’s BSD libc. You really shouldn’t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we’ll use today’s date of Monday, November 21, 2016 with a timestamp of 1pm EST):</p>
+
+<div class="language-apache highlighter-rouge"><pre class="highlight"><code>    <span class="err">%</span>A    is replaced by national representation of the <span class="ss">full</span> weekday name ("Monday")
+    <span class="err">%</span>a    is replaced by national representation of the abbreviated weekday name ("Mon")
+    <span class="err">%</span>B    is replaced by national representation of the <span class="ss">full</span> month name ("November")
+    <span class="err">%</span>b    is replaced by national representation of the abbreviated month name ("Nov")
+    <span class="err">%</span>C    is replaced by (year / 100) as decimal number; single digits are preceded by a zero ("20")
+    <span class="err">%</span>c    is replaced by national representation of time and date ("Mon Nov 21 13:00:00 2016")
+    <span class="err">%</span>D    is equivalent to ``%m/%d/%y'' ("11/21/16")
+    <span class="err">%</span>d    is replaced by the day of the month as a decimal number (01-31) ("21")
+    <span class="err">%</span>e    is replaced by the day of the month as a decimal number (1-31); single digits are preceded by a blank ("21")
+    <span class="err">%</span>F    is equivalent to ``%Y-%m-%d'' ("2016-11-21")
+    <span class="err">%</span>G    is replaced by a year as a decimal number with century.  This year is the one that contains the greater part of the week (Monday as the first day of the week) ("2016")
+    <span class="err">%</span>g    is replaced by the same year as in ``%G'', but as a decimal number without century (00-99) ("16")
+    <span class="err">%</span>H    is replaced by the hour (24-hour clock) as a decimal number (00-23) ("12")
+    <span class="err">%</span>h    the same as %b ("Nov")
+    <span class="err">%</span>I    is replaced by the hour (12-hour clock) as a decimal number (01-12) ("12")
+    <span class="err">%</span>j    is replaced by the day of the year as a decimal number (001-366) ("326")
+    <span class="err">%</span>k    is replaced by the hour (24-hour clock) as a decimal number (0-23); single digits are preceded by a blank ("13")
+    <span class="err">%</span>l    is replaced by the hour (12-hour clock) as a decimal number (1-12); single digits are preceded by a blank (" 1")
+    <span class="err">%</span>M    is replaced by the minute as a decimal number (00-59) ("00")
+    <span class="err">%</span>m    is replaced by the month as a decimal number (01-12) ("11")
+    <span class="err">%</span>n    is replaced by a newline
+    <span class="err">%</span>p    is replaced by national representation of either "ante meridiem" (a.m.) or "post meridiem" (p.m.)  as appropriate ("PM")
+    <span class="err">%</span>R    is equivalent to ``%H:%M'' ("13:00")
+    <span class="err">%</span>r    is equivalent to ``%I:%M:%S %p'' ("01:00:00 PM")
+    <span class="err">%</span>S    is replaced by the second as a decimal number (00-60) ("00")
+    <span class="err">%</span>s    is replaced by the number of seconds since the Epoch, UTC ("1479751200")
+    <span class="err">%</span>T    is equivalent to ``%H:%M:%S'' ("13:00:00")
+    <span class="err">%</span>t    is replaced by a tab
+    <span class="err">%</span>U    is replaced by the week number of the year (Sunday as the first day of the week) as a decimal number (00-53) ("47")
+    <span class="err">%</span>u    is replaced by the weekday (Monday as the first day of the week) as a decimal number (1-7) ("1")
+    <span class="err">%</span>V    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (01-53).  If the week containing January 1 has four or more days in the new year, then it is week 1; otherwise it is the last week of the previous year, and the next week is week 1 ("47")
+    <span class="err">%</span>v    is equivalent to ``%e-%b-%Y'' ("21-Nov-2016")
+    <span class="err">%</span>W    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (00-53) ("47")
+    <span class="err">%</span>w    is replaced by the weekday (Sunday as the first day of the week) as a decimal number (0-6) ("1")
+    <span class="err">%</span>X    is replaced by national representation of the time ("13:00:00")
+    <span class="err">%</span>x    is replaced by national representation of the date ("11/21/2016")
+    <span class="err">%</span>Y    is replaced by the year with century as a decimal number ("2016")
+    <span class="err">%</span>y    is replaced by the year without century as a decimal number (00-99) ("16")
+    <span class="err">%</span>Z    is replaced by the time zone name ("EST")
+    <span class="err">%</span>z    is replaced by the time zone offset <span class="ss">from</span> UTC; a leading plus sign stands for east of UTC, a minus sign for west of UTC, hours and minutes follow with two digits each and no delimiter between them ("-0500")
+    <span class="err">%%</span>    is replaced by `%'
+</code></pre>
+</div>
+
+<p>Phew! That was a lot wasn’t it? And where exactly does this come into play? As the <code class="highlighter-rouge">postgresql.conf</code> says:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>log_filename = 'postgresql-%a.log'      # log file name pattern,
+                                        # can include strftime() escapes
+</code></pre>
+</div>
+
+<p>So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I’m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my <code class="highlighter-rouge">$PGDATA/pg_log</code> directory will only ever contain:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
+postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
+postgresql-Sat.log
+</code></pre>
+</div>
+
+<p>But wait! The key to all this is that <em>PostgreSQL only evaluates the filename when it first opens/creates the logfile</em>. So, if you start your cluster on Mon and do not restart it and don’t have it configured to log rotate, you’ll still be writing to <code class="highlighter-rouge">postgresql-Mon.log</code> forever. Fortunately, PostgreSQL has you covered here too:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>log_rotation_age = 1d      # Automatic rotation of logfiles will
+                           # happen after that time.  0 disables.
+log_rotation_size = 10MB   # Automatic rotation of logfiles will
+                           # happen after that much log output.
+                           # 0 disables.
+</code></pre>
+</div>
+
+<p>So, using my <code class="highlighter-rouge">log_filename</code> from above, I enable <code class="highlighter-rouge">log_rotation_age</code> (set to 1 day) and disable <code class="highlighter-rouge">log_rotation_size</code> and I automatically get a new log every day. If I wanted hourly logs, I could do something like:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>log_filename = 'postgresql-%a-%H'
+log_rotation_age = 1h
+</code></pre>
+</div>
+
+<p>which would give me logs of <code class="highlighter-rouge">postgresql-Mon-00</code>, <code class="highlighter-rouge">postgresql-Mon-01</code>, etc. You should be able to see how combining these three <code class="highlighter-rouge">postgresql.conf</code> parameters and some crafty strftime() escapes gives you a <em>ton</em> of flexibility in your logging. So go forth and tweak those logs!</p>
+
+      <footer class="entry-meta">
+        <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>
+        
+        <div class="social-share">
+  <ul class="socialcount socialcount-small inline-list">
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/PostgreSQL-logging-strftime-and-you/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/PostgreSQL-logging-strftime-and-you/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/PostgreSQL-logging-strftime-and-you/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+  </ul>
+</div><!-- /.social-share -->
+      </footer>
+    </div><!-- /.entry-content -->
+    <section id="disqus_thread"></section><!-- /#disqus_thread -->
+    <div class="read-more">
+  
+    <div class="read-more-header">
+      <a href="/posts/Upgrading-PostgreSQL-5x-faster/" class="read-more-btn">Read More</a>
+    </div><!-- /.read-more-header -->
+    <div class="read-more-content">
+      <h3><a href="/posts/Installing-pgBackRest-on-OSX/" title="Installing pgBackRest on OSX">Installing pgBackRest on OSX</a></h3>
+      <p>If you've followed my previous posts ([here](https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/) and [here](https://hunleyd.git...&hellip; <a href="/posts/Installing-pgBackRest-on-OSX/">Continue reading</a></p>
+    </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+      <div class="list-item">
+        <h4><a href="/posts/Goodbye-Loui-boy/" title="Goodbye, Loui boy">Goodbye, Loui boy</a></h4>
+        <span>Published on February 16, 2017</span>
+      </div><!-- /.list-item -->
+    
+      <div class="list-item">
+        <h4><a href="/posts/New-look-same-content/" title="New look, same content">New look, same content</a></h4>
+        <span>Published on January 17, 2017</span>
+      </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+</div><!-- /.read-more -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo">
+    <span>&copy; 2017 Douglas J Hunley.<BR /><FONT size=-1>Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a>. Served via <a href="https://github.com">GitHub</a>. Themed using <a href="https://mademistakes.com/work/hpstr-jekyll-theme/" rel="nofollow">HPSTR</a>.</FONT></span>
+
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/assets/js/scripts.min.js"></script>
+
+
+
+
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'douglashunley'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+	        
+
+</body>
+</html>

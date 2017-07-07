@@ -5,12 +5,704 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2017-07-07T14:35:57-04:00</updated>
+  <updated>2017-07-07T15:13:02-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Installing pgBackRest on OSX</title>
+    <description>&lt;p&gt;If you’ve followed my previous posts (&lt;a href=&quot;https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt;), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don’t really care about any of the data therein, but if you do, let me guide you to &lt;a href=&quot;http://www.pgbackrest.org/&quot;&gt;pgBackRest&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;pgBackRest aims to be a simple, reliable backup and restore system that can seamlessly scale up to the largest databases and workloads.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Instead of relying on traditional backup tools like tar and rsync, pgBackRest implements all backup features internally and uses a custom protocol for communicating with remote systems. Removing reliance on tar and rsync allows for better solutions to database-specific backup challenges. The custom remote protocol allows for more flexibility and limits the types of connections that are required to perform a backup which increases security.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;pgBackRest is written in Perl, but don’t hold that against it. As of the 1.19 release, pgBackRest can now use S3 buckets as the storage backend. I &lt;em&gt;really&lt;/em&gt; like pgBackRest and tend to use it for myself and customers over any of the other tools in the PostgreSQL ecosphere. So, let’s get started by downloading the latest release from their site, and then installing it. For some reason, no one has added pgBackRest to Homebrew yet (someone, pls!) so let’s do it the manual way:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/4e7390cc161206d1e53019c8e44a20b7.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;(Keep in mind that I already had Perl setup to connect to PostgreSQL for other uses. You might need to install &lt;code class=&quot;highlighter-rouge&quot;&gt;DBD::Pg&lt;/code&gt;.)&lt;/p&gt;
+
+&lt;p&gt;Now that pgBackRest is installed, let’s configure it. First, we’ll want to set some of the global properties that affect all pgBackRest operations:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/005748ef36074b225619f79ab3420c54.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;As you can see, we set the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;force the log level for all console output to ‘info’&lt;/li&gt;
+  &lt;li&gt;define the S3 bucket we want to use&lt;/li&gt;
+  &lt;li&gt;define the S3 endpoint to connect to&lt;/li&gt;
+  &lt;li&gt;define our S3 key&lt;/li&gt;
+  &lt;li&gt;define our S3 secret key&lt;/li&gt;
+  &lt;li&gt;set which region our bucket is in&lt;/li&gt;
+  &lt;li&gt;tell pgBackRest that we’re using S3 as the backend&lt;/li&gt;
+  &lt;li&gt;configure retention of full backups&lt;/li&gt;
+  &lt;li&gt;tell pgBackRest to issue a CHECKPOINT so backups can start right away instead of waiting for the next regular checkpoint&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, we need to tell pgBackRest which instance of PostgreSQL we want to backup and where to find it. Again, if you used my previous posts to install multiple versions via Homebrew, this should look familiar:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/fea13b1e4b57f7c0ad068ef2579a04cd.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;You can see for each pg cluster, we define:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;the path to the &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; directory&lt;/li&gt;
+  &lt;li&gt;the port the cluster listens on&lt;/li&gt;
+  &lt;li&gt;and the path we want to store the backups in on our backend&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When you put this all together, we’ll be connecting to an S3 bucket called, creatively enough, &lt;code class=&quot;highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; and then we will create a top-level directory (‘96’, ‘95’, etc) to store each cluster’s backups in.&lt;/p&gt;
+
+&lt;p&gt;Now that we’ve got our configuration complete, let’s do an initial backup of one of the clusters. First, we have to create the appropriate directories and metadata on the backend:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/ac4aa555e10ffa9a210983d7997e3ebc.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Then, we have pgBackRest verify that everything is properly setup. Note that this includes checking to ensure you tweaked &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; according to the directions on their site (I’m not going to repeat them here):&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/56358e6024a84833af73fda3d7d71432.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;And since that all worked, we can take our first actual backup:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/fdc5991f31aa098f685a3a462461d897.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Neat!&lt;/p&gt;
+
+&lt;p&gt;Now, let’s check our S3 bucket, shall we?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_1.png&quot; alt=&quot;s3_1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see here the top-level contents of my &lt;code class=&quot;highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; bucket. As stated before, each cluster gets its own sub-dir. Since we just backed up the ‘92’ cluster, let’s look inside it’s dir.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_2.png&quot; alt=&quot;s3_2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see that pgBackRest has created as directory for the WALs to be stored in whenever &lt;code class=&quot;highlighter-rouge&quot;&gt;archive_command&lt;/code&gt; fires and another directory for the actual cluster backups. Peeking into the &lt;code class=&quot;highlighter-rouge&quot;&gt;archive&lt;/code&gt; dir, we see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_3.png&quot; alt=&quot;s3_3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This shows us some metadata, and shows that pgBackRest creates a directory for each timeline of the cluster. Since we are on timeline 1 in our 92 cluster, we have a &lt;code class=&quot;highlighter-rouge&quot;&gt;9.2-1&lt;/code&gt; directory inside of which, we find:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_4.png&quot; alt=&quot;s3_4&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Our archived WALs have been compressed and uploaded. Hurray!&lt;/p&gt;
+
+&lt;p&gt;Now, let’s check inside the &lt;code class=&quot;highlighter-rouge&quot;&gt;backup&lt;/code&gt; directory:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_5.png&quot; alt=&quot;s3_5&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see some metadata, and we can see a folder named the same as the backup label that was used when we ran our full backup. Inside that folder, we can see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_6.png&quot; alt=&quot;s3_6&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Hey look, more metadata! And another folder! :) So, let’s dive into the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_data&lt;/code&gt; folder where we see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_7.png&quot; alt=&quot;s3_7&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Holy crap! It’s a basebackup of our &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; data directory. And all the files have been nicely compressed for us. Rock on, pgBackRest!&lt;/p&gt;
+
+&lt;p&gt;And just in case you wanted to see the current backup catalog:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/f553b0931a571965ca9bcb6235cb8fcf.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;(look at that compression!)&lt;/p&gt;
+
+</description>
+    <link>/posts/Installing-pgBackRest-on-OSX/ </link>
+    <pubDate>2017-06-14T08:40:30-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Installing-pgBackRest-on-OSX/</guid>
+   </item>
+  
+   <item>
+    <title>EXPLAINing intermittent perf problems</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg&quot; class=&quot;lleader&quot; /&gt;We’ve all gotten the dreaded email/call from a user stating that a query is “slow sometimes”. If you’re lucky, the “sometimes” actually ends up being fairly consistent and you can fairly easily determine what’s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?&lt;/p&gt;
+
+&lt;p&gt;For starters, you as the DBA should have your PostgreSQL logging configured to log these slow performing queries. After all, you and the devs and the users can agree that all queries should complete in some measure of time (1 sec, 1 minute, etc). So, once you know what this acceptable elapsed time is, you can easily log any query that runs longer by just setting this in your &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;log_min_duration_statement = 1000   # log anything running longer than 1s
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And now, you have all queries with long run times logged automatically. And these show up nicely in your pgBadger reports too!&lt;/p&gt;
+
+&lt;p&gt;If you’re lucky, you’ll be able to use &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; to see why the query is behaving poorly. However, if your life is like mine, the explain plan will be reasonable and won’t have any smoking guns to speak of. Which means the performance is either load dependent or being influenced by other processes (something is blowing out your caches, for example). In these cases, what you really need is the &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; output from the very instant that it performed poorly. However, you can’t go back in time to get it. But what you can do is make use of the &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; module that ships with PostgreSQL.&lt;/p&gt;
+
+&lt;p&gt;In case the name wasn’t obvious enough, the &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; module causes PostgreSQL to automatically run &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; on queries according to thresholds that you configure. These automatically generated plans are then logged into the normal PostgreSQL logs. Let’s walk through setting it up and see how it works.&lt;/p&gt;
+
+&lt;p&gt;First, in your &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; we want to enable the module:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;shared_preload_libraries = 'auto_explain'  # change requires restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As stated, you will have to restart the postmaster to get the module to load. However, let’s configure it in &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; first:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Add settings for extensions here
+#
+# auto_explain
+# http://www.postgresql.org/docs/current/static/auto-explain.html
+auto_explain.log_analyze = true
+auto_explain.log_timing = true
+auto_explain.log_verbose = true
+auto_explain.log_min_duration = '1000ms'
+auto_explain.log_nested_statements = true
+auto_explain.log_buffers = true
+# auto_explain
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;What we’ve done here is configure &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; to&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;use &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN ANALYZE&lt;/code&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/li&gt;
+  &lt;li&gt;to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;TIMING&lt;/code&gt; option of &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;VERBOSE&lt;/code&gt; option of &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;to log the plan for anything running longer than 1 second (matches &lt;code class=&quot;highlighter-rouge&quot;&gt;log_min_duration_statement&lt;/code&gt;, above)&lt;/li&gt;
+  &lt;li&gt;to include statements inside a function to also be logged&lt;/li&gt;
+  &lt;li&gt;to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;BUFFERS&lt;/code&gt; option of &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As with most &lt;code class=&quot;highlighter-rouge&quot;&gt;GUC&lt;/code&gt; in PostgreSQL, these can all be changed using &lt;code class=&quot;highlighter-rouge&quot;&gt;SET&lt;/code&gt; in a given session, but we’re setting the defaults here. Now that we have them setup, let’s see what it looks like in practice.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28838&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;022&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28838&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;generate_series&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;23&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;565&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28838&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We connected to PostgreSQL, created a test table, and then used &lt;code class=&quot;highlighter-rouge&quot;&gt;generate_series&lt;/code&gt; to insert 10k rows. In our logs, the following were added:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2016-11-28 13:20:30 EST [28838]: [18-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 33.987 ms  statement: CREATE TABLE x(t text);
+2016-11-28 13:20:59 EST [28838]: [19-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 16.461 ms  plan:
+  Query Text: INSERT INTO x(t) SELECT generate_series(1,10000);
+  Insert on public.x  (cost=0.00..50.02 rows=1000 width=32) (actual time=16.459..16.459 rows=0 loops=1)
+    Buffers: shared hit=10085 read=47 dirtied=45
+    I/O Timings: read=0.012
+    -&amp;gt;  Subquery Scan on &quot;*SELECT*&quot;  (cost=0.00..50.02 rows=1000 width=32) (actual time=0.010..4.755 rows=10000 loops=1)
+          Output: &quot;*SELECT*&quot;.generate_series
+          -&amp;gt;  Result  (cost=0.00..15.02 rows=1000 width=4) (actual time=0.007..1.364 rows=10000 loops=1)
+                Output: generate_series(1, 10000)
+2016-11-28 13:20:59 EST [28838]: [20-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 23.374 ms  statement: INSERT INTO x(t) SELECT generate_series(1,10000);
+2016-11-28 13:21:00 EST [30079]: [1-1] user=,db=,app=,client= LOG:  automatic analyze of table &quot;doug.public.x&quot; system usage: CPU 0.00s/0.11u sec elapsed 0.14 sec
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;(Note that for illustrative purposes, I issued &lt;code class=&quot;highlighter-rouge&quot;&gt;SET auto_explain.log_min_duration = '0ms'&lt;/code&gt;)&lt;/p&gt;
+
+&lt;p&gt;So, you can see that the &lt;code class=&quot;highlighter-rouge&quot;&gt;CREATE TABLE&lt;/code&gt; didn’t log anything through the &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; module, but the &lt;code class=&quot;highlighter-rouge&quot;&gt;INSERT INTO&lt;/code&gt; did. This is a boring example, so let’s try a &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; against our table:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28838&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;┌───────┐&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;   &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;├───────┤&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;     &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;    &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;   &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1001&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1002&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1003&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1004&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1005&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;└───────┘&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;982&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and the logs look like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2016-11-28 13:27:38 EST [322]: [7-1] user=,db=,app=,client= LOG:  checkpoint starting: time
+2016-11-28 13:27:46 EST [322]: [8-1] user=,db=,app=,client= LOG:  checkpoint complete: wrote 75 buffers (0.0%); 0 transaction log file(s) added, 0 removed, 0 recycled; write=7.569 s, sync=0.092 s, total=7.920 s; sync files=23, longest=0.092 s, average=0.004 s; distance=685 kB, estimate=685 kB
+2016-11-28 13:28:48 EST [28838]: [21-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.120 ms  plan:
+  Query Text: SELECT * FROM x ORDER BY t LIMIT 10;
+  Limit  (cost=561.10..561.12 rows=10 width=4) (actual time=11.073..11.073 rows=10 loops=1)
+    Output: t
+    Buffers: shared hit=45
+    -&amp;gt;  Sort  (cost=561.10..586.10 rows=10000 width=4) (actual time=11.072..11.072 rows=10 loops=1)
+          Output: t
+          Sort Key: x.t
+          Sort Method: top-N heapsort  Memory: 25kB
+          Buffers: shared hit=45
+          -&amp;gt;  Seq Scan on public.x  (cost=0.00..345.00 rows=10000 width=4) (actual time=0.018..1.224 rows=10000 loops=1)
+                Output: t
+                Buffers: shared hit=45
+2016-11-28 13:28:48 EST [28838]: [22-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.813 ms  statement: SELECT * FROM x ORDER BY t LIMIT 10;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;(You can safely ignore the checkpoint lines at the top there)&lt;/p&gt;
+
+&lt;p&gt;There you have both the statement we ran, and the full &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; plan. You can see we did a sequential scan on the table (looks like it was all in the &lt;code class=&quot;highlighter-rouge&quot;&gt;shared_buffers&lt;/code&gt; too) and then we passed that up to a &lt;code class=&quot;highlighter-rouge&quot;&gt;sort&lt;/code&gt; node for an in-memory sort, and then passed that result set up to the &lt;code class=&quot;highlighter-rouge&quot;&gt;limit&lt;/code&gt; node.&lt;/p&gt;
+
+&lt;p&gt;While this is a stupid simple example, I hope you can see that having this in production for large, complicated queries will allow you to better diagnose issues. For example, simply doing a manual &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN ANALYZE&lt;/code&gt; on the same query and seeing that you get a different plan is potentially enough to rule out (or in) certain culprits for the intermittent performance issue.
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;sup&gt;1&lt;/sup&gt; - This option causes the postmaster to collect info on &lt;em&gt;every&lt;/em&gt; statement executed, even if &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; isn’t going to log it. It has a measurable impact on overall performance. Please test on your workload and decide for yourself if the overhead is worth the trade-off&lt;/p&gt;
+</description>
+    <link>/posts/EXPLAINing-intermittent-perf-problems/ </link>
+    <pubDate>2016-11-28T07:24:12-05:00</pubDate>
+    <guid isPermaLink="true">/posts/EXPLAINing-intermittent-perf-problems/</guid>
+   </item>
+  
+   <item>
+    <title>PostgreSQL logging, strftime, and you</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.metasource.com/images/content/data-processing-image.jpg&quot; class=&quot;rleader&quot; /&gt;PostgreSQL has a pretty extensive logging facility. I’ve talked briefly about configuring it to get the most out of pgBadger before, but today I’m gonna talk a bit about the naming of the log file itself. The chosen filename doesn’t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?&lt;/p&gt;
+
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    The strftime() function formats the information from timeptr into the buffer s,
+    according to the string pointed to by format.
+
+    The format string consists of zero or more conversion specifications and ordi-
+    nary characters.  All ordinary characters are copied directly into the buffer.
+    A conversion specification consists of a percent sign ```%''' and one other
+    character.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Say what? Essentially, given a timestamp and a format specification, you’ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems &lt;code class=&quot;highlighter-rouge&quot;&gt;libc&lt;/code&gt; implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it’s BSD libc. You really shouldn’t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we’ll use today’s date of Monday, November 21, 2016 with a timestamp of 1pm EST):&lt;/p&gt;
+
+&lt;div class=&quot;language-apache highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;A    is replaced by national representation of the &lt;span class=&quot;ss&quot;&gt;full&lt;/span&gt; weekday name (&quot;Monday&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;a    is replaced by national representation of the abbreviated weekday name (&quot;Mon&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;B    is replaced by national representation of the &lt;span class=&quot;ss&quot;&gt;full&lt;/span&gt; month name (&quot;November&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;b    is replaced by national representation of the abbreviated month name (&quot;Nov&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;C    is replaced by (year / 100) as decimal number; single digits are preceded by a zero (&quot;20&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;c    is replaced by national representation of time and date (&quot;Mon Nov 21 13:00:00 2016&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;D    is equivalent to ``%m/%d/%y'' (&quot;11/21/16&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;d    is replaced by the day of the month as a decimal number (01-31) (&quot;21&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;e    is replaced by the day of the month as a decimal number (1-31); single digits are preceded by a blank (&quot;21&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;F    is equivalent to ``%Y-%m-%d'' (&quot;2016-11-21&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;G    is replaced by a year as a decimal number with century.  This year is the one that contains the greater part of the week (Monday as the first day of the week) (&quot;2016&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;g    is replaced by the same year as in ``%G'', but as a decimal number without century (00-99) (&quot;16&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;H    is replaced by the hour (24-hour clock) as a decimal number (00-23) (&quot;12&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;h    the same as %b (&quot;Nov&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;I    is replaced by the hour (12-hour clock) as a decimal number (01-12) (&quot;12&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;j    is replaced by the day of the year as a decimal number (001-366) (&quot;326&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;k    is replaced by the hour (24-hour clock) as a decimal number (0-23); single digits are preceded by a blank (&quot;13&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;l    is replaced by the hour (12-hour clock) as a decimal number (1-12); single digits are preceded by a blank (&quot; 1&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;M    is replaced by the minute as a decimal number (00-59) (&quot;00&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;m    is replaced by the month as a decimal number (01-12) (&quot;11&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;n    is replaced by a newline
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;p    is replaced by national representation of either &quot;ante meridiem&quot; (a.m.) or &quot;post meridiem&quot; (p.m.)  as appropriate (&quot;PM&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;R    is equivalent to ``%H:%M'' (&quot;13:00&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;r    is equivalent to ``%I:%M:%S %p'' (&quot;01:00:00 PM&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;S    is replaced by the second as a decimal number (00-60) (&quot;00&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;s    is replaced by the number of seconds since the Epoch, UTC (&quot;1479751200&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;T    is equivalent to ``%H:%M:%S'' (&quot;13:00:00&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;t    is replaced by a tab
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;U    is replaced by the week number of the year (Sunday as the first day of the week) as a decimal number (00-53) (&quot;47&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;u    is replaced by the weekday (Monday as the first day of the week) as a decimal number (1-7) (&quot;1&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;V    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (01-53).  If the week containing January 1 has four or more days in the new year, then it is week 1; otherwise it is the last week of the previous year, and the next week is week 1 (&quot;47&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;v    is equivalent to ``%e-%b-%Y'' (&quot;21-Nov-2016&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;W    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (00-53) (&quot;47&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;w    is replaced by the weekday (Sunday as the first day of the week) as a decimal number (0-6) (&quot;1&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;X    is replaced by national representation of the time (&quot;13:00:00&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;x    is replaced by national representation of the date (&quot;11/21/2016&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;Y    is replaced by the year with century as a decimal number (&quot;2016&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;y    is replaced by the year without century as a decimal number (00-99) (&quot;16&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;Z    is replaced by the time zone name (&quot;EST&quot;)
+    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;z    is replaced by the time zone offset &lt;span class=&quot;ss&quot;&gt;from&lt;/span&gt; UTC; a leading plus sign stands for east of UTC, a minus sign for west of UTC, hours and minutes follow with two digits each and no delimiter between them (&quot;-0500&quot;)
+    &lt;span class=&quot;err&quot;&gt;%%&lt;/span&gt;    is replaced by `%'
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Phew! That was a lot wasn’t it? And where exactly does this come into play? As the &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; says:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;log_filename = 'postgresql-%a.log'      # log file name pattern,
+                                        # can include strftime() escapes
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I’m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA/pg_log&lt;/code&gt; directory will only ever contain:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
+postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
+postgresql-Sat.log
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;But wait! The key to all this is that &lt;em&gt;PostgreSQL only evaluates the filename when it first opens/creates the logfile&lt;/em&gt;. So, if you start your cluster on Mon and do not restart it and don’t have it configured to log rotate, you’ll still be writing to &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon.log&lt;/code&gt; forever. Fortunately, PostgreSQL has you covered here too:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;log_rotation_age = 1d      # Automatic rotation of logfiles will
+                           # happen after that time.  0 disables.
+log_rotation_size = 10MB   # Automatic rotation of logfiles will
+                           # happen after that much log output.
+                           # 0 disables.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So, using my &lt;code class=&quot;highlighter-rouge&quot;&gt;log_filename&lt;/code&gt; from above, I enable &lt;code class=&quot;highlighter-rouge&quot;&gt;log_rotation_age&lt;/code&gt; (set to 1 day) and disable &lt;code class=&quot;highlighter-rouge&quot;&gt;log_rotation_size&lt;/code&gt; and I automatically get a new log every day. If I wanted hourly logs, I could do something like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;log_filename = 'postgresql-%a-%H'
+log_rotation_age = 1h
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;which would give me logs of &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon-00&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon-01&lt;/code&gt;, etc. You should be able to see how combining these three &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; parameters and some crafty strftime() escapes gives you a &lt;em&gt;ton&lt;/em&gt; of flexibility in your logging. So go forth and tweak those logs!&lt;/p&gt;
+</description>
+    <link>/posts/PostgreSQL-logging-strftime-and-you/ </link>
+    <pubDate>2016-11-21T07:17:03-05:00</pubDate>
+    <guid isPermaLink="true">/posts/PostgreSQL-logging-strftime-and-you/</guid>
+   </item>
+  
+   <item>
+    <title>Upgrading PostgreSQL 5x faster</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.navops.io/img/launch-samsung-1.gif&quot; class=&quot;lleader&quot; /&gt;Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.&lt;/p&gt;
+
+&lt;p&gt;Thankfully, the PostgreSQL team introduced &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took &lt;em&gt;1/5&lt;/em&gt; as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?&lt;/p&gt;
+
+&lt;p&gt;First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt; if you need to do this). We’re going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbench&lt;/code&gt; to create some data in our PostgreSQL 9.5 instance:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » pg 9.5
+doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
+doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
+doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, &lt;em&gt;this is where you’d have to stop your application(s)&lt;/em&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &amp;gt; data.sql
+pg_dumpall &amp;gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » pg 9.6
+doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
+psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;After 37 minutes, our data is back and we can start our applications back up. &lt;em&gt;An outage of approximately 56.5 minutes&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now, let’s blow away our PostgreSQL 9.6 cluster and use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; to complete the same task. You would do this with the application(s) down as well!&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
+doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
+doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
+doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
+pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And we’re done &lt;em&gt;in 10.5 minutes&lt;/em&gt;. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?&lt;/p&gt;
+
+&lt;p&gt;For the curious, the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; output that I omitted above for readability’s sake is:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js&quot;&gt; &lt;/script&gt;
+
+</description>
+    <link>/posts/Upgrading-PostgreSQL-5x-faster/ </link>
+    <pubDate>2016-11-18T07:18:28-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Upgrading-PostgreSQL-5x-faster/</guid>
+   </item>
+  
+   <item>
+    <title>Managing multiple PostgreSQL installs via Homebrew</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;Following on from &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;this&lt;/a&gt; post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » pg 9.6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and then the script does the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;checks if the requested version is installed, and installs it if not&lt;/li&gt;
+  &lt;li&gt;checks if another version of PostgreSQL is running, and stops it&lt;/li&gt;
+  &lt;li&gt;checks if another version is linked as the active version, and unlinks it&lt;/li&gt;
+  &lt;li&gt;links the requested version as the active version&lt;/li&gt;
+  &lt;li&gt;sets PGDATA to point to the requested version’s data cluster&lt;/li&gt;
+  &lt;li&gt;does an &lt;code class=&quot;highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for the requested version if needed&lt;/li&gt;
+  &lt;li&gt;starts the requested version’s cluster&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I’ll be the first to admit that the script could use additional work, but it’s functional enough to start using today. As I continue to improve the script, I’ll update the gist with those changes, so check back every so often.&lt;/p&gt;
+
+&lt;p&gt;Enjoy.&lt;/p&gt;
+</description>
+    <link>/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/ </link>
+    <pubDate>2016-11-16T08:45:27-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/</guid>
+   </item>
+  
+   <item>
+    <title>Getting fancy with PostgreSQL and Homebrew</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;In our &lt;a href=&quot;https://hunleyd.github.io/PostgreSQL-Homebrew-and-You/&quot;&gt;previous&lt;/a&gt; post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we’re going to take the next step.&lt;/p&gt;
+
+&lt;p&gt;First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dumpall&lt;/code&gt; here since it’s quick-n-dirty:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Now, we can stop our cluster:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;And uninstall the current PostgreSQL:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/4dffee8e9ebbf2c052162f2ecc36e812.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;And remove the remnants of our cluster:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/7c064e25c8916fa7fe0e3cdb846d3c78.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Now we’ve got a clean slate. So, let’s tell Homebrew to stop using the default PostgreSQL and use Peter Eisentraut’s version (if you don’t know, Peter actually contributes to PostgreSQL):&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/b099ff10c1cd1713f37ff40cf320adf3.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let’s install the supported versions:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/bcc4e0e7c55e849b7adb647d9727674c.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/opt/postgresql-9.1/&lt;/code&gt; etc.&lt;/p&gt;
+
+&lt;p&gt;Peter configures PostgreSQL with just about all the options turned on:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/c56727a3249042841c2609439209c8fd.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt;. You would install it like this:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/37c2e01a0d400c0a16c7fb7d9b8d1030.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt; like so:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/d2d004871557adc49ae77b19181bd999.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;As you can see, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ip4r&lt;/code&gt; extension was installed into my PostgreSQL 9.4 instance.&lt;/p&gt;
+
+&lt;p&gt;Now, you might be wondering how to deal with all these concurrent versions. If you type &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; which one willl you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
+psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;PostgreSQL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 9.6.1
+doug@Douglass-MacBook-Pro ~ »
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;which is a huge pita. So, let’s make a little convenience function in our shell. Edit your &lt;code class=&quot;highlighter-rouge&quot;&gt;.zshrc&lt;/code&gt; or your &lt;code class=&quot;highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; (or whatever) and add a function like this:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;and then simply call &lt;code class=&quot;highlighter-rouge&quot;&gt;pg 9.5&lt;/code&gt; to set PostgreSQL 9.5 as your ‘active’ instance:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oug@Douglass-MacBook-Pro ~ » pg 9.5
+Stopping PostgreSQL 9.4... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
+Activating PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
+Initializing PostgreSQL 9.5 cluster... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
+Starting PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
+doug@Douglass-MacBook-Pro ~ »
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Restore your data:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;and there you be. Ain’t it beautiful? :)&lt;/p&gt;
+</description>
+    <link>/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/ </link>
+    <pubDate>2016-11-10T09:58:15-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/</guid>
+   </item>
+  
+   <item>
+    <title>PostgreSQL, Homebrew, and You</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;lleader&quot; /&gt;If you need to install &lt;a href=&quot;http://www.posatgresql.org&quot;&gt;PostgreSQL&lt;/a&gt; onto your Macbook, you have several options available to you nowadays. You could use the &lt;a href=&quot;https://bigsql.com/postgresql/installers.jsp&quot;&gt;BigSQL&lt;/a&gt; package, or you could use &lt;a href=&quot;http://postgresapp.com&quot;&gt;Postgres.app&lt;/a&gt;, or several others. However, if you’re a geek running OSX, you’ve probably already installed &lt;a href=&quot;http://brew.sh&quot;&gt;Homebrew&lt;/a&gt; and it has a wonderful PostgreSQL package. So let’s use it, shall we?&lt;/p&gt;
+
+&lt;p&gt;I’m not going to walk you through installing Homebrew, so let’s just assume it’s already up and running and you’ve followed all the directions. At this point, you have &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/bin/&lt;/code&gt; in your &lt;code class=&quot;highlighter-rouge&quot;&gt;$PATH&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;brew&lt;/code&gt; is up and running. So, let’s tell &lt;code class=&quot;highlighter-rouge&quot;&gt;brew&lt;/code&gt; to install PostgreSQL:&lt;/p&gt;
+
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » brew install postgresql
+==&amp;gt; Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.4_1.sierra.b
+Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.4_1.sierra.bottle.tar.gz
+==&amp;gt; Pouring postgresql-9.5.4_1.sierra.bottle.tar.gz
+==&amp;gt; Using the sandbox
+==&amp;gt; /usr/local/Cellar/postgresql/9.5.4_1/bigsqln/initdb /usr/local/var/postgres
+==&amp;gt; Caveats
+If builds of PostgreSQL 9 are failing and you have version 8.x installed,
+you may need to remove the previous version first. See:
+  https://github.com/Homebrew/homebrew/issues/2510
+
+To migrate existing data from a previous major version (pre-9.0) of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/upgrading.html
+
+To migrate existing data from a previous minor versionn (9.0-9.4) of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
+
+  You will need your previous PostgreSQL installation from brew to perform `pg_upgrade`.
+  Do not run `brew cleanup postgresql` until you have performed the migration.
+
+To have launchd start postgresql now and restart at login:
+  brew services start postgresql
+Or, if you don't want/need a background service you can just run:
+  pg_ctl -D /usr/local/var/postgres start
+==&amp;gt; Summary
+🍺  /usr/local/Cellar/postgresql/9.5.4_1: 3,147 files, 35M
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As you can see, it downloaded the package, installed the binaries, and ran &lt;code class=&quot;highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » brew services start postgresql
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;Successfully started &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;postgresql&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;label: homebrew.mxcl.postgresql&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And if you check your process listing, you can see that the cluster is up and running under your id:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » ps -efw|grep postgres
+  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres -D /usr/local/var/postgres
+  501  6817  6808   0 11:03AM ??         0:00.00 postgres: logger process
+  501  6819  6808   0 11:03AM ??         0:00.00 postgres: checkpointer process
+  501  6820  6808   0 11:03AM ??         0:00.00 postgres: writer process
+  501  6821  6808   0 11:03AM ??         0:00.00 postgres: wal writer process
+  501  6822  6808   0 11:03AM ??         0:00.00 postgres: autovacuum launcher process
+  501  6823  6808   0 11:03AM ??         0:00.00 postgres: stats collector process
+doug@Douglass-MacBook-Pro ~ »
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And just like that, you have PostgreSQL installed and running! Set &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/var/postgres&lt;/code&gt; and you’re all set.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>/posts/PostgreSQL-Homebrew-and-You/ </link>
+    <pubDate>2016-11-04T09:30:09-04:00</pubDate>
+    <guid isPermaLink="true">/posts/PostgreSQL-Homebrew-and-You/</guid>
+   </item>
+  
+   <item>
+    <title>Inaugural pgCMH mtg scheduled</title>
+    <description>&lt;p&gt;&lt;img src=&quot;/images/pgCMH.png&quot; class=&quot;rleader&quot; /&gt; As announced on our &lt;a href=&quot;http://www.twitter.com/pgCMH&quot;&gt;Twitter&lt;/a&gt;, we’ve scheduled our inaugural meeting for Jan 24, 2017 at 1800 hrs. The folks at CoverMyMeds will graciously provide the meeting space (and parking garage) while OpenSCG is buying the pizza!&lt;/p&gt;
+
+&lt;p&gt;At this first meeting, we’ll be discussing what you, the members, would like to get from the meetings, we’ll talk about future topics, and general organizational things. I know it’s not exciting, but I need everyone’s input to make this group something you get value from.&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-twitter-plugin&quot;&gt;&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Our first mtg is happening on Jan 24 at &lt;a href=&quot;https://twitter.com/CoverMyMeds&quot;&gt;@covermymeds&lt;/a&gt; with &lt;a href=&quot;https://twitter.com/OpenSCG&quot;&gt;@openscg&lt;/a&gt; buying pizza. Bring a friend! RSVP at &lt;a href=&quot;https://t.co/600ZNbPV8e&quot;&gt;https://t.co/600ZNbPV8e&lt;/a&gt;&lt;/p&gt;&amp;mdash; pgCMH (@pgCMH) &lt;a href=&quot;https://twitter.com/pgCMH/status/788780137630216192&quot;&gt;October 19, 2016&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;&lt;/div&gt;
+
+&lt;p&gt;Please RSVP via the &lt;a href=&quot;https://www.meetup.com/postgresCMH/events/234969649/&quot;&gt;MeetUP event&lt;/a&gt; so we have sufficient food and drink!&lt;/p&gt;
+
+&lt;p&gt;See you there!&lt;/p&gt;
+</description>
+    <link>/posts/Inaugural-pgCMH-mtg/ </link>
+    <pubDate>2016-11-03T07:45:32-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Inaugural-pgCMH-mtg/</guid>
+   </item>
+  
+   <item>
+    <title>Announcing pgCMH</title>
+    <description>&lt;p&gt;&lt;img src=&quot;/images/pgCMH.png&quot; class=&quot;rleader&quot; /&gt;I’ve been kicking around the idea of founding a Columbus-based PostgreSQL User Group for a while now. I even went so far as to float the idea to people at &lt;a href=&quot;http://www.ohiolinux.org&quot;&gt;OLF&lt;/a&gt; in ‘14. After much hemming and hawing (and no one else stepping up in the interim), I’ve finally gone and done it.&lt;/p&gt;
+
+&lt;p&gt;pgCMH is the name of my newly formed group, and we’re good to go. We’ve got our own Twitter (&lt;a href=&quot;http://www.twitter.com/pgCMH&quot;&gt;@pgCMH&lt;/a&gt;):&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-twitter-plugin&quot;&gt;&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://twitter.com/hashtag/PostgreSQL?src=hash&quot;&gt;#PostgreSQL&lt;/a&gt; 9.6.1, 9.5.5, 9.4.10, 9.3.15, 9.2.19 and 9.1.24 Released! &lt;a href=&quot;https://t.co/RH27To33gh&quot;&gt;https://t.co/RH27To33gh&lt;/a&gt;&lt;/p&gt;&amp;mdash; pgCMH (@pgCMH) &lt;a href=&quot;https://twitter.com/pgCMH/status/791654418731065344&quot;&gt;October 27, 2016&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;&lt;/div&gt;
+
+&lt;p&gt;as well as our own &lt;a href=&quot;http://www.meetup.com/postgresCMH&quot;&gt;MeetUp&lt;/a&gt; page. We’ve got a sponsor providing food, and another providing the meeting location. Our first meeting will be in Jan, thanks to all the scheduling conflicts the upcoming holidays create.&lt;/p&gt;
+
+&lt;p&gt;Watch this space for updates, follow our Twitter, and join the mailing list on MeetUp. I’d love to get your participation and input. Let’s make this group as wildly successful as we can!&lt;/p&gt;
+</description>
+    <link>/posts/Announcing-pgCMH/ </link>
+    <pubDate>2016-10-31T07:35:22-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Announcing-pgCMH/</guid>
+   </item>
+  
+   <item>
+    <title>Incremental pgBadger</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://dalibo.github.io/pgbadger/logo_pgbadger.png&quot; class=&quot;lleader&quot; /&gt; You’re probably already running &lt;a href=&quot;https://dalibo.github.io/pgbadger/index.html&quot;&gt;pgBadger&lt;/a&gt; to monitor your PostgreSQL logs. However, you’re probably &lt;em&gt;not&lt;/em&gt; running it incrementally throughout the day. Most likely, you’ve setup a &lt;code class=&quot;highlighter-rouge&quot;&gt;cron.daily&lt;/code&gt; job that runs pgBadger against yesterday’s log(s). And that’s great. Except when you get the dreaded “what just happened on the db?” email. Are you going to wait until tonight’s normal run of pgBadger to see what happened? Are you going to run a ‘one off’ pgBadger against today’s logfile and wait for it to process the &lt;em&gt;entire&lt;/em&gt; log? Or are you going to copy the log off somewhere, edit it to cut it down, and &lt;em&gt;then&lt;/em&gt; run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?&lt;/p&gt;
+
+&lt;p&gt;No, most likely you’re going to look at your actual monitoring tool that does real-time monitoring of your db and try to figure things out from there. You &lt;em&gt;are&lt;/em&gt; running some kind of db monitoring tool, right?&lt;/p&gt;
+
+&lt;p&gt;However, let’s say that for, uh, reasons, you only have pgBadger at your disposal &lt;em&gt;right this instant&lt;/em&gt;. Well, if you were making use of pgBadger’s &lt;em&gt;incremental mode&lt;/em&gt; you could simply fire off the next scheduled run and it would only process those log entries that were new since the last run. So, for example, if you had a &lt;code class=&quot;highlighter-rouge&quot;&gt;cron.hourly&lt;/code&gt; run of pgBadger it would only process the last hour’s worth of entries to update today’s report. No waiting to process multiple hours of info that you don’t need, no editing of the logfile to remove things outside the window you care about, just run it and done.&lt;/p&gt;
+
+&lt;p&gt;Sounds nice, right? So let’s set this up shall we? I’m assuming you’ve already setup &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; appropriately, but if you haven’t please go that first. The pgBadger website has good documentation on how to do so. According to the docs:&lt;/p&gt;
+
+&lt;div class=&quot;language-apache highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;I | --incremental     : use incremental mode, reports will be generated by days in a separate directory, --outdir must be set.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;is how we turn on incremental mode. You’ll note that we also need to specify an output dir:&lt;/p&gt;
+
+&lt;div class=&quot;language-apache highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;O | --outdir path     : directory where out file must be saved
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I usually stick the pgBadger output into the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_log&lt;/code&gt; directory. In my mind, having the logs and the report on the logs next to each makes sense, but feel free to stick yours wherever.&lt;/p&gt;
+
+&lt;p&gt;Finally, we probably don’t need pgBadger reports that are too old, and the docs say we can cull the cruft automatically:&lt;/p&gt;
+
+&lt;div class=&quot;language-apache highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;err&quot;&gt;-&lt;/span&gt;R | --retention N     : number of week to keep in incremental mode. Default to 0, disabled. Used to &lt;span class=&quot;ss&quot;&gt;set&lt;/span&gt; the number of weel to keep in output directory. Older weeks and days directory are automatically removed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;(Ignore the typo, it’s that way in the code)&lt;/p&gt;
+
+&lt;p&gt;On my servers, I have PostgreSQL setup to log into a different file for each day of the week, with automatic rotation and truncation:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;log_filename = 'postgresql-%a.log'
+log_truncate_on_rotation = on
+log_rotation_age = 1d
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;so my &lt;code class=&quot;highlighter-rouge&quot;&gt;cron.hourly&lt;/code&gt; pgBadger looks like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pgbadger \
+    -I \
+    -O $PGDATA/pg_log \
+    -R 12 \
+    -q \
+    $PGDATA/pg_log/postgresql-$(date --date yesterday +%a) \
+    $PGDATA/pg_log/postgresql-$(date +%a)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;which as you can see always feeds both yesterday’s and today’s log into pgBadger (since the cron runs at 2300 and then again at 0000, we need yesterday’s log to catch that last hour). Since we’re running in incremental mode, it knows &lt;em&gt;at every run&lt;/em&gt; where it left off in the files the last time and does a &lt;code class=&quot;highlighter-rouge&quot;&gt;seek&lt;/code&gt; to skip over that data. This cuts the run time down &lt;em&gt;significantly&lt;/em&gt; even with the PostgreSQL logging &lt;em&gt;cranked up&lt;/em&gt;. You can see it here:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;...
+DEBUG: Starting reading file postgresql-Wed.log...
+DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
+[======================&amp;gt;  ] Parsed 413815537 bytes of 433543395 (95.45%), queries
+...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As you can see, it jumps right in at 95% of the file and only processes the newest 5%. In fact, this takes a mere 20 seconds:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;statistics gathering took:20 wallclock secs (19.44 usr +  0.17 sys = 19.61 CPU)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;on my overloaded Macbook!&lt;/p&gt;
+
+&lt;p&gt;So there you have it. Not counting the time it takes you to &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; to your server, it would have taken all of &lt;em&gt;20 seconds&lt;/em&gt; to have an updated report of what just happened on your database!&lt;/p&gt;
+
+&lt;p&gt;Keep in mind, this is also with a &lt;em&gt;single thread&lt;/em&gt;. pgBadger has the ability to run multi-threaded. See the &lt;code class=&quot;highlighter-rouge&quot;&gt;--help&lt;/code&gt; for details.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>/posts/Incremental-pgBadger/ </link>
+    <pubDate>2016-10-26T10:46:09-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Incremental-pgBadger/</guid>
+   </item>
   
  </channel>
 </rss>

@@ -5,12 +5,31 @@
   <description>Posts tagged as 'gaming'</description>
   <atom:link href="/feeds/feed.gaming.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#gaming/</link>
-  <updated>2017-07-07T14:35:57-04:00</updated>
+  <updated>2017-07-07T15:13:02-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Welcome to Cypheri</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://www.nationstates.net/images/flags/uploads/cypheri__561515.jpg&quot; class=&quot;lleader&quot; /&gt;I recently discovered the online game &lt;a href=&quot;https://www.nationstates.net&quot;&gt;NationStates&lt;/a&gt; thanks to a Reddit thread and was intrigued. So I logged in, created the nation of Cypheri and then used &lt;a href=&quot;https://blogtrottr.com&quot;&gt;BlogTrottr&lt;/a&gt; to feed the RSS feed into my inbox (which allows me offline play essentially. I ignore it until I get a notice). So far, it’s been a neat little experience. I’m pretty sure if you know me well enough to be reading this blog that I know you well enough to say you’ll enjoy it too.&lt;/p&gt;
+
+&lt;p&gt;Without further ado, let me welcome you to the Republic of Cypheri, a left-leaning college state. Our motto is “strength through freedom”.&lt;/p&gt;
+
+&lt;p&gt;The Republic of Cypheri is a tiny, genial nation, renowned for its compulsory military service and irreverence towards religion. The compassionate population of 7 million Cypherians enjoy extensive civil freedoms, particularly in social issues, while business tends to be more regulated.&lt;/p&gt;
+
+&lt;p&gt;The large government prioritizes Education, although Welfare, Defense, and Law &amp;amp; Order are also considered important, while Spirituality and Industry are ignored. The average income tax rate is 39.8%, but much higher for the wealthy.&lt;/p&gt;
+
+&lt;p&gt;The Cypherian economy, worth 251 billion dollars a year, is fairly diversified and led by the Tourism industry, with major contributions from Automobile Manufacturing, Basket Weaving, and Retail. State-owned companies are common. Average income is 35,928 dollars, and evenly distributed, with the richest citizens earning only 2.0 times as much as the poorest.&lt;/p&gt;
+
+&lt;p&gt;Thanks for visiting, we hope you enjoyed your time here!&lt;/p&gt;
+</description>
+    <link>/posts/Welcome-to-Cypheri/ </link>
+    <pubDate>2016-10-01T07:23:56-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Welcome-to-Cypheri/</guid>
+   </item>
   
  </channel>
 </rss>
