@@ -1,4 +1,68 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-07-07T15:13:02-04:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">Installing pgBackRest on OSX</title><link href="/posts/Installing-pgBackRest-on-OSX/" rel="alternate" type="text/html" title="Installing pgBackRest on OSX" /><published>2017-06-14T08:40:30-04:00</published><updated>2017-06-14T08:40:30-04:00</updated><id>/posts/Installing-pgBackRest-on-OSX</id><content type="html" xml:base="/posts/Installing-pgBackRest-on-OSX/">&lt;p&gt;If you’ve followed my previous posts (&lt;a href=&quot;https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt;), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don’t really care about any of the data therein, but if you do, let me guide you to &lt;a href=&quot;http://www.pgbackrest.org/&quot;&gt;pgBackRest&lt;/a&gt;.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-07-26T12:50:57-04:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">When you cannot get there from here</title><link href="/posts/When-you-cannot-get-there-from-here/" rel="alternate" type="text/html" title="When you cannot get there from here" /><published>2017-07-25T07:42:47-04:00</published><updated>2017-07-25T07:42:47-04:00</updated><id>/posts/When-you-cannot-get-there-from-here</id><content type="html" xml:base="/posts/When-you-cannot-get-there-from-here/">&lt;p&gt;Connecting to a PostgreSQL instance isn’t hard generally, but sometimes you can run into issues. Sometimes a port isn’t open on a firewall, or the server is in a VLAN that you can’t get to, or perhaps the server isn’t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you’re connection isn’t authorized (which is not the same as being unable to &lt;em&gt;authenticate&lt;/em&gt;). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you’re facing. Let’s dive into each scenario and see what the error looks like, shall we?&lt;/p&gt;
+
+&lt;h4 id=&quot;scenario-1---bad-password&quot;&gt;Scenario 1 - Bad password&lt;/h4&gt;
+
+&lt;p&gt;Let’s first assume that everything is working and you &lt;em&gt;can&lt;/em&gt; actually connect to the PostgreSQL instance, but you can’t authenticate. The error will look like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/authentication.png&quot; alt=&quot;auth failed&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see, the message makes it pretty clear that you were able to connect, but your credentials were wrong (you were &lt;em&gt;authorized&lt;/em&gt; to connect, but failed to &lt;em&gt;authenticate&lt;/em&gt;). Did you type the password incorrectly? Is there a &lt;code class=&quot;highlighter-rouge&quot;&gt;~/.pgpass&lt;/code&gt; &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-pgpass.html&quot;&gt;file&lt;/a&gt; that is providing the password for you? Do you have &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGPASSWORD&lt;/code&gt; defined in your &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-envars.html&quot;&gt;environment&lt;/a&gt;? Fix the password being passed to PostgreSQL, and you won’t have further issues in this scenario.&lt;/p&gt;
+
+&lt;h4 id=&quot;scenario-2---pg_hbaconf-rejects-you&quot;&gt;Scenario 2 - pg_hba.conf rejects you&lt;/h4&gt;
+
+&lt;p&gt;For our second scenario, we’re going to assume that you &lt;em&gt;can&lt;/em&gt; actually connect to the PostgreSQL instance, but there is an entry in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; denying you access. First, we’ll try connecting via a local Unix socket:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/reject_socket.png&quot; alt=&quot;reject socket&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see, it straight up tells you that you have been &lt;em&gt;explicitly denied access&lt;/em&gt;. It may be rejecting connections via Unix sockets completely, or it may be rejecting connection as the specified user via Unix socket, or it may be rejecting connections to the specified database via Unix sock. You could determine which of these scenarios is true by trying a different user on the same database and then trying the same user on a different database. In any case, the problem &lt;em&gt;is not&lt;/em&gt; networking or firewall related. The DBA needs to adjust &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to allow connections of this type, or you need to connect via a TCP port instead of a Unix socket. Discuss with your DBA.&lt;/p&gt;
+
+&lt;p&gt;Now, let’s try via a TCP port:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/reject_port.png&quot; alt=&quot;reject port&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Again, you can see that it pretty plainly tells you that you have been &lt;em&gt;explicitly denied&lt;/em&gt;. In this case though, it may be rejecting your IP address specifically, your entire network segment, your id, that database, or the fact that you didn’t make an SSL connection. You can whittle this down by trying a different user on the same db, trying the same user on a different db, or switching to an SSL connection and repeating these tests. (I assume that you can’t change your IP address. But perhaps you could make the same test cases from another computer). Again, you’ll probably need the DBA to resolve this with you.&lt;/p&gt;
+
+&lt;h4 id=&quot;scenario-3---pg_hbaconf-doesnt-allow-you&quot;&gt;Scenario 3 - pg_hba.conf doesn’t allow you&lt;/h4&gt;
+
+&lt;p&gt;I know what you’re thinking. “Isn’t this the same as above?”. And the answer is “no it is not”. Above, the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; file had an entry that matched your incoming connection and said to &lt;strong&gt;explicitly&lt;/strong&gt; reject it. In this scenario, there is &lt;em&gt;no entry that matches your connection&lt;/em&gt; and you end up &lt;strong&gt;implicitly&lt;/strong&gt; denied.&lt;/p&gt;
+
+&lt;p&gt;Again, we’ll start by using a Unix socket:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/noentry_socket.png&quot; alt=&quot;no entry socket&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once more, the message pretty clearly tells you what is wrong. As it says, &lt;em&gt;there is no entry in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; that matches your incoming connection&lt;/em&gt;. And since PostgreSQL tries to err on the side of caution, when it can’t find an entry stating definitively what to do, it rejects you. The same troubleshooting steps as above apply (change the user/db, etc). And also like above, the DBA is going to need to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to add an entry for your connection.&lt;/p&gt;
+
+&lt;p&gt;Now, what does it look like over a TCP port:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/noentry_port.png&quot; alt=&quot;no entry port&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It’s the same error message as above but showing your IP address instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;[local]&lt;/code&gt;. And the same debugging applies. Once again, the DBA will need to add an entry to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to resolve this.&lt;/p&gt;
+
+&lt;h4 id=&quot;scenario-4---everything-else-no-really&quot;&gt;Scenario 4 - everything else (no, really)&lt;/h4&gt;
+
+&lt;p&gt;By default, PostgreSQL listens for connections on port 5432. Sometimes, your DBA (or your vendor) has chosen to run PostgreSQL on a different port for some reason. If you are not trying to connect to the correct port, you’ll get an error from &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you were trying to connect via a Unix socket, you’ll see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/socket_nope.png&quot; alt=&quot;socket nope&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you were trying a TCP port connection, you’d see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/port_nope.png&quot; alt=&quot;port nope&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This error indicates that it cannot establish a network connection with PostgreSQL at the IP address (or UNix socket) you specified on the default port. Check to make sure you don’t have &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGPORT&lt;/code&gt; set incorrectly in your environment.&lt;/p&gt;
+
+&lt;p&gt;If you &lt;em&gt;are&lt;/em&gt; using the correct port, and you still see one of two errors above, then the issue will be one of the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;PostgreSQL isn’t running&lt;/li&gt;
+  &lt;li&gt;PostgreSQL is running, but on a different IP address than you’re trying to connect to&lt;/li&gt;
+  &lt;li&gt;PostgreSQL is running, but you cannot establish a network connection from here to there&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If PostgreSQL isn’t running, talk to your DBA about why (maybe it died, maybe it’s a maintenance window). If you are affected by the 2&lt;sup&gt;nd&lt;/sup&gt; bullet item, you’ll have to talk with your DBA about the proper IP address to use when connecting. And if you’re plagued by the 3&lt;sup&gt;rd&lt;/sup&gt; bullet item, you’ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can’t connect to the other VLAN, or some other layer 3/4 tomfoolery.&lt;/p&gt;
+
+&lt;p&gt;So now you know all the (common) ways that connecting to PostgreSQL can fail and how to distinguish between them. With just a little bit of knowledge, you can communicate exactly what is happening to your DBA and make it easier for him/her to rectify the issue. Go forth, and happy PostgreSQL-ing.&lt;/p&gt;</content><category term="general" /><category term="something" /><summary type="html">Connecting to a PostgreSQL instance isn’t hard generally, but sometimes you can run into issues. Sometimes a port isn’t open on a firewall, or the server is in a VLAN that you can’t get to, or perhaps the server isn’t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you’re connection isn’t authorized (which is not the same as being unable to authenticate). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you’re facing. Let’s dive into each scenario and see what the error looks like, shall we?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" /></entry><entry><title type="html">Installing pgBackRest on OSX</title><link href="/posts/Installing-pgBackRest-on-OSX/" rel="alternate" type="text/html" title="Installing pgBackRest on OSX" /><published>2017-06-14T08:40:30-04:00</published><updated>2017-06-14T08:40:30-04:00</updated><id>/posts/Installing-pgBackRest-on-OSX</id><content type="html" xml:base="/posts/Installing-pgBackRest-on-OSX/">&lt;p&gt;If you’ve followed my previous posts (&lt;a href=&quot;https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt;), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don’t really care about any of the data therein, but if you do, let me guide you to &lt;a href=&quot;http://www.pgbackrest.org/&quot;&gt;pgBackRest&lt;/a&gt;.&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;pgBackRest aims to be a simple, reliable backup and restore system that can seamlessly scale up to the largest databases and workloads.&lt;/p&gt;
@@ -428,73 +492,4 @@ launchctl start org.postfix.master
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;And everything should work.&lt;/p&gt;</content><category term="osx" /><category term="geek" /><category term="computers" /><summary type="html">Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" /></entry><entry><title type="html">Getting fancy with PostgreSQL and Homebrew</title><link href="/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/" rel="alternate" type="text/html" title="Getting fancy with PostgreSQL and Homebrew" /><published>2016-11-10T09:58:15-05:00</published><updated>2016-11-10T09:58:15-05:00</updated><id>/posts/Getting-fancy-with-PostgreSQL-and-Homebrew</id><content type="html" xml:base="/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/">&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;In our &lt;a href=&quot;https://hunleyd.github.io/PostgreSQL-Homebrew-and-You/&quot;&gt;previous&lt;/a&gt; post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we’re going to take the next step.&lt;/p&gt;
-
-&lt;p&gt;First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dumpall&lt;/code&gt; here since it’s quick-n-dirty:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;Now, we can stop our cluster:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;And uninstall the current PostgreSQL:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/4dffee8e9ebbf2c052162f2ecc36e812.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;And remove the remnants of our cluster:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/7c064e25c8916fa7fe0e3cdb846d3c78.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;Now we’ve got a clean slate. So, let’s tell Homebrew to stop using the default PostgreSQL and use Peter Eisentraut’s version (if you don’t know, Peter actually contributes to PostgreSQL):&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/b099ff10c1cd1713f37ff40cf320adf3.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let’s install the supported versions:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/bcc4e0e7c55e849b7adb647d9727674c.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/opt/postgresql-9.1/&lt;/code&gt; etc.&lt;/p&gt;
-
-&lt;p&gt;Peter configures PostgreSQL with just about all the options turned on:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/c56727a3249042841c2609439209c8fd.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt;. You would install it like this:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/37c2e01a0d400c0a16c7fb7d9b8d1030.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt; like so:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/d2d004871557adc49ae77b19181bd999.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;As you can see, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ip4r&lt;/code&gt; extension was installed into my PostgreSQL 9.4 instance.&lt;/p&gt;
-
-&lt;p&gt;Now, you might be wondering how to deal with all these concurrent versions. If you type &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; which one willl you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
-psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;PostgreSQL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 9.6.1
-doug@Douglass-MacBook-Pro ~ »
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;which is a huge pita. So, let’s make a little convenience function in our shell. Edit your &lt;code class=&quot;highlighter-rouge&quot;&gt;.zshrc&lt;/code&gt; or your &lt;code class=&quot;highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; (or whatever) and add a function like this:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;and then simply call &lt;code class=&quot;highlighter-rouge&quot;&gt;pg 9.5&lt;/code&gt; to set PostgreSQL 9.5 as your ‘active’ instance:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oug@Douglass-MacBook-Pro ~ » pg 9.5
-Stopping PostgreSQL 9.4... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-Activating PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-Initializing PostgreSQL 9.5 cluster... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-Starting PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-doug@Douglass-MacBook-Pro ~ »
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Restore your data:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;and there you be. Ain’t it beautiful? :)&lt;/p&gt;</content><category term="osx" /><category term="postgresql" /><summary type="html">In our previous post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we’re going to take the next step.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry></feed>
+&lt;p&gt;And everything should work.&lt;/p&gt;</content><category term="osx" /><category term="geek" /><category term="computers" /><summary type="html">Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" /></entry></feed>
