@@ -5,7 +5,7 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2017-07-26T12:52:31-04:00</updated>
+  <updated>2017-07-26T13:32:01-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -76,7 +76,7 @@
   &lt;li&gt;PostgreSQL is running, but you cannot establish a network connection from here to there&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;If PostgreSQL isn’t running, talk to your DBA about why (maybe it died, maybe it’s a maintenance window). If you are affected by the 2&lt;sup&gt;nd&lt;/sup&gt; bullet item, you’ll have to talk with your DBA about the proper IP address to use when connecting. And if you’re plagued by the 3&lt;sup&gt;rd&lt;/sup&gt; bullet item, you’ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can’t connect to the other VLAN, or some other layer 3/4 tomfoolery.&lt;/p&gt;
+&lt;p&gt;If PostgreSQL isn’t running, talk to your DBA about why (maybe it died, maybe it’s a maintenance window). If you are affected by the 2&lt;sup&gt;nd&lt;/sup&gt; bullet item, you’ll have to talk with your DBA about the proper IP address to use when connecting. Note that, by default, PostgreSQL only listens on &lt;code class=&quot;highlighter-rouge&quot;&gt;localhost&lt;/code&gt; and none of your other interfaces. If this hasn’t been changed (&lt;code class=&quot;highlighter-rouge&quot;&gt;listen_addresses&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt;) then you’ll fall into this failure category. And if you’re plagued by the 3&lt;sup&gt;rd&lt;/sup&gt; bullet item, you’ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can’t connect to the other VLAN, or some other layer 3/4 tomfoolery.&lt;/p&gt;
 
 &lt;p&gt;So now you know all the (common) ways that connecting to PostgreSQL can fail and how to distinguish between them. With just a little bit of knowledge, you can communicate exactly what is happening to your DBA and make it easier for him/her to rectify the issue. Go forth, and happy PostgreSQL-ing.&lt;/p&gt;
 </description>
