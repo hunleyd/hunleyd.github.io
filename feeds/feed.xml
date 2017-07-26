@@ -5,7 +5,7 @@
   <description>Doug's various musings</description>
   <atom:link href="/feeds/feed.xml" rel="self" type="application/rss+xml" />
   <link></link>
-  <updated>2017-07-26T12:50:57-04:00</updated>
+  <updated>2017-07-26T12:52:31-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -84,9 +84,7 @@
     <link>/posts/When-you-cannot-get-there-from-here/</link>
     <guid isPermaLink="true">/posts/When-you-cannot-get-there-from-here/</guid>
     
-     <category>general</category>
-    
-     <category>something</category>
+     <category>postgresql</category>
     
    </item>
   
