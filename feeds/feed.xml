@@ -5,12 +5,32 @@
   <description>Doug's various musings</description>
   <atom:link href="/feeds/feed.xml" rel="self" type="application/rss+xml" />
   <link></link>
-  <updated>2017-10-03T11:52:58-04:00</updated>
+  <updated>2017-10-16T13:12:38-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>updated PostgreSQL homebrew script</title>
+    <description>&lt;p&gt;With the release of PostgreSQL 10, I’ve updated my &lt;code class=&quot;highlighter-rouge&quot;&gt;pg&lt;/code&gt; script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter’s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I’m pretty pleased with the new version actually.&lt;/p&gt;
+
+&lt;p&gt;As always, it’s been added as a gist:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Enjoy.&lt;/p&gt;
+</description>
+    <pubDate>2017-10-16T09:09:23-04:00</pubDate>
+    <link>/posts/updated-PostgreSQL-homebrew-script/</link>
+    <guid isPermaLink="true">/posts/updated-PostgreSQL-homebrew-script/</guid>
+    
+     <category>postgresql</category>
+    
+     <category>homebrew</category>
+    
+   </item>
   
    <item>
     <title>When you cannot get there from here</title>
@@ -593,49 +613,6 @@ pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40
      <category>postgresql</category>
     
      <category>osx</category>
-    
-   </item>
-  
-   <item>
-    <title>Routing email through GMail on OSX</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://www.postfix.org/mysza.gif&quot; class=&quot;lleader&quot; /&gt;Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)&lt;/p&gt;
-
-&lt;p&gt;The first thing we’re going to do is open an iTerm and &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo -i&lt;/code&gt; to become root. Then we’re going to &lt;code class=&quot;highlighter-rouge&quot;&gt;vi /etc/postfix/main.cf&lt;/code&gt; and we’re going to add/set the following:&lt;/p&gt;
-
-&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;myhostname&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;relayhost&lt;/span&gt; = [&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;smtp_sasl_auth_enable&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;smtp_sasl_password_maps&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;:/&lt;span class=&quot;n&quot;&gt;etc&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postfix&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;sasl_passwd&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;smtp_sasl_security_options&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;noanonymous&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;smtp_sasl_mechanism_filter&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;smtp_use_tls&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we &lt;code class=&quot;highlighter-rouge&quot;&gt;vi /etc/postfix/sasl_passwd&lt;/code&gt; and add:&lt;/p&gt;
-
-&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;@&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;:&lt;span class=&quot;n&quot;&gt;app_passwd&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Secure that file by running &lt;code class=&quot;highlighter-rouge&quot;&gt;chmod 0600 /etc/postfix/sasl_passwd&lt;/code&gt; and then have Postfix hash it by doing &lt;code class=&quot;highlighter-rouge&quot;&gt;postmap /etc/postfix/sasl_passwd&lt;/code&gt;. Finally, restart Postfix:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;launchctl stop org.postfix.master
-launchctl start org.postfix.master
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;And everything should work.&lt;/p&gt;
-</description>
-    <pubDate>2016-11-15T05:51:00-05:00</pubDate>
-    <link>/posts/Routing-email-through-GMail-on-OSX/</link>
-    <guid isPermaLink="true">/posts/Routing-email-through-GMail-on-OSX/</guid>
-    
-     <category>osx</category>
-    
-     <category>geek</category>
-    
-     <category>computers</category>
     
    </item>
   

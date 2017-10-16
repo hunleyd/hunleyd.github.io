@@ -5,12 +5,27 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2017-10-03T11:52:58-04:00</updated>
+  <updated>2017-10-16T13:12:38-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>updated PostgreSQL homebrew script</title>
+    <description>&lt;p&gt;With the release of PostgreSQL 10, I’ve updated my &lt;code class=&quot;highlighter-rouge&quot;&gt;pg&lt;/code&gt; script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter’s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I’m pretty pleased with the new version actually.&lt;/p&gt;
+
+&lt;p&gt;As always, it’s been added as a gist:&lt;/p&gt;
+
+&lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;Enjoy.&lt;/p&gt;
+</description>
+    <link>/posts/updated-PostgreSQL-homebrew-script/ </link>
+    <pubDate>2017-10-16T09:09:23-04:00</pubDate>
+    <guid isPermaLink="true">/posts/updated-PostgreSQL-homebrew-script/</guid>
+   </item>
   
    <item>
     <title>When you cannot get there from here</title>
@@ -678,24 +693,6 @@ doug@Douglass-MacBook-Pro ~ »
     <link>/posts/Inaugural-pgCMH-mtg/ </link>
     <pubDate>2016-11-03T07:45:32-04:00</pubDate>
     <guid isPermaLink="true">/posts/Inaugural-pgCMH-mtg/</guid>
-   </item>
-  
-   <item>
-    <title>Announcing pgCMH</title>
-    <description>&lt;p&gt;&lt;img src=&quot;/images/pgCMH.png&quot; class=&quot;rleader&quot; /&gt;I’ve been kicking around the idea of founding a Columbus-based PostgreSQL User Group for a while now. I even went so far as to float the idea to people at &lt;a href=&quot;http://www.ohiolinux.org&quot;&gt;OLF&lt;/a&gt; in ‘14. After much hemming and hawing (and no one else stepping up in the interim), I’ve finally gone and done it.&lt;/p&gt;
-
-&lt;p&gt;pgCMH is the name of my newly formed group, and we’re good to go. We’ve got our own Twitter (&lt;a href=&quot;http://www.twitter.com/pgCMH&quot;&gt;@pgCMH&lt;/a&gt;):&lt;/p&gt;
-
-&lt;div class=&quot;jekyll-twitter-plugin&quot;&gt;&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://twitter.com/hashtag/PostgreSQL?src=hash&quot;&gt;#PostgreSQL&lt;/a&gt; 9.6.1, 9.5.5, 9.4.10, 9.3.15, 9.2.19 and 9.1.24 Released! &lt;a href=&quot;https://t.co/RH27To33gh&quot;&gt;https://t.co/RH27To33gh&lt;/a&gt;&lt;/p&gt;&amp;mdash; pgCMH (@pgCMH) &lt;a href=&quot;https://twitter.com/pgCMH/status/791654418731065344&quot;&gt;October 27, 2016&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async=&quot;&quot; src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;&lt;/div&gt;
-
-&lt;p&gt;as well as our own &lt;a href=&quot;http://www.meetup.com/postgresCMH&quot;&gt;MeetUp&lt;/a&gt; page. We’ve got a sponsor providing food, and another providing the meeting location. Our first meeting will be in Jan, thanks to all the scheduling conflicts the upcoming holidays create.&lt;/p&gt;
-
-&lt;p&gt;Watch this space for updates, follow our Twitter, and join the mailing list on MeetUp. I’d love to get your participation and input. Let’s make this group as wildly successful as we can!&lt;/p&gt;
-</description>
-    <link>/posts/Announcing-pgCMH/ </link>
-    <pubDate>2016-10-31T07:35:22-04:00</pubDate>
-    <guid isPermaLink="true">/posts/Announcing-pgCMH/</guid>
    </item>
   
  </channel>
