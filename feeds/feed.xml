@@ -5,12 +5,49 @@
   <description>Doug's various musings</description>
   <atom:link href="/feeds/feed.xml" rel="self" type="application/rss+xml" />
   <link></link>
-  <updated>2017-10-16T13:14:22-04:00</updated>
+  <updated>2018-03-05T16:40:09-05:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Car(e) free in Columbus</title>
+    <description>&lt;p&gt;Last year, at the beginning of March, I turned in my &lt;a href=&quot;http://www.autoguide.com/blog/wp-content/uploads/2013/09/2014-kia-optima.jpg&quot;&gt;2014 Kia Optima LX&lt;/a&gt; at the end of its lease and decided to go ‘car free’. I wanted to see exactly how much of a PITA it would be, how many services I’d need to subscribe to to get things done, and how much money it would actually save me. It’s now been a year, and I can definitively answer these questions.&lt;/p&gt;
+
+&lt;p&gt;So, Let’s break things down shall we?&lt;/p&gt;
+
+&lt;p&gt;I was paying $440.88/mo for the car, or $5290.56/yr. A not-insignificant chunk of change. That’s &lt;strong&gt;not&lt;/strong&gt; including insurance, gas, oil changes, etc. This was purely for the lease itself.&lt;/p&gt;
+
+&lt;p&gt;Once I was ‘sans auto’, I started taking Uber whenever I needed to go somewhere (my monthly PUG meeting, shopping, out to eat, etc). Looking at my past year’s bank statements, I’ve given $1674.83 to Uber. A decent chunk of change, to be sure, but less than I expected if I’m honest.&lt;/p&gt;
+
+&lt;p&gt;Since I could no longer drive to the store, I signed up for &lt;a href=&quot;https://www.shipt.com&quot;&gt;Shipt&lt;/a&gt; to have my groceries delivered. Since I wasn’t sure if I would like the service (or if I’d give up and get another car) I paid the monthly rate of $14/mo instead of the $99 yearly rate. So I spent $168 on Shipt in the past year. Please keep in mind, there is a slight per-item markup with Shipt, but I didn’t track it and just budgeted ‘groceries’ as a total bill.&lt;/p&gt;
+
+&lt;p&gt;And finally, if I wanted to go visit friends or family outside Columbus, I needed to rent a car. I have a decent reward membership with &lt;a href=&quot;htttps://www.enterprise.com&quot;&gt;Enterprise&lt;/a&gt; and there is one close to home, so that’s where I rent. In the past year, I’ve given them $1041.14 of my hard earned income. I’ve also had to put a tank of gas or two into those rentals, but I didn’ think to track them.&lt;/p&gt;
+
+&lt;p&gt;And, honestly, that’s it. I &lt;em&gt;really&lt;/em&gt; figured I’d have to sign up for a ton of things to “replace” my car,  but that’s really all there is. It helps (tremendously) that I’m able to telecommute for my dayjob. Of course, that’s &lt;em&gt;also&lt;/em&gt; why I was thinking that having a car is a waste. I paid (a lot* of money, monthly, for a car to sit in my driveway.&lt;/p&gt;
+
+&lt;p&gt;For those still with me, the math looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 5290.56 -- yearly car payments
+- 168.00 -- yearly Shipt
+-1674.83 -- Uber for the year
+-1041.14 -- car rentals for the year
+~~~~~~~~
+$2,406.59 money in my pocket
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And &lt;em&gt;bam&lt;/em&gt;, just like that I’m ~$2500/yr richer. And that’s &lt;strong&gt;without&lt;/strong&gt; considering fuel, oil, tires, maintenance, &lt;em&gt;or insurance&lt;/em&gt;. Over a standard 5 yr car loan, that’s ~$12500 I save! So yeah, a good decision for me, I think.&lt;/p&gt;
+</description>
+    <pubDate>2018-03-05T10:55:32-05:00</pubDate>
+    <link>/posts/Car-free-in-Columbus/</link>
+    <guid isPermaLink="true">/posts/Car-free-in-Columbus/</guid>
+    
+     <category>general</category>
+    
+   </item>
   
    <item>
     <title>updated PostgreSQL homebrew script</title>
@@ -575,44 +612,6 @@ pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40
     <guid isPermaLink="true">/posts/Upgrading-PostgreSQL-5x-faster/</guid>
     
      <category>postgresql</category>
-    
-   </item>
-  
-   <item>
-    <title>Managing multiple PostgreSQL installs via Homebrew</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;Following on from &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;this&lt;/a&gt; post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » pg 9.6
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;and then the script does the following:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;checks if the requested version is installed, and installs it if not&lt;/li&gt;
-  &lt;li&gt;checks if another version of PostgreSQL is running, and stops it&lt;/li&gt;
-  &lt;li&gt;checks if another version is linked as the active version, and unlinks it&lt;/li&gt;
-  &lt;li&gt;links the requested version as the active version&lt;/li&gt;
-  &lt;li&gt;sets PGDATA to point to the requested version’s data cluster&lt;/li&gt;
-  &lt;li&gt;does an &lt;code class=&quot;highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for the requested version if needed&lt;/li&gt;
-  &lt;li&gt;starts the requested version’s cluster&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;I’ll be the first to admit that the script could use additional work, but it’s functional enough to start using today. As I continue to improve the script, I’ll update the gist with those changes, so check back every so often.&lt;/p&gt;
-
-&lt;p&gt;Enjoy.&lt;/p&gt;
-</description>
-    <pubDate>2016-11-16T08:45:27-05:00</pubDate>
-    <link>/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/</link>
-    <guid isPermaLink="true">/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/</guid>
-    
-     <category>postgresql</category>
-    
-     <category>osx</category>
     
    </item>
   
