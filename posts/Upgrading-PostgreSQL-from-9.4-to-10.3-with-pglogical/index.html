@@ -1,0 +1,500 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Upgrading PostgreSQL from 9.4 to 10.3 with pglogical &#8211; Douglas J Hunley</title>
+<meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
+<meta name="keywords" content="postgresql">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/images/tech.jpg">
+
+<meta name="twitter:title" content="Upgrading PostgreSQL from 9.4 to 10.3 with pglogical">
+<meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
+<meta name="twitter:creator" content="@hunleyd">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Upgrading PostgreSQL from 9.4 to 10.3 with pglogical">
+<meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
+<meta property="og:url" content="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/">
+<meta property="og:site_name" content="Douglas J Hunley">
+
+
+
+
+
+<link rel="canonical" href="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/">
+<link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<!-- Webfonts -->
+<link href="//fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic" rel="stylesheet" type="text/css">
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- Load Modernizr -->
+<script src="/assets/js/vendor/modernizr-2.6.2.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/images/apple-touch-icon-144x144-precomposed.png">
+
+
+
+</head>
+
+<body id="post" class="feature">
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+<NAV id="dl-menu" class="dl-menuwrapper" role="navigation">
+  <BUTTON class="dl-trigger">
+    Open Menu
+  </BUTTON>
+  <UL class="dl-menu">
+    <LI>
+      <A href="/">Home</A>
+    </LI>
+    <LI>
+      <A href="#">About</A>
+      <UL class="dl-submenu">
+        <LI>
+          <IMG src="/images/avatar.jpg" alt="Douglas J Hunley photo" class="author-photo" />
+          <H4>Douglas J Hunley</H4>
+          <P>Linux Sys Admin, Gentoo user, PostgreSQL advocate, Android fanboi, OSS supporter, PlayStation gamer</P>
+        </LI>
+        <LI>
+          <A href="/about/"><SPAN class="btn btn-inverse">Learn More</SPAN></A>
+        </LI>
+        
+          <LI>
+            <A href="https://dhunley.deviantart.com"><I class="fa fa-deviantart" aria-hidden="true"></I> DeviantArt</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="mailto:douglas.hunley@gmail.com"><I class="fa fa-envelope" aria-hidden="true"></I> Email</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://facebook.com/douglas.j.hunley"><I class="fa fa-facebook" aria-hidden="true"></I> Facebook</A>
+          </LI>
+        
+        
+        
+          <LI>
+            <A href="https://github.com/hunleyd"><I class="fa fa-github" aria-hidden="true"></I> GitHub</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://google.com/+DouglasHunley"><I class="fa fa-google-plus" aria-hidden="true"></I> Google+</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://instagram.com/doughunley"><I class="fa fa-instagram" aria-hidden="true"></I> Instagram</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://linkedin.com/in/dhunley"><I class="fa fa-linkedin" aria-hidden="true"></I> LinkedIn</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://meetup.com/members/43608152"><I class="fa fa-meetup" aria-hidden="true"></I> MeetUp</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://reddit.com/u/hunleyd"><I class="fa fa-reddit-alien" aria-hidden="true"></I> Reddit</A>
+          </LI>
+        
+        
+        
+        
+          <LI>
+            <A href="https://twitter.com/hunleyd"><I class="fa fa-twitter" aria-hidden="true"></I> Twitter</A>
+          </LI>
+        
+        
+          <LI>
+            <A href="https://youtube.com/user/doughunley"><I class="fa fa-youtube" aria-hidden="true"></I> YouTube</A>
+          </LI>
+        
+      </UL><!-- /.dl-submenu -->
+    </LI>
+    <LI>
+      <A href="#">Posts</A>
+      <UL class="dl-submenu">
+        <LI>
+          <A href="/posts/">All Posts</A>
+        </LI>
+        <LI>
+          <A href="/tags/">All Tags</A>
+        </LI>
+      </UL>
+    </LI>
+    
+  </UL><!-- /.dl-menu -->
+</NAV><!-- /.dl-menuwrapper -->
+
+
+
+<div class="entry-header">
+  
+  <div class="entry-image">
+    <img src="/images/tech.jpg" alt="Upgrading PostgreSQL from 9.4 to 10.3 with pglogical">
+  </div><!-- /.entry-image -->
+</div><!-- /.entry-header -->
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    <header class="header-title">
+      <div class="header-title-wrap">
+        
+          <h1 class="entry-title"><a href="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" rel="bookmark" title="Upgrading PostgreSQL from 9.4 to 10.3 with pglogical">Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</a></h1>
+        
+        <h2><span class="entry-date date published"><time datetime="2018-04-05T09:15:46-04:00">April 05, 2018</time></span></h2>
+        
+        <p class="entry-reading-time">
+          <i class="fa fa-clock-o"></i>
+          
+Reading time ~5 minutes
+        </p><!-- /.entry-reading-time -->
+        
+      </div><!-- /.header-title-wrap -->
+    </header>
+    <div class="entry-content">
+      <p>I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of <code class="highlighter-rouge">pglogical</code> and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.</p>
+
+<p><code class="highlighter-rouge">pglogical</code> is a logical replication system implemented entirely as a PostgreSQL extension. Fully integrated, it requires no triggers or external programs. This makes it faster than Slony, Londiste, et al. It is also (roughly) the basis upon which logical replication in Pg 10 core is built.</p>
+
+<h3 id="installing-pglogical">Installing pglogical</h3>
+
+<p><code class="highlighter-rouge">pglogical</code> is available from 2ndQuadrant in both a YUM repository for RedHat-based distros and in an APT repository for Debian-based distros. It will need to be installed on both the source (old Pg version) and destination servers (new Pg version).</p>
+
+<p>The instructions for installing their repo and the needed packages can be found <a href="https://www.2ndquadrant.com/en/resources/pglogical/pglogical-installation-instructions/">here</a>.</p>
+
+<h3 id="configuring-pglogical">Configuring pglogical</h3>
+
+<h4 id="tweaking-the-cluster-config">Tweaking the cluster config</h4>
+
+<p>You will need to adjust the <code class="highlighter-rouge">postgresql.conf</code> file to accommodate <code class="highlighter-rouge">pglogical</code>. On both the source <em>and</em> destination servers, do the following:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"include 'pglogical.conf'"</span> &gt;&gt; <span class="nv">$PGDATA</span>/postgresql.conf
+<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"wal_level = 'logical'"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
+<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"max_worker_processes = 10"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
+<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"max_replication_slots = 10"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
+<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"max_wal_senders = 10"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
+<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"shared_preload_libraries = 'pglogical'"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
+</code></pre>
+</div>
+
+<p>NOTE: If you already have one or more values in <code class="highlighter-rouge">shared_preload_libraries</code>, simply append <code class="highlighter-rouge">pglogical</code> to the list of values already there.</p>
+
+<h4 id="ensure-the-presence-of-pks">Ensure the presence of PKs</h4>
+
+<p>Logical replication doesn’t work without primary keys. Identify all tables that do not have one:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span>
+  <span class="n">n</span><span class="p">.</span><span class="n">nspname</span> <span class="k">as</span> <span class="k">schema</span><span class="p">,</span>
+  <span class="k">c</span><span class="p">.</span><span class="n">relname</span> <span class="k">as</span> <span class="k">table</span>
+<span class="k">FROM</span>
+  <span class="n">pg_class</span> <span class="k">c</span>
+<span class="k">JOIN</span>
+  <span class="n">pg_namespace</span> <span class="n">n</span>
+<span class="k">ON</span> <span class="n">n</span><span class="p">.</span><span class="n">oid</span> <span class="o">=</span> <span class="k">c</span><span class="p">.</span><span class="n">relnamespace</span>
+<span class="k">WHERE</span>
+  <span class="k">c</span><span class="p">.</span><span class="n">relkind</span> <span class="o">=</span> <span class="s1">'r'</span>
+<span class="k">AND</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="p">(</span>
+  <span class="k">SELECT</span> <span class="mi">1</span>
+  <span class="k">FROM</span> <span class="n">pg_constraint</span> <span class="n">con</span>
+  <span class="k">WHERE</span> <span class="n">con</span><span class="p">.</span><span class="n">conrelid</span> <span class="o">=</span> <span class="k">c</span><span class="p">.</span><span class="n">oid</span>
+  <span class="k">AND</span> <span class="n">con</span><span class="p">.</span><span class="n">contype</span> <span class="o">=</span> <span class="s1">'p'</span>
+<span class="p">)</span>
+<span class="k">AND</span> <span class="n">n</span><span class="p">.</span><span class="n">nspname</span> <span class="o">&lt;&gt;</span> <span class="k">ALL</span> <span class="p">(</span>
+  <span class="n">ARRAY</span> <span class="p">[</span>
+    <span class="s1">'pg_catalog'</span><span class="p">,</span>
+    <span class="s1">'sys'</span><span class="p">,</span>
+    <span class="s1">'dbo'</span><span class="p">,</span>
+    <span class="s1">'information_schema'</span>
+  <span class="p">]</span>
+<span class="p">);</span>
+</code></pre>
+</div>
+
+<h4 id="create-the-pglogical-extension">Create the pglogical extension</h4>
+
+<p>On both the source <em>and</em> destination Pg instances, create the <code class="highlighter-rouge">pglogical</code> extension <em>in every database you wish to replicate</em>:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">CREATE</span> <span class="n">EXTENSION</span> <span class="n">pglogical</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<p>NOTE: On Pg 9.4 <strong>only</strong> you will need to <code class="highlighter-rouge">CREATE EXTENSION pglogical_origin;</code> FIRST.</p>
+
+<h3 id="running-pglogical">Running pglogical</h3>
+
+<h4 id="ensure-global-objects-are-copied">Ensure global objects are copied</h4>
+
+<p>The <code class="highlighter-rouge">pglogical</code> tool runs at the database level which means that global objects like roles are <strong>not</strong> copied. Therefore, you need to ensure these objects are created yourself.</p>
+
+<p>On the source Pg server:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pg_dumpall -g -f globals.sql
+</code></pre>
+</div>
+
+<p>Then copy <code class="highlighter-rouge">globals.sql</code> to the destination server and run:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>psql -f globals.sql
+</code></pre>
+</div>
+
+<h4 id="prep-the-destination-schema">Prep the destination schema</h4>
+
+<p>At this time, <code class="highlighter-rouge">pglogical</code> doesn’t replicate DDL, so it is necessary to ensure that both the source and destination have matching schema object definitions before attempting to replicate.</p>
+
+<p>As such, for each source database that you want to replicate, you need to run a ‘schema only’ dump:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pg_dump -Fc -s -f dbname_schema.dmp dbname
+</code></pre>
+</div>
+
+<p>Now copy the <code class="highlighter-rouge">dbname_schema.dmp</code> file(s) to the destination server, and run for each database:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pg_restore -d dbname dbname_schema.dmp
+</code></pre>
+</div>
+
+<h4 id="create-a-replication-user">Create a replication user</h4>
+
+<p>We’ll need a user that has the <code class="highlighter-rouge">replication</code> permission for this all to work, so let’s create one:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">ROLE</span> <span class="n">pglogical</span> <span class="n">LOGIN</span> <span class="n">REPLICATION</span> <span class="n">SUPERUSER</span> <span class="k">ENCRYPTED</span> <span class="n">PASSWORD</span> <span class="s1">'secret'</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<p>Do this on <strong>both</strong> the source and destination Pg instances.</p>
+
+<p>Tweak the <code class="highlighter-rouge">pg_hba.conf</code> on <strong>both</strong> the source and destination Pg instances to allow the replication user to connect:</p>
+
+<div class="language-apache highlighter-rouge"><pre class="highlight"><code>local  replication  pglogical  trust
+host   replication  pglogical  0.0.0.0/0  md5
+local  dbname       pglogical  trust
+host   dbname       pglogical  0.0.0.0/0  md5
+</code></pre>
+</div>
+
+<p>NOTE: Make sure to edit <code class="highlighter-rouge">0.0.0.0/0</code> to match your actual CIDR or IP address and <code class="highlighter-rouge">dbname</code> to match the db you wish to replicate.</p>
+
+<h4 id="create-your-publication">Create your publication</h4>
+
+<p>Now, we’re ready to actually setup and start the replication. First, we need to SIGHUP the postmaster so it sees all the config changes we made on <strong>both</strong> the source and target Pg instances:</p>
+
+<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pg_ctl -D <span class="k">$(</span>ps -efw|grep -- <span class="s2">"[p]ost.*-D"</span>|cut -d<span class="se">\-</span> -f2|cut -d<span class="s2">" "</span> -f2<span class="k">)</span> reload
+</code></pre>
+</div>
+
+<p>On the <strong>source</strong> Pg instance, we need to create a publication to ‘push’ the data to the new instance:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">create_node</span><span class="p">(</span><span class="n">node_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'dbname_provider'</span><span class="p">,</span> <span class="n">dsn</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'host=127.0.0.1 port=5432 dbname=test user=pglogical'</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>Adjust the <code class="highlighter-rouge">port=</code> and <code class="highlighter-rouge">dbname=</code> parameters to match your <strong>source</strong> Pg instance. If replicating more than one database, repeat this command for each database, changing <code class="highlighter-rouge">dbname</code> and <code class="highlighter-rouge">dbname_provider</code> accordingly.</p>
+
+<h4 id="add-your-tables-to-the-publication">Add your tables to the publication</h4>
+
+<p>Now that we have a publication channel, we need content to publish. Let’s add that now:</p>
+
+<p>1: Add all your tables:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">replication_set_add_all_tables</span><span class="p">(</span><span class="s1">'default'</span><span class="p">,</span> <span class="s1">'{public}'</span><span class="p">::</span><span class="n">text</span><span class="p">[]);</span>
+</code></pre>
+</div>
+
+<p>2: Add all your sequences:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">replication_set_add_all_sequences</span><span class="p">(</span><span class="n">set_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'default'</span><span class="p">,</span> <span class="n">schema_names</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{public}'</span><span class="p">::</span><span class="n">text</span><span class="p">[],</span> <span class="n">synchronize_data</span> <span class="p">:</span><span class="o">=</span> <span class="k">true</span> <span class="p">)</span>
+</code></pre>
+</div>
+
+<p>Obviously, you should change <code class="highlighter-rouge">public</code> in both the above if you are using a different schema for your objects. If you are using multiple schemas, simply repeat the above and change <code class="highlighter-rouge">public</code> appropriately.</p>
+
+<p>NOTE: The <code class="highlighter-rouge">nextval</code> of sequences will be synced every 60-70s roughly.</p>
+
+<h4 id="create-your-subscription">Create your subscription</h4>
+
+<p>Now that we have a publication channel and its content defined, we need to setup a subscriber on the <strong>target</strong> Pg instance to consume the channel:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">create_node</span><span class="p">(</span><span class="n">node_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'subscriber'</span><span class="p">,</span> <span class="n">dsn</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'host=127.0.0.1 port=5432 dbname=test user=pglogical'</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>Adjust the <code class="highlighter-rouge">dbname=</code> parameter to match your <strong>target</strong> Pg instance. If replicating more than one database, repeat this command for each database.</p>
+
+<p>Now, tell the subscriber what to subscribe to:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">create_subscription</span><span class="p">(</span><span class="n">subscription_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'subscription'</span><span class="p">,</span> <span class="n">provider_dsn</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'host=172.28.173.18 port=5432 dbname=test user=pglogical'</span><span class="p">,</span> <span class="n">replication_sets</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{default}'</span><span class="p">::</span><span class="n">text</span><span class="p">[]</span> <span class="p">);</span>
+</code></pre>
+</div>
+
+<p>Adjust <code class="highlighter-rouge">host=</code>, <code class="highlighter-rouge">port=</code>, and <code class="highlighter-rouge">dbname=</code> parameters to match your <strong>source</strong> Pg instance. If replicating more than one database, repeat this command for each database, changing <code class="highlighter-rouge">dbname</code> and <code class="highlighter-rouge">subscription_name</code> accordingly.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>At this point, data should be replicating and (if not already) it will catch up to ‘current’ quickly. Once caught up, replication will maintain sync between the source and target instances in almost real time. You can easily determine the current state of <code class="highlighter-rouge">pglogical</code> by issuing this SQL on the subscriber:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">subscription_name</span><span class="p">,</span> <span class="n">status</span> <span class="k">FROM</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">show_subscription_status</span><span class="p">();</span>
+</code></pre>
+</div>
+
+<p>If the query returns <code class="highlighter-rouge">initializing</code> then it is copying the original source data to the destination. If the query returns <code class="highlighter-rouge">replicating</code> then the initial synchronization has completed and replicating is now happening in real time as data changes.</p>
+
+<p>When ready, you can simply stop any applications pointing at the <em>source</em> Pg instance, wait a few minutes to ensure replication drains any outstanding items, force an update of your sequences:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">synchronize_sequence</span><span class="p">(</span> <span class="n">seqoid</span> <span class="p">)</span> <span class="k">FROM</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">sequence_state</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<p>and then re-point your applications at the <em>target</em> instance.</p>
+
+<p>Post-upgrade, if you wish to clean everything up, simply:</p>
+
+<p>1: Remove the subscription:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">drop_subscription</span><span class="p">(</span><span class="s1">'subscription'</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>2: Remove the subscriber:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">drop_node</span><span class="p">(</span><span class="s1">'subscriber'</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<p>3: Remove the extension:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">DROP</span> <span class="n">EXTENSION</span> <span class="n">pglogical</span> <span class="k">CASCADE</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<p>4: Remove the user:</p>
+
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">DROP</span> <span class="k">ROLE</span> <span class="n">pglogical</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<p>5: Remove any <code class="highlighter-rouge">pglogical</code> lines in <code class="highlighter-rouge">pg_hba.conf</code></p>
+
+<p>6: Remove <code class="highlighter-rouge">$PGDATA/pglogical.conf</code></p>
+
+<p>7: Reload PostgreSQL</p>
+
+<p>8: Remove the OS packages using <code class="highlighter-rouge">yum</code> or <code class="highlighter-rouge">apt</code></p>
+
+      <footer class="entry-meta">
+        <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>
+        
+        <div class="social-share">
+  <ul class="socialcount socialcount-small inline-list">
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+  </ul>
+</div><!-- /.social-share -->
+      </footer>
+    </div><!-- /.entry-content -->
+    <section id="disqus_thread"></section><!-- /#disqus_thread -->
+    <div class="read-more">
+  
+    <div class="read-more-header">
+      <a href="/posts/Car-free-in-Columbus/" class="read-more-btn">Read More</a>
+    </div><!-- /.read-more-header -->
+    <div class="read-more-content">
+      <h3><a href="/posts/Car-free-in-Columbus/" title="Car(e) free in Columbus">Car(e) free in Columbus</a></h3>
+      <p>Last year, at the beginning of March, I turned in my 2014 Kia Optima LX at the end of its lease and decided to go ‘car free’. I wanted to...&hellip; <a href="/posts/Car-free-in-Columbus/">Continue reading</a></p>
+    </div><!-- /.read-more-content -->
+  
+  <div class="read-more-list">
+    
+      <div class="list-item">
+        <h4><a href="/posts/updated-PostgreSQL-homebrew-script/" title="updated PostgreSQL homebrew script">updated PostgreSQL homebrew script</a></h4>
+        <span>Published on October 16, 2017</span>
+      </div><!-- /.list-item -->
+    
+      <div class="list-item">
+        <h4><a href="/posts/When-you-cannot-get-there-from-here/" title="When you cannot get there from here">When you cannot get there from here</a></h4>
+        <span>Published on July 25, 2017</span>
+      </div><!-- /.list-item -->
+    
+  </div><!-- /.read-more-list -->
+</div><!-- /.read-more -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo">
+    <span>&copy; 2018 Douglas J Hunley.<BR /><FONT size=-1>Powered by <a href="http://jekyllrb.com" rel="nofollow">Jekyll</a>. Served via <a href="https://github.com">GitHub</a>. Themed using <a href="https://mademistakes.com/work/hpstr-jekyll-theme/" rel="nofollow">HPSTR</a>.</FONT></span>
+
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="/assets/js/scripts.min.js"></script>
+
+
+
+
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'douglashunley'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+	        
+
+</body>
+</html>

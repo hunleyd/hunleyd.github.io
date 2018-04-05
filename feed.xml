@@ -1,4 +1,231 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-03-05T16:41:55-05:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">Car(e) free in Columbus</title><link href="/posts/Car-free-in-Columbus/" rel="alternate" type="text/html" title="Car(e) free in Columbus" /><published>2018-03-05T10:55:32-05:00</published><updated>2018-03-05T10:55:32-05:00</updated><id>/posts/Car-free-in-Columbus</id><content type="html" xml:base="/posts/Car-free-in-Columbus/">&lt;p&gt;Last year, at the beginning of March, I turned in my &lt;a href=&quot;http://www.autoguide.com/blog/wp-content/uploads/2013/09/2014-kia-optima.jpg&quot;&gt;2014 Kia Optima LX&lt;/a&gt; at the end of its lease and decided to go ‘car free’. I wanted to see exactly how much of a PITA it would be, how many services I’d need to subscribe to to get things done, and how much money it would actually save me. It’s now been a year, and I can definitively answer these questions.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-05T14:27:27-04:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title><link href="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" rel="alternate" type="text/html" title="Upgrading PostgreSQL from 9.4 to 10.3 with pglogical" /><published>2018-04-05T09:15:46-04:00</published><updated>2018-04-05T09:15:46-04:00</updated><id>/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical</id><content type="html" xml:base="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/">&lt;p&gt;I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of &lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; is a logical replication system implemented entirely as a PostgreSQL extension. Fully integrated, it requires no triggers or external programs. This makes it faster than Slony, Londiste, et al. It is also (roughly) the basis upon which logical replication in Pg 10 core is built.&lt;/p&gt;
+
+&lt;h3 id=&quot;installing-pglogical&quot;&gt;Installing pglogical&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; is available from 2ndQuadrant in both a YUM repository for RedHat-based distros and in an APT repository for Debian-based distros. It will need to be installed on both the source (old Pg version) and destination servers (new Pg version).&lt;/p&gt;
+
+&lt;p&gt;The instructions for installing their repo and the needed packages can be found &lt;a href=&quot;https://www.2ndquadrant.com/en/resources/pglogical/pglogical-installation-instructions/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;configuring-pglogical&quot;&gt;Configuring pglogical&lt;/h3&gt;
+
+&lt;h4 id=&quot;tweaking-the-cluster-config&quot;&gt;Tweaking the cluster config&lt;/h4&gt;
+
+&lt;p&gt;You will need to adjust the &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; file to accommodate &lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt;. On both the source &lt;em&gt;and&lt;/em&gt; destination servers, do the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;include 'pglogical.conf'&quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/postgresql.conf
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;wal_level = 'logical'&quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;max_worker_processes = 10&quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;max_replication_slots = 10&quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;max_wal_senders = 10&quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;shared_preload_libraries = 'pglogical'&quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;NOTE: If you already have one or more values in &lt;code class=&quot;highlighter-rouge&quot;&gt;shared_preload_libraries&lt;/code&gt;, simply append &lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; to the list of values already there.&lt;/p&gt;
+
+&lt;h4 id=&quot;ensure-the-presence-of-pks&quot;&gt;Ensure the presence of PKs&lt;/h4&gt;
+
+&lt;p&gt;Logical replication doesn’t work without primary keys. Identify all tables that do not have one:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nspname&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relname&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;table&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;pg_class&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;pg_namespace&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relnamespace&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relkind&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'r'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pg_constraint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conrelid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oid&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contype&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'p'&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nspname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ALL&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;ARRAY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+    &lt;span class=&quot;s1&quot;&gt;'pg_catalog'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s1&quot;&gt;'sys'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s1&quot;&gt;'dbo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;s1&quot;&gt;'information_schema'&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;create-the-pglogical-extension&quot;&gt;Create the pglogical extension&lt;/h4&gt;
+
+&lt;p&gt;On both the source &lt;em&gt;and&lt;/em&gt; destination Pg instances, create the &lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; extension &lt;em&gt;in every database you wish to replicate&lt;/em&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EXTENSION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;NOTE: On Pg 9.4 &lt;strong&gt;only&lt;/strong&gt; you will need to &lt;code class=&quot;highlighter-rouge&quot;&gt;CREATE EXTENSION pglogical_origin;&lt;/code&gt; FIRST.&lt;/p&gt;
+
+&lt;h3 id=&quot;running-pglogical&quot;&gt;Running pglogical&lt;/h3&gt;
+
+&lt;h4 id=&quot;ensure-global-objects-are-copied&quot;&gt;Ensure global objects are copied&lt;/h4&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; tool runs at the database level which means that global objects like roles are &lt;strong&gt;not&lt;/strong&gt; copied. Therefore, you need to ensure these objects are created yourself.&lt;/p&gt;
+
+&lt;p&gt;On the source Pg server:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;pg_dumpall -g -f globals.sql
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Then copy &lt;code class=&quot;highlighter-rouge&quot;&gt;globals.sql&lt;/code&gt; to the destination server and run:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;psql -f globals.sql
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;prep-the-destination-schema&quot;&gt;Prep the destination schema&lt;/h4&gt;
+
+&lt;p&gt;At this time, &lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; doesn’t replicate DDL, so it is necessary to ensure that both the source and destination have matching schema object definitions before attempting to replicate.&lt;/p&gt;
+
+&lt;p&gt;As such, for each source database that you want to replicate, you need to run a ‘schema only’ dump:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;pg_dump -Fc -s -f dbname_schema.dmp dbname
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now copy the &lt;code class=&quot;highlighter-rouge&quot;&gt;dbname_schema.dmp&lt;/code&gt; file(s) to the destination server, and run for each database:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;pg_restore -d dbname dbname_schema.dmp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h4 id=&quot;create-a-replication-user&quot;&gt;Create a replication user&lt;/h4&gt;
+
+&lt;p&gt;We’ll need a user that has the &lt;code class=&quot;highlighter-rouge&quot;&gt;replication&lt;/code&gt; permission for this all to work, so let’s create one:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOGIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;REPLICATION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SUPERUSER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ENCRYPTED&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PASSWORD&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'secret'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Do this on &lt;strong&gt;both&lt;/strong&gt; the source and destination Pg instances.&lt;/p&gt;
+
+&lt;p&gt;Tweak the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; on &lt;strong&gt;both&lt;/strong&gt; the source and destination Pg instances to allow the replication user to connect:&lt;/p&gt;
+
+&lt;div class=&quot;language-apache highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local  replication  pglogical  trust
+host   replication  pglogical  0.0.0.0/0  md5
+local  dbname       pglogical  trust
+host   dbname       pglogical  0.0.0.0/0  md5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;NOTE: Make sure to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;0.0.0.0/0&lt;/code&gt; to match your actual CIDR or IP address and &lt;code class=&quot;highlighter-rouge&quot;&gt;dbname&lt;/code&gt; to match the db you wish to replicate.&lt;/p&gt;
+
+&lt;h4 id=&quot;create-your-publication&quot;&gt;Create your publication&lt;/h4&gt;
+
+&lt;p&gt;Now, we’re ready to actually setup and start the replication. First, we need to SIGHUP the postmaster so it sees all the config changes we made on &lt;strong&gt;both&lt;/strong&gt; the source and target Pg instances:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;pg_ctl -D &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;ps -efw|grep -- &lt;span class=&quot;s2&quot;&gt;&quot;[p]ost.*-D&quot;&lt;/span&gt;|cut -d&lt;span class=&quot;se&quot;&gt;\-&lt;/span&gt; -f2|cut -d&lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt; -f2&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt; reload
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;On the &lt;strong&gt;source&lt;/strong&gt; Pg instance, we need to create a publication to ‘push’ the data to the new instance:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'dbname_provider'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'host=127.0.0.1 port=5432 dbname=test user=pglogical'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Adjust the &lt;code class=&quot;highlighter-rouge&quot;&gt;port=&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;dbname=&lt;/code&gt; parameters to match your &lt;strong&gt;source&lt;/strong&gt; Pg instance. If replicating more than one database, repeat this command for each database, changing &lt;code class=&quot;highlighter-rouge&quot;&gt;dbname&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;dbname_provider&lt;/code&gt; accordingly.&lt;/p&gt;
+
+&lt;h4 id=&quot;add-your-tables-to-the-publication&quot;&gt;Add your tables to the publication&lt;/h4&gt;
+
+&lt;p&gt;Now that we have a publication channel, we need content to publish. Let’s add that now:&lt;/p&gt;
+
+&lt;p&gt;1: Add all your tables:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replication_set_add_all_tables&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{public}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;2: Add all your sequences:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replication_set_add_all_sequences&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;schema_names&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{public}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;synchronize_data&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Obviously, you should change &lt;code class=&quot;highlighter-rouge&quot;&gt;public&lt;/code&gt; in both the above if you are using a different schema for your objects. If you are using multiple schemas, simply repeat the above and change &lt;code class=&quot;highlighter-rouge&quot;&gt;public&lt;/code&gt; appropriately.&lt;/p&gt;
+
+&lt;p&gt;NOTE: The &lt;code class=&quot;highlighter-rouge&quot;&gt;nextval&lt;/code&gt; of sequences will be synced every 60-70s roughly.&lt;/p&gt;
+
+&lt;h4 id=&quot;create-your-subscription&quot;&gt;Create your subscription&lt;/h4&gt;
+
+&lt;p&gt;Now that we have a publication channel and its content defined, we need to setup a subscriber on the &lt;strong&gt;target&lt;/strong&gt; Pg instance to consume the channel:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'subscriber'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'host=127.0.0.1 port=5432 dbname=test user=pglogical'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Adjust the &lt;code class=&quot;highlighter-rouge&quot;&gt;dbname=&lt;/code&gt; parameter to match your &lt;strong&gt;target&lt;/strong&gt; Pg instance. If replicating more than one database, repeat this command for each database.&lt;/p&gt;
+
+&lt;p&gt;Now, tell the subscriber what to subscribe to:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_subscription&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subscription_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'subscription'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;provider_dsn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'host=172.28.173.18 port=5432 dbname=test user=pglogical'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;replication_sets&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{default}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Adjust &lt;code class=&quot;highlighter-rouge&quot;&gt;host=&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;port=&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;dbname=&lt;/code&gt; parameters to match your &lt;strong&gt;source&lt;/strong&gt; Pg instance. If replicating more than one database, repeat this command for each database, changing &lt;code class=&quot;highlighter-rouge&quot;&gt;dbname&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;subscription_name&lt;/code&gt; accordingly.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;At this point, data should be replicating and (if not already) it will catch up to ‘current’ quickly. Once caught up, replication will maintain sync between the source and target instances in almost real time. You can easily determine the current state of &lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; by issuing this SQL on the subscriber:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subscription_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show_subscription_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;If the query returns &lt;code class=&quot;highlighter-rouge&quot;&gt;initializing&lt;/code&gt; then it is copying the original source data to the destination. If the query returns &lt;code class=&quot;highlighter-rouge&quot;&gt;replicating&lt;/code&gt; then the initial synchronization has completed and replicating is now happening in real time as data changes.&lt;/p&gt;
+
+&lt;p&gt;When ready, you can simply stop any applications pointing at the &lt;em&gt;source&lt;/em&gt; Pg instance, wait a few minutes to ensure replication drains any outstanding items, force an update of your sequences:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;synchronize_sequence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seqoid&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sequence_state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;and then re-point your applications at the &lt;em&gt;target&lt;/em&gt; instance.&lt;/p&gt;
+
+&lt;p&gt;Post-upgrade, if you wish to clean everything up, simply:&lt;/p&gt;
+
+&lt;p&gt;1: Remove the subscription:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drop_subscription&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'subscription'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;2: Remove the subscriber:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drop_node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'subscriber'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;3: Remove the extension:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;DROP&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EXTENSION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CASCADE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;4: Remove the user:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;DROP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;5: Remove any &lt;code class=&quot;highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; lines in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;6: Remove &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA/pglogical.conf&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;7: Reload PostgreSQL&lt;/p&gt;
+
+&lt;p&gt;8: Remove the OS packages using &lt;code class=&quot;highlighter-rouge&quot;&gt;yum&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;apt&lt;/code&gt;&lt;/p&gt;</content><category term="postgresql" /><summary type="html">I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of pglogical and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" /></entry><entry><title type="html">Car(e) free in Columbus</title><link href="/posts/Car-free-in-Columbus/" rel="alternate" type="text/html" title="Car(e) free in Columbus" /><published>2018-03-05T10:55:32-05:00</published><updated>2018-03-05T10:55:32-05:00</updated><id>/posts/Car-free-in-Columbus</id><content type="html" xml:base="/posts/Car-free-in-Columbus/">&lt;p&gt;Last year, at the beginning of March, I turned in my &lt;a href=&quot;http://www.autoguide.com/blog/wp-content/uploads/2013/09/2014-kia-optima.jpg&quot;&gt;2014 Kia Optima LX&lt;/a&gt; at the end of its lease and decided to go ‘car free’. I wanted to see exactly how much of a PITA it would be, how many services I’d need to subscribe to to get things done, and how much money it would actually save me. It’s now been a year, and I can definitively answer these questions.&lt;/p&gt;
 
 &lt;p&gt;So, Let’s break things down shall we?&lt;/p&gt;
 
@@ -428,48 +655,4 @@ log_rotation_age = 1h
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;which would give me logs of &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon-00&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon-01&lt;/code&gt;, etc. You should be able to see how combining these three &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; parameters and some crafty strftime() escapes gives you a &lt;em&gt;ton&lt;/em&gt; of flexibility in your logging. So go forth and tweak those logs!&lt;/p&gt;</content><category term="postgresql" /><summary type="html">PostgreSQL has a pretty extensive logging facility. I’ve talked briefly about configuring it to get the most out of pgBadger before, but today I’m gonna talk a bit about the naming of the log file itself. The chosen filename doesn’t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">Upgrading PostgreSQL 5x faster</title><link href="/posts/Upgrading-PostgreSQL-5x-faster/" rel="alternate" type="text/html" title="Upgrading PostgreSQL 5x faster" /><published>2016-11-18T07:18:28-05:00</published><updated>2016-11-18T07:18:28-05:00</updated><id>/posts/Upgrading-PostgreSQL-5x-faster</id><content type="html" xml:base="/posts/Upgrading-PostgreSQL-5x-faster/">&lt;p&gt;&lt;img src=&quot;http://www.navops.io/img/launch-samsung-1.gif&quot; class=&quot;lleader&quot; /&gt;Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.&lt;/p&gt;
-
-&lt;p&gt;Thankfully, the PostgreSQL team introduced &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took &lt;em&gt;1/5&lt;/em&gt; as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?&lt;/p&gt;
-
-&lt;p&gt;First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt; if you need to do this). We’re going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbench&lt;/code&gt; to create some data in our PostgreSQL 9.5 instance:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » pg 9.5
-doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, &lt;em&gt;this is where you’d have to stop your application(s)&lt;/em&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &amp;gt; data.sql
-pg_dumpall &amp;gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » pg 9.6
-doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
-psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;After 37 minutes, our data is back and we can start our applications back up. &lt;em&gt;An outage of approximately 56.5 minutes&lt;/em&gt;.&lt;/p&gt;
-
-&lt;p&gt;Now, let’s blow away our PostgreSQL 9.6 cluster and use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; to complete the same task. You would do this with the application(s) down as well!&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
-doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
-doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
-doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
-pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;And we’re done &lt;em&gt;in 10.5 minutes&lt;/em&gt;. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?&lt;/p&gt;
-
-&lt;p&gt;For the curious, the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; output that I omitted above for readability’s sake is:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js&quot;&gt; &lt;/script&gt;</content><category term="postgresql" /><summary type="html">Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry></feed>
+&lt;p&gt;which would give me logs of &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon-00&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon-01&lt;/code&gt;, etc. You should be able to see how combining these three &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; parameters and some crafty strftime() escapes gives you a &lt;em&gt;ton&lt;/em&gt; of flexibility in your logging. So go forth and tweak those logs!&lt;/p&gt;</content><category term="postgresql" /><summary type="html">PostgreSQL has a pretty extensive logging facility. I’ve talked briefly about configuring it to get the most out of pgBadger before, but today I’m gonna talk a bit about the naming of the log file itself. The chosen filename doesn’t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry></feed>
