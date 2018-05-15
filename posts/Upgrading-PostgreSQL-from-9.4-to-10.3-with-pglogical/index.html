@@ -341,7 +341,7 @@ host   dbname       pglogical  0.0.0.0/0  md5
 
 <p>2: Add all your sequences:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">replication_set_add_all_sequences</span><span class="p">(</span><span class="n">set_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'default'</span><span class="p">,</span> <span class="n">schema_names</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{public}'</span><span class="p">::</span><span class="n">text</span><span class="p">[],</span> <span class="n">synchronize_data</span> <span class="p">:</span><span class="o">=</span> <span class="k">true</span> <span class="p">)</span>
+<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">replication_set_add_all_sequences</span><span class="p">(</span><span class="n">set_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'default'</span><span class="p">,</span> <span class="n">schema_names</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{public}'</span><span class="p">::</span><span class="n">text</span><span class="p">[],</span> <span class="n">synchronize_data</span> <span class="p">:</span><span class="o">=</span> <span class="k">true</span> <span class="p">);</span>
 </code></pre>
 </div>
 
