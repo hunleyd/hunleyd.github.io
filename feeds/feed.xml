@@ -5,12 +5,42 @@
   <description>Doug's various musings</description>
   <atom:link href="/feeds/feed.xml" rel="self" type="application/rss+xml" />
   <link></link>
-  <updated>2018-05-15T13:36:53-04:00</updated>
+  <updated>2018-05-31T12:00:23-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Mom cuts the cord</title>
+    <description>&lt;p&gt;OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. My mother. The same woman who spent the better part of a decade (I cut the cord in late 2008) saying how she didn’t understand how I could not have cable. Someone check the temperature in Hell will ya? :)&lt;/p&gt;
+
+&lt;p&gt;All kidding aside, Mom (and Dad before he passed) has spent the past several years canceling Dish and DirecTV and switching back-n-forth between them to get the best ‘new customer’ rates and deals. But as Mom starts eyeing retirement and DirecTV keeps upping her bill $2 at a time for various fees, she’d had enough.&lt;/p&gt;
+
+&lt;p&gt;So, over the course of the last few months, I walked Mom through getting a TCL Roku TV:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/tcl.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Note, that’s actually a picture of the 55” which I bought last Aug. Mom bought the 32” even though I argued for the 37”)&lt;/p&gt;
+
+&lt;p&gt;Then I walked her through using the 1byone 50-mile HDTV antenna I had previously bought her.&lt;/p&gt;
+
+&lt;p&gt;And finally, I signed up for the DirecTVNow beta on Roku and waited for the DVR functionality to launch.&lt;/p&gt;
+
+&lt;p&gt;With all the pieces in place, we spent the afternoon setting everything up during my recent visit. We had a few little bumps that weekend, and I’m going to be getting her a Tablo DUO in the near future so we can use the 1byone on both TVs, but otherwise she adjusted to it all pretty easily. I even hooked up a Roku stick to the TV in the spare bedroom and showed her its all exactly the same as in the living room (minus the OTA locals, of course). Listening to her argue w/ the DirecTV phone rep during the cancellation call was &lt;em&gt;extremely satisfying&lt;/em&gt; and made me proud. Mom still can’t seem to believe that for $35/mo she is getting everything she used to pay almost $100/mo for. But she’s already been telling her friends about it all :)&lt;/p&gt;
+
+&lt;p&gt;So .. if you still haven’t cut the cord, what are you waiting for?&lt;/p&gt;
+</description>
+    <pubDate>2018-05-31T07:12:06-04:00</pubDate>
+    <link>/posts/Mom-cuts-the-cord/</link>
+    <guid isPermaLink="true">/posts/Mom-cuts-the-cord/</guid>
+    
+     <category>general</category>
+    
+     <category>ott</category>
+    
+   </item>
   
    <item>
     <title>Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title>
@@ -690,108 +720,6 @@ auto_explain.log_buffers = true
     <pubDate>2016-11-28T07:24:12-05:00</pubDate>
     <link>/posts/EXPLAINing-intermittent-perf-problems/</link>
     <guid isPermaLink="true">/posts/EXPLAINing-intermittent-perf-problems/</guid>
-    
-     <category>postgresql</category>
-    
-   </item>
-  
-   <item>
-    <title>PostgreSQL logging, strftime, and you</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://www.metasource.com/images/content/data-processing-image.jpg&quot; class=&quot;rleader&quot; /&gt;PostgreSQL has a pretty extensive logging facility. I’ve talked briefly about configuring it to get the most out of pgBadger before, but today I’m gonna talk a bit about the naming of the log file itself. The chosen filename doesn’t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?&lt;/p&gt;
-
-&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    The strftime() function formats the information from timeptr into the buffer s,
-    according to the string pointed to by format.
-
-    The format string consists of zero or more conversion specifications and ordi-
-    nary characters.  All ordinary characters are copied directly into the buffer.
-    A conversion specification consists of a percent sign ```%''' and one other
-    character.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Say what? Essentially, given a timestamp and a format specification, you’ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems &lt;code class=&quot;highlighter-rouge&quot;&gt;libc&lt;/code&gt; implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it’s BSD libc. You really shouldn’t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we’ll use today’s date of Monday, November 21, 2016 with a timestamp of 1pm EST):&lt;/p&gt;
-
-&lt;div class=&quot;language-apache highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;A    is replaced by national representation of the &lt;span class=&quot;ss&quot;&gt;full&lt;/span&gt; weekday name (&quot;Monday&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;a    is replaced by national representation of the abbreviated weekday name (&quot;Mon&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;B    is replaced by national representation of the &lt;span class=&quot;ss&quot;&gt;full&lt;/span&gt; month name (&quot;November&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;b    is replaced by national representation of the abbreviated month name (&quot;Nov&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;C    is replaced by (year / 100) as decimal number; single digits are preceded by a zero (&quot;20&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;c    is replaced by national representation of time and date (&quot;Mon Nov 21 13:00:00 2016&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;D    is equivalent to ``%m/%d/%y'' (&quot;11/21/16&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;d    is replaced by the day of the month as a decimal number (01-31) (&quot;21&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;e    is replaced by the day of the month as a decimal number (1-31); single digits are preceded by a blank (&quot;21&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;F    is equivalent to ``%Y-%m-%d'' (&quot;2016-11-21&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;G    is replaced by a year as a decimal number with century.  This year is the one that contains the greater part of the week (Monday as the first day of the week) (&quot;2016&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;g    is replaced by the same year as in ``%G'', but as a decimal number without century (00-99) (&quot;16&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;H    is replaced by the hour (24-hour clock) as a decimal number (00-23) (&quot;12&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;h    the same as %b (&quot;Nov&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;I    is replaced by the hour (12-hour clock) as a decimal number (01-12) (&quot;12&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;j    is replaced by the day of the year as a decimal number (001-366) (&quot;326&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;k    is replaced by the hour (24-hour clock) as a decimal number (0-23); single digits are preceded by a blank (&quot;13&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;l    is replaced by the hour (12-hour clock) as a decimal number (1-12); single digits are preceded by a blank (&quot; 1&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;M    is replaced by the minute as a decimal number (00-59) (&quot;00&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;m    is replaced by the month as a decimal number (01-12) (&quot;11&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;n    is replaced by a newline
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;p    is replaced by national representation of either &quot;ante meridiem&quot; (a.m.) or &quot;post meridiem&quot; (p.m.)  as appropriate (&quot;PM&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;R    is equivalent to ``%H:%M'' (&quot;13:00&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;r    is equivalent to ``%I:%M:%S %p'' (&quot;01:00:00 PM&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;S    is replaced by the second as a decimal number (00-60) (&quot;00&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;s    is replaced by the number of seconds since the Epoch, UTC (&quot;1479751200&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;T    is equivalent to ``%H:%M:%S'' (&quot;13:00:00&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;t    is replaced by a tab
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;U    is replaced by the week number of the year (Sunday as the first day of the week) as a decimal number (00-53) (&quot;47&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;u    is replaced by the weekday (Monday as the first day of the week) as a decimal number (1-7) (&quot;1&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;V    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (01-53).  If the week containing January 1 has four or more days in the new year, then it is week 1; otherwise it is the last week of the previous year, and the next week is week 1 (&quot;47&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;v    is equivalent to ``%e-%b-%Y'' (&quot;21-Nov-2016&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;W    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (00-53) (&quot;47&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;w    is replaced by the weekday (Sunday as the first day of the week) as a decimal number (0-6) (&quot;1&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;X    is replaced by national representation of the time (&quot;13:00:00&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;x    is replaced by national representation of the date (&quot;11/21/2016&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;Y    is replaced by the year with century as a decimal number (&quot;2016&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;y    is replaced by the year without century as a decimal number (00-99) (&quot;16&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;Z    is replaced by the time zone name (&quot;EST&quot;)
-    &lt;span class=&quot;err&quot;&gt;%&lt;/span&gt;z    is replaced by the time zone offset &lt;span class=&quot;ss&quot;&gt;from&lt;/span&gt; UTC; a leading plus sign stands for east of UTC, a minus sign for west of UTC, hours and minutes follow with two digits each and no delimiter between them (&quot;-0500&quot;)
-    &lt;span class=&quot;err&quot;&gt;%%&lt;/span&gt;    is replaced by `%'
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Phew! That was a lot wasn’t it? And where exactly does this come into play? As the &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; says:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;log_filename = 'postgresql-%a.log'      # log file name pattern,
-                                        # can include strftime() escapes
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I’m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA/pg_log&lt;/code&gt; directory will only ever contain:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
-postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
-postgresql-Sat.log
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;But wait! The key to all this is that &lt;em&gt;PostgreSQL only evaluates the filename when it first opens/creates the logfile&lt;/em&gt;. So, if you start your cluster on Mon and do not restart it and don’t have it configured to log rotate, you’ll still be writing to &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon.log&lt;/code&gt; forever. Fortunately, PostgreSQL has you covered here too:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;log_rotation_age = 1d      # Automatic rotation of logfiles will
-                           # happen after that time.  0 disables.
-log_rotation_size = 10MB   # Automatic rotation of logfiles will
-                           # happen after that much log output.
-                           # 0 disables.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;So, using my &lt;code class=&quot;highlighter-rouge&quot;&gt;log_filename&lt;/code&gt; from above, I enable &lt;code class=&quot;highlighter-rouge&quot;&gt;log_rotation_age&lt;/code&gt; (set to 1 day) and disable &lt;code class=&quot;highlighter-rouge&quot;&gt;log_rotation_size&lt;/code&gt; and I automatically get a new log every day. If I wanted hourly logs, I could do something like:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;log_filename = 'postgresql-%a-%H'
-log_rotation_age = 1h
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;which would give me logs of &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon-00&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql-Mon-01&lt;/code&gt;, etc. You should be able to see how combining these three &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; parameters and some crafty strftime() escapes gives you a &lt;em&gt;ton&lt;/em&gt; of flexibility in your logging. So go forth and tweak those logs!&lt;/p&gt;
-</description>
-    <pubDate>2016-11-21T07:17:03-05:00</pubDate>
-    <link>/posts/PostgreSQL-logging-strftime-and-you/</link>
-    <guid isPermaLink="true">/posts/PostgreSQL-logging-strftime-and-you/</guid>
     
      <category>postgresql</category>
     
