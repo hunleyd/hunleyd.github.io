@@ -5,31 +5,31 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>Upgrading PostgreSQL 5x faster &#8211; Douglas J Hunley</title>
+<title>Locking it down &#8211; Douglas J Hunley</title>
 <meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta name="keywords" content="postgresql">
+<meta name="keywords" content="geek, smarthome, review">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="/images/db.jpg">
+<meta name="twitter:image" content="/images/review.jpg">
 
-<meta name="twitter:title" content="Upgrading PostgreSQL 5x faster">
+<meta name="twitter:title" content="Locking it down">
 <meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
 <meta name="twitter:creator" content="@hunleyd">
 
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Upgrading PostgreSQL 5x faster">
+<meta property="og:title" content="Locking it down">
 <meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta property="og:url" content="/posts/Upgrading-PostgreSQL-5x-faster/">
+<meta property="og:url" content="/posts/Locking-it-down/">
 <meta property="og:site_name" content="Douglas J Hunley">
 
 
 
 
 
-<link rel="canonical" href="/posts/Upgrading-PostgreSQL-5x-faster/">
+<link rel="canonical" href="/posts/Locking-it-down/">
 <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -167,7 +167,7 @@
 <div class="entry-header">
   
   <div class="entry-image">
-    <img src="/images/db.jpg" alt="Upgrading PostgreSQL 5x faster">
+    <img src="/images/review.jpg" alt="Locking it down">
   </div><!-- /.entry-image -->
 </div><!-- /.entry-header -->
 
@@ -177,74 +177,52 @@
     <header class="header-title">
       <div class="header-title-wrap">
         
-          <h1 class="entry-title"><a href="/posts/Upgrading-PostgreSQL-5x-faster/" rel="bookmark" title="Upgrading PostgreSQL 5x faster">Upgrading PostgreSQL 5x faster</a></h1>
+          <h1 class="entry-title"><a href="/posts/Locking-it-down/" rel="bookmark" title="Locking it down">Locking it down</a></h1>
         
-        <h2><span class="entry-date date published"><time datetime="2016-11-18T07:18:28-05:00">November 18, 2016</time></span></h2>
+        <h2><span class="entry-date date published"><time datetime="2018-06-18T08:45:02-04:00">June 18, 2018</time></span></h2>
         
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
           
-Reading time ~2 minutes
+Reading time ~1 minute
         </p><!-- /.entry-reading-time -->
         
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p><img src="http://www.navops.io/img/launch-samsung-1.gif" class="lleader" />Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
+      <p>I finally saved up and bought myself a smart lock at the end of April. I ended up getting the <a href="https://smile.amazon.com/gp/product/B0752V8D8D">August Smart Lock Pro</a> with the Connect module. Now that I’ve used it for a month and a half, I feel like I can finally review it.</p>
 
-<p>Thankfully, the PostgreSQL team introduced <code class="highlighter-rouge">pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code class="highlighter-rouge">pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?</p>
+<p>TL;DR I love this lock.</p>
 
-<p>First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a> if you need to do this). We’re going to use <code class="highlighter-rouge">pgbench</code> to create some data in our PostgreSQL 9.5 instance:</p>
+<p>Honestly, the hardest part of this whole process was picking the lock to buy. I looked at the August lock, I looked at the Kwikset Bluetooth lock, I even looked at the Nest lock and debating waiting for its release. In the end, I chose the August for two reasons: it integrates with Google Home natively (no ‘talk to August’ bullshit) and it uses the existing lock’s keys so my landlord can’t complain.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.5
-doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
-</code></pre>
-</div>
+<p>Installing the lock was stupid simple. You are directed to download their app for your phone, create an account, and then it gives you full-screen step-by-step directions. There’s nothing unusual about this deadlock, so if you’ve ever changed one before, you know how to do this. You’ll need a screwdriver and maybe 10 minutes.</p>
 
-<p>Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, <em>this is where you’d have to stop your application(s)</em>.</p>
+<p>Installation is basically 4 steps:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &gt; data.sql
-pg_dumpall &gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
-</code></pre>
-</div>
+<ol>
+  <li>Remove the old back on the deadbolt</li>
+  <li>Find the correct shaft adaptor</li>
+  <li>Install the new August back</li>
+  <li>Connect to the wifi</li>
+</ol>
 
-<p>We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:</p>
+<p>I don’t leave the house very often, if I’m honest, but the occasions I have since installing this have been very nice. I leave, the door locks (and thanks to other integrations my Blink cameras turn on); I return, the door unlocks (and the cameras turn off). I don’t have to carry a key with me. I don’t have to empty a hand to fish out my key to unlock the door. When I go to bed at night, I just tell Google to lock the door. The only minor annoyance is that Google won’t voice unlock the door (for security reasons).</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.6
-doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
-psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
-</code></pre>
-</div>
+<p>I’ve yet to use the app to give anyone a ‘temporary key’ but I have used the app to check on (and change) the lock status. I’ve also used the app to update the firmware on the lock.</p>
 
-<p>After 37 minutes, our data is back and we can start our applications back up. <em>An outage of approximately 56.5 minutes</em>.</p>
+<p>If you’re considering a smart lock, I highly recommend you look at the August Pro.</p>
 
-<p>Now, let’s blow away our PostgreSQL 9.6 cluster and use <code class="highlighter-rouge">pg_upgrade</code> to complete the same task. You would do this with the application(s) down as well!</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
-doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
-doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
-doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
-pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
-</code></pre>
-</div>
-
-<p>And we’re done <em>in 10.5 minutes</em>. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?</p>
-
-<p>For the curious, the <code class="highlighter-rouge">pg_upgrade</code> output that I omitted above for readability’s sake is:</p>
-
-<script src="https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js"> </script>
-
+<p>★★★★★</p>
 
       <footer class="entry-meta">
-        <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>
+        <span class="entry-tags"><a href="/tags/#geek" title="Pages tagged geek" class="tag"><span class="term">geek</span></a><a href="/tags/#smarthome" title="Pages tagged smarthome" class="tag"><span class="term">smarthome</span></a><a href="/tags/#review" title="Pages tagged review" class="tag"><span class="term">review</span></a></span>
         
         <div class="social-share">
   <ul class="socialcount socialcount-small inline-list">
-    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/Upgrading-PostgreSQL-5x-faster/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
-    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/Upgrading-PostgreSQL-5x-faster/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
-    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/Upgrading-PostgreSQL-5x-faster/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/Locking-it-down/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/Locking-it-down/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/Locking-it-down/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
   </ul>
 </div><!-- /.social-share -->
       </footer>
@@ -253,23 +231,23 @@ pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40
     <div class="read-more">
   
     <div class="read-more-header">
-      <a href="/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/" class="read-more-btn">Read More</a>
+      <a href="/posts/Mom-cuts-the-cord/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/Locking-it-down/" title="Locking it down">Locking it down</a></h3>
-      <p>I finally saved up and bought myself a smart lock at the end of April. I ended up getting the [August Smart Lock Pro](https://smile.amazo...&hellip; <a href="/posts/Locking-it-down/">Continue reading</a></p>
+      <h3><a href="/posts/Mom-cuts-the-cord/" title="Mom cuts the cord">Mom cuts the cord</a></h3>
+      <p>OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. ...&hellip; <a href="/posts/Mom-cuts-the-cord/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/Mom-cuts-the-cord/" title="Mom cuts the cord">Mom cuts the cord</a></h4>
-        <span>Published on May 31, 2018</span>
+        <h4><a href="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" title="Upgrading PostgreSQL from 9.4 to 10.3 with pglogical">Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</a></h4>
+        <span>Published on April 05, 2018</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" title="Upgrading PostgreSQL from 9.4 to 10.3 with pglogical">Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</a></h4>
-        <span>Published on April 05, 2018</span>
+        <h4><a href="/posts/Car-free-in-Columbus/" title="Car(e) free in Columbus">Car(e) free in Columbus</a></h4>
+        <span>Published on March 05, 2018</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

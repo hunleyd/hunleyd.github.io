@@ -5,12 +5,51 @@
   <description>Doug's various musings</description>
   <atom:link href="/feeds/feed.xml" rel="self" type="application/rss+xml" />
   <link></link>
-  <updated>2018-05-31T12:53:39-04:00</updated>
+  <updated>2018-06-18T13:24:58-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Locking it down</title>
+    <description>&lt;p&gt;I finally saved up and bought myself a smart lock at the end of April. I ended up getting the &lt;a href=&quot;https://smile.amazon.com/gp/product/B0752V8D8D&quot;&gt;August Smart Lock Pro&lt;/a&gt; with the Connect module. Now that I’ve used it for a month and a half, I feel like I can finally review it.&lt;/p&gt;
+
+&lt;p&gt;TL;DR I love this lock.&lt;/p&gt;
+
+&lt;p&gt;Honestly, the hardest part of this whole process was picking the lock to buy. I looked at the August lock, I looked at the Kwikset Bluetooth lock, I even looked at the Nest lock and debating waiting for its release. In the end, I chose the August for two reasons: it integrates with Google Home natively (no ‘talk to August’ bullshit) and it uses the existing lock’s keys so my landlord can’t complain.&lt;/p&gt;
+
+&lt;p&gt;Installing the lock was stupid simple. You are directed to download their app for your phone, create an account, and then it gives you full-screen step-by-step directions. There’s nothing unusual about this deadlock, so if you’ve ever changed one before, you know how to do this. You’ll need a screwdriver and maybe 10 minutes.&lt;/p&gt;
+
+&lt;p&gt;Installation is basically 4 steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Remove the old back on the deadbolt&lt;/li&gt;
+  &lt;li&gt;Find the correct shaft adaptor&lt;/li&gt;
+  &lt;li&gt;Install the new August back&lt;/li&gt;
+  &lt;li&gt;Connect to the wifi&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I don’t leave the house very often, if I’m honest, but the occasions I have since installing this have been very nice. I leave, the door locks (and thanks to other integrations my Blink cameras turn on); I return, the door unlocks (and the cameras turn off). I don’t have to carry a key with me. I don’t have to empty a hand to fish out my key to unlock the door. When I go to bed at night, I just tell Google to lock the door. The only minor annoyance is that Google won’t voice unlock the door (for security reasons).&lt;/p&gt;
+
+&lt;p&gt;I’ve yet to use the app to give anyone a ‘temporary key’ but I have used the app to check on (and change) the lock status. I’ve also used the app to update the firmware on the lock.&lt;/p&gt;
+
+&lt;p&gt;If you’re considering a smart lock, I highly recommend you look at the August Pro.&lt;/p&gt;
+
+&lt;p&gt;★★★★★&lt;/p&gt;
+</description>
+    <pubDate>2018-06-18T08:45:02-04:00</pubDate>
+    <link>/posts/Locking-it-down/</link>
+    <guid isPermaLink="true">/posts/Locking-it-down/</guid>
+    
+     <category>geek</category>
+    
+     <category>smarthome</category>
+    
+     <category>review</category>
+    
+   </item>
   
    <item>
     <title>Mom cuts the cord</title>
@@ -577,149 +616,6 @@ $2,406.59 money in my pocket
      <category>general</category>
     
      <category>blog</category>
-    
-   </item>
-  
-   <item>
-    <title>EXPLAINing intermittent perf problems</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg&quot; class=&quot;lleader&quot; /&gt;We’ve all gotten the dreaded email/call from a user stating that a query is “slow sometimes”. If you’re lucky, the “sometimes” actually ends up being fairly consistent and you can fairly easily determine what’s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?&lt;/p&gt;
-
-&lt;p&gt;For starters, you as the DBA should have your PostgreSQL logging configured to log these slow performing queries. After all, you and the devs and the users can agree that all queries should complete in some measure of time (1 sec, 1 minute, etc). So, once you know what this acceptable elapsed time is, you can easily log any query that runs longer by just setting this in your &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt;:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;log_min_duration_statement = 1000   # log anything running longer than 1s
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;And now, you have all queries with long run times logged automatically. And these show up nicely in your pgBadger reports too!&lt;/p&gt;
-
-&lt;p&gt;If you’re lucky, you’ll be able to use &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; to see why the query is behaving poorly. However, if your life is like mine, the explain plan will be reasonable and won’t have any smoking guns to speak of. Which means the performance is either load dependent or being influenced by other processes (something is blowing out your caches, for example). In these cases, what you really need is the &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; output from the very instant that it performed poorly. However, you can’t go back in time to get it. But what you can do is make use of the &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; module that ships with PostgreSQL.&lt;/p&gt;
-
-&lt;p&gt;In case the name wasn’t obvious enough, the &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; module causes PostgreSQL to automatically run &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; on queries according to thresholds that you configure. These automatically generated plans are then logged into the normal PostgreSQL logs. Let’s walk through setting it up and see how it works.&lt;/p&gt;
-
-&lt;p&gt;First, in your &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; we want to enable the module:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;shared_preload_libraries = 'auto_explain'  # change requires restart
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;As stated, you will have to restart the postmaster to get the module to load. However, let’s configure it in &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; first:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Add settings for extensions here
-#
-# auto_explain
-# http://www.postgresql.org/docs/current/static/auto-explain.html
-auto_explain.log_analyze = true
-auto_explain.log_timing = true
-auto_explain.log_verbose = true
-auto_explain.log_min_duration = '1000ms'
-auto_explain.log_nested_statements = true
-auto_explain.log_buffers = true
-# auto_explain
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;What we’ve done here is configure &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; to&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;use &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN ANALYZE&lt;/code&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/li&gt;
-  &lt;li&gt;to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;TIMING&lt;/code&gt; option of &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;VERBOSE&lt;/code&gt; option of &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;to log the plan for anything running longer than 1 second (matches &lt;code class=&quot;highlighter-rouge&quot;&gt;log_min_duration_statement&lt;/code&gt;, above)&lt;/li&gt;
-  &lt;li&gt;to include statements inside a function to also be logged&lt;/li&gt;
-  &lt;li&gt;to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;BUFFERS&lt;/code&gt; option of &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;As with most &lt;code class=&quot;highlighter-rouge&quot;&gt;GUC&lt;/code&gt; in PostgreSQL, these can all be changed using &lt;code class=&quot;highlighter-rouge&quot;&gt;SET&lt;/code&gt; in a given session, but we’re setting the defaults here. Now that we have them setup, let’s see what it looks like in practice.&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28838&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;022&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28838&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;generate_series&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;23&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;565&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28838&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;We connected to PostgreSQL, created a test table, and then used &lt;code class=&quot;highlighter-rouge&quot;&gt;generate_series&lt;/code&gt; to insert 10k rows. In our logs, the following were added:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2016-11-28 13:20:30 EST [28838]: [18-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 33.987 ms  statement: CREATE TABLE x(t text);
-2016-11-28 13:20:59 EST [28838]: [19-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 16.461 ms  plan:
-  Query Text: INSERT INTO x(t) SELECT generate_series(1,10000);
-  Insert on public.x  (cost=0.00..50.02 rows=1000 width=32) (actual time=16.459..16.459 rows=0 loops=1)
-    Buffers: shared hit=10085 read=47 dirtied=45
-    I/O Timings: read=0.012
-    -&amp;gt;  Subquery Scan on &quot;*SELECT*&quot;  (cost=0.00..50.02 rows=1000 width=32) (actual time=0.010..4.755 rows=10000 loops=1)
-          Output: &quot;*SELECT*&quot;.generate_series
-          -&amp;gt;  Result  (cost=0.00..15.02 rows=1000 width=4) (actual time=0.007..1.364 rows=10000 loops=1)
-                Output: generate_series(1, 10000)
-2016-11-28 13:20:59 EST [28838]: [20-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 23.374 ms  statement: INSERT INTO x(t) SELECT generate_series(1,10000);
-2016-11-28 13:21:00 EST [30079]: [1-1] user=,db=,app=,client= LOG:  automatic analyze of table &quot;doug.public.x&quot; system usage: CPU 0.00s/0.11u sec elapsed 0.14 sec
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;(Note that for illustrative purposes, I issued &lt;code class=&quot;highlighter-rouge&quot;&gt;SET auto_explain.log_min_duration = '0ms'&lt;/code&gt;)&lt;/p&gt;
-
-&lt;p&gt;So, you can see that the &lt;code class=&quot;highlighter-rouge&quot;&gt;CREATE TABLE&lt;/code&gt; didn’t log anything through the &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; module, but the &lt;code class=&quot;highlighter-rouge&quot;&gt;INSERT INTO&lt;/code&gt; did. This is a boring example, so let’s try a &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; against our table:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28838&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;┌───────┐&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;   &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;├───────┤&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;     &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;    &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;   &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1001&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1002&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1003&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1004&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1005&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;└───────┘&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;982&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;and the logs look like:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2016-11-28 13:27:38 EST [322]: [7-1] user=,db=,app=,client= LOG:  checkpoint starting: time
-2016-11-28 13:27:46 EST [322]: [8-1] user=,db=,app=,client= LOG:  checkpoint complete: wrote 75 buffers (0.0%); 0 transaction log file(s) added, 0 removed, 0 recycled; write=7.569 s, sync=0.092 s, total=7.920 s; sync files=23, longest=0.092 s, average=0.004 s; distance=685 kB, estimate=685 kB
-2016-11-28 13:28:48 EST [28838]: [21-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.120 ms  plan:
-  Query Text: SELECT * FROM x ORDER BY t LIMIT 10;
-  Limit  (cost=561.10..561.12 rows=10 width=4) (actual time=11.073..11.073 rows=10 loops=1)
-    Output: t
-    Buffers: shared hit=45
-    -&amp;gt;  Sort  (cost=561.10..586.10 rows=10000 width=4) (actual time=11.072..11.072 rows=10 loops=1)
-          Output: t
-          Sort Key: x.t
-          Sort Method: top-N heapsort  Memory: 25kB
-          Buffers: shared hit=45
-          -&amp;gt;  Seq Scan on public.x  (cost=0.00..345.00 rows=10000 width=4) (actual time=0.018..1.224 rows=10000 loops=1)
-                Output: t
-                Buffers: shared hit=45
-2016-11-28 13:28:48 EST [28838]: [22-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.813 ms  statement: SELECT * FROM x ORDER BY t LIMIT 10;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;(You can safely ignore the checkpoint lines at the top there)&lt;/p&gt;
-
-&lt;p&gt;There you have both the statement we ran, and the full &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; plan. You can see we did a sequential scan on the table (looks like it was all in the &lt;code class=&quot;highlighter-rouge&quot;&gt;shared_buffers&lt;/code&gt; too) and then we passed that up to a &lt;code class=&quot;highlighter-rouge&quot;&gt;sort&lt;/code&gt; node for an in-memory sort, and then passed that result set up to the &lt;code class=&quot;highlighter-rouge&quot;&gt;limit&lt;/code&gt; node.&lt;/p&gt;
-
-&lt;p&gt;While this is a stupid simple example, I hope you can see that having this in production for large, complicated queries will allow you to better diagnose issues. For example, simply doing a manual &lt;code class=&quot;highlighter-rouge&quot;&gt;EXPLAIN ANALYZE&lt;/code&gt; on the same query and seeing that you get a different plan is potentially enough to rule out (or in) certain culprits for the intermittent performance issue.
-&lt;br /&gt;
-&lt;br /&gt;
-&lt;br /&gt;
-&lt;br /&gt;
-&lt;sup&gt;1&lt;/sup&gt; - This option causes the postmaster to collect info on &lt;em&gt;every&lt;/em&gt; statement executed, even if &lt;code class=&quot;highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; isn’t going to log it. It has a measurable impact on overall performance. Please test on your workload and decide for yourself if the overhead is worth the trade-off&lt;/p&gt;
-</description>
-    <pubDate>2016-11-28T07:24:12-05:00</pubDate>
-    <link>/posts/EXPLAINing-intermittent-perf-problems/</link>
-    <guid isPermaLink="true">/posts/EXPLAINing-intermittent-perf-problems/</guid>
-    
-     <category>postgresql</category>
     
    </item>
   
