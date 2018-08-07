@@ -5,12 +5,316 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2018-06-18T13:24:58-04:00</updated>
+  <updated>2018-08-07T15:08:05-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>pgBouncer and auth pass-thru</title>
+    <description>&lt;p&gt;I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s &lt;code class=&quot;highlighter-rouge&quot;&gt;auth_file&lt;/code&gt;. After the most recent such inquiry (hi Richard!) I decided I’d write this post to
+hopefully make it clearer how to use ‘pass-thru auth’ and avoid maintaining your users and their passwords in an external file. So let’s see what this takes, shall we?&lt;/p&gt;
+
+&lt;p&gt;First, install pgBouncer as per your OS (&lt;code class=&quot;highlighter-rouge&quot;&gt;yum&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;apt&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;brew&lt;/code&gt;, etc):&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; brew install pgbouncer
+Updating Homebrew...
+==&amp;gt; Auto-updated Homebrew!
+Updated 1 tap (homebrew/core).
+==&amp;gt; Updated Formulae
+&amp;lt;snip&amp;gt;
+==&amp;gt; Downloading https://homebrew.bintray.com/bottles/pgbouncer-1.8.1.high_sierra
+######################################################################## 100.0%
+==&amp;gt; Pouring pgbouncer-1.8.1.high_sierra.bottle.tar.gz
+==&amp;gt; Caveats
+The config file: /usr/local/etc/pgbouncer.ini is in the &quot;ini&quot; format and you
+will need to edit it for your particular setup. See:
+https://pgbouncer.github.io/config.html
+
+The auth_file option should point to the /usr/local/etc/userlist.txt file which
+can be populated by the /usr/local/opt/pgbouncer/bin/mkauth.py script.
+
+To have launchd start pgbouncer now and restart at login:
+  brew services start pgbouncer
+Or, if you do not want/need a background service you can just run:
+  pgbouncer -q /usr/local/etc/pgbouncer.ini
+==&amp;gt; Summary
+🍺  /usr/local/Cellar/pgbouncer/1.8.1: 17 files, 399.9KB
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Great, so now we have pgBouncer installed.&lt;/p&gt;
+
+&lt;p&gt;To make life easier on ourselves, we’re going to &lt;strong&gt;temporarily&lt;/strong&gt; enable trusted local socket connections in our &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# &quot;local&quot; is for Unix domain socket connections only
+local   all             all trust
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Right now, this is the only line in my &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;. Let’s SIGHUP the postmaster so it takes affect:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; pg_ctl -D &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt; reload
+server signaled
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And test it:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;unset &lt;/span&gt;PGPASSWORD ; psql -U doug -d doug -c &lt;span class=&quot;s2&quot;&gt;&quot;select now();&quot;&lt;/span&gt;
+┌───────────────────────────────┐
+│              now              │
+├───────────────────────────────┤
+│ 2018-08-07 13:19:06.343245-04 │
+└───────────────────────────────┘
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Time: 1.959 ms
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;OK, we can connect without issue.&lt;/p&gt;
+
+&lt;p&gt;Let’s configure pgBouncer now. As per the output above, I need to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/etc/pgbouncer.ini&lt;/code&gt; but yours is probably in plain old &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-config highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;databases&lt;/span&gt;]
+
+; &lt;span class=&quot;n&quot;&gt;any&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;db&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;over&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Unix&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;
+* =
+
+[&lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt;]
+
+&lt;span class=&quot;n&quot;&gt;logfile&lt;/span&gt; = /&lt;span class=&quot;n&quot;&gt;Users&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;pidfile&lt;/span&gt; = /&lt;span class=&quot;n&quot;&gt;Users&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;pid&lt;/span&gt;
+
+; &lt;span class=&quot;n&quot;&gt;IP&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;address&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;or&lt;/span&gt; * &lt;span class=&quot;n&quot;&gt;which&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;means&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IPs&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;listen_addr&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;127&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;listen_port&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;6432&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;unix_socket_dir&lt;/span&gt; = /&lt;span class=&quot;n&quot;&gt;tmp&lt;/span&gt;
+
+; &lt;span class=&quot;n&quot;&gt;any&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;trust&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;crypt&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;md5&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;cert&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;hba&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;pam&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auth_type&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;trust&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auth_file&lt;/span&gt; = /&lt;span class=&quot;n&quot;&gt;Users&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;userlist&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;admin_users&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;stats_users&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;pool_mode&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;transaction&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;server_reset_query&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;DISCARD&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ALL&lt;/span&gt;
+
+
+&lt;span class=&quot;n&quot;&gt;max_client_conn&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;default_pool_size&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;20&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As you can see, we’re gonna pass connections to any db back to the postmaster via a local socket. I put the logs in my &lt;code class=&quot;highlighter-rouge&quot;&gt;$HOME&lt;/code&gt; for ease of use. I put the &lt;code class=&quot;highlighter-rouge&quot;&gt;auth_file&lt;/code&gt; in my &lt;code class=&quot;highlighter-rouge&quot;&gt;$HOME&lt;/code&gt; as well. Then I set myself up as both an admin and stats
+user. I changed the mode into &lt;strong&gt;transaction&lt;/strong&gt; which is &lt;em&gt;usually&lt;/em&gt; the mode you want. Now, I add myself to the auth_file:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&quot;doug&quot; &quot;md5540094bd8172cd963fdfa773fe44b488&quot;'&lt;/span&gt; &amp;gt; userlist.txt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;(NOTE: I did a select on pg_shadow as a SUPERUSER to get these values.)&lt;/p&gt;
+
+&lt;p&gt;And start pgBouncer:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; pgbouncer /usr/local/etc/pgbouncer.ini
+2018-08-07 13:43:46.453 92057 LOG File descriptor limit: 7168 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;H:-1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, max_client_conn: 90, max fds possible: 100
+2018-08-07 13:43:46.455 92057 LOG listening on 127.0.0.1:6432
+2018-08-07 13:43:46.455 92057 LOG listening on unix:/tmp/.s.PGSQL.6432
+2018-08-07 13:43:46.455 92057 LOG process up: pgbouncer 1.8.1, libevent 2.1.8-stable &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;kqueue&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, adns: evdns2, tls: OpenSSL 1.0.2o  27 Mar 2018
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, we see if we can connect to pgBouncer’s internal db:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql -h 127.0.0.1 -p 6432 -d pgbouncer -X
+psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4, server 1.8.1/bouncer&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
+
+&lt;span class=&quot;gp&quot;&gt;pgbouncer=# &lt;/span&gt;show pools;
+ database  |   user    | cl_active | cl_waiting | sv_active | sv_idle | sv_used | sv_tested | sv_login | maxwait | maxwait_us | pool_mode
+-----------+-----------+-----------+------------+-----------+---------+---------+-----------+----------+---------+------------+-----------
+ pgbouncer | pgbouncer |         1 |          0 |         0 |       0 |       0 |         0 |        0 |       0 |          0 | statement
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Success!&lt;/p&gt;
+
+&lt;p&gt;Now, can we connect to one of our PostgreSQL dbs through pgBouncer:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql -h 127.0.0.1 -p 6432 -d doug
+psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
+
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;doug@127.0.0.1:6432/doug[92825]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Huzzah!&lt;/p&gt;
+
+&lt;p&gt;We will now alter &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbouncer.ini&lt;/code&gt; and set &lt;code class=&quot;highlighter-rouge&quot;&gt;auth_type = md5&lt;/code&gt; and edit &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to use md5 as well to make sure we’re not passing around plaintext passwords. Our retest looks like:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; grep ^local &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pg_hba.conf
+&lt;span class=&quot;nb&quot;&gt;local   &lt;/span&gt;all             all md5
+
+doug@ReturnOfTheMac ~&amp;gt; pg_ctl -D &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt; reload
+server signaled
+doug@ReturnOfTheMac ~&amp;gt; psql -h 127.0.0.1 -p 6432 -d doug
+Password:
+psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
+
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;doug@127.0.0.1:6432/doug[97966]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# \q&lt;/span&gt;
+doug@ReturnOfTheMac ~&amp;gt; psql -h 127.0.0.1 -p 6432 -d pgbouncer -X
+Password:
+psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4, server 1.8.1/bouncer&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
+
+&lt;span class=&quot;gp&quot;&gt;pgbouncer=# &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\q&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Which, as you can see, we were now password prompted both times!&lt;/p&gt;
+
+&lt;p&gt;Now, that we know it all works, we can go about changing things to not expose users through
+the &lt;code class=&quot;highlighter-rouge&quot;&gt;auth_file&lt;/code&gt;. First, we’ll create a &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbouncer&lt;/code&gt; user on our db, then we will
+create a SECURITY DEFINER function will allow the &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbouncer&lt;/code&gt; user to
+(essentially) ‘sudo’ as a superuser to look at the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_shadow&lt;/code&gt; table, and finally
+we will ensure only our &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbouncer&lt;/code&gt; user can execute that function:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;92825&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ENCRYPTED&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PASSWORD&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'secret'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROLE&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;102&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;92825&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;GRANT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CONNECT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DATABASE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;GRANT&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;531&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;92825&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOGIN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROLE&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;457&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;92825&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;OR&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;REPLACE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FUNCTION&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_lookup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i_username&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uname&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phash&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;more&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;RETURNS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;record&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$$&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;more&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BEGIN&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;more&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;usename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passwd&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pg_catalog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pg_shadow&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;more&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;usename&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i_username&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;more&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;RETURN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;more&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;END&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;more&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$$&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;LANGUAGE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plpgsql&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SECURITY&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DEFINER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FUNCTION&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;219&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;92825&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;REVOKE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ALL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FUNCTION&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_lookup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;REVOKE&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;330&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;92825&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;GRANT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXECUTE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FUNCTION&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_lookup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;GRANT&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;572&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;(NOTE: Astute readers will note I’m connected as ‘doug’ to the db. This works cause in my setup that is a SUPERUSER. You should probably use the ‘postgres’ account.)&lt;/p&gt;
+
+&lt;p&gt;And, let’s tell PgBouncer to use this function:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; grep ^auth /usr/local/etc/pgbouncer.ini
+auth_type &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; md5
+auth_file &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /Users/doug/userlist.txt
+auth_user &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; pgbouncer
+auth_query &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; SELECT &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; FROM public.user_lookup&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And let’s edit our &lt;code class=&quot;highlighter-rouge&quot;&gt;auth_file&lt;/code&gt; to only contain the &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbouncer&lt;/code&gt; user’s info:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; cat userlist.txt
+&lt;span class=&quot;s2&quot;&gt;&quot;pgbouncer&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;md509d12ff67352814e4c467c7f55a3a1d7&quot;&lt;/span&gt;
+doug@ReturnOfTheMac ~&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Restart pgBouncer, and let’s recheck:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ReturnOfTheMac&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;                      &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;Type&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7076&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;┌───────────────────────────────┐&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;              &lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;              &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;├───────────────────────────────┤&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2018&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;07&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;43&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;45&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;938919&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;04&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;└───────────────────────────────┘&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;438&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;It works! But what about the pgBouncer internal db?&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql -h 127.0.0.1 -p 6432 -d pgbouncer
+psql: ERROR:  No such user: doug
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Well, that makes sense. The &lt;code class=&quot;highlighter-rouge&quot;&gt;auth_file&lt;/code&gt; only has a &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbouncer&lt;/code&gt; user. So, let’s edit the &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbouncer.ini&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; grep &lt;span class=&quot;s1&quot;&gt;'_users'&lt;/span&gt; /usr/local/etc/pgbouncer.ini
+admin_users &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; pgbouncer
+stats_users &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; pgbouncer
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Retart pgBouncer once more and check:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql -h 127.0.0.1 -p 6432 -d pgbouncer -U pgbouncer -X
+Password &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;user pgbouncer:
+psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4, server 1.8.1/bouncer&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
+
+&lt;span class=&quot;gp&quot;&gt;pgbouncer=# &lt;/span&gt;show clients;
+ &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; |   user    | database  | state  |   addr    | port  | local_addr | local_port |    connect_time     |    request_time     | &lt;span class=&quot;nb&quot;&gt;wait&lt;/span&gt; | wait_us |      ptr       | link | remote_pid | tls
+------+-----------+-----------+--------+-----------+-------+------------+------------+---------------------+---------------------+------+---------+----------------+------+------------+-----
+ C    | pgbouncer | pgbouncer | active | 127.0.0.1 | 54191 | 127.0.0.1  |       6432 | 2018-08-07 14:48:03 | 2018-08-07 14:48:06 |    0 |       0 | 0x7fa082005010 |      |          0 |
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And we’re golden!&lt;/p&gt;
+
+&lt;p&gt;You can connect to pgBouncer internally using the &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbouncer&lt;/code&gt; user, and you can connect to our normal PostgreSQL db as any valid user and it uses our function to do the auth!&lt;/p&gt;
+
+&lt;p&gt;To complete this setup, we’re gonna move PostgreSQL to port &lt;code class=&quot;highlighter-rouge&quot;&gt;5433&lt;/code&gt; and pgBouncer to port &lt;code class=&quot;highlighter-rouge&quot;&gt;5432&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; grep port /usr/local/etc/pgbouncer.ini
+listen_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5432
+doug@ReturnOfTheMac ~&amp;gt; grep port &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/postgresql.conf                      
+port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5432				&lt;span class=&quot;c&quot;&gt;# (change requires restart)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So now, if someone tries to connect to our PostgreSQL on the default TCP/IP port, it goes through PgBouncer transparently (and then pgBouncer connects locally via a socket). Our users/apps are none the wiser, and us DBAs can always &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; into the box and connect directly to PostgreSQL via socket if needed. And we’re not exposing any user/app passwords in a text file on the OS.&lt;/p&gt;
+
+&lt;p&gt;WIN WIN&lt;/p&gt;
+
+&lt;p&gt;One final note: this is only working for the ‘doug’ database currently. If I wanted this to also work for another database, say ‘postgres’ or ‘prod_app’ then I would need to GRANT CONNECT on those dbs to ‘pgbouncer’ &lt;strong&gt;and&lt;/strong&gt; would need to create my function in them as well.&lt;/p&gt;
+
+&lt;p&gt;☮️&lt;/p&gt;
+</description>
+    <link>/posts/pgBouncer-and-auth-pass-thru/ </link>
+    <pubDate>2018-08-07T08:53:28-04:00</pubDate>
+    <guid isPermaLink="true">/posts/pgBouncer-and-auth-pass-thru/</guid>
+   </item>
   
    <item>
     <title>Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title>
@@ -846,71 +1150,6 @@ doug@Douglass-MacBook-Pro ~ »
     <link>/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/ </link>
     <pubDate>2016-11-10T09:58:15-05:00</pubDate>
     <guid isPermaLink="true">/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/</guid>
-   </item>
-  
-   <item>
-    <title>PostgreSQL, Homebrew, and You</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;lleader&quot; /&gt;If you need to install &lt;a href=&quot;http://www.posatgresql.org&quot;&gt;PostgreSQL&lt;/a&gt; onto your Macbook, you have several options available to you nowadays. You could use the &lt;a href=&quot;https://bigsql.com/postgresql/installers.jsp&quot;&gt;BigSQL&lt;/a&gt; package, or you could use &lt;a href=&quot;http://postgresapp.com&quot;&gt;Postgres.app&lt;/a&gt;, or several others. However, if you’re a geek running OSX, you’ve probably already installed &lt;a href=&quot;http://brew.sh&quot;&gt;Homebrew&lt;/a&gt; and it has a wonderful PostgreSQL package. So let’s use it, shall we?&lt;/p&gt;
-
-&lt;p&gt;I’m not going to walk you through installing Homebrew, so let’s just assume it’s already up and running and you’ve followed all the directions. At this point, you have &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/bin/&lt;/code&gt; in your &lt;code class=&quot;highlighter-rouge&quot;&gt;$PATH&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;brew&lt;/code&gt; is up and running. So, let’s tell &lt;code class=&quot;highlighter-rouge&quot;&gt;brew&lt;/code&gt; to install PostgreSQL:&lt;/p&gt;
-
-&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » brew install postgresql
-==&amp;gt; Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.4_1.sierra.b
-Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.4_1.sierra.bottle.tar.gz
-==&amp;gt; Pouring postgresql-9.5.4_1.sierra.bottle.tar.gz
-==&amp;gt; Using the sandbox
-==&amp;gt; /usr/local/Cellar/postgresql/9.5.4_1/bigsqln/initdb /usr/local/var/postgres
-==&amp;gt; Caveats
-If builds of PostgreSQL 9 are failing and you have version 8.x installed,
-you may need to remove the previous version first. See:
-  https://github.com/Homebrew/homebrew/issues/2510
-
-To migrate existing data from a previous major version (pre-9.0) of PostgreSQL, see:
-  https://www.postgresql.org/docs/9.5/static/upgrading.html
-
-To migrate existing data from a previous minor versionn (9.0-9.4) of PostgreSQL, see:
-  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
-
-  You will need your previous PostgreSQL installation from brew to perform `pg_upgrade`.
-  Do not run `brew cleanup postgresql` until you have performed the migration.
-
-To have launchd start postgresql now and restart at login:
-  brew services start postgresql
-Or, if you don't want/need a background service you can just run:
-  pg_ctl -D /usr/local/var/postgres start
-==&amp;gt; Summary
-🍺  /usr/local/Cellar/postgresql/9.5.4_1: 3,147 files, 35M
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;As you can see, it downloaded the package, installed the binaries, and ran &lt;code class=&quot;highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » brew services start postgresql
-&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;Successfully started &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;postgresql&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;label: homebrew.mxcl.postgresql&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;And if you check your process listing, you can see that the cluster is up and running under your id:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » ps -efw|grep postgres
-  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres -D /usr/local/var/postgres
-  501  6817  6808   0 11:03AM ??         0:00.00 postgres: logger process
-  501  6819  6808   0 11:03AM ??         0:00.00 postgres: checkpointer process
-  501  6820  6808   0 11:03AM ??         0:00.00 postgres: writer process
-  501  6821  6808   0 11:03AM ??         0:00.00 postgres: wal writer process
-  501  6822  6808   0 11:03AM ??         0:00.00 postgres: autovacuum launcher process
-  501  6823  6808   0 11:03AM ??         0:00.00 postgres: stats collector process
-doug@Douglass-MacBook-Pro ~ »
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;And just like that, you have PostgreSQL installed and running! Set &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/var/postgres&lt;/code&gt; and you’re all set.&lt;/p&gt;
-
-&lt;p&gt;Enjoy!&lt;/p&gt;
-</description>
-    <link>/posts/PostgreSQL-Homebrew-and-You/ </link>
-    <pubDate>2016-11-04T09:30:09-04:00</pubDate>
-    <guid isPermaLink="true">/posts/PostgreSQL-Homebrew-and-You/</guid>
    </item>
   
  </channel>
