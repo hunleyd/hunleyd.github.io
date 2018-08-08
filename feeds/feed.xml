@@ -5,7 +5,7 @@
   <description>Doug's various musings</description>
   <atom:link href="/feeds/feed.xml" rel="self" type="application/rss+xml" />
   <link></link>
-  <updated>2018-08-07T15:09:41-04:00</updated>
+  <updated>2018-08-07T21:42:05-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -299,7 +299,7 @@ Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span cla
 &lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; grep port /usr/local/etc/pgbouncer.ini
 listen_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5432
 doug@ReturnOfTheMac ~&amp;gt; grep port &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/postgresql.conf
-port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5432				&lt;span class=&quot;c&quot;&gt;# (change requires restart)&lt;/span&gt;
+port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5433				&lt;span class=&quot;c&quot;&gt;# (change requires restart)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
