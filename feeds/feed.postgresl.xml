@@ -5,53 +5,12 @@
   <description>Posts tagged as 'postgresl'</description>
   <atom:link href="/feeds/feed.postgresl.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresl/</link>
-  <updated>2018-09-24T15:12:30-04:00</updated>
+  <updated>2018-09-24T15:13:13-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
-  
-   <item>
-    <title>Monitoring pgBackRest with tail_n_mail</title>
-    <description>&lt;p&gt;After a lively discussion at work today about monitoring tools and uses cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
-
-&lt;p&gt;For reference, our &lt;code class=&quot;highlighter-rouge&quot;&gt;.tail_n_mail.conf&lt;/code&gt; looks like this:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Config file for the tail_n_mail program
-## This file is automatically updated
-LOG_LINE_PREFIX: %t P%p
-EMAIL: you@gme.com
-MAILSUBJECT: HOST pgBackRest errors NUMBER
-
-INCLUDE: WARN:
-INCLUDE: ERROR:
-INCLUDE: FATAL:
-INCLUDE: PANIC:
-
-
-FILE1: /var/log/pgbackrest/pgbackrest.log
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;You would need to change the &lt;code class=&quot;highlighter-rouge&quot;&gt;EMAIL&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;FILE1&lt;/code&gt; and the rest should just work.&lt;/p&gt;
-
-&lt;p&gt;To actually invoke the monitoring, simply add a &lt;code class=&quot;highlighter-rouge&quot;&gt;cron&lt;/code&gt; entry that looks like:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;(Obviously, you should adjust the periodicity. I &lt;strong&gt;highly&lt;/strong&gt; doubt you need to check every minute.)&lt;/p&gt;
-
-&lt;p&gt;Once you’ve saved the &lt;code class=&quot;highlighter-rouge&quot;&gt;crontab&lt;/code&gt;, you should be all good. If you doubt the setup, you can add &lt;code class=&quot;highlighter-rouge&quot;&gt;--mailzero&lt;/code&gt; to the invocation to get an email even if everything is OK.&lt;/p&gt;
-
-&lt;p&gt;See? Easy.&lt;/p&gt;
-</description>
-    <link>/posts/Monitoring-pgBackRest-with-tail_n_mail/ </link>
-    <pubDate>2018-09-24T10:58:22-04:00</pubDate>
-    <guid isPermaLink="true">/posts/Monitoring-pgBackRest-with-tail_n_mail/</guid>
-   </item>
   
  </channel>
 </rss>
