@@ -5,31 +5,31 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>Once More, With Feeling &#8211; Douglas J Hunley</title>
+<title>Monitoring pgBackRest with tail_n_mail &#8211; Douglas J Hunley</title>
 <meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta name="keywords" content="blog">
+<meta name="keywords" content="postgresl">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="/images/blog.png">
+<meta name="twitter:image" content="/images/db.jpg">
 
-<meta name="twitter:title" content="Once More, With Feeling">
+<meta name="twitter:title" content="Monitoring pgBackRest with tail_n_mail">
 <meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
 <meta name="twitter:creator" content="@hunleyd">
 
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Once More, With Feeling">
+<meta property="og:title" content="Monitoring pgBackRest with tail_n_mail">
 <meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta property="og:url" content="/posts/Once-More-With-Feeling/">
+<meta property="og:url" content="/posts/Monitoring-pgBackRest-with-tail_n_mail/">
 <meta property="og:site_name" content="Douglas J Hunley">
 
 
 
 
 
-<link rel="canonical" href="/posts/Once-More-With-Feeling/">
+<link rel="canonical" href="/posts/Monitoring-pgBackRest-with-tail_n_mail/">
 <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -167,7 +167,7 @@
 <div class="entry-header">
   
   <div class="entry-image">
-    <img src="/images/blog.png" alt="Once More, With Feeling">
+    <img src="/images/db.jpg" alt="Monitoring pgBackRest with tail_n_mail">
   </div><!-- /.entry-image -->
 </div><!-- /.entry-header -->
 
@@ -177,9 +177,9 @@
     <header class="header-title">
       <div class="header-title-wrap">
         
-          <h1 class="entry-title"><a href="/posts/Once-More-With-Feeling/" rel="bookmark" title="Once More, With Feeling">Once More, With Feeling</a></h1>
+          <h1 class="entry-title"><a href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" rel="bookmark" title="Monitoring pgBackRest with tail_n_mail">Monitoring pgBackRest with tail_n_mail</a></h1>
         
-        <h2><span class="entry-date date published"><time datetime="2016-01-15T19:00:00-05:00">January 16, 2016</time></span></h2>
+        <h2><span class="entry-date date published"><time datetime="2018-09-24T10:58:22-04:00">September 24, 2018</time></span></h2>
         
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
@@ -190,20 +190,48 @@ Reading time ~1 minute
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p>Welcome to the new blog.</p>
+      <p>After a lively discussion at work today about monitoring tools and uses cases, I decided to see if I could use <a href="https://bucardo.org/tail_n_mail/">tail_n_mail</a>, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.</p>
 
-<p>That’s right, I’m running my own blog <em>once again</em>. I know, I know. It’s been a while. And I’ve picked <em>yet another</em> platform for hosting my blog. But you know what? You’re just going to have to suck it up. I’ve been itching to make some new posts for a while now, and the platforms at my disposal, <em>cough</em> <em>G+</em> <em>cough</em>, just haven’t really cut it. Sure, they sorta worked, but with the recent direction that platform is headed? Forget it.</p>
+<p>For reference, our <code class="highlighter-rouge">.tail_n_mail.conf</code> looks like this:</p>
 
-<p>So then a coworker mentioned standing up <em>his</em> new blog using <a href="https://www.github.com">GitHub</a> and <a href="https://jekyllrb.com">Jekyll</a> and I was blown away at how it worked. It just <em>so totally fit</em> with my workflow and preferences. So here we are. Everything old is new again. Or something.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>## Config file for the tail_n_mail program
+## This file is automatically updated
+LOG_LINE_PREFIX: %t P%p
+EMAIL: you@gme.com
+MAILSUBJECT: HOST pgBackRest errors NUMBER
+
+INCLUDE: WARN:
+INCLUDE: ERROR:
+INCLUDE: FATAL:
+INCLUDE: PANIC:
+
+
+FILE1: /var/log/pgbackrest/pgbackrest.log
+</code></pre>
+</div>
+
+<p>You would need to change the <code class="highlighter-rouge">EMAIL</code> and <code class="highlighter-rouge">FILE1</code> and the rest should just work.</p>
+
+<p>To actually invoke the monitoring, simply add a <code class="highlighter-rouge">cron</code> entry that looks like:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
+</code></pre>
+</div>
+
+<p>(Obviously, you should adjust the periodicity. I <strong>highly</strong> doubt you need to check every minute.)</p>
+
+<p>Once you’ve saved the <code class="highlighter-rouge">crontab</code>, you should be all good. If you doubt the setup, you can add <code class="highlighter-rouge">--mailzero</code> to the invocation to get an email even if everything is OK.</p>
+
+<p>See? Easy.</p>
 
       <footer class="entry-meta">
-        <span class="entry-tags"><a href="/tags/#blog" title="Pages tagged blog" class="tag"><span class="term">blog</span></a></span>
+        <span class="entry-tags"><a href="/tags/#postgresl" title="Pages tagged postgresl" class="tag"><span class="term">postgresl</span></a></span>
         
         <div class="social-share">
   <ul class="socialcount socialcount-small inline-list">
-    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/Once-More-With-Feeling/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
-    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/Once-More-With-Feeling/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
-    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/Once-More-With-Feeling/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
   </ul>
 </div><!-- /.social-share -->
       </footer>
@@ -212,23 +240,23 @@ Reading time ~1 minute
     <div class="read-more">
   
     <div class="read-more-header">
-      <a href="" class="read-more-btn">Read More</a>
+      <a href="/posts/pgBouncer-and-auth-pass-thru/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Monitoring pgBackRest with tail_n_mail">Monitoring pgBackRest with tail_n_mail</a></h3>
-      <p>After a lively discussion at work today about monitoring tools and uses cases, I decided to see if I could use [tail_n_mail](https://buca...&hellip; <a href="/posts/Monitoring-pgBackRest-with-tail_n_mail/">Continue reading</a></p>
+      <h3><a href="/posts/pgBouncer-and-auth-pass-thru/" title="pgBouncer and auth pass-thru">pgBouncer and auth pass-thru</a></h3>
+      <p>I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s au...&hellip; <a href="/posts/pgBouncer-and-auth-pass-thru/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBouncer-and-auth-pass-thru/" title="pgBouncer and auth pass-thru">pgBouncer and auth pass-thru</a></h4>
-        <span>Published on August 07, 2018</span>
+        <h4><a href="/posts/Locking-it-down/" title="Locking it down">Locking it down</a></h4>
+        <span>Published on June 18, 2018</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/Locking-it-down/" title="Locking it down">Locking it down</a></h4>
-        <span>Published on June 18, 2018</span>
+        <h4><a href="/posts/Mom-cuts-the-cord/" title="Mom cuts the cord">Mom cuts the cord</a></h4>
+        <span>Published on May 31, 2018</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
