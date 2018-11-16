@@ -1,4 +1,121 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-09-27T11:19:26-04:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">Monitoring pgBackRest with tail_n_mail</title><link href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" rel="alternate" type="text/html" title="Monitoring pgBackRest with tail_n_mail" /><published>2018-09-24T10:58:22-04:00</published><updated>2018-09-24T10:58:22-04:00</updated><id>/posts/Monitoring-pgBackRest-with-tail_n_mail</id><content type="html" xml:base="/posts/Monitoring-pgBackRest-with-tail_n_mail/">&lt;p&gt;After a lively discussion at work today about monitoring tools and uses cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-11-16T12:22:02-05:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">pgBackRest 2.07 and macOS Mojave</title><link href="/posts/pgBackRest-2.07-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.07 and macOS Mojave" /><published>2018-11-16T06:12:31-05:00</published><updated>2018-11-16T06:12:31-05:00</updated><id>/posts/pgBackRest-2.07-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.07-and-macOS-Mojave/">&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immexiately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
+
+&lt;p&gt;Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use &lt;a href=&quot;https://brew.sh&quot;&gt;Homebrew&lt;/a&gt; for this:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;brew install openssl
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;openssl version -a
+LibreSSL 2.6.4
+built on: date not available
+platform: information not available
+options:  bn&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;64,64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; rc4&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ptr,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; des&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx,cisc,16,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; blowfish&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+compiler: information not available
+OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/private/etc/ssl&quot;&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;/usr/local/opt/openssl/bin/openssl version -a
+OpenSSL 1.0.2p  14 Aug 2018
+built on: reproducible build, date unspecified
+platform: darwin64-x86_64-cc
+options:  bn&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;64,64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; rc4&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ptr,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; des&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx,cisc,16,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; idea&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; blowfish&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+compiler: clang -I. -I.. -I../include  -fPIC -fno-common -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -arch x86_64 -O3 -DL_ENDIAN -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -DECP_NISTZ256_ASM
+OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/usr/local/etc/openssl&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As you can see, the default SSL from OSX is in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/bin&lt;/code&gt; while the newly installed OpenSSL is in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/opt/openssl&lt;/code&gt;. In my testing, this is enough to proceed with pgBackRest but I prefer to have the openssl binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;sudo mv /usr/bin/openssl /usr/bin/openssl.old
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;sudo ln -s /usr/local/opt/openssl/bin/openssl /usr/bin
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;ls -ld /usr/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&amp;gt; /usr/local/opt/openssl/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+-rwxr-xr-x 1 root wheel 1.2M Sep 21 00:16 /usr/bin/openssl.old&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;OK, so now we have an SSL that pgBackRest knows how to speak to. We need to install some Perl modules that it needs. If you haven’t run CPAN before, just accept the defaults when it asks you things:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;perl -MCPAN -e shell
+&lt;span class=&quot;gp&quot;&gt;cpan[1]&amp;gt; &lt;/span&gt;install DBI
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+&lt;span class=&quot;gp&quot;&gt;cpan[2]&amp;gt; &lt;/span&gt;install DBD::Pg
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+&lt;span class=&quot;gp&quot;&gt;cpan[3]&amp;gt; &lt;/span&gt;install IO::Socket::SSL
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+&lt;span class=&quot;gp&quot;&gt;cpan[4]&amp;gt; &lt;/span&gt;install XML::LibXML
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+cpan[5]&amp;gt;q
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now we’ve got our Perl modules installed, we have to tell our shell where to find them:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL5LIB&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5/lib/perl5
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_LOCAL_LIB_ROOT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MB_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;--install_base &lt;span class=&quot;s2&quot;&gt;&quot;/Users/doug/perl5&quot;&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MM_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;INSTALL_BASE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (&lt;code class=&quot;highlighter-rouge&quot;&gt;.profile&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.bash_profile&lt;/code&gt;, etc) to make them permanent.&lt;/p&gt;
+
+&lt;p&gt;Now, we can actually get down to the business of compiling and installing pgBackRest. Download the 2.07 tarball from the releases tab on GitHub, and let’s get busy:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;tar xvf Downloads/pgbackrest-release-2.07.tar.gz
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pgbackrest-release-2.07
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, we need to make some edits to the included Makefile. So &lt;code class=&quot;highlighter-rouge&quot;&gt;vi src/Makefile&lt;/code&gt; and jump to line 42. Edit this line to be:&lt;/p&gt;
+
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;LDEXTRA&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; -L /usr/local/opt/openssl/lib
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This tells the build process where to find the OpenSSL that we installed. Then, jump to line 149 and change it to:&lt;/p&gt;
+
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   &lt;span class=&quot;err&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;755&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;pgbackrest&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$(DESTDIR)/usr/local/bin&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This makes it install into &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/bin&lt;/code&gt; which is where Homebrew puts everything else and you shouldn’t need to use &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo&lt;/code&gt; to write to it.&lt;/p&gt;
+
+&lt;p&gt;Now, compile and install it:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;make -s -C ./src &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make -s -C ./src/install
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Assuming that goes well, you can now run pgBackRest to verify it’s installed and functional:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;/usr/local/bin/pgbackrest
+pgBackRest 2.07 - General &lt;span class=&quot;nb&quot;&gt;help
+
+&lt;/span&gt;Usage:
+    pgbackrest &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;options] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+
+Commands:
+    archive-get     Get a WAL segment from the archive.
+    archive-push    Push a WAL segment to the archive.
+    backup          Backup a database cluster.
+    check           Check the configuration.
+    expire          Expire backups that exceed retention.
+    &lt;span class=&quot;nb&quot;&gt;help            &lt;/span&gt;Get help.
+    info            Retrieve information about backups.
+    restore         Restore a database cluster.
+    stanza-create   Create the required stanza data.
+    stanza-delete   Delete a stanza.
+    stanza-upgrade  Upgrade a stanza.
+    start           Allow pgBackRest processes to run.
+    stop            Stop pgBackRest processes from running.
+    version         Get version.
+
+Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more information.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You should now be able to follow the online docs and setup pgBackRest.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;</content><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">pgBackRest 2.07 was announced today. As usual, I immexiately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a Linux system, so I figured I’d write this up for anyone else attempting the same.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">Monitoring pgBackRest with tail_n_mail</title><link href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" rel="alternate" type="text/html" title="Monitoring pgBackRest with tail_n_mail" /><published>2018-09-24T10:58:22-04:00</published><updated>2018-09-24T10:58:22-04:00</updated><id>/posts/Monitoring-pgBackRest-with-tail_n_mail</id><content type="html" xml:base="/posts/Monitoring-pgBackRest-with-tail_n_mail/">&lt;p&gt;After a lively discussion at work today about monitoring tools and uses cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
 
 &lt;p&gt;For reference, our &lt;code class=&quot;highlighter-rouge&quot;&gt;.tail_n_mail.conf&lt;/code&gt; looks like this:&lt;/p&gt;
 
@@ -784,4 +901,4 @@ $2,406.59 money in my pocket
 
 &lt;script src=&quot;https://gist.github.com/hunleyd/f553b0931a571965ca9bcb6235cb8fcf.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;(look at that compression!)&lt;/p&gt;</content><category term="postgresql" /><category term="osx" /><summary type="html">If you’ve followed my previous posts (here and here), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don’t really care about any of the data therein, but if you do, let me guide you to pgBackRest.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">Goodbye, Loui boy</title><link href="/posts/Goodbye-Loui-boy/" rel="alternate" type="text/html" title="Goodbye, Loui boy" /><published>2017-02-16T03:35:19-05:00</published><updated>2017-02-16T03:35:19-05:00</updated><id>/posts/Goodbye-Loui-boy</id><content type="html" xml:base="/posts/Goodbye-Loui-boy/">&lt;p&gt;&lt;img src=&quot;/images/loui.jpg&quot; class=&quot;rleader&quot; /&gt;Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. &lt;em&gt;I will miss you.&lt;/em&gt;&lt;/p&gt;</content><category term="general" /><summary type="html">Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. I will miss you.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22alone_boy.jpg%22%7D" /></entry></feed>
+&lt;p&gt;(look at that compression!)&lt;/p&gt;</content><category term="postgresql" /><category term="osx" /><summary type="html">If you’ve followed my previous posts (here and here), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don’t really care about any of the data therein, but if you do, let me guide you to pgBackRest.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry></feed>
