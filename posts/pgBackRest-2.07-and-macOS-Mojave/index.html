@@ -213,7 +213,7 @@ OPENSSLDIR: <span class="s2">"/usr/local/etc/openssl"</span>
 </code></pre>
 </div>
 
-<p>As you can see, the default SSL from OSX is in <code class="highlighter-rouge">/usr/bin</code> while the newly installed OpenSSL is in <code class="highlighter-rouge">/usr/local/opt/openssl</code>. In my testing, this is enough to proceed with pgBackRest but I prefer to have the openssl binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:</p>
+<p>As you can see, the default SSL from OSX is in <code class="highlighter-rouge">/usr/bin</code> while the newly installed OpenSSL is in <code class="highlighter-rouge">/usr/local/opt/openssl</code>. In my testing, this is enough to proceed with pgBackRest but I prefer to have the <code class="highlighter-rouge">openssl</code> binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:</p>
 
 <div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>sudo mv /usr/bin/openssl /usr/bin/openssl.old
 <span class="gp">&gt; </span>sudo ln -s /usr/local/opt/openssl/bin/openssl /usr/bin
@@ -234,7 +234,7 @@ lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&gt; /usr/local/opt/
 <span class="o">[</span>output snipped]
 <span class="gp">cpan[4]&gt; </span>install XML::LibXML
 <span class="o">[</span>output snipped]
-cpan[5]&gt;q
+<span class="gp">cpan[5]&gt; </span>q
 </code></pre>
 </div>
 

@@ -5,7 +5,7 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2018-11-16T12:22:02-05:00</updated>
+  <updated>2018-11-16T12:25:43-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -37,7 +37,7 @@ OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/usr/local/etc/openssl&quot;&
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;As you can see, the default SSL from OSX is in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/bin&lt;/code&gt; while the newly installed OpenSSL is in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/opt/openssl&lt;/code&gt;. In my testing, this is enough to proceed with pgBackRest but I prefer to have the openssl binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
+&lt;p&gt;As you can see, the default SSL from OSX is in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/bin&lt;/code&gt; while the newly installed OpenSSL is in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/opt/openssl&lt;/code&gt;. In my testing, this is enough to proceed with pgBackRest but I prefer to have the &lt;code class=&quot;highlighter-rouge&quot;&gt;openssl&lt;/code&gt; binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
 
 &lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;sudo mv /usr/bin/openssl /usr/bin/openssl.old
 &lt;span class=&quot;gp&quot;&gt;&amp;gt; &lt;/span&gt;sudo ln -s /usr/local/opt/openssl/bin/openssl /usr/bin
@@ -58,7 +58,7 @@ lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&amp;gt; /usr/local/
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
 &lt;span class=&quot;gp&quot;&gt;cpan[4]&amp;gt; &lt;/span&gt;install XML::LibXML
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[5]&amp;gt;q
+&lt;span class=&quot;gp&quot;&gt;cpan[5]&amp;gt; &lt;/span&gt;q
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
