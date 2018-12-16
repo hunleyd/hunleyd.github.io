@@ -192,19 +192,18 @@ Reading time ~5 minutes
     <div class="entry-content">
       <p><img src="http://www.metasource.com/images/content/data-processing-image.jpg" class="rleader" />PostgreSQL has a pretty extensive logging facility. I’ve talked briefly about configuring it to get the most out of pgBadger before, but today I’m gonna talk a bit about the naming of the log file itself. The chosen filename doesn’t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</p>
 
-<div class="language-text highlighter-rouge"><pre class="highlight"><code>    The strftime() function formats the information from timeptr into the buffer s,
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    The strftime() function formats the information from timeptr into the buffer s,
     according to the string pointed to by format.
 
     The format string consists of zero or more conversion specifications and ordi-
     nary characters.  All ordinary characters are copied directly into the buffer.
     A conversion specification consists of a percent sign ```%''' and one other
     character.
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Say what? Essentially, given a timestamp and a format specification, you’ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems <code class="highlighter-rouge">libc</code> implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it’s BSD libc. You really shouldn’t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we’ll use today’s date of Monday, November 21, 2016 with a timestamp of 1pm EST):</p>
 
-<div class="language-apache highlighter-rouge"><pre class="highlight"><code>    <span class="err">%</span>A    is replaced by national representation of the <span class="ss">full</span> weekday name ("Monday")
+<div class="language-apache highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="err">%</span>A    is replaced by national representation of the <span class="ss">full</span> weekday name ("Monday")
     <span class="err">%</span>a    is replaced by national representation of the abbreviated weekday name ("Mon")
     <span class="err">%</span>B    is replaced by national representation of the <span class="ss">full</span> month name ("November")
     <span class="err">%</span>b    is replaced by national representation of the abbreviated month name ("Nov")
@@ -245,40 +244,35 @@ Reading time ~5 minutes
     <span class="err">%</span>Z    is replaced by the time zone name ("EST")
     <span class="err">%</span>z    is replaced by the time zone offset <span class="ss">from</span> UTC; a leading plus sign stands for east of UTC, a minus sign for west of UTC, hours and minutes follow with two digits each and no delimiter between them ("-0500")
     <span class="err">%%</span>    is replaced by `%'
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Phew! That was a lot wasn’t it? And where exactly does this come into play? As the <code class="highlighter-rouge">postgresql.conf</code> says:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>log_filename = 'postgresql-%a.log'      # log file name pattern,
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_filename = 'postgresql-%a.log'      # log file name pattern,
                                         # can include strftime() escapes
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I’m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my <code class="highlighter-rouge">$PGDATA/pg_log</code> directory will only ever contain:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
 postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
 postgresql-Sat.log
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>But wait! The key to all this is that <em>PostgreSQL only evaluates the filename when it first opens/creates the logfile</em>. So, if you start your cluster on Mon and do not restart it and don’t have it configured to log rotate, you’ll still be writing to <code class="highlighter-rouge">postgresql-Mon.log</code> forever. Fortunately, PostgreSQL has you covered here too:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>log_rotation_age = 1d      # Automatic rotation of logfiles will
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_rotation_age = 1d      # Automatic rotation of logfiles will
                            # happen after that time.  0 disables.
 log_rotation_size = 10MB   # Automatic rotation of logfiles will
                            # happen after that much log output.
                            # 0 disables.
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>So, using my <code class="highlighter-rouge">log_filename</code> from above, I enable <code class="highlighter-rouge">log_rotation_age</code> (set to 1 day) and disable <code class="highlighter-rouge">log_rotation_size</code> and I automatically get a new log every day. If I wanted hourly logs, I could do something like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>log_filename = 'postgresql-%a-%H'
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_filename = 'postgresql-%a-%H'
 log_rotation_age = 1h
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>which would give me logs of <code class="highlighter-rouge">postgresql-Mon-00</code>, <code class="highlighter-rouge">postgresql-Mon-01</code>, etc. You should be able to see how combining these three <code class="highlighter-rouge">postgresql.conf</code> parameters and some crafty strftime() escapes gives you a <em>ton</em> of flexibility in your logging. So go forth and tweak those logs!</p>
 

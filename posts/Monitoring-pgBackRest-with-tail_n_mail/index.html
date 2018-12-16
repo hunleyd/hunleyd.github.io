@@ -194,7 +194,7 @@ Reading time ~1 minute
 
 <p>For reference, our <code class="highlighter-rouge">.tail_n_mail.conf</code> looks like this:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>## Config file for the tail_n_mail program
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Config file for the tail_n_mail program
 ## This file is automatically updated
 LOG_LINE_PREFIX: %t P%p
 EMAIL: you@gme.com
@@ -207,16 +207,14 @@ INCLUDE: PANIC:
 
 
 FILE1: /var/log/pgbackrest/pgbackrest.log
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>You would need to change the <code class="highlighter-rouge">EMAIL</code> and <code class="highlighter-rouge">FILE1</code> and the rest should just work.</p>
 
 <p>To actually invoke the monitoring, simply add a <code class="highlighter-rouge">cron</code> entry that looks like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
+</code></pre></div></div>
 
 <p>(Obviously, you should adjust the periodicity. I <strong>highly</strong> doubt you need to check every minute.)</p>
 

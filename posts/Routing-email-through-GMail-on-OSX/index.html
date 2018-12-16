@@ -194,28 +194,25 @@ Reading time ~1 minute
 
 <p>The first thing we’re going to do is open an iTerm and <code class="highlighter-rouge">sudo -i</code> to become root. Then we’re going to <code class="highlighter-rouge">vi /etc/postfix/main.cf</code> and we’re going to add/set the following:</p>
 
-<div class="language-conf highlighter-rouge"><pre class="highlight"><code><span class="n">myhostname</span> = <span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">myhostname</span> = <span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>
 <span class="n">relayhost</span> = [<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span>
 <span class="n">smtp_sasl_auth_enable</span> = <span class="n">yes</span>
 <span class="n">smtp_sasl_password_maps</span>= <span class="n">hash</span>:/<span class="n">etc</span>/<span class="n">postfix</span>/<span class="n">sasl_passwd</span>
 <span class="n">smtp_sasl_security_options</span> = <span class="n">noanonymous</span>
 <span class="n">smtp_sasl_mechanism_filter</span> = <span class="n">plain</span>
 <span class="n">smtp_use_tls</span> = <span class="n">yes</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we <code class="highlighter-rouge">vi /etc/postfix/sasl_passwd</code> and add:</p>
 
-<div class="language-conf highlighter-rouge"><pre class="highlight"><code>[<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span> <span class="n">username</span>@<span class="n">gmail</span>.<span class="n">com</span>:<span class="n">app_passwd</span>
-</code></pre>
-</div>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span> <span class="n">username</span>@<span class="n">gmail</span>.<span class="n">com</span>:<span class="n">app_passwd</span>
+</code></pre></div></div>
 
 <p>Secure that file by running <code class="highlighter-rouge">chmod 0600 /etc/postfix/sasl_passwd</code> and then have Postfix hash it by doing <code class="highlighter-rouge">postmap /etc/postfix/sasl_passwd</code>. Finally, restart Postfix:</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>launchctl stop org.postfix.master
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>launchctl stop org.postfix.master
 launchctl start org.postfix.master
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>And everything should work.</p>
 

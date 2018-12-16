@@ -234,11 +234,10 @@ Reading time ~2 minutes
 
 <p>Now, you might be wondering how to deal with all these concurrent versions. If you type <code class="highlighter-rouge">pg_dump</code> which one willl you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql <span class="nt">--version</span>
 psql <span class="o">(</span>PostgreSQL<span class="o">)</span> 9.6.1
 doug@Douglass-MacBook-Pro ~ »
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>which is a huge pita. So, let’s make a little convenience function in our shell. Edit your <code class="highlighter-rouge">.zshrc</code> or your <code class="highlighter-rouge">.bashrc</code> (or whatever) and add a function like this:</p>
 
@@ -246,14 +245,13 @@ doug@Douglass-MacBook-Pro ~ »
 
 <p>and then simply call <code class="highlighter-rouge">pg 9.5</code> to set PostgreSQL 9.5 as your ‘active’ instance:</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>oug@Douglass-MacBook-Pro ~ » pg 9.5
-Stopping PostgreSQL 9.4... <span class="k">done</span>!
-Activating PostgreSQL 9.5... <span class="k">done</span>!
-Initializing PostgreSQL 9.5 cluster... <span class="k">done</span>!
-Starting PostgreSQL 9.5... <span class="k">done</span>!
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oug@Douglass-MacBook-Pro ~ » pg 9.5
+Stopping PostgreSQL 9.4... <span class="k">done</span><span class="o">!</span>
+Activating PostgreSQL 9.5... <span class="k">done</span><span class="o">!</span>
+Initializing PostgreSQL 9.5 cluster... <span class="k">done</span><span class="o">!</span>
+Starting PostgreSQL 9.5... <span class="k">done</span><span class="o">!</span>
 doug@Douglass-MacBook-Pro ~ »
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Restore your data:</p>
 

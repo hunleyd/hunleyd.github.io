@@ -194,92 +194,84 @@ Reading time ~3 minutes
 
 <p>Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use <a href="https://brew.sh">Homebrew</a> for this:</p>
 
-<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>brew install openssl
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> brew <span class="nb">install </span>openssl
 <span class="o">[</span>output snipped]
-<span class="gp">&gt; </span>openssl version -a
+<span class="o">&gt;</span> openssl version <span class="nt">-a</span>
 LibreSSL 2.6.4
-built on: date not available
+built on: <span class="nb">date </span>not available
 platform: information not available
 options:  bn<span class="o">(</span>64,64<span class="o">)</span> rc4<span class="o">(</span>ptr,int<span class="o">)</span> des<span class="o">(</span>idx,cisc,16,int<span class="o">)</span> blowfish<span class="o">(</span>idx<span class="o">)</span>
 compiler: information not available
 OPENSSLDIR: <span class="s2">"/private/etc/ssl"</span>
-<span class="gp">&gt; </span>/usr/local/opt/openssl/bin/openssl version -a
+<span class="o">&gt;</span> /usr/local/opt/openssl/bin/openssl version <span class="nt">-a</span>
 OpenSSL 1.0.2p  14 Aug 2018
-built on: reproducible build, date unspecified
+built on: reproducible build, <span class="nb">date </span>unspecified
 platform: darwin64-x86_64-cc
 options:  bn<span class="o">(</span>64,64<span class="o">)</span> rc4<span class="o">(</span>ptr,int<span class="o">)</span> des<span class="o">(</span>idx,cisc,16,int<span class="o">)</span> idea<span class="o">(</span>int<span class="o">)</span> blowfish<span class="o">(</span>idx<span class="o">)</span>
-compiler: clang -I. -I.. -I../include  -fPIC -fno-common -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -arch x86_64 -O3 -DL_ENDIAN -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -DECP_NISTZ256_ASM
+compiler: clang <span class="nt">-I</span><span class="nb">.</span> <span class="nt">-I</span>.. <span class="nt">-I</span>../include  <span class="nt">-fPIC</span> <span class="nt">-fno-common</span> <span class="nt">-DOPENSSL_PIC</span> <span class="nt">-DOPENSSL_THREADS</span> <span class="nt">-D_REENTRANT</span> <span class="nt">-DDSO_DLFCN</span> <span class="nt">-DHAVE_DLFCN_H</span> <span class="nt">-arch</span> x86_64 <span class="nt">-O3</span> <span class="nt">-DL_ENDIAN</span> <span class="nt">-Wall</span> <span class="nt">-DOPENSSL_IA32_SSE2</span> <span class="nt">-DOPENSSL_BN_ASM_MONT</span> <span class="nt">-DOPENSSL_BN_ASM_MONT5</span> <span class="nt">-DOPENSSL_BN_ASM_GF2m</span> <span class="nt">-DSHA1_ASM</span> <span class="nt">-DSHA256_ASM</span> <span class="nt">-DSHA512_ASM</span> <span class="nt">-DMD5_ASM</span> <span class="nt">-DAES_ASM</span> <span class="nt">-DVPAES_ASM</span> <span class="nt">-DBSAES_ASM</span> <span class="nt">-DWHIRLPOOL_ASM</span> <span class="nt">-DGHASH_ASM</span> <span class="nt">-DECP_NISTZ256_ASM</span>
 OPENSSLDIR: <span class="s2">"/usr/local/etc/openssl"</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>As you can see, the default SSL from OSX is in <code class="highlighter-rouge">/usr/bin</code> while the newly installed OpenSSL is in <code class="highlighter-rouge">/usr/local/opt/openssl</code>. In my testing, this is enough to proceed with pgBackRest but I prefer to have the <code class="highlighter-rouge">openssl</code> binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:</p>
 
-<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>sudo mv /usr/bin/openssl /usr/bin/openssl.old
-<span class="gp">&gt; </span>sudo ln -s /usr/local/opt/openssl/bin/openssl /usr/bin
-<span class="gp">&gt; </span>ls -ld /usr/bin/openssl<span class="k">*</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo mv</span> /usr/bin/openssl /usr/bin/openssl.old
+<span class="o">&gt;</span> <span class="nb">sudo ln</span> <span class="nt">-s</span> /usr/local/opt/openssl/bin/openssl /usr/bin
+<span class="o">&gt;</span> <span class="nb">ls</span> <span class="nt">-ld</span> /usr/bin/openssl<span class="k">*</span>
 lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&gt; /usr/local/opt/openssl/bin/openssl<span class="k">*</span>
--rwxr-xr-x 1 root wheel 1.2M Sep 21 00:16 /usr/bin/openssl.old<span class="k">*</span>
-</code></pre>
-</div>
+<span class="nt">-rwxr-xr-x</span> 1 root wheel 1.2M Sep 21 00:16 /usr/bin/openssl.old<span class="k">*</span>
+</code></pre></div></div>
 
 <p>OK, so now we have an SSL that pgBackRest knows how to speak to. We need to install some Perl modules that it needs. If you haven’t run CPAN before, just accept the defaults when it asks you things:</p>
 
-<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>perl -MCPAN -e shell
-<span class="gp">cpan[1]&gt; </span>install DBI
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> perl <span class="nt">-MCPAN</span> <span class="nt">-e</span> shell
+cpan[1]&gt; <span class="nb">install </span>DBI
 <span class="o">[</span>output snipped]
-<span class="gp">cpan[2]&gt; </span>install DBD::Pg
+cpan[2]&gt; <span class="nb">install </span>DBD::Pg
 <span class="o">[</span>output snipped]
-<span class="gp">cpan[3]&gt; </span>install IO::Socket::SSL
+cpan[3]&gt; <span class="nb">install </span>IO::Socket::SSL
 <span class="o">[</span>output snipped]
-<span class="gp">cpan[4]&gt; </span>install XML::LibXML
+cpan[4]&gt; <span class="nb">install </span>XML::LibXML
 <span class="o">[</span>output snipped]
-<span class="gp">cpan[5]&gt; </span>q
-</code></pre>
-</div>
+cpan[5]&gt; q
+</code></pre></div></div>
 
 <p>Now we’ve got our Perl modules installed, we have to tell our shell where to find them:</p>
 
-<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span><span class="nb">export </span><span class="nv">PERL5LIB</span><span class="o">=</span>/Users/doug/perl5/lib/perl5
-<span class="gp">&gt; </span><span class="nb">export </span><span class="nv">PERL_LOCAL_LIB_ROOT</span><span class="o">=</span>/Users/doug/perl5
-<span class="gp">&gt; </span><span class="nb">export </span><span class="nv">PERL_MB_OPT</span><span class="o">=</span>--install_base <span class="s2">"/Users/doug/perl5"</span>
-<span class="gp">&gt; </span><span class="nb">export </span><span class="nv">PERL_MM_OPT</span><span class="o">=</span><span class="nv">INSTALL_BASE</span><span class="o">=</span>/Users/doug/perl5
-</code></pre>
-</div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">export </span><span class="nv">PERL5LIB</span><span class="o">=</span>/Users/doug/perl5/lib/perl5
+<span class="o">&gt;</span> <span class="nb">export </span><span class="nv">PERL_LOCAL_LIB_ROOT</span><span class="o">=</span>/Users/doug/perl5
+<span class="o">&gt;</span> <span class="nb">export </span><span class="nv">PERL_MB_OPT</span><span class="o">=</span><span class="nt">--install_base</span> <span class="s2">"/Users/doug/perl5"</span>
+<span class="o">&gt;</span> <span class="nb">export </span><span class="nv">PERL_MM_OPT</span><span class="o">=</span><span class="nv">INSTALL_BASE</span><span class="o">=</span>/Users/doug/perl5
+</code></pre></div></div>
 
 <p>Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (<code class="highlighter-rouge">.profile</code>, <code class="highlighter-rouge">.bash_profile</code>, etc) to make them permanent.</p>
 
 <p>Now, we can actually get down to the business of compiling and installing pgBackRest. Download the 2.07 tarball from the releases tab on GitHub, and let’s get busy:</p>
 
-<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>tar xvf Downloads/pgbackrest-release-2.07.tar.gz
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">tar </span>xvf Downloads/pgbackrest-release-2.07.tar.gz
 <span class="o">[</span>output snipped]
-<span class="gp">&gt; </span><span class="nb">cd </span>pgbackrest-release-2.07
-</code></pre>
-</div>
+<span class="o">&gt;</span> <span class="nb">cd </span>pgbackrest-release-2.07
+</code></pre></div></div>
 
 <p>Now, we need to make some edits to the included Makefile. So <code class="highlighter-rouge">vi src/Makefile</code> and jump to line 42. Edit this line to be:</p>
 
-<div class="language-make highlighter-rouge"><pre class="highlight"><code><span class="nv">LDEXTRA</span> <span class="o">=</span> -L /usr/local/opt/openssl/lib
-</code></pre>
-</div>
+<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">LDEXTRA</span> <span class="o">=</span> <span class="nt">-L</span> /usr/local/opt/openssl/lib
+</code></pre></div></div>
 
 <p>This tells the build process where to find the OpenSSL that we installed. Then, jump to line 149 and change it to:</p>
 
-<div class="language-make highlighter-rouge"><pre class="highlight"><code>   <span class="err">install</span> <span class="err">-m</span> <span class="err">755</span> <span class="err">pgbackrest</span> <span class="err">$(DESTDIR)/usr/local/bin</span>
-</code></pre>
-</div>
+<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="err">install</span> <span class="err">-m</span> <span class="err">755</span> <span class="err">pgbackrest</span> <span class="err">$(DESTDIR)/usr/local/bin</span>
+</code></pre></div></div>
 
 <p>This makes it install into <code class="highlighter-rouge">/usr/local/bin</code> which is where Homebrew puts everything else and you shouldn’t need to use <code class="highlighter-rouge">sudo</code> to write to it.</p>
 
 <p>Now, compile and install it:</p>
 
-<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>make -s -C ./src <span class="o">&amp;&amp;</span> make -s -C ./src/install
-</code></pre>
-</div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> make <span class="nt">-s</span> <span class="nt">-C</span> ./src <span class="o">&amp;&amp;</span> make <span class="nt">-s</span> <span class="nt">-C</span> ./src/install
+</code></pre></div></div>
 
 <p>Assuming that goes well, you can now run pgBackRest to verify it’s installed and functional:</p>
 
-<div class="language-sh highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>/usr/local/bin/pgbackrest
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> /usr/local/bin/pgbackrest
 pgBackRest 2.07 - General <span class="nb">help
 
 </span>Usage:
@@ -302,8 +294,7 @@ Commands:
     version         Get version.
 
 Use <span class="s1">'pgbackrest help [command]'</span> <span class="k">for </span>more information.
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>You should now be able to follow the online docs and setup pgBackRest.</p>
 
