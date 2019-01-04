@@ -1,4 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-12-16T11:08:17-05:00</updated><id>/feed.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">pgBackRest 2.07 and macOS Mojave</title><link href="/posts/pgBackRest-2.07-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.07 and macOS Mojave" /><published>2018-11-16T06:12:31-05:00</published><updated>2018-11-16T06:12:31-05:00</updated><id>/posts/pgBackRest-2.07-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.07-and-macOS-Mojave/">&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-01-04T13:44:00-05:00</updated><id>/feed.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">pgBackRest 2.08 and macOS Mojava</title><link href="/posts/pgBackRest-2.08-and-macOS-Mojava/" rel="alternate" type="text/html" title="pgBackRest 2.08 and macOS Mojava" /><published>2019-01-04T08:30:44-05:00</published><updated>2019-01-04T08:30:44-05:00</updated><id>/posts/pgBackRest-2.08-and-macOS-Mojava</id><content type="html" xml:base="/posts/pgBackRest-2.08-and-macOS-Mojava/">&lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils::Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o
+warning: unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?
+      [-Wunknown-warning-option]
+common/lock.c:76:21: warning: implicit declaration of function 'flock' is invalid in C99
+      [-Wimplicit-function-declaration]
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                    ^
+common/lock.c:76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]
+common/lock.c:76:35: fatal error: use of undeclared identifier 'LOCK_EX'
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                                  ^
+3 warnings and 1 error generated.
+make: *** [common/lock.o] Error 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To fix this, you will need to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;src/Makefile&lt;/code&gt; and change line 12 from:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_POSIX_C_SOURCE=200112L
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;to:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_DARWIN_C_SOURCE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name></name></author><category term="osx" /><category term="pgbackrest" /><category term="postgresql" /><summary type="html">The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">pgBackRest 2.07 and macOS Mojave</title><link href="/posts/pgBackRest-2.07-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.07 and macOS Mojave" /><published>2018-11-16T06:12:31-05:00</published><updated>2018-11-16T06:12:31-05:00</updated><id>/posts/pgBackRest-2.07-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.07-and-macOS-Mojave/">&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
 
 &lt;p&gt;Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use &lt;a href=&quot;https://brew.sh&quot;&gt;Homebrew&lt;/a&gt; for this:&lt;/p&gt;
 
@@ -751,102 +780,4 @@ $2,406.59 money in my pocket
 
 &lt;p&gt;If PostgreSQL isn’t running, talk to your DBA about why (maybe it died, maybe it’s a maintenance window). If you are affected by the 2&lt;sup&gt;nd&lt;/sup&gt; bullet item, you’ll have to talk with your DBA about the proper IP address to use when connecting. Note that, by default, PostgreSQL only listens on &lt;code class=&quot;highlighter-rouge&quot;&gt;localhost&lt;/code&gt; and none of your other interfaces. If this hasn’t been changed (&lt;code class=&quot;highlighter-rouge&quot;&gt;listen_addresses&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt;) then you’ll fall into this failure category. And if you’re plagued by the 3&lt;sup&gt;rd&lt;/sup&gt; bullet item, you’ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can’t connect to the other VLAN, or some other layer 3/4 tomfoolery.&lt;/p&gt;
 
-&lt;p&gt;So now you know all the (common) ways that connecting to PostgreSQL can fail and how to distinguish between them. With just a little bit of knowledge, you can communicate exactly what is happening to your DBA and make it easier for him/her to rectify the issue. Go forth, and happy PostgreSQL-ing.&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><summary type="html">Connecting to a PostgreSQL instance isn’t hard generally, but sometimes you can run into issues. Sometimes a port isn’t open on a firewall, or the server is in a VLAN that you can’t get to, or perhaps the server isn’t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you’re connection isn’t authorized (which is not the same as being unable to authenticate). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you’re facing. Let’s dive into each scenario and see what the error looks like, shall we?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">Installing pgBackRest on OSX</title><link href="/posts/Installing-pgBackRest-on-OSX/" rel="alternate" type="text/html" title="Installing pgBackRest on OSX" /><published>2017-06-14T08:40:30-04:00</published><updated>2017-06-14T08:40:30-04:00</updated><id>/posts/Installing-pgBackRest-on-OSX</id><content type="html" xml:base="/posts/Installing-pgBackRest-on-OSX/">&lt;p&gt;If you’ve followed my previous posts (&lt;a href=&quot;https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt;), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don’t really care about any of the data therein, but if you do, let me guide you to &lt;a href=&quot;http://www.pgbackrest.org/&quot;&gt;pgBackRest&lt;/a&gt;.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;pgBackRest aims to be a simple, reliable backup and restore system that can seamlessly scale up to the largest databases and workloads.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Instead of relying on traditional backup tools like tar and rsync, pgBackRest implements all backup features internally and uses a custom protocol for communicating with remote systems. Removing reliance on tar and rsync allows for better solutions to database-specific backup challenges. The custom remote protocol allows for more flexibility and limits the types of connections that are required to perform a backup which increases security.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;pgBackRest is written in Perl, but don’t hold that against it. As of the 1.19 release, pgBackRest can now use S3 buckets as the storage backend. I &lt;em&gt;really&lt;/em&gt; like pgBackRest and tend to use it for myself and customers over any of the other tools in the PostgreSQL ecosphere. So, let’s get started by downloading the latest release from their site, and then installing it. For some reason, no one has added pgBackRest to Homebrew yet (someone, pls!) so let’s do it the manual way:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/4e7390cc161206d1e53019c8e44a20b7.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;(Keep in mind that I already had Perl setup to connect to PostgreSQL for other uses. You might need to install &lt;code class=&quot;highlighter-rouge&quot;&gt;DBD::Pg&lt;/code&gt;.)&lt;/p&gt;
-
-&lt;p&gt;Now that pgBackRest is installed, let’s configure it. First, we’ll want to set some of the global properties that affect all pgBackRest operations:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/005748ef36074b225619f79ab3420c54.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;As you can see, we set the following:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;force the log level for all console output to ‘info’&lt;/li&gt;
-  &lt;li&gt;define the S3 bucket we want to use&lt;/li&gt;
-  &lt;li&gt;define the S3 endpoint to connect to&lt;/li&gt;
-  &lt;li&gt;define our S3 key&lt;/li&gt;
-  &lt;li&gt;define our S3 secret key&lt;/li&gt;
-  &lt;li&gt;set which region our bucket is in&lt;/li&gt;
-  &lt;li&gt;tell pgBackRest that we’re using S3 as the backend&lt;/li&gt;
-  &lt;li&gt;configure retention of full backups&lt;/li&gt;
-  &lt;li&gt;tell pgBackRest to issue a CHECKPOINT so backups can start right away instead of waiting for the next regular checkpoint&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now, we need to tell pgBackRest which instance of PostgreSQL we want to backup and where to find it. Again, if you used my previous posts to install multiple versions via Homebrew, this should look familiar:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/fea13b1e4b57f7c0ad068ef2579a04cd.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;You can see for each pg cluster, we define:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;the path to the &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; directory&lt;/li&gt;
-  &lt;li&gt;the port the cluster listens on&lt;/li&gt;
-  &lt;li&gt;and the path we want to store the backups in on our backend&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;When you put this all together, we’ll be connecting to an S3 bucket called, creatively enough, &lt;code class=&quot;highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; and then we will create a top-level directory (‘96’, ‘95’, etc) to store each cluster’s backups in.&lt;/p&gt;
-
-&lt;p&gt;Now that we’ve got our configuration complete, let’s do an initial backup of one of the clusters. First, we have to create the appropriate directories and metadata on the backend:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/ac4aa555e10ffa9a210983d7997e3ebc.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;Then, we have pgBackRest verify that everything is properly setup. Note that this includes checking to ensure you tweaked &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; according to the directions on their site (I’m not going to repeat them here):&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/56358e6024a84833af73fda3d7d71432.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;And since that all worked, we can take our first actual backup:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/fdc5991f31aa098f685a3a462461d897.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;Neat!&lt;/p&gt;
-
-&lt;p&gt;Now, let’s check our S3 bucket, shall we?&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/s3_1.png&quot; alt=&quot;s3_1&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You can see here the top-level contents of my &lt;code class=&quot;highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; bucket. As stated before, each cluster gets its own sub-dir. Since we just backed up the ‘92’ cluster, let’s look inside it’s dir.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/s3_2.png&quot; alt=&quot;s3_2&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You can see that pgBackRest has created as directory for the WALs to be stored in whenever &lt;code class=&quot;highlighter-rouge&quot;&gt;archive_command&lt;/code&gt; fires and another directory for the actual cluster backups. Peeking into the &lt;code class=&quot;highlighter-rouge&quot;&gt;archive&lt;/code&gt; dir, we see:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/s3_3.png&quot; alt=&quot;s3_3&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This shows us some metadata, and shows that pgBackRest creates a directory for each timeline of the cluster. Since we are on timeline 1 in our 92 cluster, we have a &lt;code class=&quot;highlighter-rouge&quot;&gt;9.2-1&lt;/code&gt; directory inside of which, we find:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/s3_4.png&quot; alt=&quot;s3_4&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Our archived WALs have been compressed and uploaded. Hurray!&lt;/p&gt;
-
-&lt;p&gt;Now, let’s check inside the &lt;code class=&quot;highlighter-rouge&quot;&gt;backup&lt;/code&gt; directory:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/s3_5.png&quot; alt=&quot;s3_5&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We can see some metadata, and we can see a folder named the same as the backup label that was used when we ran our full backup. Inside that folder, we can see:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/s3_6.png&quot; alt=&quot;s3_6&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Hey look, more metadata! And another folder! :) So, let’s dive into the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_data&lt;/code&gt; folder where we see:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/s3_7.png&quot; alt=&quot;s3_7&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Holy crap! It’s a basebackup of our &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; data directory. And all the files have been nicely compressed for us. Rock on, pgBackRest!&lt;/p&gt;
-
-&lt;p&gt;And just in case you wanted to see the current backup catalog:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/f553b0931a571965ca9bcb6235cb8fcf.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;(look at that compression!)&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><category term="osx" /><summary type="html">If you’ve followed my previous posts (here and here), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don’t really care about any of the data therein, but if you do, let me guide you to pgBackRest.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry></feed>
+&lt;p&gt;So now you know all the (common) ways that connecting to PostgreSQL can fail and how to distinguish between them. With just a little bit of knowledge, you can communicate exactly what is happening to your DBA and make it easier for him/her to rectify the issue. Go forth, and happy PostgreSQL-ing.&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><summary type="html">Connecting to a PostgreSQL instance isn’t hard generally, but sometimes you can run into issues. Sometimes a port isn’t open on a firewall, or the server is in a VLAN that you can’t get to, or perhaps the server isn’t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you’re connection isn’t authorized (which is not the same as being unable to authenticate). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you’re facing. Let’s dive into each scenario and see what the error looks like, shall we?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry></feed>

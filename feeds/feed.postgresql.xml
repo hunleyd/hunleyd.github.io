@@ -5,12 +5,50 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2018-12-16T11:08:17-05:00</updated>
+  <updated>2019-01-04T13:44:00-05:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>pgBackRest 2.08 and macOS Mojava</title>
+    <description>&lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils::Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o
+warning: unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?
+      [-Wunknown-warning-option]
+common/lock.c:76:21: warning: implicit declaration of function 'flock' is invalid in C99
+      [-Wimplicit-function-declaration]
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                    ^
+common/lock.c:76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]
+common/lock.c:76:35: fatal error: use of undeclared identifier 'LOCK_EX'
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                                  ^
+3 warnings and 1 error generated.
+make: *** [common/lock.o] Error 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To fix this, you will need to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;src/Makefile&lt;/code&gt; and change line 12 from:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_POSIX_C_SOURCE=200112L
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;to:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_DARWIN_C_SOURCE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>/posts/pgBackRest-2.08-and-macOS-Mojava/ </link>
+    <pubDate>2019-01-04T08:30:44-05:00</pubDate>
+    <guid isPermaLink="true">/posts/pgBackRest-2.08-and-macOS-Mojava/</guid>
+   </item>
   
    <item>
     <title>pgBackRest 2.07 and macOS Mojave</title>
@@ -1089,56 +1127,6 @@ log_rotation_age = 1h
     <link>/posts/PostgreSQL-logging-strftime-and-you/ </link>
     <pubDate>2016-11-21T07:17:03-05:00</pubDate>
     <guid isPermaLink="true">/posts/PostgreSQL-logging-strftime-and-you/</guid>
-   </item>
-  
-   <item>
-    <title>Upgrading PostgreSQL 5x faster</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://www.navops.io/img/launch-samsung-1.gif&quot; class=&quot;lleader&quot; /&gt;Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.&lt;/p&gt;
-
-&lt;p&gt;Thankfully, the PostgreSQL team introduced &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took &lt;em&gt;1/5&lt;/em&gt; as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?&lt;/p&gt;
-
-&lt;p&gt;First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt; if you need to do this). We’re going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;pgbench&lt;/code&gt; to create some data in our PostgreSQL 9.5 instance:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » pg 9.5
-doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, &lt;em&gt;this is where you’d have to stop your application(s)&lt;/em&gt;.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &amp;gt; data.sql
-pg_dumpall &amp;gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » pg 9.6
-doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
-psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;After 37 minutes, our data is back and we can start our applications back up. &lt;em&gt;An outage of approximately 56.5 minutes&lt;/em&gt;.&lt;/p&gt;
-
-&lt;p&gt;Now, let’s blow away our PostgreSQL 9.6 cluster and use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; to complete the same task. You would do this with the application(s) down as well!&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
-doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
-doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
-doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
-pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;And we’re done &lt;em&gt;in 10.5 minutes&lt;/em&gt;. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?&lt;/p&gt;
-
-&lt;p&gt;For the curious, the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_upgrade&lt;/code&gt; output that I omitted above for readability’s sake is:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js&quot;&gt; &lt;/script&gt;
-
-</description>
-    <link>/posts/Upgrading-PostgreSQL-5x-faster/ </link>
-    <pubDate>2016-11-18T07:18:28-05:00</pubDate>
-    <guid isPermaLink="true">/posts/Upgrading-PostgreSQL-5x-faster/</guid>
    </item>
   
  </channel>

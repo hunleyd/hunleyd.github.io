@@ -5,31 +5,31 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>Functional Blog Archives &#8211; Douglas J Hunley</title>
+<title>pgBackRest 2.08 and macOS Mojava &#8211; Douglas J Hunley</title>
 <meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta name="keywords" content="general">
+<meta name="keywords" content="osx, pgbackrest, postgresql">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="/images/blog.png">
+<meta name="twitter:image" content="/images/db.jpg">
 
-<meta name="twitter:title" content="Functional Blog Archives">
+<meta name="twitter:title" content="pgBackRest 2.08 and macOS Mojava">
 <meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
 <meta name="twitter:creator" content="@hunleyd">
 
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Functional Blog Archives">
+<meta property="og:title" content="pgBackRest 2.08 and macOS Mojava">
 <meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta property="og:url" content="/posts/Functional-Blog-Archives/">
+<meta property="og:url" content="/posts/pgBackRest-2.08-and-macOS-Mojava/">
 <meta property="og:site_name" content="Douglas J Hunley">
 
 
 
 
 
-<link rel="canonical" href="/posts/Functional-Blog-Archives/">
+<link rel="canonical" href="/posts/pgBackRest-2.08-and-macOS-Mojava/">
 <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -167,7 +167,7 @@
 <div class="entry-header">
   
   <div class="entry-image">
-    <img src="/images/blog.png" alt="Functional Blog Archives">
+    <img src="/images/db.jpg" alt="pgBackRest 2.08 and macOS Mojava">
   </div><!-- /.entry-image -->
 </div><!-- /.entry-header -->
 
@@ -177,9 +177,9 @@
     <header class="header-title">
       <div class="header-title-wrap">
         
-          <h1 class="entry-title"><a href="/posts/Functional-Blog-Archives/" rel="bookmark" title="Functional Blog Archives">Functional Blog Archives</a></h1>
+          <h1 class="entry-title"><a href="/posts/pgBackRest-2.08-and-macOS-Mojava/" rel="bookmark" title="pgBackRest 2.08 and macOS Mojava">pgBackRest 2.08 and macOS Mojava</a></h1>
         
-        <h2><span class="entry-date date published"><time datetime="2016-09-30T19:30:19-04:00">September 30, 2016</time></span></h2>
+        <h2><span class="entry-date date published"><time datetime="2019-01-04T08:30:44-05:00">January 04, 2019</time></span></h2>
         
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
@@ -190,18 +190,45 @@ Reading time ~1 minute
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p>After an afternoon dicking around with Jekyll templates and Google serching, I’ve fixed up this site’s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I’ve also modified the tag cloud page to fit in the archive pages’ look an feel. It’s not a true tag cloud in that I don’t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it’s own page showing all posts tagged as such.</p>
+      <p>The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:</p>
 
-<p>So, yeah. Enjoy, or something.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils::Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o
+warning: unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?
+      [-Wunknown-warning-option]
+common/lock.c:76:21: warning: implicit declaration of function 'flock' is invalid in C99
+      [-Wimplicit-function-declaration]
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                    ^
+common/lock.c:76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]
+common/lock.c:76:35: fatal error: use of undeclared identifier 'LOCK_EX'
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                                  ^
+3 warnings and 1 error generated.
+make: *** [common/lock.o] Error 1
+</code></pre></div></div>
+
+<p>To fix this, you will need to edit <code class="highlighter-rouge">src/Makefile</code> and change line 12 from:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CSTD = -std=c99 -D_POSIX_C_SOURCE=200112L
+</code></pre></div></div>
+
+<p>to:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CSTD = -std=c99 -D_DARWIN_C_SOURCE
+</code></pre></div></div>
+
+<p>Then, you can follow the other steps on my <a href="https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/">previous post</a> and everything should compile and function properly.</p>
+
+<p>Enjoy!</p>
 
       <footer class="entry-meta">
-        <span class="entry-tags"><a href="/tags/#general" title="Pages tagged general" class="tag"><span class="term">general</span></a></span>
+        <span class="entry-tags"><a href="/tags/#osx" title="Pages tagged osx" class="tag"><span class="term">osx</span></a><a href="/tags/#pgbackrest" title="Pages tagged pgbackrest" class="tag"><span class="term">pgbackrest</span></a><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>
         
         <div class="social-share">
   <ul class="socialcount socialcount-small inline-list">
-    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/Functional-Blog-Archives/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
-    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/Functional-Blog-Archives/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
-    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/Functional-Blog-Archives/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/pgBackRest-2.08-and-macOS-Mojava/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/pgBackRest-2.08-and-macOS-Mojava/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/pgBackRest-2.08-and-macOS-Mojava/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
   </ul>
 </div><!-- /.social-share -->
       </footer>
@@ -210,23 +237,23 @@ Reading time ~1 minute
     <div class="read-more">
   
     <div class="read-more-header">
-      <a href="/posts/Where-Not-To-Put-Your-Tablespaces/" class="read-more-btn">Read More</a>
+      <a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/pgBackRest-2.08-and-macOS-Mojava/" title="pgBackRest 2.08 and macOS Mojava">pgBackRest 2.08 and macOS Mojava</a></h3>
-      <p>The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a...&hellip; <a href="/posts/pgBackRest-2.08-and-macOS-Mojava/">Continue reading</a></p>
+      <h3><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h3>
+      <p>pgBackRest 2.07 was announced today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently ru...&hellip; <a href="/posts/pgBackRest-2.07-and-macOS-Mojave/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Monitoring pgBackRest with tail_n_mail">Monitoring pgBackRest with tail_n_mail</a></h4>
+        <span>Published on September 24, 2018</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Monitoring pgBackRest with tail_n_mail">Monitoring pgBackRest with tail_n_mail</a></h4>
-        <span>Published on September 24, 2018</span>
+        <h4><a href="/posts/pgBouncer-and-auth-pass-thru/" title="pgBouncer and auth pass-thru">pgBouncer and auth pass-thru</a></h4>
+        <span>Published on August 07, 2018</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
