@@ -184,13 +184,13 @@
     <HEADER>
       
         <DIV class="entry-image-index">
-          <A href="/posts/pgBackRest-2.08-and-macOS-Mojava/" title="pgBackRest 2.08 and macOS Mojava"><IMG src="/images/db.jpg" alt="pgBackRest 2.08 and macOS Mojava" /></A>
+          <A href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave"><IMG src="/images/db.jpg" alt="pgBackRest 2.08 and macOS Mojave" /></A>
         </DIV><!-- /.entry-image -->
       
       <DIV class="entry-meta">
         <SPAN class="entry-date date published updated">
           <TIME datetime="2019-01-04T08:30:44-05:00" />
-            <A href="/posts/pgBackRest-2.08-and-macOS-Mojava/">January 04, 2019</A>
+            <A href="/posts/pgBackRest-2.08-and-macOS-Mojave/">January 04, 2019</A>
           </TIME>
         </SPAN>
         <SPAN class="author vcard">
@@ -208,19 +208,19 @@ Reading time ~1 minute
       </DIV><!-- /.entry-meta -->
       
         <H1 class="entry-title">
-          <A href="/posts/pgBackRest-2.08-and-macOS-Mojava/" rel="bookmark" title="pgBackRest 2.08 and macOS Mojava" itemprop="url">pgBackRest 2.08 and macOS Mojava</A>
+          <A href="/posts/pgBackRest-2.08-and-macOS-Mojave/" rel="bookmark" title="pgBackRest 2.08 and macOS Mojave" itemprop="url">pgBackRest 2.08 and macOS Mojave</A>
         </H1>
       
     </HEADER>
     <DIV class="entry-content">
-      <p>The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:</p>
+      <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving <code class="highlighter-rouge">-D_POSIX_C_SOURCE</code> up to the <code class="highlighter-rouge">Makefile</code> that caused the problem. The solution below is still the same though.</p>
 
 
       
       
       
         <P>
-          <A href="/posts/pgBackRest-2.08-and-macOS-Mojava/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+          <A href="/posts/pgBackRest-2.08-and-macOS-Mojave/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
         </P>
       
     </DIV><!-- /.entry-content -->

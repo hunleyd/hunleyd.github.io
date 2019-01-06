@@ -5,7 +5,7 @@
   <description>Posts tagged as 'osx'</description>
   <atom:link href="/feeds/feed.osx.xml" rel="self" type="application/rss+xml" />
   <link>/tag/osx/</link>
-  <updated>2019-01-04T13:44:00-05:00</updated>
+  <updated>2019-01-06T10:44:21-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -13,8 +13,10 @@
 
   
    <item>
-    <title>pgBackRest 2.08 and macOS Mojava</title>
-    <description>&lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
+    <title>pgBackRest 2.08 and macOS Mojave</title>
+    <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code class=&quot;highlighter-rouge&quot;&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code class=&quot;highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;
+
+&lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils::Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o
 warning: unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?
@@ -45,9 +47,9 @@ make: *** [common/lock.o] Error 1
 
 &lt;p&gt;Enjoy!&lt;/p&gt;
 </description>
-    <link>/posts/pgBackRest-2.08-and-macOS-Mojava/ </link>
+    <link>/posts/pgBackRest-2.08-and-macOS-Mojave/ </link>
     <pubDate>2019-01-04T08:30:44-05:00</pubDate>
-    <guid isPermaLink="true">/posts/pgBackRest-2.08-and-macOS-Mojava/</guid>
+    <guid isPermaLink="true">/posts/pgBackRest-2.08-and-macOS-Mojave/</guid>
    </item>
   
    <item>

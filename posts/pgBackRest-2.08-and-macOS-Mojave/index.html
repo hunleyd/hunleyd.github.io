@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>pgBackRest 2.08 and macOS Mojava &#8211; Douglas J Hunley</title>
+<title>pgBackRest 2.08 and macOS Mojave &#8211; Douglas J Hunley</title>
 <meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
 <meta name="keywords" content="osx, pgbackrest, postgresql">
 
@@ -13,23 +13,23 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="/images/db.jpg">
 
-<meta name="twitter:title" content="pgBackRest 2.08 and macOS Mojava">
+<meta name="twitter:title" content="pgBackRest 2.08 and macOS Mojave">
 <meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
 <meta name="twitter:creator" content="@hunleyd">
 
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="pgBackRest 2.08 and macOS Mojava">
+<meta property="og:title" content="pgBackRest 2.08 and macOS Mojave">
 <meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta property="og:url" content="/posts/pgBackRest-2.08-and-macOS-Mojava/">
+<meta property="og:url" content="/posts/pgBackRest-2.08-and-macOS-Mojave/">
 <meta property="og:site_name" content="Douglas J Hunley">
 
 
 
 
 
-<link rel="canonical" href="/posts/pgBackRest-2.08-and-macOS-Mojava/">
+<link rel="canonical" href="/posts/pgBackRest-2.08-and-macOS-Mojave/">
 <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -167,7 +167,7 @@
 <div class="entry-header">
   
   <div class="entry-image">
-    <img src="/images/db.jpg" alt="pgBackRest 2.08 and macOS Mojava">
+    <img src="/images/db.jpg" alt="pgBackRest 2.08 and macOS Mojave">
   </div><!-- /.entry-image -->
 </div><!-- /.entry-header -->
 
@@ -177,7 +177,7 @@
     <header class="header-title">
       <div class="header-title-wrap">
         
-          <h1 class="entry-title"><a href="/posts/pgBackRest-2.08-and-macOS-Mojava/" rel="bookmark" title="pgBackRest 2.08 and macOS Mojava">pgBackRest 2.08 and macOS Mojava</a></h1>
+          <h1 class="entry-title"><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" rel="bookmark" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h1>
         
         <h2><span class="entry-date date published"><time datetime="2019-01-04T08:30:44-05:00">January 04, 2019</time></span></h2>
         
@@ -190,7 +190,9 @@ Reading time ~1 minute
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p>The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:</p>
+      <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving <code class="highlighter-rouge">-D_POSIX_C_SOURCE</code> up to the <code class="highlighter-rouge">Makefile</code> that caused the problem. The solution below is still the same though.</p>
+
+<p>The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils::Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o
 warning: unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?
@@ -226,9 +228,9 @@ make: *** [common/lock.o] Error 1
         
         <div class="social-share">
   <ul class="socialcount socialcount-small inline-list">
-    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/pgBackRest-2.08-and-macOS-Mojava/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
-    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/pgBackRest-2.08-and-macOS-Mojava/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
-    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/pgBackRest-2.08-and-macOS-Mojava/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/pgBackRest-2.08-and-macOS-Mojave/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/pgBackRest-2.08-and-macOS-Mojave/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/pgBackRest-2.08-and-macOS-Mojave/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
   </ul>
 </div><!-- /.social-share -->
       </footer>
