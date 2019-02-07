@@ -5,7 +5,7 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2019-01-06T10:44:21-05:00</updated>
+  <updated>2019-02-07T12:57:38-05:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -733,7 +733,7 @@ host   dbname       pglogical  0.0.0.0/0  md5
 
 &lt;p&gt;Let’s first assume that everything is working and you &lt;em&gt;can&lt;/em&gt; actually connect to the PostgreSQL instance, but you can’t authenticate. The error will look like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/authentication.png&quot; alt=&quot;auth failed&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/authentication.png&quot; alt=&quot;auth failed&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As you can see, the message makes it pretty clear that you were able to connect, but your credentials were wrong (you were &lt;em&gt;authorized&lt;/em&gt; to connect, but failed to &lt;em&gt;authenticate&lt;/em&gt;). Did you type the password incorrectly? Is there a &lt;code class=&quot;highlighter-rouge&quot;&gt;~/.pgpass&lt;/code&gt; &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-pgpass.html&quot;&gt;file&lt;/a&gt; that is providing the password for you? Do you have &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGPASSWORD&lt;/code&gt; defined in your &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-envars.html&quot;&gt;environment&lt;/a&gt;? Fix the password being passed to PostgreSQL, and you won’t have further issues in this scenario.&lt;/p&gt;
 
