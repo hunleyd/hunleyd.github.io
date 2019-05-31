@@ -5,12 +5,51 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2019-05-31T11:47:24-04:00</updated>
+  <updated>2019-05-31T11:48:30-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Monitoring pgBackRest with tail_n_mail</title>
+    <description>&lt;p&gt;After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
+
+&lt;p&gt;For reference, our &lt;code class=&quot;highlighter-rouge&quot;&gt;.tail_n_mail.conf&lt;/code&gt; looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Config file for the tail_n_mail program
+## This file is automatically updated
+LOG_LINE_PREFIX: %t P%p
+EMAIL: you@gme.com
+MAILSUBJECT: HOST pgBackRest errors NUMBER
+
+INCLUDE: WARN:
+INCLUDE: ERROR:
+INCLUDE: FATAL:
+INCLUDE: PANIC:
+
+
+FILE1: /var/log/pgbackrest/pgbackrest.log
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You would need to change the &lt;code class=&quot;highlighter-rouge&quot;&gt;EMAIL&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;FILE1&lt;/code&gt; and the rest should just work.&lt;/p&gt;
+
+&lt;p&gt;To actually invoke the monitoring, simply add a &lt;code class=&quot;highlighter-rouge&quot;&gt;cron&lt;/code&gt; entry that looks like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(Obviously, you should adjust the periodicity. I &lt;strong&gt;highly&lt;/strong&gt; doubt you need to check every minute.)&lt;/p&gt;
+
+&lt;p&gt;Once you’ve saved the &lt;code class=&quot;highlighter-rouge&quot;&gt;crontab&lt;/code&gt;, you should be all good. If you doubt the setup, you can add &lt;code class=&quot;highlighter-rouge&quot;&gt;--mailzero&lt;/code&gt; to the invocation to get an email even if everything is OK.&lt;/p&gt;
+
+&lt;p&gt;See? Easy.&lt;/p&gt;
+</description>
+    <link>/posts/Monitoring-pgBackRest-with-tail_n_mail/ </link>
+    <pubDate>2018-09-24T06:58:22-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Monitoring-pgBackRest-with-tail_n_mail/</guid>
+   </item>
   
    <item>
     <title>pgBouncer and auth pass-thru</title>
@@ -1071,84 +1110,6 @@ pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40
     <link>/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/ </link>
     <pubDate>2016-11-16T08:45:27-05:00</pubDate>
     <guid isPermaLink="true">/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/</guid>
-   </item>
-  
-   <item>
-    <title>Getting fancy with PostgreSQL and Homebrew</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;In our &lt;a href=&quot;https://hunleyd.github.io/PostgreSQL-Homebrew-and-You/&quot;&gt;previous&lt;/a&gt; post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we’re going to take the next step.&lt;/p&gt;
-
-&lt;p&gt;First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dumpall&lt;/code&gt; here since it’s quick-n-dirty:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;Now, we can stop our cluster:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;And uninstall the current PostgreSQL:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/4dffee8e9ebbf2c052162f2ecc36e812.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;And remove the remnants of our cluster:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/7c064e25c8916fa7fe0e3cdb846d3c78.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;Now we’ve got a clean slate. So, let’s tell Homebrew to stop using the default PostgreSQL and use Peter Eisentraut’s version (if you don’t know, Peter actually contributes to PostgreSQL):&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/b099ff10c1cd1713f37ff40cf320adf3.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let’s install the supported versions:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/bcc4e0e7c55e849b7adb647d9727674c.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/opt/postgresql-9.1/&lt;/code&gt; etc.&lt;/p&gt;
-
-&lt;p&gt;Peter configures PostgreSQL with just about all the options turned on:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/c56727a3249042841c2609439209c8fd.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt;. You would install it like this:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/37c2e01a0d400c0a16c7fb7d9b8d1030.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt; like so:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/d2d004871557adc49ae77b19181bd999.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;As you can see, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ip4r&lt;/code&gt; extension was installed into my PostgreSQL 9.4 instance.&lt;/p&gt;
-
-&lt;p&gt;Now, you might be wondering how to deal with all these concurrent versions. If you type &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; which one willl you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
-psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;PostgreSQL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 9.6.1
-doug@Douglass-MacBook-Pro ~ »
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;which is a huge pita. So, let’s make a little convenience function in our shell. Edit your &lt;code class=&quot;highlighter-rouge&quot;&gt;.zshrc&lt;/code&gt; or your &lt;code class=&quot;highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; (or whatever) and add a function like this:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;and then simply call &lt;code class=&quot;highlighter-rouge&quot;&gt;pg 9.5&lt;/code&gt; to set PostgreSQL 9.5 as your ‘active’ instance:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oug@Douglass-MacBook-Pro ~ » pg 9.5
-Stopping PostgreSQL 9.4... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-Activating PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-Initializing PostgreSQL 9.5 cluster... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-Starting PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-doug@Douglass-MacBook-Pro ~ »
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Restore your data:&lt;/p&gt;
-
-&lt;script src=&quot;https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js&quot;&gt; &lt;/script&gt;
-
-&lt;p&gt;and there you be. Ain’t it beautiful? :)&lt;/p&gt;
-</description>
-    <link>/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/ </link>
-    <pubDate>2016-11-10T09:58:15-05:00</pubDate>
-    <guid isPermaLink="true">/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/</guid>
    </item>
   
  </channel>

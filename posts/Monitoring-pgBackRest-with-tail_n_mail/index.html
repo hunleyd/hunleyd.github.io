@@ -5,31 +5,31 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>Mom cuts the cord &#8211; Douglas J Hunley</title>
+<title>Monitoring pgBackRest with tail_n_mail &#8211; Douglas J Hunley</title>
 <meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta name="keywords" content="general, ott">
+<meta name="keywords" content="postgresql">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="/images/cordcutting.jpg">
+<meta name="twitter:image" content="/images//images/db.jpg">
 
-<meta name="twitter:title" content="Mom cuts the cord">
+<meta name="twitter:title" content="Monitoring pgBackRest with tail_n_mail">
 <meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
 <meta name="twitter:creator" content="@hunleyd">
 
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mom cuts the cord">
+<meta property="og:title" content="Monitoring pgBackRest with tail_n_mail">
 <meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta property="og:url" content="/posts/Mom-cuts-the-cord/">
+<meta property="og:url" content="/posts/Monitoring-pgBackRest-with-tail_n_mail/">
 <meta property="og:site_name" content="Douglas J Hunley">
 
 
 
 
 
-<link rel="canonical" href="/posts/Mom-cuts-the-cord/">
+<link rel="canonical" href="/posts/Monitoring-pgBackRest-with-tail_n_mail/">
 <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -159,7 +159,7 @@
 <div class="entry-header">
   
   <div class="entry-image">
-    <img src="/images/cordcutting.jpg" alt="Mom cuts the cord">
+    <img src="/images//images/db.jpg" alt="Monitoring pgBackRest with tail_n_mail">
   </div><!-- /.entry-image -->
 </div><!-- /.entry-header -->
 
@@ -169,9 +169,9 @@
     <header class="header-title">
       <div class="header-title-wrap">
         
-          <h1 class="entry-title"><a href="/posts/Mom-cuts-the-cord/" rel="bookmark" title="Mom cuts the cord">Mom cuts the cord</a></h1>
+          <h1 class="entry-title"><a href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" rel="bookmark" title="Monitoring pgBackRest with tail_n_mail">Monitoring pgBackRest with tail_n_mail</a></h1>
         
-        <h2><span class="entry-date date published"><time datetime="2018-05-31T07:12:06-04:00">May 31, 2018</time></span></h2>
+        <h2><span class="entry-date date published"><time datetime="2018-09-24T06:58:22-04:00">September 24, 2018</time></span></h2>
         
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
@@ -182,30 +182,46 @@ Reading time ~1 minute
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p>OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. My mother. The same woman who spent the better part of a decade (I cut the cord in late 2008) saying how she didn’t understand how I could not have cable. Someone check the temperature in Hell will ya? :)</p>
+      <p>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use <a href="https://bucardo.org/tail_n_mail/">tail_n_mail</a>, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.</p>
 
-<p>All kidding aside, Mom (and Dad before he passed) has spent the past several years canceling Dish and DirecTV and switching back-n-forth between them to get the best ‘new customer’ rates and deals. But as Mom starts eyeing retirement and DirecTV keeps upping her bill $2 at a time for various fees, she’d had enough.</p>
+<p>For reference, our <code class="highlighter-rouge">.tail_n_mail.conf</code> looks like this:</p>
 
-<p>So, over the course of the last few months, I walked Mom through getting a TCL Roku TV:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Config file for the tail_n_mail program
+## This file is automatically updated
+LOG_LINE_PREFIX: %t P%p
+EMAIL: you@gme.com
+MAILSUBJECT: HOST pgBackRest errors NUMBER
 
-<p><img src="/images/tcl.jpg" alt="" /></p>
+INCLUDE: WARN:
+INCLUDE: ERROR:
+INCLUDE: FATAL:
+INCLUDE: PANIC:
 
-<p>(Note, that’s actually a picture of the 55” which I bought last Aug. Mom bought the 32” even though I argued for the 37”)</p>
 
-<p>Then I walked her through using the 1byone 50-mile HDTV antenna I had previously bought her. And finally, I signed up for the DirecTVNow beta on Roku and waited for the DVR functionality to launch.</p>
+FILE1: /var/log/pgbackrest/pgbackrest.log
+</code></pre></div></div>
 
-<p>With all the pieces in place, we spent the afternoon setting everything up during my recent visit. We had a few little bumps that weekend, and I’m going to be getting her a Tablo DUO in the near future so we can use the 1byone on both TVs, but otherwise she adjusted to it all pretty easily. I even hooked up a Roku stick to the TV in the spare bedroom and showed her its all exactly the same as in the living room (minus the OTA locals, of course). Listening to her argue w/ the DirecTV phone rep during the cancellation call was <em>extremely satisfying</em> and made me proud. Mom still can’t seem to believe that for $35/mo she is getting everything she used to pay almost $100/mo for. But she’s already been telling her friends about it all :)</p>
+<p>You would need to change the <code class="highlighter-rouge">EMAIL</code> and <code class="highlighter-rouge">FILE1</code> and the rest should just work.</p>
 
-<p>So .. if you still haven’t cut the cord, what are you waiting for?</p>
+<p>To actually invoke the monitoring, simply add a <code class="highlighter-rouge">cron</code> entry that looks like:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
+</code></pre></div></div>
+
+<p>(Obviously, you should adjust the periodicity. I <strong>highly</strong> doubt you need to check every minute.)</p>
+
+<p>Once you’ve saved the <code class="highlighter-rouge">crontab</code>, you should be all good. If you doubt the setup, you can add <code class="highlighter-rouge">--mailzero</code> to the invocation to get an email even if everything is OK.</p>
+
+<p>See? Easy.</p>
 
       <footer class="entry-meta">
-        <span class="entry-tags"><a href="/tags/#general" title="Pages tagged general" class="tag"><span class="term">general</span></a><a href="/tags/#ott" title="Pages tagged ott" class="tag"><span class="term">ott</span></a></span>
+        <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>
         
         <div class="social-share">
   <ul class="socialcount socialcount-small inline-list">
-    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/Mom-cuts-the-cord/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
-    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/Mom-cuts-the-cord/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
-    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/Mom-cuts-the-cord/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
   </ul>
 </div><!-- /.social-share -->
       </footer>
@@ -214,23 +230,23 @@ Reading time ~1 minute
     <div class="read-more">
   
     <div class="read-more-header">
-      <a href="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" class="read-more-btn">Read More</a>
+      <a href="/posts/pgBouncer-and-auth-pass-thru/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" title="Monitoring pgBackRest with tail_n_mail">Monitoring pgBackRest with tail_n_mail</a></h3>
-      <p>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use tail_n_mail, which I alread...&hellip; <a href="/posts/Monitoring-pgBackRest-with-tail_n_mail/">Continue reading</a></p>
+      <h3><a href="/posts/pgBouncer-and-auth-pass-thru/" title="pgBouncer and auth pass-thru">pgBouncer and auth pass-thru</a></h3>
+      <p>I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s au...&hellip; <a href="/posts/pgBouncer-and-auth-pass-thru/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBouncer-and-auth-pass-thru/" title="pgBouncer and auth pass-thru">pgBouncer and auth pass-thru</a></h4>
-        <span>Published on August 07, 2018</span>
+        <h4><a href="/posts/Locking-it-down/" title="Locking it down">Locking it down</a></h4>
+        <span>Published on June 18, 2018</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/Locking-it-down/" title="Locking it down">Locking it down</a></h4>
-        <span>Published on June 18, 2018</span>
+        <h4><a href="/posts/Mom-cuts-the-cord/" title="Mom cuts the cord">Mom cuts the cord</a></h4>
+        <span>Published on May 31, 2018</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
