@@ -5,12 +5,52 @@
   <description>Posts tagged as 'pgbackrest'</description>
   <atom:link href="/feeds/feed.pgbackrest.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#pgbackrest/</link>
-  <updated>2019-05-31T12:05:21-04:00</updated>
+  <updated>2019-05-31T12:08:33-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>pgBackRest 2.08 and macOS Mojave</title>
+    <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code class=&quot;highlighter-rouge&quot;&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code class=&quot;highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;
+
+&lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils::Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o
+warning: unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?
+      [-Wunknown-warning-option]
+common/lock.c:76:21: warning: implicit declaration of function 'flock' is invalid in C99
+      [-Wimplicit-function-declaration]
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                    ^
+common/lock.c:76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]
+common/lock.c:76:35: fatal error: use of undeclared identifier 'LOCK_EX'
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                                  ^
+3 warnings and 1 error generated.
+make: *** [common/lock.o] Error 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To fix this, you will need to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;src/Makefile&lt;/code&gt; and change line 12 from:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_POSIX_C_SOURCE=200112L
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;to:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_DARWIN_C_SOURCE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>/posts/pgBackRest-2.08-and-macOS-Mojave/ </link>
+    <pubDate>2019-01-04T03:30:44-05:00</pubDate>
+    <guid isPermaLink="true">/posts/pgBackRest-2.08-and-macOS-Mojave/</guid>
+   </item>
   
    <item>
     <title>pgBackRest 2.07 and macOS Mojave</title>

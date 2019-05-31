@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-05-31T12:05:21-04:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">The continuing adventures of Mom cutting the cord</title><link href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" rel="alternate" type="text/html" title="The continuing adventures of Mom cutting the cord" /><published>2019-02-07T02:24:43-05:00</published><updated>2019-02-07T02:24:43-05:00</updated><id>/posts/The-continuing-adventures-of-Mom-cutting-the-cord</id><content type="html" xml:base="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">&lt;p&gt;As a belated update to &lt;a href=&quot;/posts/Mom-cuts-the-cord/&quot;&gt;this&lt;/a&gt; post, Mom has told DirecTV to completely go screw and she’s moved over to &lt;a href=&quot;https://www.philo.com&quot;&gt;Philo&lt;/a&gt; where she’s currently loving life.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-05-31T12:08:33-04:00</updated><id>//</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">The continuing adventures of Mom cutting the cord</title><link href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" rel="alternate" type="text/html" title="The continuing adventures of Mom cutting the cord" /><published>2019-02-07T02:24:43-05:00</published><updated>2019-02-07T02:24:43-05:00</updated><id>/posts/The-continuing-adventures-of-Mom-cutting-the-cord</id><content type="html" xml:base="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">&lt;p&gt;As a belated update to &lt;a href=&quot;/posts/Mom-cuts-the-cord/&quot;&gt;this&lt;/a&gt; post, Mom has told DirecTV to completely go screw and she’s moved over to &lt;a href=&quot;https://www.philo.com&quot;&gt;Philo&lt;/a&gt; where she’s currently loving life.&lt;/p&gt;
 
 &lt;p&gt;I had initially proposed DirecTV Now to her since it was an uphill battle to convince her to abandon DirecTV satellite. I figured it was the path of least resistance since she’d know the UI and the channel line-up . And, at first, it was exactly that. However, after about three months, I had grown tired of hearing the following:&lt;/p&gt;
 
@@ -24,7 +24,38 @@
 
 &lt;p&gt;The kicker here? &lt;strong&gt;It’s only $16/mo.&lt;/strong&gt; Yeah, you read that right. She went from $100/mo w/ DTV to $45/mo with DTVN (at the end) to $16/mo. &lt;strong&gt;Unreal.&lt;/strong&gt; And on top of that, Philo recently added an extra MTV channel for the hell of it.&lt;/p&gt;
 
-&lt;p&gt;All around a WIN WIN.&lt;/p&gt;</content><category term="general" /><category term="ott" /><summary type="html">As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving life.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" /></entry><entry><title type="html">pgBackRest 2.07 and macOS Mojave</title><link href="/posts/pgBackRest-2.07-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.07 and macOS Mojave" /><published>2018-11-16T01:12:31-05:00</published><updated>2018-11-16T01:12:31-05:00</updated><id>/posts/pgBackRest-2.07-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.07-and-macOS-Mojave/">&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
+&lt;p&gt;All around a WIN WIN.&lt;/p&gt;</content><category term="general" /><category term="ott" /><summary type="html">As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving life.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" /></entry><entry><title type="html">pgBackRest 2.08 and macOS Mojave</title><link href="/posts/pgBackRest-2.08-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.08 and macOS Mojave" /><published>2019-01-04T03:30:44-05:00</published><updated>2019-01-04T03:30:44-05:00</updated><id>/posts/pgBackRest-2.08-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.08-and-macOS-Mojave/">&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code class=&quot;highlighter-rouge&quot;&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code class=&quot;highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;
+
+&lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils::Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o
+warning: unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?
+      [-Wunknown-warning-option]
+common/lock.c:76:21: warning: implicit declaration of function 'flock' is invalid in C99
+      [-Wimplicit-function-declaration]
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                    ^
+common/lock.c:76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]
+common/lock.c:76:35: fatal error: use of undeclared identifier 'LOCK_EX'
+                if (flock(result, LOCK_EX | LOCK_NB) == -1)
+                                  ^
+3 warnings and 1 error generated.
+make: *** [common/lock.o] Error 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To fix this, you will need to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;src/Makefile&lt;/code&gt; and change line 12 from:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_POSIX_C_SOURCE=200112L
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;to:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_DARWIN_C_SOURCE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;</content><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving -D_POSIX_C_SOURCE up to the Makefile that caused the problem. The solution below is still the same though.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">pgBackRest 2.07 and macOS Mojave</title><link href="/posts/pgBackRest-2.07-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.07 and macOS Mojave" /><published>2018-11-16T01:12:31-05:00</published><updated>2018-11-16T01:12:31-05:00</updated><id>/posts/pgBackRest-2.07-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.07-and-macOS-Mojave/">&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
 
 &lt;p&gt;Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use &lt;a href=&quot;https://brew.sh&quot;&gt;Homebrew&lt;/a&gt; for this:&lt;/p&gt;
 
@@ -753,68 +784,4 @@ $2,406.59 money in my pocket
 
 &lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;Enjoy.&lt;/p&gt;</content><category term="postgresql" /><category term="homebrew" /><summary type="html">With the release of PostgreSQL 10, I’ve updated my pg script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter’s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I’m pretty pleased with the new version actually.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry><entry><title type="html">When you cannot get there from here</title><link href="/posts/When-you-cannot-get-there-from-here/" rel="alternate" type="text/html" title="When you cannot get there from here" /><published>2017-07-25T07:42:47-04:00</published><updated>2017-07-25T07:42:47-04:00</updated><id>/posts/When-you-cannot-get-there-from-here</id><content type="html" xml:base="/posts/When-you-cannot-get-there-from-here/">&lt;p&gt;Connecting to a PostgreSQL instance isn’t hard generally, but sometimes you can run into issues. Sometimes a port isn’t open on a firewall, or the server is in a VLAN that you can’t get to, or perhaps the server isn’t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you’re connection isn’t authorized (which is not the same as being unable to &lt;em&gt;authenticate&lt;/em&gt;). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you’re facing. Let’s dive into each scenario and see what the error looks like, shall we?&lt;/p&gt;
-
-&lt;h4 id=&quot;scenario-1---bad-password&quot;&gt;Scenario 1 - Bad password&lt;/h4&gt;
-
-&lt;p&gt;Let’s first assume that everything is working and you &lt;em&gt;can&lt;/em&gt; actually connect to the PostgreSQL instance, but you can’t authenticate. The error will look like this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/authentication.png&quot; alt=&quot;auth failed&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As you can see, the message makes it pretty clear that you were able to connect, but your credentials were wrong (you were &lt;em&gt;authorized&lt;/em&gt; to connect, but failed to &lt;em&gt;authenticate&lt;/em&gt;). Did you type the password incorrectly? Is there a &lt;code class=&quot;highlighter-rouge&quot;&gt;~/.pgpass&lt;/code&gt; &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-pgpass.html&quot;&gt;file&lt;/a&gt; that is providing the password for you? Do you have &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGPASSWORD&lt;/code&gt; defined in your &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-envars.html&quot;&gt;environment&lt;/a&gt;? Fix the password being passed to PostgreSQL, and you won’t have further issues in this scenario.&lt;/p&gt;
-
-&lt;h4 id=&quot;scenario-2---pg_hbaconf-rejects-you&quot;&gt;Scenario 2 - pg_hba.conf rejects you&lt;/h4&gt;
-
-&lt;p&gt;For our second scenario, we’re going to assume that you &lt;em&gt;can&lt;/em&gt; actually connect to the PostgreSQL instance, but there is an entry in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; denying you access. First, we’ll try connecting via a local Unix socket:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/reject_socket.png&quot; alt=&quot;reject socket&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As you can see, it straight up tells you that you have been &lt;em&gt;explicitly denied access&lt;/em&gt;. It may be rejecting connections via Unix sockets completely, or it may be rejecting connection as the specified user via Unix socket, or it may be rejecting connections to the specified database via Unix sock. You could determine which of these scenarios is true by trying a different user on the same database and then trying the same user on a different database. In any case, the problem &lt;em&gt;is not&lt;/em&gt; networking or firewall related. The DBA needs to adjust &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to allow connections of this type, or you need to connect via a TCP port instead of a Unix socket. Discuss with your DBA.&lt;/p&gt;
-
-&lt;p&gt;Now, let’s try via a TCP port:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/reject_port.png&quot; alt=&quot;reject port&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Again, you can see that it pretty plainly tells you that you have been &lt;em&gt;explicitly denied&lt;/em&gt;. In this case though, it may be rejecting your IP address specifically, your entire network segment, your id, that database, or the fact that you didn’t make an SSL connection. You can whittle this down by trying a different user on the same db, trying the same user on a different db, or switching to an SSL connection and repeating these tests. (I assume that you can’t change your IP address. But perhaps you could make the same test cases from another computer). Again, you’ll probably need the DBA to resolve this with you.&lt;/p&gt;
-
-&lt;h4 id=&quot;scenario-3---pg_hbaconf-doesnt-allow-you&quot;&gt;Scenario 3 - pg_hba.conf doesn’t allow you&lt;/h4&gt;
-
-&lt;p&gt;I know what you’re thinking. “Isn’t this the same as above?”. And the answer is “no it is not”. Above, the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; file had an entry that matched your incoming connection and said to &lt;strong&gt;explicitly&lt;/strong&gt; reject it. In this scenario, there is &lt;em&gt;no entry that matches your connection&lt;/em&gt; and you end up &lt;strong&gt;implicitly&lt;/strong&gt; denied.&lt;/p&gt;
-
-&lt;p&gt;Again, we’ll start by using a Unix socket:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/noentry_socket.png&quot; alt=&quot;no entry socket&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Once more, the message pretty clearly tells you what is wrong. As it says, &lt;em&gt;there is no entry in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; that matches your incoming connection&lt;/em&gt;. And since PostgreSQL tries to err on the side of caution, when it can’t find an entry stating definitively what to do, it rejects you. The same troubleshooting steps as above apply (change the user/db, etc). And also like above, the DBA is going to need to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to add an entry for your connection.&lt;/p&gt;
-
-&lt;p&gt;Now, what does it look like over a TCP port:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/noentry_port.png&quot; alt=&quot;no entry port&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;It’s the same error message as above but showing your IP address instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;[local]&lt;/code&gt;. And the same debugging applies. Once again, the DBA will need to add an entry to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to resolve this.&lt;/p&gt;
-
-&lt;h4 id=&quot;scenario-4---everything-else-no-really&quot;&gt;Scenario 4 - everything else (no, really)&lt;/h4&gt;
-
-&lt;p&gt;By default, PostgreSQL listens for connections on port 5432. Sometimes, your DBA (or your vendor) has chosen to run PostgreSQL on a different port for some reason. If you are not trying to connect to the correct port, you’ll get an error from &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;If you were trying to connect via a Unix socket, you’ll see:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/socket_nope.png&quot; alt=&quot;socket nope&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;If you were trying a TCP port connection, you’d see:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/port_nope.png&quot; alt=&quot;port nope&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This error indicates that it cannot establish a network connection with PostgreSQL at the IP address (or UNix socket) you specified on the default port. Check to make sure you don’t have &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGPORT&lt;/code&gt; set incorrectly in your environment.&lt;/p&gt;
-
-&lt;p&gt;If you &lt;em&gt;are&lt;/em&gt; using the correct port, and you still see one of two errors above, then the issue will be one of the following:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;PostgreSQL isn’t running&lt;/li&gt;
-  &lt;li&gt;PostgreSQL is running, but on a different IP address than you’re trying to connect to&lt;/li&gt;
-  &lt;li&gt;PostgreSQL is running, but you cannot establish a network connection from here to there&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;If PostgreSQL isn’t running, talk to your DBA about why (maybe it died, maybe it’s a maintenance window). If you are affected by the 2&lt;sup&gt;nd&lt;/sup&gt; bullet item, you’ll have to talk with your DBA about the proper IP address to use when connecting. Note that, by default, PostgreSQL only listens on &lt;code class=&quot;highlighter-rouge&quot;&gt;localhost&lt;/code&gt; and none of your other interfaces. If this hasn’t been changed (&lt;code class=&quot;highlighter-rouge&quot;&gt;listen_addresses&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt;) then you’ll fall into this failure category. And if you’re plagued by the 3&lt;sup&gt;rd&lt;/sup&gt; bullet item, you’ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can’t connect to the other VLAN, or some other layer 3/4 tomfoolery.&lt;/p&gt;
-
-&lt;p&gt;So now you know all the (common) ways that connecting to PostgreSQL can fail and how to distinguish between them. With just a little bit of knowledge, you can communicate exactly what is happening to your DBA and make it easier for him/her to rectify the issue. Go forth, and happy PostgreSQL-ing.&lt;/p&gt;</content><category term="postgresql" /><summary type="html">Connecting to a PostgreSQL instance isn’t hard generally, but sometimes you can run into issues. Sometimes a port isn’t open on a firewall, or the server is in a VLAN that you can’t get to, or perhaps the server isn’t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you’re connection isn’t authorized (which is not the same as being unable to authenticate). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you’re facing. Let’s dive into each scenario and see what the error looks like, shall we?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry></feed>
+&lt;p&gt;Enjoy.&lt;/p&gt;</content><category term="postgresql" /><category term="homebrew" /><summary type="html">With the release of PostgreSQL 10, I’ve updated my pg script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter’s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I’m pretty pleased with the new version actually.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /></entry></feed>
