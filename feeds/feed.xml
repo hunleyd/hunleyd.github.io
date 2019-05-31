@@ -5,12 +5,52 @@
   <description>Doug's various musings</description>
   <atom:link href="/feeds/feed.xml" rel="self" type="application/rss+xml" />
   <link></link>
-  <updated>2019-05-31T11:21:40-04:00</updated>
+  <updated>2019-05-31T11:47:24-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title></title>
+    <description>&lt;p&gt;After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
+
+&lt;p&gt;For reference, our &lt;code class=&quot;highlighter-rouge&quot;&gt;.tail_n_mail.conf&lt;/code&gt; looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Config file for the tail_n_mail program
+## This file is automatically updated
+LOG_LINE_PREFIX: %t P%p
+EMAIL: you@gme.com
+MAILSUBJECT: HOST pgBackRest errors NUMBER
+
+INCLUDE: WARN:
+INCLUDE: ERROR:
+INCLUDE: FATAL:
+INCLUDE: PANIC:
+
+
+FILE1: /var/log/pgbackrest/pgbackrest.log
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You would need to change the &lt;code class=&quot;highlighter-rouge&quot;&gt;EMAIL&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;FILE1&lt;/code&gt; and the rest should just work.&lt;/p&gt;
+
+&lt;p&gt;To actually invoke the monitoring, simply add a &lt;code class=&quot;highlighter-rouge&quot;&gt;cron&lt;/code&gt; entry that looks like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(Obviously, you should adjust the periodicity. I &lt;strong&gt;highly&lt;/strong&gt; doubt you need to check every minute.)&lt;/p&gt;
+
+&lt;p&gt;Once you’ve saved the &lt;code class=&quot;highlighter-rouge&quot;&gt;crontab&lt;/code&gt;, you should be all good. If you doubt the setup, you can add &lt;code class=&quot;highlighter-rouge&quot;&gt;--mailzero&lt;/code&gt; to the invocation to get an email even if everything is OK.&lt;/p&gt;
+
+&lt;p&gt;See? Easy.&lt;/p&gt;
+</description>
+    <pubDate>2019-05-31T11:47:24-04:00</pubDate>
+    <link>/posts/2018-09-24-Monitoring-pgBackRest-with-tail_n_mail/</link>
+    <guid isPermaLink="true">/posts/2018-09-24-Monitoring-pgBackRest-with-tail_n_mail/</guid>
+    
+   </item>
   
    <item>
     <title>pgBouncer and auth pass-thru</title>
@@ -880,24 +920,6 @@ $2,406.59 money in my pocket
     <guid isPermaLink="true">/posts/Goodbye-Loui-boy/</guid>
     
      <category>general</category>
-    
-   </item>
-  
-   <item>
-    <title>New look, same content</title>
-    <description>&lt;p&gt;UPDATE: I’ve switched out the theme entirely (again) so the CSS issues should no longer be present. The rest of this post still sands.&lt;/p&gt;
-
-&lt;p&gt;&lt;img class=&quot;lleader&quot; src=&quot;http://www.awesome-t-shirts.com/img/T-shirts/you-look-different-not-better-just-different.jpg&quot; /&gt;As you’ve probably noticed, I’ve launched the new blog design. Everything that was here should still be here, but it might have moved. Sorry, but I broke the old permalinks. Bad blogger! However, I now have everything &lt;em&gt;exactly&lt;/em&gt; where I want it, so it shouldn’t ever change again. Famous last words, right there :)&lt;/p&gt;
-
-&lt;p&gt;So anyway, let me know if you find issues w/ the site. I’m aware of some small CSS fuckery here and there, but I got tired of beating my head against it honestly. If anyone wants to tell me what’s wrong with it and how to fix it, I’ll buy you a virtual beer. If you want to let your opinion known about the new design (nice! it sucks! meh.) feel free to hit me up too. If enough people kvetch, I’ll tweak it.&lt;/p&gt;
-
-&lt;p&gt;Enjoy or something.&lt;/p&gt;
-</description>
-    <pubDate>2017-01-17T09:26:51-05:00</pubDate>
-    <link>/posts/New-look-same-content/</link>
-    <guid isPermaLink="true">/posts/New-look-same-content/</guid>
-    
-     <category>blog</category>
     
    </item>
   
