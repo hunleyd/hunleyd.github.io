@@ -4,8 +4,8 @@
   <title>Douglas J Hunley - geek</title>
   <description>Posts tagged as 'geek'</description>
   <atom:link href="/feeds/feed.geek.xml" rel="self" type="application/rss+xml" />
-  <link>/tag/geek/</link>
-  <updated>2019-02-07T13:11:01-05:00</updated>
+  <link>/tags/#geek/</link>
+  <updated>2019-05-31T11:21:40-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -50,25 +50,28 @@
 
 &lt;p&gt;The first thing we’re going to do is open an iTerm and &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo -i&lt;/code&gt; to become root. Then we’re going to &lt;code class=&quot;highlighter-rouge&quot;&gt;vi /etc/postfix/main.cf&lt;/code&gt; and we’re going to add/set the following:&lt;/p&gt;
 
-&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;myhostname&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;myhostname&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;relayhost&lt;/span&gt; = [&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_sasl_auth_enable&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_sasl_password_maps&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;:/&lt;span class=&quot;n&quot;&gt;etc&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postfix&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;sasl_passwd&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_sasl_security_options&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;noanonymous&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_sasl_mechanism_filter&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_use_tls&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we &lt;code class=&quot;highlighter-rouge&quot;&gt;vi /etc/postfix/sasl_passwd&lt;/code&gt; and add:&lt;/p&gt;
 
-&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;@&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;:&lt;span class=&quot;n&quot;&gt;app_passwd&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;@&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;:&lt;span class=&quot;n&quot;&gt;app_passwd&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;Secure that file by running &lt;code class=&quot;highlighter-rouge&quot;&gt;chmod 0600 /etc/postfix/sasl_passwd&lt;/code&gt; and then have Postfix hash it by doing &lt;code class=&quot;highlighter-rouge&quot;&gt;postmap /etc/postfix/sasl_passwd&lt;/code&gt;. Finally, restart Postfix:&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;launchctl stop org.postfix.master
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;launchctl stop org.postfix.master
 launchctl start org.postfix.master
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;And everything should work.&lt;/p&gt;
 </description>
