@@ -5,7 +5,7 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2019-05-31T12:08:33-04:00</updated>
+  <updated>2019-06-12T10:30:16-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -771,7 +771,7 @@ host   dbname       pglogical  0.0.0.0/0  md5
 
 &lt;p&gt;Let’s first assume that everything is working and you &lt;em&gt;can&lt;/em&gt; actually connect to the PostgreSQL instance, but you can’t authenticate. The error will look like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/authentication.png&quot; alt=&quot;auth failed&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/authentication.png&quot; alt=&quot;auth failed&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As you can see, the message makes it pretty clear that you were able to connect, but your credentials were wrong (you were &lt;em&gt;authorized&lt;/em&gt; to connect, but failed to &lt;em&gt;authenticate&lt;/em&gt;). Did you type the password incorrectly? Is there a &lt;code class=&quot;highlighter-rouge&quot;&gt;~/.pgpass&lt;/code&gt; &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-pgpass.html&quot;&gt;file&lt;/a&gt; that is providing the password for you? Do you have &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGPASSWORD&lt;/code&gt; defined in your &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-envars.html&quot;&gt;environment&lt;/a&gt;? Fix the password being passed to PostgreSQL, and you won’t have further issues in this scenario.&lt;/p&gt;
 
@@ -779,13 +779,13 @@ host   dbname       pglogical  0.0.0.0/0  md5
 
 &lt;p&gt;For our second scenario, we’re going to assume that you &lt;em&gt;can&lt;/em&gt; actually connect to the PostgreSQL instance, but there is an entry in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; denying you access. First, we’ll try connecting via a local Unix socket:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/reject_socket.png&quot; alt=&quot;reject socket&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/reject_socket.png&quot; alt=&quot;reject socket&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As you can see, it straight up tells you that you have been &lt;em&gt;explicitly denied access&lt;/em&gt;. It may be rejecting connections via Unix sockets completely, or it may be rejecting connection as the specified user via Unix socket, or it may be rejecting connections to the specified database via Unix sock. You could determine which of these scenarios is true by trying a different user on the same database and then trying the same user on a different database. In any case, the problem &lt;em&gt;is not&lt;/em&gt; networking or firewall related. The DBA needs to adjust &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to allow connections of this type, or you need to connect via a TCP port instead of a Unix socket. Discuss with your DBA.&lt;/p&gt;
 
 &lt;p&gt;Now, let’s try via a TCP port:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/reject_port.png&quot; alt=&quot;reject port&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/reject_port.png&quot; alt=&quot;reject port&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Again, you can see that it pretty plainly tells you that you have been &lt;em&gt;explicitly denied&lt;/em&gt;. In this case though, it may be rejecting your IP address specifically, your entire network segment, your id, that database, or the fact that you didn’t make an SSL connection. You can whittle this down by trying a different user on the same db, trying the same user on a different db, or switching to an SSL connection and repeating these tests. (I assume that you can’t change your IP address. But perhaps you could make the same test cases from another computer). Again, you’ll probably need the DBA to resolve this with you.&lt;/p&gt;
 
@@ -795,13 +795,13 @@ host   dbname       pglogical  0.0.0.0/0  md5
 
 &lt;p&gt;Again, we’ll start by using a Unix socket:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/noentry_socket.png&quot; alt=&quot;no entry socket&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/noentry_socket.png&quot; alt=&quot;no entry socket&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Once more, the message pretty clearly tells you what is wrong. As it says, &lt;em&gt;there is no entry in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; that matches your incoming connection&lt;/em&gt;. And since PostgreSQL tries to err on the side of caution, when it can’t find an entry stating definitively what to do, it rejects you. The same troubleshooting steps as above apply (change the user/db, etc). And also like above, the DBA is going to need to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to add an entry for your connection.&lt;/p&gt;
 
 &lt;p&gt;Now, what does it look like over a TCP port:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/noentry_port.png&quot; alt=&quot;no entry port&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/noentry_port.png&quot; alt=&quot;no entry port&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;It’s the same error message as above but showing your IP address instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;[local]&lt;/code&gt;. And the same debugging applies. Once again, the DBA will need to add an entry to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to resolve this.&lt;/p&gt;
 
@@ -811,11 +811,11 @@ host   dbname       pglogical  0.0.0.0/0  md5
 
 &lt;p&gt;If you were trying to connect via a Unix socket, you’ll see:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/socket_nope.png&quot; alt=&quot;socket nope&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/socket_nope.png&quot; alt=&quot;socket nope&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;If you were trying a TCP port connection, you’d see:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/port_nope.png&quot; alt=&quot;port nope&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/port_nope.png&quot; alt=&quot;port nope&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This error indicates that it cannot establish a network connection with PostgreSQL at the IP address (or UNix socket) you specified on the default port. Check to make sure you don’t have &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGPORT&lt;/code&gt; set incorrectly in your environment.&lt;/p&gt;
 

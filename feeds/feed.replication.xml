@@ -5,7 +5,7 @@
   <description>Posts tagged as 'replication'</description>
   <atom:link href="/feeds/feed.replication.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#replication/</link>
-  <updated>2019-05-31T12:08:33-04:00</updated>
+  <updated>2019-06-12T10:30:16-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -108,7 +108,7 @@
   
    <item>
     <title>PostgreSQL Streaming Replication in 10 Minutes</title>
-    <description>&lt;p&gt;&lt;img src=&quot;/images/database-replication.png&quot; class=&quot;rleader&quot; /&gt;While there’s absolutely nothing new in this blog post that isn’t covered by the wonderful &lt;a href=&quot;http://www.postgresql.org/docs/current/static/index.html&quot;&gt;docs&lt;/a&gt; I’ve been asked multiple times now by customers if we had some kind of ‘crib notes’ format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well post it so that I can simply point people to it in the future. So here we are.&lt;/p&gt;
+    <description>&lt;p&gt;&lt;img src=&quot;/images/posts/database-replication.png&quot; class=&quot;rleader&quot; /&gt;While there’s absolutely nothing new in this blog post that isn’t covered by the wonderful &lt;a href=&quot;http://www.postgresql.org/docs/current/static/index.html&quot;&gt;docs&lt;/a&gt; I’ve been asked multiple times now by customers if we had some kind of ‘crib notes’ format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well post it so that I can simply point people to it in the future. So here we are.&lt;/p&gt;
 
 &lt;p&gt;Now, let’s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity’s sake, we will call these machines ‘master’ and ‘standby’. Note too that I’m using &lt;code class=&quot;highlighter-rouge&quot;&gt;replication slots&lt;/code&gt; which needs PostgreSQL 9.4.0 or later; if you’re using something earlier, simply ignore the slot stuff.&lt;/p&gt;
 

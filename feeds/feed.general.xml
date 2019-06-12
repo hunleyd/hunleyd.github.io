@@ -5,7 +5,7 @@
   <description>Posts tagged as 'general'</description>
   <atom:link href="/feeds/feed.general.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#general/</link>
-  <updated>2019-05-31T12:08:33-04:00</updated>
+  <updated>2019-06-12T10:30:16-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -55,7 +55,7 @@
 
 &lt;p&gt;So, over the course of the last few months, I walked Mom through getting a TCL Roku TV:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/tcl.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/posts/tcl.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;(Note, that’s actually a picture of the 55” which I bought last Aug. Mom bought the 32” even though I argued for the 37”)&lt;/p&gt;
 
@@ -106,8 +106,7 @@ $2,406.59 money in my pocket
   
    <item>
     <title>Goodbye, Loui boy</title>
-    <description>&lt;p&gt;&lt;img src=&quot;/images/loui.jpg&quot; class=&quot;rleader&quot; /&gt;Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. &lt;em&gt;I will miss you.&lt;/em&gt;&lt;/p&gt;
-
+    <description>&lt;p&gt;&lt;img src=&quot;/images/posts/loui.jpg&quot; class=&quot;rleader&quot; /&gt;Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. &lt;em&gt;I will miss you.&lt;/em&gt;&lt;/p&gt;
 </description>
     <link>/posts/Goodbye-Loui-boy/ </link>
     <pubDate>2017-02-16T03:35:19-05:00</pubDate>
