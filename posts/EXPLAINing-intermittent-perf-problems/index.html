@@ -184,27 +184,25 @@ Reading time ~5 minutes
     <div class="entry-content">
       <p><img src="http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg" class="lleader" />We’ve all gotten the dreaded email/call from a user stating that a query is “slow sometimes”. If you’re lucky, the “sometimes” actually ends up being fairly consistent and you can fairly easily determine what’s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?</p>
 
-<p>For starters, you as the DBA should have your PostgreSQL logging configured to log these slow performing queries. After all, you and the devs and the users can agree that all queries should complete in some measure of time (1 sec, 1 minute, etc). So, once you know what this acceptable elapsed time is, you can easily log any query that runs longer by just setting this in your <code class="highlighter-rouge">postgresql.conf</code>:</p>
+<p>For starters, you as the DBA should have your PostgreSQL logging configured to log these slow performing queries. After all, you and the devs and the users can agree that all queries should complete in some measure of time (1 sec, 1 minute, etc). So, once you know what this acceptable elapsed time is, you can easily log any query that runs longer by just setting this in your <code class="language-plaintext highlighter-rouge">postgresql.conf</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>log_min_duration_statement = 1000   # log anything running longer than 1s
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_min_duration_statement = 1000   # log anything running longer than 1s
+</code></pre></div></div>
 
 <p>And now, you have all queries with long run times logged automatically. And these show up nicely in your pgBadger reports too!</p>
 
-<p>If you’re lucky, you’ll be able to use <code class="highlighter-rouge">EXPLAIN</code> to see why the query is behaving poorly. However, if your life is like mine, the explain plan will be reasonable and won’t have any smoking guns to speak of. Which means the performance is either load dependent or being influenced by other processes (something is blowing out your caches, for example). In these cases, what you really need is the <code class="highlighter-rouge">EXPLAIN</code> output from the very instant that it performed poorly. However, you can’t go back in time to get it. But what you can do is make use of the <code class="highlighter-rouge">auto_explain</code> module that ships with PostgreSQL.</p>
+<p>If you’re lucky, you’ll be able to use <code class="language-plaintext highlighter-rouge">EXPLAIN</code> to see why the query is behaving poorly. However, if your life is like mine, the explain plan will be reasonable and won’t have any smoking guns to speak of. Which means the performance is either load dependent or being influenced by other processes (something is blowing out your caches, for example). In these cases, what you really need is the <code class="language-plaintext highlighter-rouge">EXPLAIN</code> output from the very instant that it performed poorly. However, you can’t go back in time to get it. But what you can do is make use of the <code class="language-plaintext highlighter-rouge">auto_explain</code> module that ships with PostgreSQL.</p>
 
-<p>In case the name wasn’t obvious enough, the <code class="highlighter-rouge">auto_explain</code> module causes PostgreSQL to automatically run <code class="highlighter-rouge">EXPLAIN</code> on queries according to thresholds that you configure. These automatically generated plans are then logged into the normal PostgreSQL logs. Let’s walk through setting it up and see how it works.</p>
+<p>In case the name wasn’t obvious enough, the <code class="language-plaintext highlighter-rouge">auto_explain</code> module causes PostgreSQL to automatically run <code class="language-plaintext highlighter-rouge">EXPLAIN</code> on queries according to thresholds that you configure. These automatically generated plans are then logged into the normal PostgreSQL logs. Let’s walk through setting it up and see how it works.</p>
 
-<p>First, in your <code class="highlighter-rouge">postgresql.conf</code> we want to enable the module:</p>
+<p>First, in your <code class="language-plaintext highlighter-rouge">postgresql.conf</code> we want to enable the module:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>shared_preload_libraries = 'auto_explain'  # change requires restart
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>shared_preload_libraries = 'auto_explain'  # change requires restart
+</code></pre></div></div>
 
-<p>As stated, you will have to restart the postmaster to get the module to load. However, let’s configure it in <code class="highlighter-rouge">postgresql.conf</code> first:</p>
+<p>As stated, you will have to restart the postmaster to get the module to load. However, let’s configure it in <code class="language-plaintext highlighter-rouge">postgresql.conf</code> first:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># Add settings for extensions here
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add settings for extensions here
 #
 # auto_explain
 # http://www.postgresql.org/docs/current/static/auto-explain.html
@@ -215,35 +213,33 @@ auto_explain.log_min_duration = '1000ms'
 auto_explain.log_nested_statements = true
 auto_explain.log_buffers = true
 # auto_explain
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>What we’ve done here is configure <code class="highlighter-rouge">auto_explain</code> to</p>
+<p>What we’ve done here is configure <code class="language-plaintext highlighter-rouge">auto_explain</code> to</p>
 
 <ul>
-  <li>use <code class="highlighter-rouge">EXPLAIN ANALYZE</code><sup>1</sup></li>
-  <li>to use the <code class="highlighter-rouge">TIMING</code> option of <code class="highlighter-rouge">EXPLAIN</code></li>
-  <li>to use the <code class="highlighter-rouge">VERBOSE</code> option of <code class="highlighter-rouge">EXPLAIN</code></li>
-  <li>to log the plan for anything running longer than 1 second (matches <code class="highlighter-rouge">log_min_duration_statement</code>, above)</li>
+  <li>use <code class="language-plaintext highlighter-rouge">EXPLAIN ANALYZE</code><sup>1</sup></li>
+  <li>to use the <code class="language-plaintext highlighter-rouge">TIMING</code> option of <code class="language-plaintext highlighter-rouge">EXPLAIN</code></li>
+  <li>to use the <code class="language-plaintext highlighter-rouge">VERBOSE</code> option of <code class="language-plaintext highlighter-rouge">EXPLAIN</code></li>
+  <li>to log the plan for anything running longer than 1 second (matches <code class="language-plaintext highlighter-rouge">log_min_duration_statement</code>, above)</li>
   <li>to include statements inside a function to also be logged</li>
-  <li>to use the <code class="highlighter-rouge">BUFFERS</code> option of <code class="highlighter-rouge">EXPLAIN</code></li>
+  <li>to use the <code class="language-plaintext highlighter-rouge">BUFFERS</code> option of <code class="language-plaintext highlighter-rouge">EXPLAIN</code></li>
 </ul>
 
-<p>As with most <code class="highlighter-rouge">GUC</code> in PostgreSQL, these can all be changed using <code class="highlighter-rouge">SET</code> in a given session, but we’re setting the defaults here. Now that we have them setup, let’s see what it looks like in practice.</p>
+<p>As with most <code class="language-plaintext highlighter-rouge">GUC</code> in PostgreSQL, these can all be changed using <code class="language-plaintext highlighter-rouge">SET</code> in a given session, but we’re setting the defaults here. Now that we have them setup, let’s see what it looks like in practice.</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span> <span class="n">text</span><span class="p">);</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span> <span class="nb">text</span><span class="p">);</span>
 <span class="k">CREATE</span> <span class="k">TABLE</span>
-<span class="n">Time</span><span class="p">:</span> <span class="mi">6</span><span class="p">.</span><span class="mi">022</span> <span class="n">ms</span>
+<span class="nb">Time</span><span class="p">:</span> <span class="mi">6</span><span class="p">.</span><span class="mi">022</span> <span class="n">ms</span>
 <span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">SELECT</span> <span class="n">generate_series</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10000</span><span class="p">);</span>
 <span class="k">INSERT</span> <span class="mi">0</span> <span class="mi">10000</span>
-<span class="n">Time</span><span class="p">:</span> <span class="mi">23</span><span class="p">.</span><span class="mi">565</span> <span class="n">ms</span>
+<span class="nb">Time</span><span class="p">:</span> <span class="mi">23</span><span class="p">.</span><span class="mi">565</span> <span class="n">ms</span>
 <span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>We connected to PostgreSQL, created a test table, and then used <code class="highlighter-rouge">generate_series</code> to insert 10k rows. In our logs, the following were added:</p>
+<p>We connected to PostgreSQL, created a test table, and then used <code class="language-plaintext highlighter-rouge">generate_series</code> to insert 10k rows. In our logs, the following were added:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>2016-11-28 13:20:30 EST [28838]: [18-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 33.987 ms  statement: CREATE TABLE x(t text);
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2016-11-28 13:20:30 EST [28838]: [18-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 33.987 ms  statement: CREATE TABLE x(t text);
 2016-11-28 13:20:59 EST [28838]: [19-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 16.461 ms  plan:
   Query Text: INSERT INTO x(t) SELECT generate_series(1,10000);
   Insert on public.x  (cost=0.00..50.02 rows=1000 width=32) (actual time=16.459..16.459 rows=0 loops=1)
@@ -255,14 +251,13 @@ auto_explain.log_buffers = true
                 Output: generate_series(1, 10000)
 2016-11-28 13:20:59 EST [28838]: [20-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 23.374 ms  statement: INSERT INTO x(t) SELECT generate_series(1,10000);
 2016-11-28 13:21:00 EST [30079]: [1-1] user=,db=,app=,client= LOG:  automatic analyze of table "doug.public.x" system usage: CPU 0.00s/0.11u sec elapsed 0.14 sec
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>(Note that for illustrative purposes, I issued <code class="highlighter-rouge">SET auto_explain.log_min_duration = '0ms'</code>)</p>
+<p>(Note that for illustrative purposes, I issued <code class="language-plaintext highlighter-rouge">SET auto_explain.log_min_duration = '0ms'</code>)</p>
 
-<p>So, you can see that the <code class="highlighter-rouge">CREATE TABLE</code> didn’t log anything through the <code class="highlighter-rouge">auto_explain</code> module, but the <code class="highlighter-rouge">INSERT INTO</code> did. This is a boring example, so let’s try a <code class="highlighter-rouge">SELECT</code> against our table:</p>
+<p>So, you can see that the <code class="language-plaintext highlighter-rouge">CREATE TABLE</code> didn’t log anything through the <code class="language-plaintext highlighter-rouge">auto_explain</code> module, but the <code class="language-plaintext highlighter-rouge">INSERT INTO</code> did. This is a boring example, so let’s try a <code class="language-plaintext highlighter-rouge">SELECT</code> against our table:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">x</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">t</span> <span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">x</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">t</span> <span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
 <span class="err">┌───────┐</span>
 <span class="err">│</span>   <span class="n">t</span>   <span class="err">│</span>
 <span class="err">├───────┤</span>
@@ -279,13 +274,12 @@ auto_explain.log_buffers = true
 <span class="err">└───────┘</span>
 <span class="p">(</span><span class="mi">10</span> <span class="k">rows</span><span class="p">)</span>
 
-<span class="n">Time</span><span class="p">:</span> <span class="mi">11</span><span class="p">.</span><span class="mi">982</span> <span class="n">ms</span>
-</code></pre>
-</div>
+<span class="nb">Time</span><span class="p">:</span> <span class="mi">11</span><span class="p">.</span><span class="mi">982</span> <span class="n">ms</span>
+</code></pre></div></div>
 
 <p>and the logs look like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>2016-11-28 13:27:38 EST [322]: [7-1] user=,db=,app=,client= LOG:  checkpoint starting: time
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2016-11-28 13:27:38 EST [322]: [7-1] user=,db=,app=,client= LOG:  checkpoint starting: time
 2016-11-28 13:27:46 EST [322]: [8-1] user=,db=,app=,client= LOG:  checkpoint complete: wrote 75 buffers (0.0%); 0 transaction log file(s) added, 0 removed, 0 recycled; write=7.569 s, sync=0.092 s, total=7.920 s; sync files=23, longest=0.092 s, average=0.004 s; distance=685 kB, estimate=685 kB
 2016-11-28 13:28:48 EST [28838]: [21-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.120 ms  plan:
   Query Text: SELECT * FROM x ORDER BY t LIMIT 10;
@@ -301,19 +295,18 @@ auto_explain.log_buffers = true
                 Output: t
                 Buffers: shared hit=45
 2016-11-28 13:28:48 EST [28838]: [22-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.813 ms  statement: SELECT * FROM x ORDER BY t LIMIT 10;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>(You can safely ignore the checkpoint lines at the top there)</p>
 
-<p>There you have both the statement we ran, and the full <code class="highlighter-rouge">EXPLAIN</code> plan. You can see we did a sequential scan on the table (looks like it was all in the <code class="highlighter-rouge">shared_buffers</code> too) and then we passed that up to a <code class="highlighter-rouge">sort</code> node for an in-memory sort, and then passed that result set up to the <code class="highlighter-rouge">limit</code> node.</p>
+<p>There you have both the statement we ran, and the full <code class="language-plaintext highlighter-rouge">EXPLAIN</code> plan. You can see we did a sequential scan on the table (looks like it was all in the <code class="language-plaintext highlighter-rouge">shared_buffers</code> too) and then we passed that up to a <code class="language-plaintext highlighter-rouge">sort</code> node for an in-memory sort, and then passed that result set up to the <code class="language-plaintext highlighter-rouge">limit</code> node.</p>
 
-<p>While this is a stupid simple example, I hope you can see that having this in production for large, complicated queries will allow you to better diagnose issues. For example, simply doing a manual <code class="highlighter-rouge">EXPLAIN ANALYZE</code> on the same query and seeing that you get a different plan is potentially enough to rule out (or in) certain culprits for the intermittent performance issue.
+<p>While this is a stupid simple example, I hope you can see that having this in production for large, complicated queries will allow you to better diagnose issues. For example, simply doing a manual <code class="language-plaintext highlighter-rouge">EXPLAIN ANALYZE</code> on the same query and seeing that you get a different plan is potentially enough to rule out (or in) certain culprits for the intermittent performance issue.
 <br />
 <br />
 <br />
 <br />
-<sup>1</sup> - This option causes the postmaster to collect info on <em>every</em> statement executed, even if <code class="highlighter-rouge">auto_explain</code> isn’t going to log it. It has a measurable impact on overall performance. Please test on your workload and decide for yourself if the overhead is worth the trade-off</p>
+<sup>1</sup> - This option causes the postmaster to collect info on <em>every</em> statement executed, even if <code class="language-plaintext highlighter-rouge">auto_explain</code> isn’t going to log it. It has a measurable impact on overall performance. Please test on your workload and decide for yourself if the overhead is worth the trade-off</p>
 
       <footer class="entry-meta">
         <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>
@@ -334,20 +327,20 @@ auto_explain.log_buffers = true
       <a href="/posts/PostgreSQL-logging-strftime-and-you/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

@@ -5,31 +5,31 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>PostgreSQL, Homebrew, and You &#8211; Douglas J Hunley</title>
+<title>tuned, PG, and you &#8211; Douglas J Hunley</title>
 <meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta name="keywords" content="osx, postgresql">
+<meta name="keywords" content="postgresql, linux">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="/images/db.jpg">
 
-<meta name="twitter:title" content="PostgreSQL, Homebrew, and You">
+<meta name="twitter:title" content="tuned, PG, and you">
 <meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
 <meta name="twitter:creator" content="@hunleyd">
 
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="PostgreSQL, Homebrew, and You">
+<meta property="og:title" content="tuned, PG, and you">
 <meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta property="og:url" content="/posts/PostgreSQL-Homebrew-and-You/">
+<meta property="og:url" content="/posts/tuned-PG-and-you/">
 <meta property="og:site_name" content="Douglas J Hunley">
 
 
 
 
 
-<link rel="canonical" href="/posts/PostgreSQL-Homebrew-and-You/">
+<link rel="canonical" href="/posts/tuned-PG-and-you/">
 <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -159,7 +159,7 @@
 <div class="entry-header">
   
   <div class="entry-image">
-    <img src="/images/db.jpg" alt="PostgreSQL, Homebrew, and You">
+    <img src="/images/db.jpg" alt="tuned, PG, and you">
   </div><!-- /.entry-image -->
 </div><!-- /.entry-header -->
 
@@ -169,9 +169,9 @@
     <header class="header-title">
       <div class="header-title-wrap">
         
-          <h1 class="entry-title"><a href="/posts/PostgreSQL-Homebrew-and-You/" rel="bookmark" title="PostgreSQL, Homebrew, and You">PostgreSQL, Homebrew, and You</a></h1>
+          <h1 class="entry-title"><a href="/posts/tuned-PG-and-you/" rel="bookmark" title="tuned, PG, and you">tuned, PG, and you</a></h1>
         
-        <h2><span class="entry-date date published"><time datetime="2016-11-04T09:30:09-04:00">November 04, 2016</time></span></h2>
+        <h2><span class="entry-date date published"><time datetime="2020-06-23T14:22:44-04:00">June 23, 2020</time></span></h2>
         
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
@@ -182,69 +182,87 @@ Reading time ~2 minutes
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p><img src="http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png" class="lleader" />If you need to install <a href="http://www.posatgresql.org">PostgreSQL</a> onto your Macbook, you have several options available to you nowadays. You could use the <a href="https://bigsql.com/postgresql/installers.jsp">BigSQL</a> package, or you could use <a href="http://postgresapp.com">Postgres.app</a>, or several others. However, if you’re a geek running OSX, you’ve probably already installed <a href="http://brew.sh">Homebrew</a> and it has a wonderful PostgreSQL package. So let’s use it, shall we?</p>
+      <p>We’ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always ‘that depends on your hardware and workload’ and involves a lot of iteration between changing a setting and benchmarking, I thought I’d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for <code class="language-plaintext highlighter-rouge">tuned</code> to make use of. Please, for the love of $diety, stop editing <code class="language-plaintext highlighter-rouge">sysctl.conf</code> and friends!</p>
 
-<p>I’m not going to walk you through installing Homebrew, so let’s just assume it’s already up and running and you’ve followed all the directions. At this point, you have <code class="language-plaintext highlighter-rouge">/usr/local/bin/</code> in your <code class="language-plaintext highlighter-rouge">$PATH</code> and <code class="language-plaintext highlighter-rouge">brew</code> is up and running. So, let’s tell <code class="language-plaintext highlighter-rouge">brew</code> to install PostgreSQL:</p>
+<p>If you’re running RedHat (or a RedHat-derived) OS, <code class="language-plaintext highlighter-rouge">tuned</code> is probably already installed and may even be already running. If not, it’s a simple <code class="language-plaintext highlighter-rouge">yum install tuned</code> to rectify. If you’re on Debian (or a Debian-derived) OS, simply <code class="language-plaintext highlighter-rouge">apt install tuned</code>. Now that you have it installed, you can ask it to recommend a profile for you by issuing <code class="language-plaintext highlighter-rouge">tuned-adm recommend</code> and you can see which profile, if any, is in use by issuing <code class="language-plaintext highlighter-rouge">tuned-adm active</code>. You can also list all the available profiles with <code class="language-plaintext highlighter-rouge">tuned-adm list</code>.</p>
 
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » brew install postgresql
-==&gt; Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.4_1.sierra.b
-Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.4_1.sierra.bottle.tar.gz
-==&gt; Pouring postgresql-9.5.4_1.sierra.bottle.tar.gz
-==&gt; Using the sandbox
-==&gt; /usr/local/Cellar/postgresql/9.5.4_1/bigsqln/initdb /usr/local/var/postgres
-==&gt; Caveats
-If builds of PostgreSQL 9 are failing and you have version 8.x installed,
-you may need to remove the previous version first. See:
-  https://github.com/Homebrew/homebrew/issues/2510
+<p>That’s great and all, but there’s no PostgreSQL profile that ships with <code class="language-plaintext highlighter-rouge">tuned</code>. So, let’s build one! First, decide which of the profiles in <code class="language-plaintext highlighter-rouge">tuned-adm list</code> is the most appropriate starting point for you. If you’re running on bare metal, this is probably <code class="language-plaintext highlighter-rouge">throughput-performance</code>. If your system is virtualized, you probably want <code class="language-plaintext highlighter-rouge">virtual-guest</code>. We’re going to use this profile as the ‘base’ of our profile. Profiles are stored in <code class="language-plaintext highlighter-rouge">/etc/tuned</code>, so let’s start setting ours up:</p>
 
-To migrate existing data from a previous major version (pre-9.0) of PostgreSQL, see:
-  https://www.postgresql.org/docs/9.5/static/upgrading.html
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> /etc/tuned/postgresql
+<span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt; /etc/tuned/postgresql/tuned.conf
+[main]
+include= throughput-performance
+</span><span class="no">
+EOF
+</span></code></pre></div></div>
 
-To migrate existing data from a previous minor versionn (9.0-9.4) of PostgreSQL, see:
-  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
+<p>As you can see, we’re going to start with the <code class="language-plaintext highlighter-rouge">throughput-performance</code> profile as a base, and then make tweaks from there. The first tweak? Disable Transparent Huge Pages (THP):</p>
 
-  You will need your previous PostgreSQL installation from brew to perform `pg_upgrade`.
-  Do not run `brew cleanup postgresql` until you have performed the migration.
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
+[vm]
+transparent_hugepages=never
+</span><span class="no">EOF
+</span></code></pre></div></div>
 
-To have launchd start postgresql now and restart at login:
-  brew services start postgresql
-Or, if you don't want/need a background service you can just run:
-  pg_ctl -D /usr/local/var/postgres start
-==&gt; Summary
-🍺  /usr/local/Cellar/postgresql/9.5.4_1: 3,147 files, 35M
+<p>If you’re not aware, THP on a dedicated PostgreSQL server really don’t play nicely. It’s best to avoid them completely.</p>
+
+<p>Now, we want to set the ‘standard database VM config’ so we:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
+
+[sysctl]
+vm.overcommit_memory = 2
+vm.swappiness = 1
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<p>I, personally, also then add (after benchmarking, of course):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
+kernel.sched_autogroup_enabled = 0
+kernel.sched_migration_cost_ns = 50000000
+vm.dirty_background_bytes = 134217728
+vm.dirty_expire_centisecs = 499
+vm.dirty_ratio = 90
+vm.overcommit_ratio = 90
+vm.zone_reclaim_mode = 0
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<p>This gives you a complete PostgreSQL tuned profile that looks like:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[main]
+include= throughput-performance
+
+[sysctl]
+kernel.sched_autogroup_enabled = 0
+kernel.sched_migration_cost_ns = 50000000
+vm.dirty_background_bytes = 134217728
+vm.dirty_expire_centisecs = 499
+vm.dirty_ratio = 90
+vm.overcommit_memory = 2
+vm.overcommit_ratio = 90
+vm.swappiness = 1
+vm.zone_reclaim_mode = 0
+
+[vm]
+transparent_hugepages=never
 </code></pre></div></div>
 
-<p>As you can see, it downloaded the package, installed the binaries, and ran <code class="language-plaintext highlighter-rouge">initdb</code> for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:</p>
+<p>(well, in a slightly different order, but you get the drift).</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » brew services start postgresql
-<span class="o">==&gt;</span> Successfully started <span class="sb">`</span>postgresql<span class="sb">`</span> <span class="o">(</span>label: homebrew.mxcl.postgresql<span class="o">)</span>
-</code></pre></div></div>
+<p>Now that we have our profile, run a quick <code class="language-plaintext highlighter-rouge">tuned-adm list</code> to ensure that it is listed as available. Assuming it is, you can enable it with <code class="language-plaintext highlighter-rouge">tune-adm profile postgresql</code> and then double-check that it took effect with <code class="language-plaintext highlighter-rouge">tune-adm active</code>.</p>
 
-<p>And if you check your process listing, you can see that the cluster is up and running under your id:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » ps <span class="nt">-efw</span>|grep postgres
-  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres <span class="nt">-D</span> /usr/local/var/postgres
-  501  6817  6808   0 11:03AM ??         0:00.00 postgres: logger process
-  501  6819  6808   0 11:03AM ??         0:00.00 postgres: checkpointer process
-  501  6820  6808   0 11:03AM ??         0:00.00 postgres: writer process
-  501  6821  6808   0 11:03AM ??         0:00.00 postgres: wal writer process
-  501  6822  6808   0 11:03AM ??         0:00.00 postgres: autovacuum launcher process
-  501  6823  6808   0 11:03AM ??         0:00.00 postgres: stats collector process
-doug@Douglass-MacBook-Pro ~ »
-</code></pre></div></div>
-
-<p>And just like that, you have PostgreSQL installed and running! Set <code class="language-plaintext highlighter-rouge">$PGDATA</code> to <code class="language-plaintext highlighter-rouge">/usr/local/var/postgres</code> and you’re all set.</p>
-
-<p>Enjoy!</p>
+<p>Once activated, you should be all set. Happy computing, or something. ;)</p>
 
       <footer class="entry-meta">
-        <span class="entry-tags"><a href="/tags/#osx" title="Pages tagged osx" class="tag"><span class="term">osx</span></a><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>
+        <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a><a href="/tags/#linux" title="Pages tagged linux" class="tag"><span class="term">linux</span></a></span>
         
         <div class="social-share">
   <ul class="socialcount socialcount-small inline-list">
-    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/PostgreSQL-Homebrew-and-You/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
-    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/PostgreSQL-Homebrew-and-You/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
-    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/PostgreSQL-Homebrew-and-You/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/tuned-PG-and-you/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/tuned-PG-and-you/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/tuned-PG-and-you/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
   </ul>
 </div><!-- /.social-share -->
       </footer>
@@ -253,23 +271,23 @@ doug@Douglass-MacBook-Pro ~ »
     <div class="read-more">
   
     <div class="read-more-header">
-      <a href="/posts/Inaugural-pgCMH-mtg/" class="read-more-btn">Read More</a>
+      <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
-      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
+      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
+      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
-        <span>Published on February 07, 2019</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
+        <span>Published on November 16, 2018</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

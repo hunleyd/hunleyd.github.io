@@ -190,15 +190,15 @@ Reading time ~5 minutes
 
 <p><img src="/images/posts/authentication.png" alt="auth failed" /></p>
 
-<p>As you can see, the message makes it pretty clear that you were able to connect, but your credentials were wrong (you were <em>authorized</em> to connect, but failed to <em>authenticate</em>). Did you type the password incorrectly? Is there a <code class="highlighter-rouge">~/.pgpass</code> <a href="https://www.postgresql.org/docs/current/static/libpq-pgpass.html">file</a> that is providing the password for you? Do you have <code class="highlighter-rouge">$PGPASSWORD</code> defined in your <a href="https://www.postgresql.org/docs/current/static/libpq-envars.html">environment</a>? Fix the password being passed to PostgreSQL, and you won’t have further issues in this scenario.</p>
+<p>As you can see, the message makes it pretty clear that you were able to connect, but your credentials were wrong (you were <em>authorized</em> to connect, but failed to <em>authenticate</em>). Did you type the password incorrectly? Is there a <code class="language-plaintext highlighter-rouge">~/.pgpass</code> <a href="https://www.postgresql.org/docs/current/static/libpq-pgpass.html">file</a> that is providing the password for you? Do you have <code class="language-plaintext highlighter-rouge">$PGPASSWORD</code> defined in your <a href="https://www.postgresql.org/docs/current/static/libpq-envars.html">environment</a>? Fix the password being passed to PostgreSQL, and you won’t have further issues in this scenario.</p>
 
 <h4 id="scenario-2---pg_hbaconf-rejects-you">Scenario 2 - pg_hba.conf rejects you</h4>
 
-<p>For our second scenario, we’re going to assume that you <em>can</em> actually connect to the PostgreSQL instance, but there is an entry in <code class="highlighter-rouge">pg_hba.conf</code> denying you access. First, we’ll try connecting via a local Unix socket:</p>
+<p>For our second scenario, we’re going to assume that you <em>can</em> actually connect to the PostgreSQL instance, but there is an entry in <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> denying you access. First, we’ll try connecting via a local Unix socket:</p>
 
 <p><img src="/images/posts/reject_socket.png" alt="reject socket" /></p>
 
-<p>As you can see, it straight up tells you that you have been <em>explicitly denied access</em>. It may be rejecting connections via Unix sockets completely, or it may be rejecting connection as the specified user via Unix socket, or it may be rejecting connections to the specified database via Unix sock. You could determine which of these scenarios is true by trying a different user on the same database and then trying the same user on a different database. In any case, the problem <em>is not</em> networking or firewall related. The DBA needs to adjust <code class="highlighter-rouge">pg_hba.conf</code> to allow connections of this type, or you need to connect via a TCP port instead of a Unix socket. Discuss with your DBA.</p>
+<p>As you can see, it straight up tells you that you have been <em>explicitly denied access</em>. It may be rejecting connections via Unix sockets completely, or it may be rejecting connection as the specified user via Unix socket, or it may be rejecting connections to the specified database via Unix sock. You could determine which of these scenarios is true by trying a different user on the same database and then trying the same user on a different database. In any case, the problem <em>is not</em> networking or firewall related. The DBA needs to adjust <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> to allow connections of this type, or you need to connect via a TCP port instead of a Unix socket. Discuss with your DBA.</p>
 
 <p>Now, let’s try via a TCP port:</p>
 
@@ -208,23 +208,23 @@ Reading time ~5 minutes
 
 <h4 id="scenario-3---pg_hbaconf-doesnt-allow-you">Scenario 3 - pg_hba.conf doesn’t allow you</h4>
 
-<p>I know what you’re thinking. “Isn’t this the same as above?”. And the answer is “no it is not”. Above, the <code class="highlighter-rouge">pg_hba.conf</code> file had an entry that matched your incoming connection and said to <strong>explicitly</strong> reject it. In this scenario, there is <em>no entry that matches your connection</em> and you end up <strong>implicitly</strong> denied.</p>
+<p>I know what you’re thinking. “Isn’t this the same as above?”. And the answer is “no it is not”. Above, the <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> file had an entry that matched your incoming connection and said to <strong>explicitly</strong> reject it. In this scenario, there is <em>no entry that matches your connection</em> and you end up <strong>implicitly</strong> denied.</p>
 
 <p>Again, we’ll start by using a Unix socket:</p>
 
 <p><img src="/images/posts/noentry_socket.png" alt="no entry socket" /></p>
 
-<p>Once more, the message pretty clearly tells you what is wrong. As it says, <em>there is no entry in <code class="highlighter-rouge">pg_hba.conf</code> that matches your incoming connection</em>. And since PostgreSQL tries to err on the side of caution, when it can’t find an entry stating definitively what to do, it rejects you. The same troubleshooting steps as above apply (change the user/db, etc). And also like above, the DBA is going to need to edit <code class="highlighter-rouge">pg_hba.conf</code> to add an entry for your connection.</p>
+<p>Once more, the message pretty clearly tells you what is wrong. As it says, <em>there is no entry in <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> that matches your incoming connection</em>. And since PostgreSQL tries to err on the side of caution, when it can’t find an entry stating definitively what to do, it rejects you. The same troubleshooting steps as above apply (change the user/db, etc). And also like above, the DBA is going to need to edit <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> to add an entry for your connection.</p>
 
 <p>Now, what does it look like over a TCP port:</p>
 
 <p><img src="/images/posts/noentry_port.png" alt="no entry port" /></p>
 
-<p>It’s the same error message as above but showing your IP address instead of <code class="highlighter-rouge">[local]</code>. And the same debugging applies. Once again, the DBA will need to add an entry to <code class="highlighter-rouge">pg_hba.conf</code> to resolve this.</p>
+<p>It’s the same error message as above but showing your IP address instead of <code class="language-plaintext highlighter-rouge">[local]</code>. And the same debugging applies. Once again, the DBA will need to add an entry to <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> to resolve this.</p>
 
 <h4 id="scenario-4---everything-else-no-really">Scenario 4 - everything else (no, really)</h4>
 
-<p>By default, PostgreSQL listens for connections on port 5432. Sometimes, your DBA (or your vendor) has chosen to run PostgreSQL on a different port for some reason. If you are not trying to connect to the correct port, you’ll get an error from <code class="highlighter-rouge">psql</code>.</p>
+<p>By default, PostgreSQL listens for connections on port 5432. Sometimes, your DBA (or your vendor) has chosen to run PostgreSQL on a different port for some reason. If you are not trying to connect to the correct port, you’ll get an error from <code class="language-plaintext highlighter-rouge">psql</code>.</p>
 
 <p>If you were trying to connect via a Unix socket, you’ll see:</p>
 
@@ -234,7 +234,7 @@ Reading time ~5 minutes
 
 <p><img src="/images/posts/port_nope.png" alt="port nope" /></p>
 
-<p>This error indicates that it cannot establish a network connection with PostgreSQL at the IP address (or UNix socket) you specified on the default port. Check to make sure you don’t have <code class="highlighter-rouge">$PGPORT</code> set incorrectly in your environment.</p>
+<p>This error indicates that it cannot establish a network connection with PostgreSQL at the IP address (or UNix socket) you specified on the default port. Check to make sure you don’t have <code class="language-plaintext highlighter-rouge">$PGPORT</code> set incorrectly in your environment.</p>
 
 <p>If you <em>are</em> using the correct port, and you still see one of two errors above, then the issue will be one of the following:</p>
 
@@ -244,7 +244,7 @@ Reading time ~5 minutes
   <li>PostgreSQL is running, but you cannot establish a network connection from here to there</li>
 </ul>
 
-<p>If PostgreSQL isn’t running, talk to your DBA about why (maybe it died, maybe it’s a maintenance window). If you are affected by the 2<sup>nd</sup> bullet item, you’ll have to talk with your DBA about the proper IP address to use when connecting. Note that, by default, PostgreSQL only listens on <code class="highlighter-rouge">localhost</code> and none of your other interfaces. If this hasn’t been changed (<code class="highlighter-rouge">listen_addresses</code> in <code class="highlighter-rouge">postgresql.conf</code>) then you’ll fall into this failure category. And if you’re plagued by the 3<sup>rd</sup> bullet item, you’ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can’t connect to the other VLAN, or some other layer 3/4 tomfoolery.</p>
+<p>If PostgreSQL isn’t running, talk to your DBA about why (maybe it died, maybe it’s a maintenance window). If you are affected by the 2<sup>nd</sup> bullet item, you’ll have to talk with your DBA about the proper IP address to use when connecting. Note that, by default, PostgreSQL only listens on <code class="language-plaintext highlighter-rouge">localhost</code> and none of your other interfaces. If this hasn’t been changed (<code class="language-plaintext highlighter-rouge">listen_addresses</code> in <code class="language-plaintext highlighter-rouge">postgresql.conf</code>) then you’ll fall into this failure category. And if you’re plagued by the 3<sup>rd</sup> bullet item, you’ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can’t connect to the other VLAN, or some other layer 3/4 tomfoolery.</p>
 
 <p>So now you know all the (common) ways that connecting to PostgreSQL can fail and how to distinguish between them. With just a little bit of knowledge, you can communicate exactly what is happening to your DBA and make it easier for him/her to rectify the issue. Go forth, and happy PostgreSQL-ing.</p>
 
@@ -267,20 +267,20 @@ Reading time ~5 minutes
       <a href="/posts/Installing-pgBackRest-on-OSX/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

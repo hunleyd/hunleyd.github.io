@@ -184,13 +184,12 @@ Reading time ~1 minute
     <div class="entry-content">
       <p><img src="http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png" class="rleader" />Following on from <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">this</a> post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:</p>
 
-<script src="https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js"> </script>
+<script src="https://gist.github.com/0ee7d8745c2f9854b34ed48ae9196362.js"> </script>
 
 <p>But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » pg 9.6
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » pg 9.6
+</code></pre></div></div>
 
 <p>and then the script does the following:</p>
 
@@ -200,7 +199,7 @@ Reading time ~1 minute
   <li>checks if another version is linked as the active version, and unlinks it</li>
   <li>links the requested version as the active version</li>
   <li>sets PGDATA to point to the requested version’s data cluster</li>
-  <li>does an <code class="highlighter-rouge">initdb</code> for the requested version if needed</li>
+  <li>does an <code class="language-plaintext highlighter-rouge">initdb</code> for the requested version if needed</li>
   <li>starts the requested version’s cluster</li>
 </ul>
 
@@ -227,20 +226,20 @@ Reading time ~1 minute
       <a href="/posts/Routing-email-through-GMail-on-OSX/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

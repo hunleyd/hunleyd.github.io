@@ -184,30 +184,27 @@ Reading time ~1 minute
     <div class="entry-content">
       <p><img src="http://www.postfix.org/mysza.gif" class="lleader" />Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)</p>
 
-<p>The first thing we’re going to do is open an iTerm and <code class="highlighter-rouge">sudo -i</code> to become root. Then we’re going to <code class="highlighter-rouge">vi /etc/postfix/main.cf</code> and we’re going to add/set the following:</p>
+<p>The first thing we’re going to do is open an iTerm and <code class="language-plaintext highlighter-rouge">sudo -i</code> to become root. Then we’re going to <code class="language-plaintext highlighter-rouge">vi /etc/postfix/main.cf</code> and we’re going to add/set the following:</p>
 
-<div class="language-conf highlighter-rouge"><pre class="highlight"><code><span class="n">myhostname</span> = <span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">myhostname</span> = <span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>
 <span class="n">relayhost</span> = [<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span>
 <span class="n">smtp_sasl_auth_enable</span> = <span class="n">yes</span>
 <span class="n">smtp_sasl_password_maps</span>= <span class="n">hash</span>:/<span class="n">etc</span>/<span class="n">postfix</span>/<span class="n">sasl_passwd</span>
 <span class="n">smtp_sasl_security_options</span> = <span class="n">noanonymous</span>
 <span class="n">smtp_sasl_mechanism_filter</span> = <span class="n">plain</span>
 <span class="n">smtp_use_tls</span> = <span class="n">yes</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we <code class="highlighter-rouge">vi /etc/postfix/sasl_passwd</code> and add:</p>
+<p>I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we <code class="language-plaintext highlighter-rouge">vi /etc/postfix/sasl_passwd</code> and add:</p>
 
-<div class="language-conf highlighter-rouge"><pre class="highlight"><code>[<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span> <span class="n">username</span>@<span class="n">gmail</span>.<span class="n">com</span>:<span class="n">app_passwd</span>
-</code></pre>
-</div>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span> <span class="n">username</span>@<span class="n">gmail</span>.<span class="n">com</span>:<span class="n">app_passwd</span>
+</code></pre></div></div>
 
-<p>Secure that file by running <code class="highlighter-rouge">chmod 0600 /etc/postfix/sasl_passwd</code> and then have Postfix hash it by doing <code class="highlighter-rouge">postmap /etc/postfix/sasl_passwd</code>. Finally, restart Postfix:</p>
+<p>Secure that file by running <code class="language-plaintext highlighter-rouge">chmod 0600 /etc/postfix/sasl_passwd</code> and then have Postfix hash it by doing <code class="language-plaintext highlighter-rouge">postmap /etc/postfix/sasl_passwd</code>. Finally, restart Postfix:</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>launchctl stop org.postfix.master
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>launchctl stop org.postfix.master
 launchctl start org.postfix.master
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>And everything should work.</p>
 
@@ -230,20 +227,20 @@ launchctl start org.postfix.master
       <a href="/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

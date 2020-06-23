@@ -184,49 +184,45 @@ Reading time ~2 minutes
     <div class="entry-content">
       <p><img src="http://www.navops.io/img/launch-samsung-1.gif" class="lleader" />Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
 
-<p>Thankfully, the PostgreSQL team introduced <code class="highlighter-rouge">pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code class="highlighter-rouge">pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?</p>
+<p>Thankfully, the PostgreSQL team introduced <code class="language-plaintext highlighter-rouge">pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code class="language-plaintext highlighter-rouge">pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?</p>
 
-<p>First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a> if you need to do this). We’re going to use <code class="highlighter-rouge">pgbench</code> to create some data in our PostgreSQL 9.5 instance:</p>
+<p>First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a> if you need to do this). We’re going to use <code class="language-plaintext highlighter-rouge">pgbench</code> to create some data in our PostgreSQL 9.5 instance:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.5
 doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
 doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
 doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, <em>this is where you’d have to stop your application(s)</em>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &gt; data.sql
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &gt; data.sql
 pg_dumpall &gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.6
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.6
 doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
 psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>After 37 minutes, our data is back and we can start our applications back up. <em>An outage of approximately 56.5 minutes</em>.</p>
 
-<p>Now, let’s blow away our PostgreSQL 9.6 cluster and use <code class="highlighter-rouge">pg_upgrade</code> to complete the same task. You would do this with the application(s) down as well!</p>
+<p>Now, let’s blow away our PostgreSQL 9.6 cluster and use <code class="language-plaintext highlighter-rouge">pg_upgrade</code> to complete the same task. You would do this with the application(s) down as well!</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
 doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
 doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
 doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
 pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>And we’re done <em>in 10.5 minutes</em>. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?</p>
 
-<p>For the curious, the <code class="highlighter-rouge">pg_upgrade</code> output that I omitted above for readability’s sake is:</p>
+<p>For the curious, the <code class="language-plaintext highlighter-rouge">pg_upgrade</code> output that I omitted above for readability’s sake is:</p>
 
-<script src="https://gist.github.com/hunleyd/3ff1f5503fc42e3446b35715bd0ec932.js"> </script>
+<script src="https://gist.github.com/3ff1f5503fc42e3446b35715bd0ec932.js"> </script>
 
 
       <footer class="entry-meta">
@@ -248,20 +244,20 @@ pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40
       <a href="/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

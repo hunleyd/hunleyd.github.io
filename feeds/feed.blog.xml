@@ -5,7 +5,7 @@
   <description>Posts tagged as 'blog'</description>
   <atom:link href="/feeds/feed.blog.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#blog/</link>
-  <updated>2020-05-04T13:28:00-04:00</updated>
+  <updated>2020-06-23T16:34:57-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -33,7 +33,7 @@
 
 &lt;p&gt;I guess the most obvious change would be that I added pagination finally. If you scroll the homepage all the way down, instead of it going back through the entire blog’s history, it stops after five posts, and then gives a clickable page counter. Once I had this implemented, I then had to un-paginate the archive pages which was interesting.&lt;/p&gt;
 
-&lt;p&gt;The next most visible change would probably be the change I made to the CSS concerning CODE and CODEBLOCK. I’m still not 100% sure this is the final form, but I like it better than it was. For reference, it now looks like &lt;code class=&quot;highlighter-rouge&quot;&gt;this&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The next most visible change would probably be the change I made to the CSS concerning CODE and CODEBLOCK. I’m still not 100% sure this is the final form, but I like it better than it was. For reference, it now looks like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;this&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;My third change was to tweak the site’s header a bit. If you cast your gaze upwards, you can see that I now have ‘About’, ‘Archive’, and ‘Feeds’ in the header. The ‘Feeds’ link is new, as is the page that it links to. The actual RSS feeds themselves have existed for a while now, I just didn’t announce them.&lt;/p&gt;
 

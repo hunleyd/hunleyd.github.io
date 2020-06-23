@@ -194,13 +194,13 @@ Reading time ~3 minutes
 
 <p>pgBackRest is written in Perl, but don’t hold that against it. As of the 1.19 release, pgBackRest can now use S3 buckets as the storage backend. I <em>really</em> like pgBackRest and tend to use it for myself and customers over any of the other tools in the PostgreSQL ecosphere. So, let’s get started by downloading the latest release from their site, and then installing it. For some reason, no one has added pgBackRest to Homebrew yet (someone, pls!) so let’s do it the manual way:</p>
 
-<script src="https://gist.github.com/hunleyd/4e7390cc161206d1e53019c8e44a20b7.js"> </script>
+<script src="https://gist.github.com/4e7390cc161206d1e53019c8e44a20b7.js"> </script>
 
-<p>(Keep in mind that I already had Perl setup to connect to PostgreSQL for other uses. You might need to install <code class="highlighter-rouge">DBD::Pg</code>.)</p>
+<p>(Keep in mind that I already had Perl setup to connect to PostgreSQL for other uses. You might need to install <code class="language-plaintext highlighter-rouge">DBD::Pg</code>.)</p>
 
 <p>Now that pgBackRest is installed, let’s configure it. First, we’ll want to set some of the global properties that affect all pgBackRest operations:</p>
 
-<script src="https://gist.github.com/hunleyd/005748ef36074b225619f79ab3420c54.js"> </script>
+<script src="https://gist.github.com/005748ef36074b225619f79ab3420c54.js"> </script>
 
 <p>As you can see, we set the following:</p>
 
@@ -218,29 +218,29 @@ Reading time ~3 minutes
 
 <p>Now, we need to tell pgBackRest which instance of PostgreSQL we want to backup and where to find it. Again, if you used my previous posts to install multiple versions via Homebrew, this should look familiar:</p>
 
-<script src="https://gist.github.com/hunleyd/fea13b1e4b57f7c0ad068ef2579a04cd.js"> </script>
+<script src="https://gist.github.com/fea13b1e4b57f7c0ad068ef2579a04cd.js"> </script>
 
 <p>You can see for each pg cluster, we define:</p>
 
 <ul>
-  <li>the path to the <code class="highlighter-rouge">$PGDATA</code> directory</li>
+  <li>the path to the <code class="language-plaintext highlighter-rouge">$PGDATA</code> directory</li>
   <li>the port the cluster listens on</li>
   <li>and the path we want to store the backups in on our backend</li>
 </ul>
 
-<p>When you put this all together, we’ll be connecting to an S3 bucket called, creatively enough, <code class="highlighter-rouge">hunleyd-pgbackrest</code> and then we will create a top-level directory (‘96’, ‘95’, etc) to store each cluster’s backups in.</p>
+<p>When you put this all together, we’ll be connecting to an S3 bucket called, creatively enough, <code class="language-plaintext highlighter-rouge">hunleyd-pgbackrest</code> and then we will create a top-level directory (‘96’, ‘95’, etc) to store each cluster’s backups in.</p>
 
 <p>Now that we’ve got our configuration complete, let’s do an initial backup of one of the clusters. First, we have to create the appropriate directories and metadata on the backend:</p>
 
-<script src="https://gist.github.com/hunleyd/ac4aa555e10ffa9a210983d7997e3ebc.js"> </script>
+<script src="https://gist.github.com/ac4aa555e10ffa9a210983d7997e3ebc.js"> </script>
 
-<p>Then, we have pgBackRest verify that everything is properly setup. Note that this includes checking to ensure you tweaked <code class="highlighter-rouge">postgresql.conf</code> according to the directions on their site (I’m not going to repeat them here):</p>
+<p>Then, we have pgBackRest verify that everything is properly setup. Note that this includes checking to ensure you tweaked <code class="language-plaintext highlighter-rouge">postgresql.conf</code> according to the directions on their site (I’m not going to repeat them here):</p>
 
-<script src="https://gist.github.com/hunleyd/56358e6024a84833af73fda3d7d71432.js"> </script>
+<script src="https://gist.github.com/56358e6024a84833af73fda3d7d71432.js"> </script>
 
 <p>And since that all worked, we can take our first actual backup:</p>
 
-<script src="https://gist.github.com/hunleyd/fdc5991f31aa098f685a3a462461d897.js"> </script>
+<script src="https://gist.github.com/fdc5991f31aa098f685a3a462461d897.js"> </script>
 
 <p>Neat!</p>
 
@@ -248,21 +248,21 @@ Reading time ~3 minutes
 
 <p><img src="/images/posts/s3_1.png" alt="s3_1" /></p>
 
-<p>You can see here the top-level contents of my <code class="highlighter-rouge">hunleyd-pgbackrest</code> bucket. As stated before, each cluster gets its own sub-dir. Since we just backed up the ‘92’ cluster, let’s look inside it’s dir.</p>
+<p>You can see here the top-level contents of my <code class="language-plaintext highlighter-rouge">hunleyd-pgbackrest</code> bucket. As stated before, each cluster gets its own sub-dir. Since we just backed up the ‘92’ cluster, let’s look inside it’s dir.</p>
 
 <p><img src="/images/posts/s3_2.png" alt="s3_2" /></p>
 
-<p>You can see that pgBackRest has created as directory for the WALs to be stored in whenever <code class="highlighter-rouge">archive_command</code> fires and another directory for the actual cluster backups. Peeking into the <code class="highlighter-rouge">archive</code> dir, we see:</p>
+<p>You can see that pgBackRest has created as directory for the WALs to be stored in whenever <code class="language-plaintext highlighter-rouge">archive_command</code> fires and another directory for the actual cluster backups. Peeking into the <code class="language-plaintext highlighter-rouge">archive</code> dir, we see:</p>
 
 <p><img src="/images/posts/s3_3.png" alt="s3_3" /></p>
 
-<p>This shows us some metadata, and shows that pgBackRest creates a directory for each timeline of the cluster. Since we are on timeline 1 in our 92 cluster, we have a <code class="highlighter-rouge">9.2-1</code> directory inside of which, we find:</p>
+<p>This shows us some metadata, and shows that pgBackRest creates a directory for each timeline of the cluster. Since we are on timeline 1 in our 92 cluster, we have a <code class="language-plaintext highlighter-rouge">9.2-1</code> directory inside of which, we find:</p>
 
 <p><img src="/images/posts/s3_4.png" alt="s3_4" /></p>
 
 <p>Our archived WALs have been compressed and uploaded. Hurray!</p>
 
-<p>Now, let’s check inside the <code class="highlighter-rouge">backup</code> directory:</p>
+<p>Now, let’s check inside the <code class="language-plaintext highlighter-rouge">backup</code> directory:</p>
 
 <p><img src="/images/posts/s3_5.png" alt="s3_5" /></p>
 
@@ -270,15 +270,15 @@ Reading time ~3 minutes
 
 <p><img src="/images/posts/s3_6.png" alt="s3_6" /></p>
 
-<p>Hey look, more metadata! And another folder! :) So, let’s dive into the <code class="highlighter-rouge">pg_data</code> folder where we see:</p>
+<p>Hey look, more metadata! And another folder! :) So, let’s dive into the <code class="language-plaintext highlighter-rouge">pg_data</code> folder where we see:</p>
 
 <p><img src="/images/posts/s3_7.png" alt="s3_7" /></p>
 
-<p>Holy crap! It’s a basebackup of our <code class="highlighter-rouge">$PGDATA</code> data directory. And all the files have been nicely compressed for us. Rock on, pgBackRest!</p>
+<p>Holy crap! It’s a basebackup of our <code class="language-plaintext highlighter-rouge">$PGDATA</code> data directory. And all the files have been nicely compressed for us. Rock on, pgBackRest!</p>
 
 <p>And just in case you wanted to see the current backup catalog:</p>
 
-<script src="https://gist.github.com/hunleyd/f553b0931a571965ca9bcb6235cb8fcf.js"> </script>
+<script src="https://gist.github.com/f553b0931a571965ca9bcb6235cb8fcf.js"> </script>
 
 <p>(look at that compression!)</p>
 
@@ -301,20 +301,20 @@ Reading time ~3 minutes
       <a href="/posts/Goodbye-Loui-boy/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

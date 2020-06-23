@@ -5,7 +5,7 @@
   <description>Posts tagged as 'homebrew'</description>
   <atom:link href="/feeds/feed.homebrew.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#homebrew/</link>
-  <updated>2020-05-04T13:28:00-04:00</updated>
+  <updated>2020-06-23T16:34:57-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -14,11 +14,11 @@
   
    <item>
     <title>updated PostgreSQL homebrew script</title>
-    <description>&lt;p&gt;With the release of PostgreSQL 10, I’ve updated my &lt;code class=&quot;highlighter-rouge&quot;&gt;pg&lt;/code&gt; script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter’s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I’m pretty pleased with the new version actually.&lt;/p&gt;
+    <description>&lt;p&gt;With the release of PostgreSQL 10, I’ve updated my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg&lt;/code&gt; script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter’s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I’m pretty pleased with the new version actually.&lt;/p&gt;
 
 &lt;p&gt;As always, it’s been added as a gist:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;Enjoy.&lt;/p&gt;
 </description>

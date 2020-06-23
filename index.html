@@ -176,6 +176,51 @@
     <HEADER>
       
         <DIV class="entry-image-index">
+          <A href="/posts/tuned-PG-and-you/" title="tuned, PG, and you"><IMG src="/images/db.jpg" alt="tuned, PG, and you" /></A>
+        </DIV><!-- /.entry-image -->
+      
+      <DIV class="entry-meta">
+        <SPAN class="entry-date date published updated">
+          <TIME datetime="2020-06-23T14:22:44-04:00" />
+            <A href="/posts/tuned-PG-and-you/">June 23, 2020</A>
+          </TIME>
+        </SPAN>
+        <SPAN class="author vcard">
+          <SPAN class="fn">
+            <A href="/about/" title="About Douglas J Hunley">Douglas J Hunley</A>
+          </SPAN>
+        </SPAN>
+        
+          <SPAN class="entry-reading-time">
+            <I class="fa fa-clock-o"></i>
+            
+Reading time ~2 minutes
+          </SPAN><!-- /.entry-reading-time -->
+        
+      </DIV><!-- /.entry-meta -->
+      
+        <H1 class="entry-title">
+          <A href="/posts/tuned-PG-and-you/" rel="bookmark" title="tuned, PG, and you" itemprop="url">tuned, PG, and you</A>
+        </H1>
+      
+    </HEADER>
+    <DIV class="entry-content">
+      <p>We’ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always ‘that depends on your hardware and workload’ and involves a lot of iteration between changing a setting and benchmarking, I thought I’d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for <code class="language-plaintext highlighter-rouge">tuned</code> to make use of. Please, for the love of $diety, stop editing <code class="language-plaintext highlighter-rouge">sysctl.conf</code> and friends!</p>
+
+      
+      
+      
+        <P>
+          <A href="/posts/tuned-PG-and-you/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
+        </P>
+      
+    </DIV><!-- /.entry-content -->
+  </ARTICLE><!-- /.hentry -->
+
+  <ARTICLE class="hentry">
+    <HEADER>
+      
+        <DIV class="entry-image-index">
           <A href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord"><IMG src="/images/cordcutting.jpg" alt="The continuing adventures of Mom cutting the cord" /></A>
         </DIV><!-- /.entry-image -->
       
@@ -206,7 +251,6 @@ Reading time ~3 minutes
     </HEADER>
     <DIV class="entry-content">
       <p>As a belated update to <a href="/posts/Mom-cuts-the-cord/">this</a> post, Mom has told DirecTV to completely go screw and she’s moved over to <a href="https://www.philo.com">Philo</a> where she’s currently loving life.</p>
-
 
       
       
@@ -253,7 +297,6 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving <code class="highlighter-rouge">-D_POSIX_C_SOURCE</code> up to the <code class="highlighter-rouge">Makefile</code> that caused the problem. The solution below is still the same though.</p>
 
-
       
       
       
@@ -298,7 +341,6 @@ Reading time ~3 minutes
     </HEADER>
     <DIV class="entry-content">
       <p>pgBackRest 2.07 was <a href="https://twitter.com/pgBackRest/status/1063458495700320258">announced</a> today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a <em>Linux</em> system, so I figured I’d write this up for anyone else attempting the same.</p>
-
 
       
       
@@ -345,59 +387,11 @@ Reading time ~1 minute
     <DIV class="entry-content">
       <p>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use <a href="https://bucardo.org/tail_n_mail/">tail_n_mail</a>, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.</p>
 
-
       
       
       
         <P>
           <A href="/posts/Monitoring-pgBackRest-with-tail_n_mail/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
-        </P>
-      
-    </DIV><!-- /.entry-content -->
-  </ARTICLE><!-- /.hentry -->
-
-  <ARTICLE class="hentry">
-    <HEADER>
-      
-        <DIV class="entry-image-index">
-          <A href="/posts/pgBouncer-and-auth-pass-thru/" title="pgBouncer and auth pass-thru"><IMG src="/images/db.jpg" alt="pgBouncer and auth pass-thru" /></A>
-        </DIV><!-- /.entry-image -->
-      
-      <DIV class="entry-meta">
-        <SPAN class="entry-date date published updated">
-          <TIME datetime="2018-08-07T08:53:28-04:00" />
-            <A href="/posts/pgBouncer-and-auth-pass-thru/">August 07, 2018</A>
-          </TIME>
-        </SPAN>
-        <SPAN class="author vcard">
-          <SPAN class="fn">
-            <A href="/about/" title="About Douglas J Hunley">Douglas J Hunley</A>
-          </SPAN>
-        </SPAN>
-        
-          <SPAN class="entry-reading-time">
-            <I class="fa fa-clock-o"></i>
-            
-Reading time ~6 minutes
-          </SPAN><!-- /.entry-reading-time -->
-        
-      </DIV><!-- /.entry-meta -->
-      
-        <H1 class="entry-title">
-          <A href="/posts/pgBouncer-and-auth-pass-thru/" rel="bookmark" title="pgBouncer and auth pass-thru" itemprop="url">pgBouncer and auth pass-thru</A>
-        </H1>
-      
-    </HEADER>
-    <DIV class="entry-content">
-      <p>I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s <code class="highlighter-rouge">auth_file</code>. After the most recent such inquiry (hi Richard!) I decided I’d write this post to
-hopefully make it clearer how to use ‘pass-thru auth’ and avoid maintaining your users and their passwords in an external file. So let’s see what this takes, shall we?</p>
-
-
-      
-      
-      
-        <P>
-          <A href="/posts/pgBouncer-and-auth-pass-thru/">Read more <I class="fa fa-arrow-circle-right" aria-hidden="true"></I></A>
         </P>
       
     </DIV><!-- /.entry-content -->

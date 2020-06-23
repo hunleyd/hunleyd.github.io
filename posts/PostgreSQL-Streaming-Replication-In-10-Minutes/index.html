@@ -184,32 +184,32 @@ Reading time ~1 minute
     <div class="entry-content">
       <p><img src="/images/posts/database-replication.png" class="rleader" />While there’s absolutely nothing new in this blog post that isn’t covered by the wonderful <a href="http://www.postgresql.org/docs/current/static/index.html">docs</a> I’ve been asked multiple times now by customers if we had some kind of ‘crib notes’ format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well post it so that I can simply point people to it in the future. So here we are.</p>
 
-<p>Now, let’s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity’s sake, we will call these machines ‘master’ and ‘standby’. Note too that I’m using <code class="highlighter-rouge">replication slots</code> which needs PostgreSQL 9.4.0 or later; if you’re using something earlier, simply ignore the slot stuff.</p>
+<p>Now, let’s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity’s sake, we will call these machines ‘master’ and ‘standby’. Note too that I’m using <code class="language-plaintext highlighter-rouge">replication slots</code> which needs PostgreSQL 9.4.0 or later; if you’re using something earlier, simply ignore the slot stuff.</p>
 
 <p>Let’s get started!</p>
 
 <p>On the master, do the following:
-<script src="https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script></p>
+<script src="https://gist.github.com/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script></p>
 
-<p>On the master, add the external IP addresses of the servers to <code class="highlighter-rouge">pg_hba.conf</code>:
-<script src="https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js"> </script></p>
+<p>On the master, add the external IP addresses of the servers to <code class="language-plaintext highlighter-rouge">pg_hba.conf</code>:
+<script src="https://gist.github.com/8af26b72f5a79632494d3203547d9478.js"> </script></p>
 
 <p>Restart PostgreSQL on the master for the changes to take affect</p>
 
 <p>On the master, create the replication user:
-<script src="https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js"> </script></p>
+<script src="https://gist.github.com/a279de475a73e8ee490b1c7af7859ba4.js"> </script></p>
 
 <p>On the master, create the replication slot for the standby:
-<script src="https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js"> </script></p>
+<script src="https://gist.github.com/2fb5070785137383fe42eec0225d8c0e.js"> </script></p>
 
 <p>On the standby, wipe the existing cluster:
-<script src="https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js"> </script></p>
+<script src="https://gist.github.com/2adfa47297b9d0006ba172d967e1a575.js"> </script></p>
 
-<p>On the standby, use the <code class="highlighter-rouge">pg_basebackup</code> command to clone the master (enter the <code class="highlighter-rouge">repl_user</code>’s password from above when prompted):
-<script src="https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js"> </script></p>
+<p>On the standby, use the <code class="language-plaintext highlighter-rouge">pg_basebackup</code> command to clone the master (enter the <code class="language-plaintext highlighter-rouge">repl_user</code>’s password from above when prompted):
+<script src="https://gist.github.com/3e37d6f4ede70675270b92d7660cd1d0.js"> </script></p>
 
-<p>On the standby, tweak the <code class="highlighter-rouge">recovery.conf</code> that was created for you and add the replication slot name:
-<script src="https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js"> </script></p>
+<p>On the standby, tweak the <code class="language-plaintext highlighter-rouge">recovery.conf</code> that was created for you and add the replication slot name:
+<script src="https://gist.github.com/e914002c0c78c3a1c03515c60e2b5aaa.js"> </script></p>
 
 <p>Start the standby up</p>
 
@@ -234,20 +234,20 @@ Reading time ~1 minute
       <a href="/posts/Hello_eero/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

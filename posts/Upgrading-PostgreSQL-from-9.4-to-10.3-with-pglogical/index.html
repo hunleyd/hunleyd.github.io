@@ -182,13 +182,13 @@ Reading time ~5 minutes
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p>I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of <code class="highlighter-rouge">pglogical</code> and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.</p>
+      <p>I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of <code class="language-plaintext highlighter-rouge">pglogical</code> and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.</p>
 
-<p><code class="highlighter-rouge">pglogical</code> is a logical replication system implemented entirely as a PostgreSQL extension. Fully integrated, it requires no triggers or external programs. This makes it faster than Slony, Londiste, et al. It is also (roughly) the basis upon which logical replication in Pg 10 core is built.</p>
+<p><code class="language-plaintext highlighter-rouge">pglogical</code> is a logical replication system implemented entirely as a PostgreSQL extension. Fully integrated, it requires no triggers or external programs. This makes it faster than Slony, Londiste, et al. It is also (roughly) the basis upon which logical replication in Pg 10 core is built.</p>
 
 <h3 id="installing-pglogical">Installing pglogical</h3>
 
-<p><code class="highlighter-rouge">pglogical</code> is available from 2ndQuadrant in both a YUM repository for RedHat-based distros and in an APT repository for Debian-based distros. It will need to be installed on both the source (old Pg version) and destination servers (new Pg version).</p>
+<p><code class="language-plaintext highlighter-rouge">pglogical</code> is available from 2ndQuadrant in both a YUM repository for RedHat-based distros and in an APT repository for Debian-based distros. It will need to be installed on both the source (old Pg version) and destination servers (new Pg version).</p>
 
 <p>The instructions for installing their repo and the needed packages can be found <a href="https://www.2ndquadrant.com/en/resources/pglogical/pglogical-installation-instructions/">here</a>.</p>
 
@@ -196,24 +196,23 @@ Reading time ~5 minutes
 
 <h4 id="tweaking-the-cluster-config">Tweaking the cluster config</h4>
 
-<p>You will need to adjust the <code class="highlighter-rouge">postgresql.conf</code> file to accommodate <code class="highlighter-rouge">pglogical</code>. On both the source <em>and</em> destination servers, do the following:</p>
+<p>You will need to adjust the <code class="language-plaintext highlighter-rouge">postgresql.conf</code> file to accommodate <code class="language-plaintext highlighter-rouge">pglogical</code>. On both the source <em>and</em> destination servers, do the following:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"include 'pglogical.conf'"</span> &gt;&gt; <span class="nv">$PGDATA</span>/postgresql.conf
-<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"wal_level = 'logical'"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
-<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"max_worker_processes = 10"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
-<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"max_replication_slots = 10"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
-<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"max_wal_senders = 10"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
-<span class="gp">$ </span><span class="nb">echo</span> <span class="s2">"shared_preload_libraries = 'pglogical'"</span> &gt;&gt; <span class="nv">$PGDATA</span>/pglogical.conf
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"include 'pglogical.conf'"</span> <span class="o">&gt;&gt;</span> <span class="nv">$PGDATA</span>/postgresql.conf
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"wal_level = 'logical'"</span> <span class="o">&gt;&gt;</span> <span class="nv">$PGDATA</span>/pglogical.conf
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"max_worker_processes = 10"</span> <span class="o">&gt;&gt;</span> <span class="nv">$PGDATA</span>/pglogical.conf
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"max_replication_slots = 10"</span> <span class="o">&gt;&gt;</span> <span class="nv">$PGDATA</span>/pglogical.conf
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"max_wal_senders = 10"</span> <span class="o">&gt;&gt;</span> <span class="nv">$PGDATA</span>/pglogical.conf
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"shared_preload_libraries = 'pglogical'"</span> <span class="o">&gt;&gt;</span> <span class="nv">$PGDATA</span>/pglogical.conf
+</code></pre></div></div>
 
-<p>NOTE: If you already have one or more values in <code class="highlighter-rouge">shared_preload_libraries</code>, simply append <code class="highlighter-rouge">pglogical</code> to the list of values already there.</p>
+<p>NOTE: If you already have one or more values in <code class="language-plaintext highlighter-rouge">shared_preload_libraries</code>, simply append <code class="language-plaintext highlighter-rouge">pglogical</code> to the list of values already there.</p>
 
 <h4 id="ensure-the-presence-of-pks">Ensure the presence of PKs</h4>
 
 <p>Logical replication doesn’t work without primary keys. Identify all tables that do not have one:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>
   <span class="n">n</span><span class="p">.</span><span class="n">nspname</span> <span class="k">as</span> <span class="k">schema</span><span class="p">,</span>
   <span class="k">c</span><span class="p">.</span><span class="n">relname</span> <span class="k">as</span> <span class="k">table</span>
 <span class="k">FROM</span>
@@ -237,89 +236,79 @@ Reading time ~5 minutes
     <span class="s1">'information_schema'</span>
   <span class="p">]</span>
 <span class="p">);</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h4 id="create-the-pglogical-extension">Create the pglogical extension</h4>
 
-<p>On both the source <em>and</em> destination Pg instances, create the <code class="highlighter-rouge">pglogical</code> extension <em>in every database you wish to replicate</em>:</p>
+<p>On both the source <em>and</em> destination Pg instances, create the <code class="language-plaintext highlighter-rouge">pglogical</code> extension <em>in every database you wish to replicate</em>:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">CREATE</span> <span class="n">EXTENSION</span> <span class="n">pglogical</span><span class="p">;</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="n">EXTENSION</span> <span class="n">pglogical</span><span class="p">;</span>
+</code></pre></div></div>
 
-<p>NOTE: On Pg 9.4 <strong>only</strong> you will need to <code class="highlighter-rouge">CREATE EXTENSION pglogical_origin;</code> FIRST.</p>
+<p>NOTE: On Pg 9.4 <strong>only</strong> you will need to <code class="language-plaintext highlighter-rouge">CREATE EXTENSION pglogical_origin;</code> FIRST.</p>
 
 <h3 id="running-pglogical">Running pglogical</h3>
 
 <h4 id="ensure-global-objects-are-copied">Ensure global objects are copied</h4>
 
-<p>The <code class="highlighter-rouge">pglogical</code> tool runs at the database level which means that global objects like roles are <strong>not</strong> copied. Therefore, you need to ensure these objects are created yourself.</p>
+<p>The <code class="language-plaintext highlighter-rouge">pglogical</code> tool runs at the database level which means that global objects like roles are <strong>not</strong> copied. Therefore, you need to ensure these objects are created yourself.</p>
 
 <p>On the source Pg server:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pg_dumpall -g -f globals.sql
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg_dumpall <span class="nt">-g</span> <span class="nt">-f</span> globals.sql
+</code></pre></div></div>
 
-<p>Then copy <code class="highlighter-rouge">globals.sql</code> to the destination server and run:</p>
+<p>Then copy <code class="language-plaintext highlighter-rouge">globals.sql</code> to the destination server and run:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>psql -f globals.sql
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>psql <span class="nt">-f</span> globals.sql
+</code></pre></div></div>
 
 <h4 id="prep-the-destination-schema">Prep the destination schema</h4>
 
-<p>At this time, <code class="highlighter-rouge">pglogical</code> doesn’t replicate DDL, so it is necessary to ensure that both the source and destination have matching schema object definitions before attempting to replicate.</p>
+<p>At this time, <code class="language-plaintext highlighter-rouge">pglogical</code> doesn’t replicate DDL, so it is necessary to ensure that both the source and destination have matching schema object definitions before attempting to replicate.</p>
 
 <p>As such, for each source database that you want to replicate, you need to run a ‘schema only’ dump:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pg_dump -Fc -s -f dbname_schema.dmp dbname
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg_dump <span class="nt">-Fc</span> <span class="nt">-s</span> <span class="nt">-f</span> dbname_schema.dmp dbname
+</code></pre></div></div>
 
-<p>Now copy the <code class="highlighter-rouge">dbname_schema.dmp</code> file(s) to the destination server, and run for each database:</p>
+<p>Now copy the <code class="language-plaintext highlighter-rouge">dbname_schema.dmp</code> file(s) to the destination server, and run for each database:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pg_restore -d dbname dbname_schema.dmp
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg_restore <span class="nt">-d</span> dbname dbname_schema.dmp
+</code></pre></div></div>
 
 <h4 id="create-a-replication-user">Create a replication user</h4>
 
-<p>We’ll need a user that has the <code class="highlighter-rouge">replication</code> permission for this all to work, so let’s create one:</p>
+<p>We’ll need a user that has the <code class="language-plaintext highlighter-rouge">replication</code> permission for this all to work, so let’s create one:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">ROLE</span> <span class="n">pglogical</span> <span class="n">LOGIN</span> <span class="n">REPLICATION</span> <span class="n">SUPERUSER</span> <span class="k">ENCRYPTED</span> <span class="n">PASSWORD</span> <span class="s1">'secret'</span><span class="p">;</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">ROLE</span> <span class="n">pglogical</span> <span class="n">LOGIN</span> <span class="n">REPLICATION</span> <span class="n">SUPERUSER</span> <span class="k">ENCRYPTED</span> <span class="n">PASSWORD</span> <span class="s1">'secret'</span><span class="p">;</span>
+</code></pre></div></div>
 
 <p>Do this on <strong>both</strong> the source and destination Pg instances.</p>
 
-<p>Tweak the <code class="highlighter-rouge">pg_hba.conf</code> on <strong>both</strong> the source and destination Pg instances to allow the replication user to connect:</p>
+<p>Tweak the <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> on <strong>both</strong> the source and destination Pg instances to allow the replication user to connect:</p>
 
-<div class="language-apache highlighter-rouge"><pre class="highlight"><code>local  replication  pglogical  trust
-host   replication  pglogical  0.0.0.0/0  md5
+<div class="language-apache highlighter-rouge"><div class="highlight"><pre class="highlight"><code>local  replication  pglogical  trust
+<span class="nc">host</span>   replication  pglogical  0.0.0.0/0  <span class="ss">md5</span>
 local  dbname       pglogical  trust
-host   dbname       pglogical  0.0.0.0/0  md5
-</code></pre>
-</div>
+<span class="nc">host</span>   dbname       pglogical  0.0.0.0/0  <span class="ss">md5</span>
+</code></pre></div></div>
 
-<p>NOTE: Make sure to edit <code class="highlighter-rouge">0.0.0.0/0</code> to match your actual CIDR or IP address and <code class="highlighter-rouge">dbname</code> to match the db you wish to replicate.</p>
+<p>NOTE: Make sure to edit <code class="language-plaintext highlighter-rouge">0.0.0.0/0</code> to match your actual CIDR or IP address and <code class="language-plaintext highlighter-rouge">dbname</code> to match the db you wish to replicate.</p>
 
 <h4 id="create-your-publication">Create your publication</h4>
 
 <p>Now, we’re ready to actually setup and start the replication. First, we need to SIGHUP the postmaster so it sees all the config changes we made on <strong>both</strong> the source and target Pg instances:</p>
 
-<div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>pg_ctl -D <span class="k">$(</span>ps -efw|grep -- <span class="s2">"[p]ost.*-D"</span>|cut -d<span class="se">\-</span> -f2|cut -d<span class="s2">" "</span> -f2<span class="k">)</span> reload
-</code></pre>
-</div>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg_ctl <span class="nt">-D</span> <span class="si">$(</span>ps <span class="nt">-efw</span>|grep <span class="nt">--</span> <span class="s2">"[p]ost.*-D"</span>|cut <span class="nt">-d</span><span class="se">\-</span> <span class="nt">-f2</span>|cut <span class="nt">-d</span><span class="s2">" "</span> <span class="nt">-f2</span><span class="si">)</span> reload
+</code></pre></div></div>
 
 <p>On the <strong>source</strong> Pg instance, we need to create a publication to ‘push’ the data to the new instance:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">create_node</span><span class="p">(</span><span class="n">node_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'dbname_provider'</span><span class="p">,</span> <span class="n">dsn</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'host=127.0.0.1 port=5432 dbname=test user=pglogical'</span><span class="p">);</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">create_node</span><span class="p">(</span><span class="n">node_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'dbname_provider'</span><span class="p">,</span> <span class="n">dsn</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'host=127.0.0.1 port=5432 dbname=test user=pglogical'</span><span class="p">);</span>
+</code></pre></div></div>
 
-<p>Adjust the <code class="highlighter-rouge">port=</code> and <code class="highlighter-rouge">dbname=</code> parameters to match your <strong>source</strong> Pg instance. If replicating more than one database, repeat this command for each database, changing <code class="highlighter-rouge">dbname</code> and <code class="highlighter-rouge">dbname_provider</code> accordingly.</p>
+<p>Adjust the <code class="language-plaintext highlighter-rouge">port=</code> and <code class="language-plaintext highlighter-rouge">dbname=</code> parameters to match your <strong>source</strong> Pg instance. If replicating more than one database, repeat this command for each database, changing <code class="language-plaintext highlighter-rouge">dbname</code> and <code class="language-plaintext highlighter-rouge">dbname_provider</code> accordingly.</p>
 
 <h4 id="add-your-tables-to-the-publication">Add your tables to the publication</h4>
 
@@ -327,53 +316,47 @@ host   dbname       pglogical  0.0.0.0/0  md5
 
 <p>1: Add all your tables:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">replication_set_add_all_tables</span><span class="p">(</span><span class="s1">'default'</span><span class="p">,</span> <span class="s1">'{public}'</span><span class="p">::</span><span class="n">text</span><span class="p">[]);</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">replication_set_add_all_tables</span><span class="p">(</span><span class="s1">'default'</span><span class="p">,</span> <span class="s1">'{public}'</span><span class="p">::</span><span class="nb">text</span><span class="p">[]);</span>
+</code></pre></div></div>
 
 <p>2: Add all your sequences:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">replication_set_add_all_sequences</span><span class="p">(</span><span class="n">set_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'default'</span><span class="p">,</span> <span class="n">schema_names</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{public}'</span><span class="p">::</span><span class="n">text</span><span class="p">[],</span> <span class="n">synchronize_data</span> <span class="p">:</span><span class="o">=</span> <span class="k">true</span> <span class="p">);</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">replication_set_add_all_sequences</span><span class="p">(</span><span class="n">set_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'default'</span><span class="p">,</span> <span class="n">schema_names</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{public}'</span><span class="p">::</span><span class="nb">text</span><span class="p">[],</span> <span class="n">synchronize_data</span> <span class="p">:</span><span class="o">=</span> <span class="k">true</span> <span class="p">);</span>
+</code></pre></div></div>
 
-<p>Obviously, you should change <code class="highlighter-rouge">public</code> in both the above if you are using a different schema for your objects. If you are using multiple schemas, simply repeat the above and change <code class="highlighter-rouge">public</code> appropriately.</p>
+<p>Obviously, you should change <code class="language-plaintext highlighter-rouge">public</code> in both the above if you are using a different schema for your objects. If you are using multiple schemas, simply repeat the above and change <code class="language-plaintext highlighter-rouge">public</code> appropriately.</p>
 
-<p>NOTE: The <code class="highlighter-rouge">nextval</code> of sequences will be synced every 60-70s roughly.</p>
+<p>NOTE: The <code class="language-plaintext highlighter-rouge">nextval</code> of sequences will be synced every 60-70s roughly.</p>
 
 <h4 id="create-your-subscription">Create your subscription</h4>
 
 <p>Now that we have a publication channel and its content defined, we need to setup a subscriber on the <strong>target</strong> Pg instance to consume the channel:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">create_node</span><span class="p">(</span><span class="n">node_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'subscriber'</span><span class="p">,</span> <span class="n">dsn</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'host=127.0.0.1 port=5432 dbname=test user=pglogical'</span><span class="p">);</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">create_node</span><span class="p">(</span><span class="n">node_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'subscriber'</span><span class="p">,</span> <span class="n">dsn</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'host=127.0.0.1 port=5432 dbname=test user=pglogical'</span><span class="p">);</span>
+</code></pre></div></div>
 
-<p>Adjust the <code class="highlighter-rouge">dbname=</code> parameter to match your <strong>target</strong> Pg instance. If replicating more than one database, repeat this command for each database.</p>
+<p>Adjust the <code class="language-plaintext highlighter-rouge">dbname=</code> parameter to match your <strong>target</strong> Pg instance. If replicating more than one database, repeat this command for each database.</p>
 
 <p>Now, tell the subscriber what to subscribe to:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">create_subscription</span><span class="p">(</span><span class="n">subscription_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'subscription'</span><span class="p">,</span> <span class="n">provider_dsn</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'host=172.28.173.18 port=5432 dbname=test user=pglogical'</span><span class="p">,</span> <span class="n">replication_sets</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{default}'</span><span class="p">::</span><span class="n">text</span><span class="p">[]</span> <span class="p">);</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">create_subscription</span><span class="p">(</span><span class="n">subscription_name</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'subscription'</span><span class="p">,</span> <span class="n">provider_dsn</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'host=172.28.173.18 port=5432 dbname=test user=pglogical'</span><span class="p">,</span> <span class="n">replication_sets</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{default}'</span><span class="p">::</span><span class="nb">text</span><span class="p">[]</span> <span class="p">);</span>
+</code></pre></div></div>
 
-<p>Adjust <code class="highlighter-rouge">host=</code>, <code class="highlighter-rouge">port=</code>, and <code class="highlighter-rouge">dbname=</code> parameters to match your <strong>source</strong> Pg instance. If replicating more than one database, repeat this command for each database, changing <code class="highlighter-rouge">dbname</code> and <code class="highlighter-rouge">subscription_name</code> accordingly.</p>
+<p>Adjust <code class="language-plaintext highlighter-rouge">host=</code>, <code class="language-plaintext highlighter-rouge">port=</code>, and <code class="language-plaintext highlighter-rouge">dbname=</code> parameters to match your <strong>source</strong> Pg instance. If replicating more than one database, repeat this command for each database, changing <code class="language-plaintext highlighter-rouge">dbname</code> and <code class="language-plaintext highlighter-rouge">subscription_name</code> accordingly.</p>
 
 <h3 id="conclusion">Conclusion</h3>
 
-<p>At this point, data should be replicating and (if not already) it will catch up to ‘current’ quickly. Once caught up, replication will maintain sync between the source and target instances in almost real time. You can easily determine the current state of <code class="highlighter-rouge">pglogical</code> by issuing this SQL on the subscriber:</p>
+<p>At this point, data should be replicating and (if not already) it will catch up to ‘current’ quickly. Once caught up, replication will maintain sync between the source and target instances in almost real time. You can easily determine the current state of <code class="language-plaintext highlighter-rouge">pglogical</code> by issuing this SQL on the subscriber:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">subscription_name</span><span class="p">,</span> <span class="n">status</span> <span class="k">FROM</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">show_subscription_status</span><span class="p">();</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">subscription_name</span><span class="p">,</span> <span class="n">status</span> <span class="k">FROM</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">show_subscription_status</span><span class="p">();</span>
+</code></pre></div></div>
 
-<p>If the query returns <code class="highlighter-rouge">initializing</code> then it is copying the original source data to the destination. If the query returns <code class="highlighter-rouge">replicating</code> then the initial synchronization has completed and replicating is now happening in real time as data changes.</p>
+<p>If the query returns <code class="language-plaintext highlighter-rouge">initializing</code> then it is copying the original source data to the destination. If the query returns <code class="language-plaintext highlighter-rouge">replicating</code> then the initial synchronization has completed and replicating is now happening in real time as data changes.</p>
 
 <p>When ready, you can simply stop any applications pointing at the <em>source</em> Pg instance, wait a few minutes to ensure replication drains any outstanding items, force an update of your sequences:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">synchronize_sequence</span><span class="p">(</span> <span class="n">seqoid</span> <span class="p">)</span> <span class="k">FROM</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">sequence_state</span><span class="p">;</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">synchronize_sequence</span><span class="p">(</span> <span class="n">seqoid</span> <span class="p">)</span> <span class="k">FROM</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">sequence_state</span><span class="p">;</span>
+</code></pre></div></div>
 
 <p>and then re-point your applications at the <em>target</em> instance.</p>
 
@@ -381,35 +364,31 @@ host   dbname       pglogical  0.0.0.0/0  md5
 
 <p>1: Remove the subscription:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">drop_subscription</span><span class="p">(</span><span class="s1">'subscription'</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">drop_subscription</span><span class="p">(</span><span class="s1">'subscription'</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+</code></pre></div></div>
 
 <p>2: Remove the subscriber:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">drop_node</span><span class="p">(</span><span class="s1">'subscriber'</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">pglogical</span><span class="p">.</span><span class="n">drop_node</span><span class="p">(</span><span class="s1">'subscriber'</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+</code></pre></div></div>
 
 <p>3: Remove the extension:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">DROP</span> <span class="n">EXTENSION</span> <span class="n">pglogical</span> <span class="k">CASCADE</span><span class="p">;</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DROP</span> <span class="n">EXTENSION</span> <span class="n">pglogical</span> <span class="k">CASCADE</span><span class="p">;</span>
+</code></pre></div></div>
 
 <p>4: Remove the user:</p>
 
-<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">DROP</span> <span class="k">ROLE</span> <span class="n">pglogical</span><span class="p">;</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DROP</span> <span class="k">ROLE</span> <span class="n">pglogical</span><span class="p">;</span>
+</code></pre></div></div>
 
-<p>5: Remove any <code class="highlighter-rouge">pglogical</code> lines in <code class="highlighter-rouge">pg_hba.conf</code></p>
+<p>5: Remove any <code class="language-plaintext highlighter-rouge">pglogical</code> lines in <code class="language-plaintext highlighter-rouge">pg_hba.conf</code></p>
 
-<p>6: Remove <code class="highlighter-rouge">$PGDATA/pglogical.conf</code></p>
+<p>6: Remove <code class="language-plaintext highlighter-rouge">$PGDATA/pglogical.conf</code></p>
 
 <p>7: Reload PostgreSQL</p>
 
-<p>8: Remove the OS packages using <code class="highlighter-rouge">yum</code> or <code class="highlighter-rouge">apt</code></p>
+<p>8: Remove the OS packages using <code class="language-plaintext highlighter-rouge">yum</code> or <code class="language-plaintext highlighter-rouge">apt</code></p>
 
       <footer class="entry-meta">
         <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>
@@ -430,20 +409,20 @@ host   dbname       pglogical  0.0.0.0/0  md5
       <a href="/posts/Car-free-in-Columbus/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

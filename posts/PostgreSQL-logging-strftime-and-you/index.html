@@ -184,30 +184,29 @@ Reading time ~5 minutes
     <div class="entry-content">
       <p><img src="http://www.metasource.com/images/content/data-processing-image.jpg" class="rleader" />PostgreSQL has a pretty extensive logging facility. I’ve talked briefly about configuring it to get the most out of pgBadger before, but today I’m gonna talk a bit about the naming of the log file itself. The chosen filename doesn’t have to be static. You can, in fact, have the name dynamically created by using strftime() escapes. But what exactly are those?</p>
 
-<div class="language-text highlighter-rouge"><pre class="highlight"><code>    The strftime() function formats the information from timeptr into the buffer s,
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    The strftime() function formats the information from timeptr into the buffer s,
     according to the string pointed to by format.
 
     The format string consists of zero or more conversion specifications and ordi-
     nary characters.  All ordinary characters are copied directly into the buffer.
     A conversion specification consists of a percent sign ```%''' and one other
     character.
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Say what? Essentially, given a timestamp and a format specification, you’ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems <code class="highlighter-rouge">libc</code> implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it’s BSD libc. You really shouldn’t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we’ll use today’s date of Monday, November 21, 2016 with a timestamp of 1pm EST):</p>
+<p>Say what? Essentially, given a timestamp and a format specification, you’ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems <code class="language-plaintext highlighter-rouge">libc</code> implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it’s BSD libc. You really shouldn’t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we’ll use today’s date of Monday, November 21, 2016 with a timestamp of 1pm EST):</p>
 
-<div class="language-apache highlighter-rouge"><pre class="highlight"><code>    <span class="err">%</span>A    is replaced by national representation of the <span class="ss">full</span> weekday name ("Monday")
-    <span class="err">%</span>a    is replaced by national representation of the abbreviated weekday name ("Mon")
-    <span class="err">%</span>B    is replaced by national representation of the <span class="ss">full</span> month name ("November")
-    <span class="err">%</span>b    is replaced by national representation of the abbreviated month name ("Nov")
+<div class="language-apache highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="err">%</span>A    is replaced by national representation of the <span class="ss">full</span> weekday <span class="ss">name</span> ("Monday")
+    <span class="err">%</span>a    is replaced by national representation of the abbreviated weekday <span class="ss">name</span> ("Mon")
+    <span class="err">%</span>B    is replaced by national representation of the <span class="ss">full</span> month <span class="ss">name</span> ("November")
+    <span class="err">%</span>b    is replaced by national representation of the abbreviated month <span class="ss">name</span> ("Nov")
     <span class="err">%</span>C    is replaced by (year / 100) as decimal number; single digits are preceded by a zero ("20")
-    <span class="err">%</span>c    is replaced by national representation of time and date ("Mon Nov 21 13:00:00 2016")
+    <span class="err">%</span>c    is replaced by national representation of time <span class="ss">and</span> <span class="ss">date</span> ("Mon Nov 21 13:00:00 2016")
     <span class="err">%</span>D    is equivalent to ``%m/%d/%y'' ("11/21/16")
     <span class="err">%</span>d    is replaced by the day of the month as a decimal number (01-31) ("21")
     <span class="err">%</span>e    is replaced by the day of the month as a decimal number (1-31); single digits are preceded by a blank ("21")
     <span class="err">%</span>F    is equivalent to ``%Y-%m-%d'' ("2016-11-21")
     <span class="err">%</span>G    is replaced by a year as a decimal number with century.  This year is the one that contains the greater part of the week (Monday as the first day of the week) ("2016")
-    <span class="err">%</span>g    is replaced by the same year as in ``%G'', but as a decimal number without century (00-99) ("16")
+    <span class="err">%</span>g    is replaced by the same year as <span class="ss">in</span> ``%G'', but as a decimal number without century (00-99) ("16")
     <span class="err">%</span>H    is replaced by the hour (24-hour clock) as a decimal number (00-23) ("12")
     <span class="err">%</span>h    the same as %b ("Nov")
     <span class="err">%</span>I    is replaced by the hour (12-hour clock) as a decimal number (01-12) ("12")
@@ -217,7 +216,7 @@ Reading time ~5 minutes
     <span class="err">%</span>M    is replaced by the minute as a decimal number (00-59) ("00")
     <span class="err">%</span>m    is replaced by the month as a decimal number (01-12) ("11")
     <span class="err">%</span>n    is replaced by a newline
-    <span class="err">%</span>p    is replaced by national representation of either "ante meridiem" (a.m.) or "post meridiem" (p.m.)  as appropriate ("PM")
+    <span class="err">%</span>p    is replaced by national representation of either "ante meridiem" (a.m.) <span class="ss">or</span> "post meridiem" (p.m.)  as appropriate ("PM")
     <span class="err">%</span>R    is equivalent to ``%H:%M'' ("13:00")
     <span class="err">%</span>r    is equivalent to ``%I:%M:%S %p'' ("01:00:00 PM")
     <span class="err">%</span>S    is replaced by the second as a decimal number (00-60) ("00")
@@ -226,53 +225,48 @@ Reading time ~5 minutes
     <span class="err">%</span>t    is replaced by a tab
     <span class="err">%</span>U    is replaced by the week number of the year (Sunday as the first day of the week) as a decimal number (00-53) ("47")
     <span class="err">%</span>u    is replaced by the weekday (Monday as the first day of the week) as a decimal number (1-7) ("1")
-    <span class="err">%</span>V    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (01-53).  If the week containing January 1 has four or more days in the new year, then it is week 1; otherwise it is the last week of the previous year, and the next week is week 1 ("47")
+    <span class="err">%</span>V    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (01-53).  <span class="ss">If</span> the week containing January 1 has four <span class="ss">or</span> more days <span class="ss">in</span> the new year, then it is week 1; otherwise it is the last week of the previous year, <span class="ss">and</span> the next week is week 1 ("47")
     <span class="err">%</span>v    is equivalent to ``%e-%b-%Y'' ("21-Nov-2016")
     <span class="err">%</span>W    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (00-53) ("47")
     <span class="err">%</span>w    is replaced by the weekday (Sunday as the first day of the week) as a decimal number (0-6) ("1")
     <span class="err">%</span>X    is replaced by national representation of the time ("13:00:00")
-    <span class="err">%</span>x    is replaced by national representation of the date ("11/21/2016")
+    <span class="err">%</span>x    is replaced by national representation of the <span class="ss">date</span> ("11/21/2016")
     <span class="err">%</span>Y    is replaced by the year with century as a decimal number ("2016")
     <span class="err">%</span>y    is replaced by the year without century as a decimal number (00-99) ("16")
-    <span class="err">%</span>Z    is replaced by the time zone name ("EST")
-    <span class="err">%</span>z    is replaced by the time zone offset <span class="ss">from</span> UTC; a leading plus sign stands for east of UTC, a minus sign for west of UTC, hours and minutes follow with two digits each and no delimiter between them ("-0500")
+    <span class="err">%</span>Z    is replaced by the time zone <span class="ss">name</span> ("EST")
+    <span class="err">%</span>z    is replaced by the time zone offset <span class="ss">from</span> UTC; a leading plus sign stands for east of UTC, a minus sign for west of UTC, hours <span class="ss">and</span> minutes follow with two digits each <span class="ss">and</span> <span class="ss">no</span> delimiter between them ("-0500")
     <span class="err">%%</span>    is replaced by `%'
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Phew! That was a lot wasn’t it? And where exactly does this come into play? As the <code class="highlighter-rouge">postgresql.conf</code> says:</p>
+<p>Phew! That was a lot wasn’t it? And where exactly does this come into play? As the <code class="language-plaintext highlighter-rouge">postgresql.conf</code> says:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>log_filename = 'postgresql-%a.log'      # log file name pattern,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_filename = 'postgresql-%a.log'      # log file name pattern,
                                         # can include strftime() escapes
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I’m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my <code class="highlighter-rouge">$PGDATA/pg_log</code> directory will only ever contain:</p>
+<p>So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I’m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my <code class="language-plaintext highlighter-rouge">$PGDATA/pg_log</code> directory will only ever contain:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
 postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
 postgresql-Sat.log
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>But wait! The key to all this is that <em>PostgreSQL only evaluates the filename when it first opens/creates the logfile</em>. So, if you start your cluster on Mon and do not restart it and don’t have it configured to log rotate, you’ll still be writing to <code class="highlighter-rouge">postgresql-Mon.log</code> forever. Fortunately, PostgreSQL has you covered here too:</p>
+<p>But wait! The key to all this is that <em>PostgreSQL only evaluates the filename when it first opens/creates the logfile</em>. So, if you start your cluster on Mon and do not restart it and don’t have it configured to log rotate, you’ll still be writing to <code class="language-plaintext highlighter-rouge">postgresql-Mon.log</code> forever. Fortunately, PostgreSQL has you covered here too:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>log_rotation_age = 1d      # Automatic rotation of logfiles will
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_rotation_age = 1d      # Automatic rotation of logfiles will
                            # happen after that time.  0 disables.
 log_rotation_size = 10MB   # Automatic rotation of logfiles will
                            # happen after that much log output.
                            # 0 disables.
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>So, using my <code class="highlighter-rouge">log_filename</code> from above, I enable <code class="highlighter-rouge">log_rotation_age</code> (set to 1 day) and disable <code class="highlighter-rouge">log_rotation_size</code> and I automatically get a new log every day. If I wanted hourly logs, I could do something like:</p>
+<p>So, using my <code class="language-plaintext highlighter-rouge">log_filename</code> from above, I enable <code class="language-plaintext highlighter-rouge">log_rotation_age</code> (set to 1 day) and disable <code class="language-plaintext highlighter-rouge">log_rotation_size</code> and I automatically get a new log every day. If I wanted hourly logs, I could do something like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>log_filename = 'postgresql-%a-%H'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_filename = 'postgresql-%a-%H'
 log_rotation_age = 1h
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>which would give me logs of <code class="highlighter-rouge">postgresql-Mon-00</code>, <code class="highlighter-rouge">postgresql-Mon-01</code>, etc. You should be able to see how combining these three <code class="highlighter-rouge">postgresql.conf</code> parameters and some crafty strftime() escapes gives you a <em>ton</em> of flexibility in your logging. So go forth and tweak those logs!</p>
+<p>which would give me logs of <code class="language-plaintext highlighter-rouge">postgresql-Mon-00</code>, <code class="language-plaintext highlighter-rouge">postgresql-Mon-01</code>, etc. You should be able to see how combining these three <code class="language-plaintext highlighter-rouge">postgresql.conf</code> parameters and some crafty strftime() escapes gives you a <em>ton</em> of flexibility in your logging. So go forth and tweak those logs!</p>
 
       <footer class="entry-meta">
         <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>
@@ -293,20 +287,20 @@ log_rotation_age = 1h
       <a href="/posts/Upgrading-PostgreSQL-5x-faster/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

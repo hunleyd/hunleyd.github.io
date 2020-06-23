@@ -182,13 +182,13 @@ Reading time ~1 minute
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p><img src="http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg" class="rleader" />Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use <a href="https://github.com/keithf4/pg_partman">pg_partman</a> and be done with it. However, if you’re trying to learn, can’t use <code class="highlighter-rouge">pg_partman</code>, or are a masochist you’ll probably be following the <a href="http://www.postgresql.org/docs/current/static/ddl-partitioning.html">docs</a> and thinking ‘seriously? i have to create indexes on each child? why don’t they copy the indexes of the parent? why isn’t this easier?’. Here’s a little tip to make things slightly easier:</p>
+      <p><img src="http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg" class="rleader" />Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use <a href="https://github.com/keithf4/pg_partman">pg_partman</a> and be done with it. However, if you’re trying to learn, can’t use <code class="language-plaintext highlighter-rouge">pg_partman</code>, or are a masochist you’ll probably be following the <a href="http://www.postgresql.org/docs/current/static/ddl-partitioning.html">docs</a> and thinking ‘seriously? i have to create indexes on each child? why don’t they copy the indexes of the parent? why isn’t this easier?’. Here’s a little tip to make things slightly easier:</p>
 
 <p>Instead of creating your child tables like the docs say:
-<script src="https://gist.github.com/hunleyd/0b1f8fa43534f53046eed4e63dc54e14.js"> </script></p>
+<script src="https://gist.github.com/0b1f8fa43534f53046eed4e63dc54e14.js"> </script></p>
 
 <p>Create your child tables thusly:
-<script src="https://gist.github.com/hunleyd/603c5f6961134422651e2e13b1c6398e.js"> </script></p>
+<script src="https://gist.github.com/603c5f6961134422651e2e13b1c6398e.js"> </script></p>
 
 <p>and PostgeSQL <em>will</em> copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?</p>
 
@@ -213,20 +213,20 @@ Reading time ~1 minute
       <a href="/posts/Logical-Replication-With-Skytool3/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

@@ -198,29 +198,29 @@ Reading time ~3 minutes
 
 <p>As you can see, while not as powerful as tablespaces in, say, Oracle, they do still have their uses in PostgreSQL. You can use them to make use of different filesystems, or different mount options, or different disk types and, in doing so, intelligently apply performance characteristics to subsets of your data. For example, you could put your highest volume tables in a tablespace that is mounted from SSDs while the rest of your db is mounted from spinning rust.</p>
 
-<p>Sounds decent, right? Now you before you go off and be “clever” and create an SSD-backed mountpoint for your new tablespace, understand that there are places you <em>should not</em> create the tablespace. You shouldn’t create tablespaces on any kind of ephemeral storage, for example on a <code class="highlighter-rouge">tmpfs</code> or a <code class="highlighter-rouge">ramfs</code> or similar. <em>You also should not create your new tablespaces under $PGDATA</em>. Yes, I’m aware there is <code class="highlighter-rouge">$PGDATA/pg_tblspc</code> but that directory is <em>not for you</em>. The system will auto-populate that directory with pointers to the real location of your tablespaces!</p>
+<p>Sounds decent, right? Now you before you go off and be “clever” and create an SSD-backed mountpoint for your new tablespace, understand that there are places you <em>should not</em> create the tablespace. You shouldn’t create tablespaces on any kind of ephemeral storage, for example on a <code class="language-plaintext highlighter-rouge">tmpfs</code> or a <code class="language-plaintext highlighter-rouge">ramfs</code> or similar. <em>You also should not create your new tablespaces under $PGDATA</em>. Yes, I’m aware there is <code class="language-plaintext highlighter-rouge">$PGDATA/pg_tblspc</code> but that directory is <em>not for you</em>. The system will auto-populate that directory with pointers to the real location of your tablespaces!</p>
 
 <p>So what happens when you create a tablespace inside $PGDATA? Let’s find out. First, we’ll create the directory for the tablespace:</p>
 
-<script src="https://gist.github.com/hunleyd/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script>
+<script src="https://gist.github.com/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script>
 
-<p>And we see that nothing bad has happened yet. So, let’s pop over into <code class="highlighter-rouge">psql</code> and actually create the tablespace:</p>
+<p>And we see that nothing bad has happened yet. So, let’s pop over into <code class="language-plaintext highlighter-rouge">psql</code> and actually create the tablespace:</p>
 
-<script src="https://gist.github.com/hunleyd/dba03610d0181abe363378ccaedafb98.js"> </script>
+<script src="https://gist.github.com/dba03610d0181abe363378ccaedafb98.js"> </script>
 
 <p>We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you’ve got a problem. So where does the problem come in?</p>
 
 <p>Let’s try to make a backup of our cluster:</p>
 
-<script src="https://gist.github.com/hunleyd/d55de865904c475ce0099eb03732251b.js"> </script>
+<script src="https://gist.github.com/d55de865904c475ce0099eb03732251b.js"> </script>
 
 <p>There it is.</p>
 
-<p>When creating the backup, it tries to ensure the tablespace location is the same, but then it won’t write to a non-empty directory. My example is two different $PGDATA locations on the same box, but the issue is the same when using different machines because <code class="highlighter-rouge">pg_basebackup</code> backs up <em>everything</em> in $PGDATA which means your tablespace directory gets cloned before it gets to the actual cloning of the data in the tablespace so you end up with “stuff” in the dir, making it non-empty. Which gives you the same error and output.</p>
+<p>When creating the backup, it tries to ensure the tablespace location is the same, but then it won’t write to a non-empty directory. My example is two different $PGDATA locations on the same box, but the issue is the same when using different machines because <code class="language-plaintext highlighter-rouge">pg_basebackup</code> backs up <em>everything</em> in $PGDATA which means your tablespace directory gets cloned before it gets to the actual cloning of the data in the tablespace so you end up with “stuff” in the dir, making it non-empty. Which gives you the same error and output.</p>
 
 <p>OK, so it breaks backups. I can work around that by using another backup method. What else?</p>
 
-<p>How about using <code class="highlighter-rouge">pg_upgrade</code> to do an upgrade? No matter if you run in <code class="highlighter-rouge">link</code> mode or not, <code class="highlighter-rouge">pg_upgrade</code> <em>will not move</em> your tablespace location. So you may have <code class="highlighter-rouge">~/pgdata95</code> and <code class="highlighter-rouge">~/pgdata96</code> after the upgrade, but your tablespaces <em>are still in</em> <code class="highlighter-rouge">~/pgdata95/tablespaces</code>. So, as per the <a href="https://www.postgresql.org/docs/current/static/pgupgrade.html">docs</a>:</p>
+<p>How about using <code class="language-plaintext highlighter-rouge">pg_upgrade</code> to do an upgrade? No matter if you run in <code class="language-plaintext highlighter-rouge">link</code> mode or not, <code class="language-plaintext highlighter-rouge">pg_upgrade</code> <em>will not move</em> your tablespace location. So you may have <code class="language-plaintext highlighter-rouge">~/pgdata95</code> and <code class="language-plaintext highlighter-rouge">~/pgdata96</code> after the upgrade, but your tablespaces <em>are still in</em> <code class="language-plaintext highlighter-rouge">~/pgdata95/tablespaces</code>. So, as per the <a href="https://www.postgresql.org/docs/current/static/pgupgrade.html">docs</a>:</p>
 
 <blockquote>
   <p>Once you are satisfied with the upgrade, you can delete the old cluster’s data directories by running the script mentioned when pg_upgrade completes.</p>
@@ -249,20 +249,20 @@ Reading time ~3 minutes
       <a href="/posts/Making-use-of-gists/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

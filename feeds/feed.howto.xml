@@ -5,7 +5,7 @@
   <description>Posts tagged as 'howto'</description>
   <atom:link href="/feeds/feed.howto.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#howto/</link>
-  <updated>2020-05-04T13:28:00-04:00</updated>
+  <updated>2020-06-23T16:34:57-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -14,13 +14,13 @@
   
    <item>
     <title>PostgreSQL Partitioning Quick Tip</title>
-    <description>&lt;p&gt;&lt;img src=&quot;http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg&quot; class=&quot;rleader&quot; /&gt;Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use &lt;a href=&quot;https://github.com/keithf4/pg_partman&quot;&gt;pg_partman&lt;/a&gt; and be done with it. However, if you’re trying to learn, can’t use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_partman&lt;/code&gt;, or are a masochist you’ll probably be following the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/ddl-partitioning.html&quot;&gt;docs&lt;/a&gt; and thinking ‘seriously? i have to create indexes on each child? why don’t they copy the indexes of the parent? why isn’t this easier?’. Here’s a little tip to make things slightly easier:&lt;/p&gt;
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg&quot; class=&quot;rleader&quot; /&gt;Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use &lt;a href=&quot;https://github.com/keithf4/pg_partman&quot;&gt;pg_partman&lt;/a&gt; and be done with it. However, if you’re trying to learn, can’t use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_partman&lt;/code&gt;, or are a masochist you’ll probably be following the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/ddl-partitioning.html&quot;&gt;docs&lt;/a&gt; and thinking ‘seriously? i have to create indexes on each child? why don’t they copy the indexes of the parent? why isn’t this easier?’. Here’s a little tip to make things slightly easier:&lt;/p&gt;
 
 &lt;p&gt;Instead of creating your child tables like the docs say:
-&lt;script src=&quot;https://gist.github.com/hunleyd/0b1f8fa43534f53046eed4e63dc54e14.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/0b1f8fa43534f53046eed4e63dc54e14.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Create your child tables thusly:
-&lt;script src=&quot;https://gist.github.com/hunleyd/603c5f6961134422651e2e13b1c6398e.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/603c5f6961134422651e2e13b1c6398e.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;and PostgeSQL &lt;em&gt;will&lt;/em&gt; copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?&lt;/p&gt;
 
@@ -46,77 +46,77 @@
 &lt;ul&gt;
   &lt;li&gt;
     &lt;p&gt;As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:
-&lt;script src=&quot;https://gist.github.com/hunleyd/94d1096767e154486dbfe8dd47f48275.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/94d1096767e154486dbfe8dd47f48275.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we’re done, right? You can use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dumpall -g&lt;/code&gt; on the PostgreSQL 8.4.x to get a listing of roles.&lt;/p&gt;
+    &lt;p&gt;On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we’re done, right? You can use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_dumpall -g&lt;/code&gt; on the PostgreSQL 8.4.x to get a listing of roles.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I &lt;em&gt;think&lt;/em&gt; you can actually get Londiste to do this for you as part of the replication, but I couldn’t find anything online for sure, and I didn’t have time to add more experimentation here (we’re on the customer’s dime here, remember). So, use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; over the network and pipe it to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_restore&lt;/code&gt; to transfer the schema thusly:
-&lt;script src=&quot;https://gist.github.com/hunleyd/f0fcb06526f3b3f50dd0b57a091403b8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+    &lt;p&gt;Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I &lt;em&gt;think&lt;/em&gt; you can actually get Londiste to do this for you as part of the replication, but I couldn’t find anything online for sure, and I didn’t have time to add more experimentation here (we’re on the customer’s dime here, remember). So, use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; over the network and pipe it to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_restore&lt;/code&gt; to transfer the schema thusly:
+&lt;script src=&quot;https://gist.github.com/f0fcb06526f3b3f50dd0b57a091403b8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:
-&lt;script src=&quot;https://gist.github.com/hunleyd/00e6122b49c7f068c46e680f09ed396f.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/00e6122b49c7f068c46e680f09ed396f.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Install Skytools from source on the PostgreSQL 8.4.x server:
-&lt;script src=&quot;https://gist.github.com/hunleyd/555804964c2e2564b08fff01c0d5a53a.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/555804964c2e2564b08fff01c0d5a53a.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Restart the PostgreSQL 8.4.x cluster to load the new libs and modules&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Now we configure the Londiste ticker. Note, we have &lt;em&gt;trust&lt;/em&gt; setup for the postgres user in &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; so there is no password= in the connection strings. Adjust to meet your setup:
-&lt;script src=&quot;https://gist.github.com/hunleyd/d65e5dfd27365b086dcddb118d586308.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+    &lt;p&gt;Now we configure the Londiste ticker. Note, we have &lt;em&gt;trust&lt;/em&gt; setup for the postgres user in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; so there is no password= in the connection strings. Adjust to meet your setup:
+&lt;script src=&quot;https://gist.github.com/d65e5dfd27365b086dcddb118d586308.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Start up the ticker, to provide the replication “heartbeat” by running &lt;code class=&quot;highlighter-rouge&quot;&gt;pgqd -d ticker.ini&lt;/code&gt;&lt;/p&gt;
+    &lt;p&gt;Start up the ticker, to provide the replication “heartbeat” by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pgqd -d ticker.ini&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Check the &lt;code class=&quot;highlighter-rouge&quot;&gt;ticker.log&lt;/code&gt; to ensure there are no warnings or errors! You can stop the ticker with &lt;code class=&quot;highlighter-rouge&quot;&gt;pgqd -s ticker.ini&lt;/code&gt; while you fix things.&lt;/p&gt;
+    &lt;p&gt;Check the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ticker.log&lt;/code&gt; to ensure there are no warnings or errors! You can stop the ticker with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pgqd -s ticker.ini&lt;/code&gt; while you fix things.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
-&lt;script src=&quot;https://gist.github.com/hunleyd/2a9317184569c8fabd26945595c480f9.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/2a9317184569c8fabd26945595c480f9.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;We have to actually create the master node as the root node by doing:
-&lt;script src=&quot;https://gist.github.com/hunleyd/fcfb0ff9b3cbb2c724ea8da36723fde1.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/fcfb0ff9b3cbb2c724ea8da36723fde1.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Check the master.log to see if you have a line like &lt;code class=&quot;highlighter-rouge&quot;&gt;INFO Node &quot;master&quot; initialized for queue &quot;myappq&quot; with type &quot;root&quot;&lt;/code&gt;&lt;/p&gt;
+    &lt;p&gt;Check the master.log to see if you have a line like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INFO Node &quot;master&quot; initialized for queue &quot;myappq&quot; with type &quot;root&quot;&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Now, spin up the master’s replication worker process by running &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 -d master.ini worker&lt;/code&gt;&lt;/p&gt;
+    &lt;p&gt;Now, spin up the master’s replication worker process by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 -d master.ini worker&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Next, we configure our slave node (same note applies about the lack of password in the connection string):
-&lt;script src=&quot;https://gist.github.com/hunleyd/94ac2474673bd3dd9fe0e1d77a12c791.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/94ac2474673bd3dd9fe0e1d77a12c791.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Like the master, we have to create the slave node. I created it as a &lt;code class=&quot;highlighter-rouge&quot;&gt;leaf&lt;/code&gt; but I could have created it as a &lt;code class=&quot;highlighter-rouge&quot;&gt;branch&lt;/code&gt; if we we’re going to cascade replication:
-&lt;script src=&quot;https://gist.github.com/hunleyd/bdcd1644a185863f823749d4502e2fa8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+    &lt;p&gt;Like the master, we have to create the slave node. I created it as a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;leaf&lt;/code&gt; but I could have created it as a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;branch&lt;/code&gt; if we we’re going to cascade replication:
+&lt;script src=&quot;https://gist.github.com/bdcd1644a185863f823749d4502e2fa8.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Check the slave.log to see if you have the line &lt;code class=&quot;highlighter-rouge&quot;&gt;INFO Node &quot;slave&quot; initialized for queue &quot;myappq&quot; with type &quot;branch&quot;&lt;/code&gt;&lt;/p&gt;
+    &lt;p&gt;Check the slave.log to see if you have the line &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INFO Node &quot;slave&quot; initialized for queue &quot;myappq&quot; with type &quot;branch&quot;&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Spin up the slave’s replication worker process by running &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 -d slave.ini worker&lt;/code&gt;&lt;/p&gt;
+    &lt;p&gt;Spin up the slave’s replication worker process by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 -d slave.ini worker&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;Tell the master node that we want to replicate all the tables in the db (&lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 master.ini add-table --all&lt;/code&gt;) as well as all the sequences (&lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 master.ini add-seq --all&lt;/code&gt;). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 master.ini add-table tablename&lt;/code&gt; to add them to replication. Ditto for new sequences.&lt;/p&gt;
+    &lt;p&gt;Tell the master node that we want to replicate all the tables in the db (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 master.ini add-table --all&lt;/code&gt;) as well as all the sequences (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 master.ini add-seq --all&lt;/code&gt;). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 master.ini add-table tablename&lt;/code&gt; to add them to replication. Ditto for new sequences.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;For the slave node, also replicate all the tables (&lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini add-table --all&lt;/code&gt;) and all the sequences (&lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini add-seq --all&lt;/code&gt;). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini add-table tablename&lt;/code&gt; to add them to replication. Ditto for new sequences.&lt;/p&gt;
+    &lt;p&gt;For the slave node, also replicate all the tables (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 slave.ini add-table --all&lt;/code&gt;) and all the sequences (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 slave.ini add-seq --all&lt;/code&gt;). Note that this only adds the tables that currently exist. If you add new tables to the master db, you need to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 slave.ini add-table tablename&lt;/code&gt; to add them to replication. Ditto for new sequences.&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;At this point, replication is actually up and running. Any changes occurring on the master node are being replicated to the slave node. That’s all you need to do.&lt;/p&gt;
 
-&lt;p&gt;But what about the data that was already in the master db? You don’t need to do anything. It’s already replicating. You can forcibly tell Londiste to ‘catch things up’ by doing &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini resync --all&lt;/code&gt; if you like though.&lt;/p&gt;
+&lt;p&gt;But what about the data that was already in the master db? You don’t need to do anything. It’s already replicating. You can forcibly tell Londiste to ‘catch things up’ by doing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 slave.ini resync --all&lt;/code&gt; if you like though.&lt;/p&gt;
 
-&lt;p&gt;If you want to check on the replication at any point, simply issue &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini status&lt;/code&gt; or to be more pedantic &lt;code class=&quot;highlighter-rouge&quot;&gt;londiste3 slave.ini compare&lt;/code&gt; which will examine row counts and md5sums between master and slave.&lt;/p&gt;
+&lt;p&gt;If you want to check on the replication at any point, simply issue &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 slave.ini status&lt;/code&gt; or to be more pedantic &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;londiste3 slave.ini compare&lt;/code&gt; which will examine row counts and md5sums between master and slave.&lt;/p&gt;
 
 &lt;p&gt;Enjoy your new cross-version logical replication!&lt;/p&gt;
 </description>
@@ -129,32 +129,32 @@
     <title>PostgreSQL Streaming Replication in 10 Minutes</title>
     <description>&lt;p&gt;&lt;img src=&quot;/images/posts/database-replication.png&quot; class=&quot;rleader&quot; /&gt;While there’s absolutely nothing new in this blog post that isn’t covered by the wonderful &lt;a href=&quot;http://www.postgresql.org/docs/current/static/index.html&quot;&gt;docs&lt;/a&gt; I’ve been asked multiple times now by customers if we had some kind of ‘crib notes’ format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well post it so that I can simply point people to it in the future. So here we are.&lt;/p&gt;
 
-&lt;p&gt;Now, let’s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity’s sake, we will call these machines ‘master’ and ‘standby’. Note too that I’m using &lt;code class=&quot;highlighter-rouge&quot;&gt;replication slots&lt;/code&gt; which needs PostgreSQL 9.4.0 or later; if you’re using something earlier, simply ignore the slot stuff.&lt;/p&gt;
+&lt;p&gt;Now, let’s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity’s sake, we will call these machines ‘master’ and ‘standby’. Note too that I’m using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;replication slots&lt;/code&gt; which needs PostgreSQL 9.4.0 or later; if you’re using something earlier, simply ignore the slot stuff.&lt;/p&gt;
 
 &lt;p&gt;Let’s get started!&lt;/p&gt;
 
 &lt;p&gt;On the master, do the following:
-&lt;script src=&quot;https://gist.github.com/hunleyd/78f5bca50fb14e5a6525a5f63bb5bf47.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/78f5bca50fb14e5a6525a5f63bb5bf47.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;On the master, add the external IP addresses of the servers to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;:
-&lt;script src=&quot;https://gist.github.com/hunleyd/8af26b72f5a79632494d3203547d9478.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;p&gt;On the master, add the external IP addresses of the servers to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;:
+&lt;script src=&quot;https://gist.github.com/8af26b72f5a79632494d3203547d9478.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Restart PostgreSQL on the master for the changes to take affect&lt;/p&gt;
 
 &lt;p&gt;On the master, create the replication user:
-&lt;script src=&quot;https://gist.github.com/hunleyd/a279de475a73e8ee490b1c7af7859ba4.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/a279de475a73e8ee490b1c7af7859ba4.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;On the master, create the replication slot for the standby:
-&lt;script src=&quot;https://gist.github.com/hunleyd/2fb5070785137383fe42eec0225d8c0e.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/2fb5070785137383fe42eec0225d8c0e.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;On the standby, wipe the existing cluster:
-&lt;script src=&quot;https://gist.github.com/hunleyd/2adfa47297b9d0006ba172d967e1a575.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;script src=&quot;https://gist.github.com/2adfa47297b9d0006ba172d967e1a575.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;On the standby, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_basebackup&lt;/code&gt; command to clone the master (enter the &lt;code class=&quot;highlighter-rouge&quot;&gt;repl_user&lt;/code&gt;’s password from above when prompted):
-&lt;script src=&quot;https://gist.github.com/hunleyd/3e37d6f4ede70675270b92d7660cd1d0.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;p&gt;On the standby, use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_basebackup&lt;/code&gt; command to clone the master (enter the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repl_user&lt;/code&gt;’s password from above when prompted):
+&lt;script src=&quot;https://gist.github.com/3e37d6f4ede70675270b92d7660cd1d0.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;On the standby, tweak the &lt;code class=&quot;highlighter-rouge&quot;&gt;recovery.conf&lt;/code&gt; that was created for you and add the replication slot name:
-&lt;script src=&quot;https://gist.github.com/hunleyd/e914002c0c78c3a1c03515c60e2b5aaa.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
+&lt;p&gt;On the standby, tweak the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;recovery.conf&lt;/code&gt; that was created for you and add the replication slot name:
+&lt;script src=&quot;https://gist.github.com/e914002c0c78c3a1c03515c60e2b5aaa.js&quot;&gt; &lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Start the standby up&lt;/p&gt;
 

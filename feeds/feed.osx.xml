@@ -5,7 +5,7 @@
   <description>Posts tagged as 'osx'</description>
   <atom:link href="/feeds/feed.osx.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#osx/</link>
-  <updated>2020-05-04T13:28:00-04:00</updated>
+  <updated>2020-06-23T16:34:57-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -183,13 +183,13 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
 
 &lt;p&gt;pgBackRest is written in Perl, but don’t hold that against it. As of the 1.19 release, pgBackRest can now use S3 buckets as the storage backend. I &lt;em&gt;really&lt;/em&gt; like pgBackRest and tend to use it for myself and customers over any of the other tools in the PostgreSQL ecosphere. So, let’s get started by downloading the latest release from their site, and then installing it. For some reason, no one has added pgBackRest to Homebrew yet (someone, pls!) so let’s do it the manual way:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/4e7390cc161206d1e53019c8e44a20b7.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/4e7390cc161206d1e53019c8e44a20b7.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;(Keep in mind that I already had Perl setup to connect to PostgreSQL for other uses. You might need to install &lt;code class=&quot;highlighter-rouge&quot;&gt;DBD::Pg&lt;/code&gt;.)&lt;/p&gt;
+&lt;p&gt;(Keep in mind that I already had Perl setup to connect to PostgreSQL for other uses. You might need to install &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DBD::Pg&lt;/code&gt;.)&lt;/p&gt;
 
 &lt;p&gt;Now that pgBackRest is installed, let’s configure it. First, we’ll want to set some of the global properties that affect all pgBackRest operations:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/005748ef36074b225619f79ab3420c54.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/005748ef36074b225619f79ab3420c54.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;As you can see, we set the following:&lt;/p&gt;
 
@@ -207,29 +207,29 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
 
 &lt;p&gt;Now, we need to tell pgBackRest which instance of PostgreSQL we want to backup and where to find it. Again, if you used my previous posts to install multiple versions via Homebrew, this should look familiar:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/fea13b1e4b57f7c0ad068ef2579a04cd.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/fea13b1e4b57f7c0ad068ef2579a04cd.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;You can see for each pg cluster, we define:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;the path to the &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; directory&lt;/li&gt;
+  &lt;li&gt;the path to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; directory&lt;/li&gt;
   &lt;li&gt;the port the cluster listens on&lt;/li&gt;
   &lt;li&gt;and the path we want to store the backups in on our backend&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;When you put this all together, we’ll be connecting to an S3 bucket called, creatively enough, &lt;code class=&quot;highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; and then we will create a top-level directory (‘96’, ‘95’, etc) to store each cluster’s backups in.&lt;/p&gt;
+&lt;p&gt;When you put this all together, we’ll be connecting to an S3 bucket called, creatively enough, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; and then we will create a top-level directory (‘96’, ‘95’, etc) to store each cluster’s backups in.&lt;/p&gt;
 
 &lt;p&gt;Now that we’ve got our configuration complete, let’s do an initial backup of one of the clusters. First, we have to create the appropriate directories and metadata on the backend:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/ac4aa555e10ffa9a210983d7997e3ebc.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/ac4aa555e10ffa9a210983d7997e3ebc.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;Then, we have pgBackRest verify that everything is properly setup. Note that this includes checking to ensure you tweaked &lt;code class=&quot;highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; according to the directions on their site (I’m not going to repeat them here):&lt;/p&gt;
+&lt;p&gt;Then, we have pgBackRest verify that everything is properly setup. Note that this includes checking to ensure you tweaked &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; according to the directions on their site (I’m not going to repeat them here):&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/56358e6024a84833af73fda3d7d71432.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/56358e6024a84833af73fda3d7d71432.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;And since that all worked, we can take our first actual backup:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/fdc5991f31aa098f685a3a462461d897.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/fdc5991f31aa098f685a3a462461d897.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;Neat!&lt;/p&gt;
 
@@ -237,21 +237,21 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/s3_1.png&quot; alt=&quot;s3_1&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;You can see here the top-level contents of my &lt;code class=&quot;highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; bucket. As stated before, each cluster gets its own sub-dir. Since we just backed up the ‘92’ cluster, let’s look inside it’s dir.&lt;/p&gt;
+&lt;p&gt;You can see here the top-level contents of my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; bucket. As stated before, each cluster gets its own sub-dir. Since we just backed up the ‘92’ cluster, let’s look inside it’s dir.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/s3_2.png&quot; alt=&quot;s3_2&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;You can see that pgBackRest has created as directory for the WALs to be stored in whenever &lt;code class=&quot;highlighter-rouge&quot;&gt;archive_command&lt;/code&gt; fires and another directory for the actual cluster backups. Peeking into the &lt;code class=&quot;highlighter-rouge&quot;&gt;archive&lt;/code&gt; dir, we see:&lt;/p&gt;
+&lt;p&gt;You can see that pgBackRest has created as directory for the WALs to be stored in whenever &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;archive_command&lt;/code&gt; fires and another directory for the actual cluster backups. Peeking into the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;archive&lt;/code&gt; dir, we see:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/s3_3.png&quot; alt=&quot;s3_3&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;This shows us some metadata, and shows that pgBackRest creates a directory for each timeline of the cluster. Since we are on timeline 1 in our 92 cluster, we have a &lt;code class=&quot;highlighter-rouge&quot;&gt;9.2-1&lt;/code&gt; directory inside of which, we find:&lt;/p&gt;
+&lt;p&gt;This shows us some metadata, and shows that pgBackRest creates a directory for each timeline of the cluster. Since we are on timeline 1 in our 92 cluster, we have a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;9.2-1&lt;/code&gt; directory inside of which, we find:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/s3_4.png&quot; alt=&quot;s3_4&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Our archived WALs have been compressed and uploaded. Hurray!&lt;/p&gt;
 
-&lt;p&gt;Now, let’s check inside the &lt;code class=&quot;highlighter-rouge&quot;&gt;backup&lt;/code&gt; directory:&lt;/p&gt;
+&lt;p&gt;Now, let’s check inside the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;backup&lt;/code&gt; directory:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/s3_5.png&quot; alt=&quot;s3_5&quot; /&gt;&lt;/p&gt;
 
@@ -259,15 +259,15 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/s3_6.png&quot; alt=&quot;s3_6&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Hey look, more metadata! And another folder! :) So, let’s dive into the &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_data&lt;/code&gt; folder where we see:&lt;/p&gt;
+&lt;p&gt;Hey look, more metadata! And another folder! :) So, let’s dive into the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_data&lt;/code&gt; folder where we see:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/s3_7.png&quot; alt=&quot;s3_7&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Holy crap! It’s a basebackup of our &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; data directory. And all the files have been nicely compressed for us. Rock on, pgBackRest!&lt;/p&gt;
+&lt;p&gt;Holy crap! It’s a basebackup of our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; data directory. And all the files have been nicely compressed for us. Rock on, pgBackRest!&lt;/p&gt;
 
 &lt;p&gt;And just in case you wanted to see the current backup catalog:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/f553b0931a571965ca9bcb6235cb8fcf.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/f553b0931a571965ca9bcb6235cb8fcf.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;(look at that compression!)&lt;/p&gt;
 </description>
@@ -280,13 +280,12 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
     <title>Managing multiple PostgreSQL installs via Homebrew</title>
     <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;Following on from &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;this&lt;/a&gt; post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/0ee7d8745c2f9854b34ed48ae9196362.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » pg 9.6
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » pg 9.6
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;and then the script does the following:&lt;/p&gt;
 
@@ -296,7 +295,7 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
   &lt;li&gt;checks if another version is linked as the active version, and unlinks it&lt;/li&gt;
   &lt;li&gt;links the requested version as the active version&lt;/li&gt;
   &lt;li&gt;sets PGDATA to point to the requested version’s data cluster&lt;/li&gt;
-  &lt;li&gt;does an &lt;code class=&quot;highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for the requested version if needed&lt;/li&gt;
+  &lt;li&gt;does an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for the requested version if needed&lt;/li&gt;
   &lt;li&gt;starts the requested version’s cluster&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -313,30 +312,27 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
     <title>Routing email through GMail on OSX</title>
     <description>&lt;p&gt;&lt;img src=&quot;http://www.postfix.org/mysza.gif&quot; class=&quot;lleader&quot; /&gt;Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)&lt;/p&gt;
 
-&lt;p&gt;The first thing we’re going to do is open an iTerm and &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo -i&lt;/code&gt; to become root. Then we’re going to &lt;code class=&quot;highlighter-rouge&quot;&gt;vi /etc/postfix/main.cf&lt;/code&gt; and we’re going to add/set the following:&lt;/p&gt;
+&lt;p&gt;The first thing we’re going to do is open an iTerm and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo -i&lt;/code&gt; to become root. Then we’re going to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi /etc/postfix/main.cf&lt;/code&gt; and we’re going to add/set the following:&lt;/p&gt;
 
-&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;myhostname&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;myhostname&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;relayhost&lt;/span&gt; = [&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_sasl_auth_enable&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_sasl_password_maps&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;:/&lt;span class=&quot;n&quot;&gt;etc&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postfix&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;sasl_passwd&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_sasl_security_options&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;noanonymous&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_sasl_mechanism_filter&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;smtp_use_tls&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we &lt;code class=&quot;highlighter-rouge&quot;&gt;vi /etc/postfix/sasl_passwd&lt;/code&gt; and add:&lt;/p&gt;
+&lt;p&gt;I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi /etc/postfix/sasl_passwd&lt;/code&gt; and add:&lt;/p&gt;
 
-&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;@&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;:&lt;span class=&quot;n&quot;&gt;app_passwd&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;@&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;:&lt;span class=&quot;n&quot;&gt;app_passwd&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Secure that file by running &lt;code class=&quot;highlighter-rouge&quot;&gt;chmod 0600 /etc/postfix/sasl_passwd&lt;/code&gt; and then have Postfix hash it by doing &lt;code class=&quot;highlighter-rouge&quot;&gt;postmap /etc/postfix/sasl_passwd&lt;/code&gt;. Finally, restart Postfix:&lt;/p&gt;
+&lt;p&gt;Secure that file by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chmod 0600 /etc/postfix/sasl_passwd&lt;/code&gt; and then have Postfix hash it by doing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postmap /etc/postfix/sasl_passwd&lt;/code&gt;. Finally, restart Postfix:&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;launchctl stop org.postfix.master
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;launchctl stop org.postfix.master
 launchctl start org.postfix.master
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;And everything should work.&lt;/p&gt;
 </description>
@@ -349,72 +345,70 @@ launchctl start org.postfix.master
     <title>Getting fancy with PostgreSQL and Homebrew</title>
     <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;In our &lt;a href=&quot;https://hunleyd.github.io/PostgreSQL-Homebrew-and-You/&quot;&gt;previous&lt;/a&gt; post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we’re going to take the next step.&lt;/p&gt;
 
-&lt;p&gt;First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dumpall&lt;/code&gt; here since it’s quick-n-dirty:&lt;/p&gt;
+&lt;p&gt;First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_dumpall&lt;/code&gt; here since it’s quick-n-dirty:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/22e765b45c877b5c9c2e35722b464393.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;Now, we can stop our cluster:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/f02a36a115c3fed3310e7abc5f3fb419.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;And uninstall the current PostgreSQL:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/4dffee8e9ebbf2c052162f2ecc36e812.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/4dffee8e9ebbf2c052162f2ecc36e812.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;And remove the remnants of our cluster:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/7c064e25c8916fa7fe0e3cdb846d3c78.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/7c064e25c8916fa7fe0e3cdb846d3c78.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;Now we’ve got a clean slate. So, let’s tell Homebrew to stop using the default PostgreSQL and use Peter Eisentraut’s version (if you don’t know, Peter actually contributes to PostgreSQL):&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/b099ff10c1cd1713f37ff40cf320adf3.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/b099ff10c1cd1713f37ff40cf320adf3.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let’s install the supported versions:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/bcc4e0e7c55e849b7adb647d9727674c.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/bcc4e0e7c55e849b7adb647d9727674c.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/opt/postgresql-9.1/&lt;/code&gt; etc.&lt;/p&gt;
+&lt;p&gt;As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/opt/postgresql-9.1/&lt;/code&gt; etc.&lt;/p&gt;
 
 &lt;p&gt;Peter configures PostgreSQL with just about all the options turned on:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/c56727a3249042841c2609439209c8fd.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/c56727a3249042841c2609439209c8fd.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt;. You would install it like this:&lt;/p&gt;
+&lt;p&gt;and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pex&lt;/code&gt;. You would install it like this:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/37c2e01a0d400c0a16c7fb7d9b8d1030.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/37c2e01a0d400c0a16c7fb7d9b8d1030.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use &lt;code class=&quot;highlighter-rouge&quot;&gt;pex&lt;/code&gt; like so:&lt;/p&gt;
+&lt;p&gt;Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pex&lt;/code&gt; like so:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/d2d004871557adc49ae77b19181bd999.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/d2d004871557adc49ae77b19181bd999.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;As you can see, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ip4r&lt;/code&gt; extension was installed into my PostgreSQL 9.4 instance.&lt;/p&gt;
+&lt;p&gt;As you can see, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ip4r&lt;/code&gt; extension was installed into my PostgreSQL 9.4 instance.&lt;/p&gt;
 
-&lt;p&gt;Now, you might be wondering how to deal with all these concurrent versions. If you type &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; which one willl you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:&lt;/p&gt;
+&lt;p&gt;Now, you might be wondering how to deal with all these concurrent versions. If you type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; which one willl you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql &lt;span class=&quot;nt&quot;&gt;--version&lt;/span&gt;
 psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;PostgreSQL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 9.6.1
 doug@Douglass-MacBook-Pro ~ »
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;which is a huge pita. So, let’s make a little convenience function in our shell. Edit your &lt;code class=&quot;highlighter-rouge&quot;&gt;.zshrc&lt;/code&gt; or your &lt;code class=&quot;highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; (or whatever) and add a function like this:&lt;/p&gt;
+&lt;p&gt;which is a huge pita. So, let’s make a little convenience function in our shell. Edit your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.zshrc&lt;/code&gt; or your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; (or whatever) and add a function like this:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/b27085662bea30f3b39de293a038b766.js&quot;&gt; &lt;/script&gt;
 
-&lt;p&gt;and then simply call &lt;code class=&quot;highlighter-rouge&quot;&gt;pg 9.5&lt;/code&gt; to set PostgreSQL 9.5 as your ‘active’ instance:&lt;/p&gt;
+&lt;p&gt;and then simply call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg 9.5&lt;/code&gt; to set PostgreSQL 9.5 as your ‘active’ instance:&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oug@Douglass-MacBook-Pro ~ » pg 9.5
-Stopping PostgreSQL 9.4... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-Activating PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-Initializing PostgreSQL 9.5 cluster... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
-Starting PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;!
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;oug@Douglass-MacBook-Pro ~ » pg 9.5
+Stopping PostgreSQL 9.4... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+Activating PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+Initializing PostgreSQL 9.5 cluster... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+Starting PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
 doug@Douglass-MacBook-Pro ~ »
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Restore your data:&lt;/p&gt;
 
-&lt;script src=&quot;https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js&quot;&gt; &lt;/script&gt;
+&lt;script src=&quot;https://gist.github.com/ia54dab54b0b44b7e9fd05ca54cf5fb95.js&quot;&gt; &lt;/script&gt;
 
 &lt;p&gt;and there you be. Ain’t it beautiful? :)&lt;/p&gt;
 </description>
@@ -427,9 +421,9 @@ doug@Douglass-MacBook-Pro ~ »
     <title>PostgreSQL, Homebrew, and You</title>
     <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;lleader&quot; /&gt;If you need to install &lt;a href=&quot;http://www.posatgresql.org&quot;&gt;PostgreSQL&lt;/a&gt; onto your Macbook, you have several options available to you nowadays. You could use the &lt;a href=&quot;https://bigsql.com/postgresql/installers.jsp&quot;&gt;BigSQL&lt;/a&gt; package, or you could use &lt;a href=&quot;http://postgresapp.com&quot;&gt;Postgres.app&lt;/a&gt;, or several others. However, if you’re a geek running OSX, you’ve probably already installed &lt;a href=&quot;http://brew.sh&quot;&gt;Homebrew&lt;/a&gt; and it has a wonderful PostgreSQL package. So let’s use it, shall we?&lt;/p&gt;
 
-&lt;p&gt;I’m not going to walk you through installing Homebrew, so let’s just assume it’s already up and running and you’ve followed all the directions. At this point, you have &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/bin/&lt;/code&gt; in your &lt;code class=&quot;highlighter-rouge&quot;&gt;$PATH&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;brew&lt;/code&gt; is up and running. So, let’s tell &lt;code class=&quot;highlighter-rouge&quot;&gt;brew&lt;/code&gt; to install PostgreSQL:&lt;/p&gt;
+&lt;p&gt;I’m not going to walk you through installing Homebrew, so let’s just assume it’s already up and running and you’ve followed all the directions. At this point, you have &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/bin/&lt;/code&gt; in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PATH&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew&lt;/code&gt; is up and running. So, let’s tell &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew&lt;/code&gt; to install PostgreSQL:&lt;/p&gt;
 
-&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » brew install postgresql
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » brew install postgresql
 ==&amp;gt; Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.4_1.sierra.b
 Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.4_1.sierra.bottle.tar.gz
 ==&amp;gt; Pouring postgresql-9.5.4_1.sierra.bottle.tar.gz
@@ -455,20 +449,18 @@ Or, if you don't want/need a background service you can just run:
   pg_ctl -D /usr/local/var/postgres start
 ==&amp;gt; Summary
 🍺  /usr/local/Cellar/postgresql/9.5.4_1: 3,147 files, 35M
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;As you can see, it downloaded the package, installed the binaries, and ran &lt;code class=&quot;highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:&lt;/p&gt;
+&lt;p&gt;As you can see, it downloaded the package, installed the binaries, and ran &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » brew services start postgresql
-&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;Successfully started &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;postgresql&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;label: homebrew.mxcl.postgresql&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » brew services start postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Successfully started &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;postgresql&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;label: homebrew.mxcl.postgresql&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;And if you check your process listing, you can see that the cluster is up and running under your id:&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » ps -efw|grep postgres
-  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres -D /usr/local/var/postgres
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@Douglass-MacBook-Pro ~ » ps &lt;span class=&quot;nt&quot;&gt;-efw&lt;/span&gt;|grep postgres
+  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; /usr/local/var/postgres
   501  6817  6808   0 11:03AM ??         0:00.00 postgres: logger process
   501  6819  6808   0 11:03AM ??         0:00.00 postgres: checkpointer process
   501  6820  6808   0 11:03AM ??         0:00.00 postgres: writer process
@@ -476,10 +468,9 @@ Or, if you don't want/need a background service you can just run:
   501  6822  6808   0 11:03AM ??         0:00.00 postgres: autovacuum launcher process
   501  6823  6808   0 11:03AM ??         0:00.00 postgres: stats collector process
 doug@Douglass-MacBook-Pro ~ »
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;And just like that, you have PostgreSQL installed and running! Set &lt;code class=&quot;highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/var/postgres&lt;/code&gt; and you’re all set.&lt;/p&gt;
+&lt;p&gt;And just like that, you have PostgreSQL installed and running! Set &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/var/postgres&lt;/code&gt; and you’re all set.&lt;/p&gt;
 
 &lt;p&gt;Enjoy!&lt;/p&gt;
 </description>

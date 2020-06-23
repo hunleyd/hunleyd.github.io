@@ -184,72 +184,70 @@ Reading time ~2 minutes
     <div class="entry-content">
       <p><img src="http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png" class="rleader" />In our <a href="https://hunleyd.github.io/PostgreSQL-Homebrew-and-You/">previous</a> post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we’re going to take the next step.</p>
 
-<p>First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use <code class="highlighter-rouge">pg_dumpall</code> here since it’s quick-n-dirty:</p>
+<p>First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use <code class="language-plaintext highlighter-rouge">pg_dumpall</code> here since it’s quick-n-dirty:</p>
 
-<script src="https://gist.github.com/hunleyd/22e765b45c877b5c9c2e35722b464393.js"> </script>
+<script src="https://gist.github.com/22e765b45c877b5c9c2e35722b464393.js"> </script>
 
 <p>Now, we can stop our cluster:</p>
 
-<script src="https://gist.github.com/hunleyd/f02a36a115c3fed3310e7abc5f3fb419.js"> </script>
+<script src="https://gist.github.com/f02a36a115c3fed3310e7abc5f3fb419.js"> </script>
 
 <p>And uninstall the current PostgreSQL:</p>
 
-<script src="https://gist.github.com/hunleyd/4dffee8e9ebbf2c052162f2ecc36e812.js"> </script>
+<script src="https://gist.github.com/4dffee8e9ebbf2c052162f2ecc36e812.js"> </script>
 
 <p>And remove the remnants of our cluster:</p>
 
-<script src="https://gist.github.com/hunleyd/7c064e25c8916fa7fe0e3cdb846d3c78.js"> </script>
+<script src="https://gist.github.com/7c064e25c8916fa7fe0e3cdb846d3c78.js"> </script>
 
 <p>Now we’ve got a clean slate. So, let’s tell Homebrew to stop using the default PostgreSQL and use Peter Eisentraut’s version (if you don’t know, Peter actually contributes to PostgreSQL):</p>
 
-<script src="https://gist.github.com/hunleyd/b099ff10c1cd1713f37ff40cf320adf3.js"> </script>
+<script src="https://gist.github.com/b099ff10c1cd1713f37ff40cf320adf3.js"> </script>
 
 <p>As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let’s install the supported versions:</p>
 
-<script src="https://gist.github.com/hunleyd/bcc4e0e7c55e849b7adb647d9727674c.js"> </script>
+<script src="https://gist.github.com/bcc4e0e7c55e849b7adb647d9727674c.js"> </script>
 
-<p>As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories <code class="highlighter-rouge">/usr/local/opt/postgresql-9.1/</code> etc.</p>
+<p>As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories <code class="language-plaintext highlighter-rouge">/usr/local/opt/postgresql-9.1/</code> etc.</p>
 
 <p>Peter configures PostgreSQL with just about all the options turned on:</p>
 
-<script src="https://gist.github.com/hunleyd/c56727a3249042841c2609439209c8fd.js"> </script>
+<script src="https://gist.github.com/c56727a3249042841c2609439209c8fd.js"> </script>
 
-<p>and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using <code class="highlighter-rouge">pex</code>. You would install it like this:</p>
+<p>and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using <code class="language-plaintext highlighter-rouge">pex</code>. You would install it like this:</p>
 
-<script src="https://gist.github.com/hunleyd/37c2e01a0d400c0a16c7fb7d9b8d1030.js"> </script>
+<script src="https://gist.github.com/37c2e01a0d400c0a16c7fb7d9b8d1030.js"> </script>
 
-<p>Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use <code class="highlighter-rouge">pex</code> like so:</p>
+<p>Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use <code class="language-plaintext highlighter-rouge">pex</code> like so:</p>
 
-<script src="https://gist.github.com/hunleyd/d2d004871557adc49ae77b19181bd999.js"> </script>
+<script src="https://gist.github.com/d2d004871557adc49ae77b19181bd999.js"> </script>
 
-<p>As you can see, the <code class="highlighter-rouge">ip4r</code> extension was installed into my PostgreSQL 9.4 instance.</p>
+<p>As you can see, the <code class="language-plaintext highlighter-rouge">ip4r</code> extension was installed into my PostgreSQL 9.4 instance.</p>
 
-<p>Now, you might be wondering how to deal with all these concurrent versions. If you type <code class="highlighter-rouge">pg_dump</code> which one willl you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:</p>
+<p>Now, you might be wondering how to deal with all these concurrent versions. If you type <code class="language-plaintext highlighter-rouge">pg_dump</code> which one willl you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql --version
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~ » /usr/local/opt/postgresql-9.6/bin/psql <span class="nt">--version</span>
 psql <span class="o">(</span>PostgreSQL<span class="o">)</span> 9.6.1
 doug@Douglass-MacBook-Pro ~ »
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>which is a huge pita. So, let’s make a little convenience function in our shell. Edit your <code class="highlighter-rouge">.zshrc</code> or your <code class="highlighter-rouge">.bashrc</code> (or whatever) and add a function like this:</p>
+<p>which is a huge pita. So, let’s make a little convenience function in our shell. Edit your <code class="language-plaintext highlighter-rouge">.zshrc</code> or your <code class="language-plaintext highlighter-rouge">.bashrc</code> (or whatever) and add a function like this:</p>
 
-<script src="https://gist.github.com/hunleyd/b27085662bea30f3b39de293a038b766.js"> </script>
+<script src="https://gist.github.com/b27085662bea30f3b39de293a038b766.js"> </script>
 
-<p>and then simply call <code class="highlighter-rouge">pg 9.5</code> to set PostgreSQL 9.5 as your ‘active’ instance:</p>
+<p>and then simply call <code class="language-plaintext highlighter-rouge">pg 9.5</code> to set PostgreSQL 9.5 as your ‘active’ instance:</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>oug@Douglass-MacBook-Pro ~ » pg 9.5
-Stopping PostgreSQL 9.4... <span class="k">done</span>!
-Activating PostgreSQL 9.5... <span class="k">done</span>!
-Initializing PostgreSQL 9.5 cluster... <span class="k">done</span>!
-Starting PostgreSQL 9.5... <span class="k">done</span>!
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oug@Douglass-MacBook-Pro ~ » pg 9.5
+Stopping PostgreSQL 9.4... <span class="k">done</span><span class="o">!</span>
+Activating PostgreSQL 9.5... <span class="k">done</span><span class="o">!</span>
+Initializing PostgreSQL 9.5 cluster... <span class="k">done</span><span class="o">!</span>
+Starting PostgreSQL 9.5... <span class="k">done</span><span class="o">!</span>
 doug@Douglass-MacBook-Pro ~ »
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Restore your data:</p>
 
-<script src="https://gist.github.com/ihunleyd/a54dab54b0b44b7e9fd05ca54cf5fb95.js"> </script>
+<script src="https://gist.github.com/ia54dab54b0b44b7e9fd05ca54cf5fb95.js"> </script>
 
 <p>and there you be. Ain’t it beautiful? :)</p>
 
@@ -272,20 +270,20 @@ doug@Douglass-MacBook-Pro ~ »
       <a href="/posts/PostgreSQL-Homebrew-and-You/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h3>
-      <p>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving ...&hellip; <a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">Continue reading</a></p>
+      <h3><a href="/posts/tuned-PG-and-you/" title="tuned, PG, and you">tuned, PG, and you</a></h3>
+      <p>We've had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question...&hellip; <a href="/posts/tuned-PG-and-you/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
-        <span>Published on January 04, 2019</span>
+        <h4><a href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" title="The continuing adventures of Mom cutting the cord">The continuing adventures of Mom cutting the cord</a></h4>
+        <span>Published on February 07, 2019</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" title="pgBackRest 2.07 and macOS Mojave">pgBackRest 2.07 and macOS Mojave</a></h4>
-        <span>Published on November 16, 2018</span>
+        <h4><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h4>
+        <span>Published on January 04, 2019</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->
