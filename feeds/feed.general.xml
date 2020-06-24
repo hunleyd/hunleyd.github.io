@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>Douglas J Hunley - general</title>
+  <description>Posts tagged as 'general'</description>
+  <atom:link href="/feeds/feed.general.xml" rel="self" type="application/rss+xml" />
+  <link>/tags/#general/</link>
+  <updated>2020-06-24T16:12:42-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>The continuing adventures of Mom cutting the cord</title>
+    <description>&lt;p&gt;As a belated update to &lt;a href=&quot;/posts/Mom-cuts-the-cord/&quot;&gt;this&lt;/a&gt; post, Mom has told DirecTV to completely go screw and she’s moved over to &lt;a href=&quot;https://www.philo.com&quot;&gt;Philo&lt;/a&gt; where she’s currently loving life.&lt;/p&gt;
+
+&lt;p&gt;I had initially proposed DirecTV Now to her since it was an uphill battle to convince her to abandon DirecTV satellite. I figured it was the path of least resistance since she’d know the UI and the channel line-up . And, at first, it was exactly that. However, after about three months, I had grown tired of hearing the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;when will I get &lt;em&gt;my&lt;/em&gt; locals, not yours&lt;/li&gt;
+  &lt;li&gt;when will I be able to record stuff&lt;/li&gt;
+  &lt;li&gt;why are the previous episodes so inconsistent&lt;/li&gt;
+  &lt;li&gt;why can’t I record show X&lt;/li&gt;
+  &lt;li&gt;does your picture look all blocky&lt;/li&gt;
+  &lt;li&gt;why is the guide so slow&lt;/li&gt;
+  &lt;li&gt;they raised the price?!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;That’s right, in the quick span of just three months, she’d seen that while DirecTV Now &lt;em&gt;was&lt;/em&gt; better than her old DirecTV, it was still plagued by, well, AT&amp;amp;T incompetence. It took them forever to launch the DVR, and it still didn’t work right even after the beta. I actually had to change the account’s billing address to get the correct locals cause they can’t seem to figure out GeoIP. Their licensing of channels/shows makes no goddamn sense. As an example, record whatever you want off the Discovery channel, just not Dirty Jobs. I’m willing to grant that the licensing is on the fault of the network/studio but you’re AT&amp;amp;T/DirecTV for fuck’s sake! Spend some damn money and make it happen for your users. And then there was the app itself. I’ve never seen another Roku app be so unresponsive, so slow, and so bandwidth sensitive. When mom can be on her Chromebook doing whatever, while I’m watching a movie on her TV via Google Play, and my niece is watching Youtube on her iPhone and there are &lt;em&gt;no issues for any of us&lt;/em&gt; the problem is &lt;strong&gt;not&lt;/strong&gt; Mom’s connection. Yet Mom could be the only one in the house and she’d get desync on the audio, or pixelation/blocking in the video. WTF, AT&amp;amp;T? Buy a real CDN!&lt;/p&gt;
+
+&lt;p&gt;And then, of course, they raised the price on her. That’s right. With all the issues above (and trust me, I checked /r/directvnow religiously. This was not unique to Mom) they had the gall to raise prices. And not just for new sign-ups. Oh no no no. Existing and even &lt;em&gt;grandfathered&lt;/em&gt; accounts got hit in the wallet! It’s like they don’t know how to be anything but a greedy cable company.&lt;/p&gt;
+
+&lt;p&gt;So, I signed up for Philo and installed it on Mom’s TV. I asked her to use it for the free week and see how it went. I kid you not, she called me on day 5 and said she liked it so much better that she agreed to me canceling DirecTV Now right then and there. To say I was floored is an understatement.&lt;/p&gt;
+
+&lt;p&gt;I will grant you that losing the locals and having to use the OTA antenna isn’t ideal. We’re keeping an eye on &lt;a href=&quot;https://www.locast.org&quot;&gt;Locast&lt;/a&gt; to see if we can solve that “soon”. But Mom was already using the antenna to watch a few of the local sub-channels, so it wasn’t a deal breaker. So far, Mom has adapted to the Philo interface easily (I prefer it), we’ve setup a profile for her, me, and guests, and she’s been recording shows and Hallmark Christmas movies (ugh) all without needing to call me.&lt;/p&gt;
+
+&lt;p&gt;And since switching, NOT ONCE has she had a desync or pixelation issue. Even when Steph and I both were there over Thanksgiving and beating the crap outta her wifi.&lt;/p&gt;
+
+&lt;p&gt;The kicker here? &lt;strong&gt;It’s only $16/mo.&lt;/strong&gt; Yeah, you read that right. She went from $100/mo w/ DTV to $45/mo with DTVN (at the end) to $16/mo. &lt;strong&gt;Unreal.&lt;/strong&gt; And on top of that, Philo recently added an extra MTV channel for the hell of it.&lt;/p&gt;
+
+&lt;p&gt;All around a WIN WIN.&lt;/p&gt;
+</description>
+    <link>/posts/The-continuing-adventures-of-Mom-cutting-the-cord/ </link>
+    <pubDate>2019-02-07T02:24:43-05:00</pubDate>
+    <guid isPermaLink="true">/posts/The-continuing-adventures-of-Mom-cutting-the-cord/</guid>
+   </item>
+  
+   <item>
+    <title>Mom cuts the cord</title>
+    <description>&lt;p&gt;OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. My mother. The same woman who spent the better part of a decade (I cut the cord in late 2008) saying how she didn’t understand how I could not have cable. Someone check the temperature in Hell will ya? :)&lt;/p&gt;
+
+&lt;p&gt;All kidding aside, Mom (and Dad before he passed) has spent the past several years canceling Dish and DirecTV and switching back-n-forth between them to get the best ‘new customer’ rates and deals. But as Mom starts eyeing retirement and DirecTV keeps upping her bill $2 at a time for various fees, she’d had enough.&lt;/p&gt;
+
+&lt;p&gt;So, over the course of the last few months, I walked Mom through getting a TCL Roku TV:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/tcl.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Note, that’s actually a picture of the 55” which I bought last Aug. Mom bought the 32” even though I argued for the 37”)&lt;/p&gt;
+
+&lt;p&gt;Then I walked her through using the 1byone 50-mile HDTV antenna I had previously bought her. And finally, I signed up for the DirecTVNow beta on Roku and waited for the DVR functionality to launch.&lt;/p&gt;
+
+&lt;p&gt;With all the pieces in place, we spent the afternoon setting everything up during my recent visit. We had a few little bumps that weekend, and I’m going to be getting her a Tablo DUO in the near future so we can use the 1byone on both TVs, but otherwise she adjusted to it all pretty easily. I even hooked up a Roku stick to the TV in the spare bedroom and showed her its all exactly the same as in the living room (minus the OTA locals, of course). Listening to her argue w/ the DirecTV phone rep during the cancellation call was &lt;em&gt;extremely satisfying&lt;/em&gt; and made me proud. Mom still can’t seem to believe that for $35/mo she is getting everything she used to pay almost $100/mo for. But she’s already been telling her friends about it all :)&lt;/p&gt;
+
+&lt;p&gt;So .. if you still haven’t cut the cord, what are you waiting for?&lt;/p&gt;
+</description>
+    <link>/posts/Mom-cuts-the-cord/ </link>
+    <pubDate>2018-05-31T07:12:06-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Mom-cuts-the-cord/</guid>
+   </item>
+  
+   <item>
+    <title>Car(e) free in Columbus</title>
+    <description>&lt;p&gt;Last year, at the beginning of March, I turned in my &lt;a href=&quot;http://www.autoguide.com/blog/wp-content/uploads/2013/09/2014-kia-optima.jpg&quot;&gt;2014 Kia Optima LX&lt;/a&gt; at the end of its lease and decided to go ‘car free’. I wanted to see exactly how much of a PITA it would be, how many services I’d need to subscribe to to get things done, and how much money it would actually save me. It’s now been a year, and I can definitively answer these questions.&lt;/p&gt;
+
+&lt;p&gt;So, Let’s break things down shall we?&lt;/p&gt;
+
+&lt;p&gt;I was paying $440.88/mo for the car, or $5290.56/yr. A not-insignificant chunk of change. That’s &lt;strong&gt;not&lt;/strong&gt; including insurance, gas, oil changes, etc. This was purely for the lease itself.&lt;/p&gt;
+
+&lt;p&gt;Once I was ‘sans auto’, I started taking Uber whenever I needed to go somewhere (my monthly PUG meeting, shopping, out to eat, etc). Looking at my past year’s bank statements, I’ve given $1674.83 to Uber. A decent chunk of change, to be sure, but less than I expected if I’m honest.&lt;/p&gt;
+
+&lt;p&gt;Since I could no longer drive to the store, I signed up for &lt;a href=&quot;https://www.shipt.com&quot;&gt;Shipt&lt;/a&gt; to have my groceries delivered. Since I wasn’t sure if I would like the service (or if I’d give up and get another car) I paid the monthly rate of $14/mo instead of the $99 yearly rate. So I spent $168 on Shipt in the past year. Please keep in mind, there is a slight per-item markup with Shipt, but I didn’t track it and just budgeted ‘groceries’ as a total bill.&lt;/p&gt;
+
+&lt;p&gt;And finally, if I wanted to go visit friends or family outside Columbus, I needed to rent a car. I have a decent reward membership with &lt;a href=&quot;htttps://www.enterprise.com&quot;&gt;Enterprise&lt;/a&gt; and there is one close to home, so that’s where I rent. In the past year, I’ve given them $1041.14 of my hard earned income. I’ve also had to put a tank of gas or two into those rentals, but I didn’ think to track them.&lt;/p&gt;
+
+&lt;p&gt;And, honestly, that’s it. I &lt;em&gt;really&lt;/em&gt; figured I’d have to sign up for a ton of things to “replace” my car,  but that’s really all there is. It helps (tremendously) that I’m able to telecommute for my dayjob. Of course, that’s &lt;em&gt;also&lt;/em&gt; why I was thinking that having a car is a waste. I paid (a lot) of money, monthly, for a car to sit in my driveway.&lt;/p&gt;
+
+&lt;p&gt;For those still with me, the math looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 5290.56 -- yearly car payments
+- 168.00 -- yearly Shipt
+-1674.83 -- Uber for the year
+-1041.14 -- car rentals for the year
+~~~~~~~~
+$2,406.59 money in my pocket
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And &lt;em&gt;bam&lt;/em&gt;, just like that I’m ~$2500/yr richer. And that’s &lt;strong&gt;without&lt;/strong&gt; considering fuel, oil, tires, maintenance, &lt;em&gt;or insurance&lt;/em&gt;. Over a standard 5 yr car loan, that’s ~$12500 I save! So yeah, a good decision for me, I think.&lt;/p&gt;
+</description>
+    <link>/posts/Car-free-in-Columbus/ </link>
+    <pubDate>2018-03-05T10:55:32-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Car-free-in-Columbus/</guid>
+   </item>
+  
+   <item>
+    <title>Goodbye, Loui boy</title>
+    <description>&lt;p&gt;&lt;img src=&quot;/images/posts/loui.jpg&quot; class=&quot;rleader&quot; /&gt;Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. &lt;em&gt;I will miss you.&lt;/em&gt;&lt;/p&gt;
+</description>
+    <link>/posts/Goodbye-Loui-boy/ </link>
+    <pubDate>2017-02-16T03:35:19-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Goodbye-Loui-boy/</guid>
+   </item>
+  
+   <item>
+    <title>Changes to the blog</title>
+    <description>&lt;p&gt;&lt;img class=&quot;rleader&quot; src=&quot;http://www.cafecowboys.com/wp-content/uploads/2016/04/blogging-inside.gif&quot; /&gt;In case you haven’t already noticed, I’ve made some changes to my blog recently. Nothing really significant or drastic, but things that have been on the TODO list for a while.&lt;/p&gt;
+
+&lt;p&gt;I guess the most obvious change would be that I added pagination finally. If you scroll the homepage all the way down, instead of it going back through the entire blog’s history, it stops after five posts, and then gives a clickable page counter. Once I had this implemented, I then had to un-paginate the archive pages which was interesting.&lt;/p&gt;
+
+&lt;p&gt;The next most visible change would probably be the change I made to the CSS concerning CODE and CODEBLOCK. I’m still not 100% sure this is the final form, but I like it better than it was. For reference, it now looks like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;this&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;My third change was to tweak the site’s header a bit. If you cast your gaze upwards, you can see that I now have ‘About’, ‘Archive’, and ‘Feeds’ in the header. The ‘Feeds’ link is new, as is the page that it links to. The actual RSS feeds themselves have existed for a while now, I just didn’t announce them.&lt;/p&gt;
+
+&lt;p&gt;And finally, I swapped out my photo for my new Bitmoji-based avatar.&lt;/p&gt;
+
+&lt;p&gt;So, uh, enjoy. Or something.&lt;/p&gt;
+</description>
+    <link>/posts/changes-to-the-blog/ </link>
+    <pubDate>2016-12-02T08:48:42-05:00</pubDate>
+    <guid isPermaLink="true">/posts/changes-to-the-blog/</guid>
+   </item>
+  
+   <item>
+    <title>Welcome to Cypheri</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://www.nationstates.net/images/flags/uploads/cypheri__561515.jpg&quot; class=&quot;lleader&quot; /&gt;I recently discovered the online game &lt;a href=&quot;https://www.nationstates.net&quot;&gt;NationStates&lt;/a&gt; thanks to a Reddit thread and was intrigued. So I logged in, created the nation of Cypheri and then used &lt;a href=&quot;https://blogtrottr.com&quot;&gt;BlogTrottr&lt;/a&gt; to feed the RSS feed into my inbox (which allows me offline play essentially. I ignore it until I get a notice). So far, it’s been a neat little experience. I’m pretty sure if you know me well enough to be reading this blog that I know you well enough to say you’ll enjoy it too.&lt;/p&gt;
+
+&lt;p&gt;Without further ado, let me welcome you to the Republic of Cypheri, a left-leaning college state. Our motto is “strength through freedom”.&lt;/p&gt;
+
+&lt;p&gt;The Republic of Cypheri is a tiny, genial nation, renowned for its compulsory military service and irreverence towards religion. The compassionate population of 7 million Cypherians enjoy extensive civil freedoms, particularly in social issues, while business tends to be more regulated.&lt;/p&gt;
+
+&lt;p&gt;The large government prioritizes Education, although Welfare, Defense, and Law &amp;amp; Order are also considered important, while Spirituality and Industry are ignored. The average income tax rate is 39.8%, but much higher for the wealthy.&lt;/p&gt;
+
+&lt;p&gt;The Cypherian economy, worth 251 billion dollars a year, is fairly diversified and led by the Tourism industry, with major contributions from Automobile Manufacturing, Basket Weaving, and Retail. State-owned companies are common. Average income is 35,928 dollars, and evenly distributed, with the richest citizens earning only 2.0 times as much as the poorest.&lt;/p&gt;
+
+&lt;p&gt;Thanks for visiting, we hope you enjoyed your time here!&lt;/p&gt;
+</description>
+    <link>/posts/Welcome-to-Cypheri/ </link>
+    <pubDate>2016-10-01T07:23:56-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Welcome-to-Cypheri/</guid>
+   </item>
+  
+   <item>
+    <title>Functional Blog Archives</title>
+    <description>&lt;p&gt;After an afternoon dicking around with Jekyll templates and Google searching, I’ve fixed up this site’s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I’ve also modified the tag cloud page to fit in the archive pages’ look an feel. It’s not a true tag cloud in that I don’t increase the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it’s own page showing all posts tagged as such.&lt;/p&gt;
+
+&lt;p&gt;So, yeah. Enjoy, or something.&lt;/p&gt;
+</description>
+    <link>/posts/Functional-Blog-Archives/ </link>
+    <pubDate>2016-09-30T19:30:19-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Functional-Blog-Archives/</guid>
+   </item>
+  
+   <item>
+    <title>Making use of gists</title>
+    <description>&lt;p&gt;&lt;img src=&quot;https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png&quot; class=&quot;rleader&quot; /&gt; After stumbling upon an example of how to do so, I’ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I’ve chosen that platform for hosting my blog, right? :)&lt;/p&gt;
+</description>
+    <link>/posts/Making-use-of-gists/ </link>
+    <pubDate>2016-06-19T11:42:19-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Making-use-of-gists/</guid>
+   </item>
+  
+   <item>
+    <title>Hello, eero</title>
+    <description>&lt;p&gt;&lt;a href=&quot;https://www.eero.com&quot;&gt;&lt;img src=&quot;https://iotlist-production.s3-us-west-2.amazonaws.com/uploads/production/post_attachment/937/file/Eero1.jpg&quot; class=&quot;lleader&quot; /&gt;&lt;/a&gt;I don’t normally back things on Indiegogo (I’m a Kickstarter snob), but I jumped &lt;em&gt;all over&lt;/em&gt; the eero. I have always had issues with the wifi coverage in my home. I’ve tried everything I can think of to alleviate the issues; differernt brands of routers, flashing different OSS firmwares, ‘upgrading’ to SOHO equipment instead of consumer equipment, moving them all over the damn house, etc. Nothing solved all the issues. Until now.&lt;/p&gt;
+
+&lt;p&gt;I’ve actully had the eero up and running for a while now (almost two months already) but I held off saying anything because I wanted to see if issues would crop back up or not and I wanted to get past the initial ‘cool, it works!’ feeling. So here I am ~60 days later, and I’m &lt;em&gt;still&lt;/em&gt; feeling the ‘this is cool’ feeling towards the eero.&lt;/p&gt;
+
+&lt;p&gt;I bought the triple set, put the ‘main’ one in the basement by the cable modem, the next one on the other end of the house on the first floor, and the final one in the middle of the house on the second floor. Setup was stupid simple and hassle free. Like, Tina or Emily could have done this, simple. Once up and talking to each other, they then scanned all the wifi leakage from the neighbors and picked a channel with the least amount of interference and started handing out DHCP leases to my devices. Easy peasy.&lt;/p&gt;
+
+&lt;p&gt;Speaking of ‘my devices’.. here’s everything I’ve got hooked up to the eero-powered wifi:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1 x Nest thermostat&lt;/li&gt;
+  &lt;li&gt;2 x “smart” tv&lt;/li&gt;
+  &lt;li&gt;1 x “smart” bluray player&lt;/li&gt;
+  &lt;li&gt;1 x Nexus Player /  Android TV&lt;/li&gt;
+  &lt;li&gt;1 x PS3&lt;/li&gt;
+  &lt;li&gt;2 x PS4&lt;/li&gt;
+  &lt;li&gt;1 x Sonos speaker&lt;/li&gt;
+  &lt;li&gt;2 x Macbook Pro&lt;/li&gt;
+  &lt;li&gt;2 x Android phones&lt;/li&gt;
+  &lt;li&gt;3 x Android tablets&lt;/li&gt;
+  &lt;li&gt;2 x iPhone&lt;/li&gt;
+  &lt;li&gt;1 x iPad mini&lt;/li&gt;
+  &lt;li&gt;1 x Chromebook&lt;/li&gt;
+  &lt;li&gt;1 x Lenovo laptop&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, I didn’t make that list to impress you, or to depress myself at how much money I’ve spent over the years. That list is to show what’s connected to the eero and to show that there is a big variety of devices. Some are 2.4GHz, some 5GHz, some both. Some do jumbo frames. Some support wifi media extensions. And they all work &lt;em&gt;flawlessly&lt;/em&gt; while connected to the eero. &lt;em&gt;No matter how many are connected simultaneoussly.&lt;/em&gt; Which is the first time ever. Seriously. It works so well, I went around and &lt;em&gt;unplugged&lt;/em&gt; Ethernet from devices that had it and put them on the wifi!&lt;/p&gt;
+
+&lt;p&gt;We can have multiple Netflix streams going while playing online in an FPS while streaming music to another room while someone else is on the laptop working. And no one even notices the other users. It’s epic. I now actually have a valid reason for buying the most expensive upload speed my ISP offers :)&lt;/p&gt;
+
+&lt;p&gt;As for gripes? Well, of course no system is perfect. In its quest to make things stupid simple, there’s a lot the eero mgmt app doesn’t let you do. You can’t, for example, blacklist a MAC. Or turn off uplink for certain MACs between certain hours of the day. You can’t throttle certain devices. Basically, all the things nerds love to mess with that just confuse the normal consumer. And I’m (mostly) OK with that. I’m sure some of the functionality is coming in future updates, but even if it doesn’t, I don’t care. It just works. And it works well and easy enough that I can talk the wife through an issue over the phone while I’m on the other side of the planet.&lt;/p&gt;
+
+&lt;p&gt;I &amp;lt;3 my eero.&lt;/p&gt;
+
+&lt;p&gt;★★★★★&lt;/p&gt;
+</description>
+    <link>/posts/Hello_eero/ </link>
+    <pubDate>2016-03-30T10:00:25-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Hello_eero/</guid>
+   </item>
+  
+   <item>
+    <title>Flyover State</title>
+    <description>&lt;p&gt;&lt;a href=&quot;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&quot;&gt;&lt;img src=&quot;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&quot; class=&quot;lleader&quot; /&gt;&lt;/a&gt;&amp;lt;/a&amp;gt;Being a native of Ohio, I can assure you that I’ve heard every form of ‘flyover state’ insult you could care to level at me. And while I won’t debate the merits of Ohio in this post, I will take a minute to point out something that I’ve been saying for quite some time.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Ohio really is pretty centrally located to anywhere you might care to be other than the left coast.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The map I’ve linked to in this post shows what $50 worth of gas means to someone from Columbus, OH as far as their ability to drive anywhere. Of course, it makes an assumption about the price of gas and the car’s mpg (24mpg, iirc) but the point stands.&lt;/p&gt;
+
+&lt;p&gt;And this is what I’ve been telling my coworker a lot lately. I travel periodically for business, and whenever I do, I &lt;strong&gt;drive&lt;/strong&gt; (unless it’s just way too impractical). It &lt;em&gt;alway&lt;/em&gt; trips people out when I do. I’d much rather grab a rental car, and spend a day on my own schedule seeing the country then being crammed in like cattle and dealing with the TSA. And this image shows that I’m generally saving the company money as well.&lt;/p&gt;
+
+&lt;p&gt;So, you all can keep flying over. In the meantime, I’ll be driving around enjoying myself,&lt;/p&gt;
+</description>
+    <link>/posts/Flyover-state/ </link>
+    <pubDate>2016-02-09T11:59:24-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Flyover-state/</guid>
+   </item>
+  
+ </channel>
+</rss>

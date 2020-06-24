@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>Douglas J Hunley - ott</title>
+  <description>Posts tagged as 'ott'</description>
+  <atom:link href="/feeds/feed.ott.xml" rel="self" type="application/rss+xml" />
+  <link>/tags/#ott/</link>
+  <updated>2020-06-24T16:12:42-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>The continuing adventures of Mom cutting the cord</title>
+    <description>&lt;p&gt;As a belated update to &lt;a href=&quot;/posts/Mom-cuts-the-cord/&quot;&gt;this&lt;/a&gt; post, Mom has told DirecTV to completely go screw and she’s moved over to &lt;a href=&quot;https://www.philo.com&quot;&gt;Philo&lt;/a&gt; where she’s currently loving life.&lt;/p&gt;
+
+&lt;p&gt;I had initially proposed DirecTV Now to her since it was an uphill battle to convince her to abandon DirecTV satellite. I figured it was the path of least resistance since she’d know the UI and the channel line-up . And, at first, it was exactly that. However, after about three months, I had grown tired of hearing the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;when will I get &lt;em&gt;my&lt;/em&gt; locals, not yours&lt;/li&gt;
+  &lt;li&gt;when will I be able to record stuff&lt;/li&gt;
+  &lt;li&gt;why are the previous episodes so inconsistent&lt;/li&gt;
+  &lt;li&gt;why can’t I record show X&lt;/li&gt;
+  &lt;li&gt;does your picture look all blocky&lt;/li&gt;
+  &lt;li&gt;why is the guide so slow&lt;/li&gt;
+  &lt;li&gt;they raised the price?!&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;That’s right, in the quick span of just three months, she’d seen that while DirecTV Now &lt;em&gt;was&lt;/em&gt; better than her old DirecTV, it was still plagued by, well, AT&amp;amp;T incompetence. It took them forever to launch the DVR, and it still didn’t work right even after the beta. I actually had to change the account’s billing address to get the correct locals cause they can’t seem to figure out GeoIP. Their licensing of channels/shows makes no goddamn sense. As an example, record whatever you want off the Discovery channel, just not Dirty Jobs. I’m willing to grant that the licensing is on the fault of the network/studio but you’re AT&amp;amp;T/DirecTV for fuck’s sake! Spend some damn money and make it happen for your users. And then there was the app itself. I’ve never seen another Roku app be so unresponsive, so slow, and so bandwidth sensitive. When mom can be on her Chromebook doing whatever, while I’m watching a movie on her TV via Google Play, and my niece is watching Youtube on her iPhone and there are &lt;em&gt;no issues for any of us&lt;/em&gt; the problem is &lt;strong&gt;not&lt;/strong&gt; Mom’s connection. Yet Mom could be the only one in the house and she’d get desync on the audio, or pixelation/blocking in the video. WTF, AT&amp;amp;T? Buy a real CDN!&lt;/p&gt;
+
+&lt;p&gt;And then, of course, they raised the price on her. That’s right. With all the issues above (and trust me, I checked /r/directvnow religiously. This was not unique to Mom) they had the gall to raise prices. And not just for new sign-ups. Oh no no no. Existing and even &lt;em&gt;grandfathered&lt;/em&gt; accounts got hit in the wallet! It’s like they don’t know how to be anything but a greedy cable company.&lt;/p&gt;
+
+&lt;p&gt;So, I signed up for Philo and installed it on Mom’s TV. I asked her to use it for the free week and see how it went. I kid you not, she called me on day 5 and said she liked it so much better that she agreed to me canceling DirecTV Now right then and there. To say I was floored is an understatement.&lt;/p&gt;
+
+&lt;p&gt;I will grant you that losing the locals and having to use the OTA antenna isn’t ideal. We’re keeping an eye on &lt;a href=&quot;https://www.locast.org&quot;&gt;Locast&lt;/a&gt; to see if we can solve that “soon”. But Mom was already using the antenna to watch a few of the local sub-channels, so it wasn’t a deal breaker. So far, Mom has adapted to the Philo interface easily (I prefer it), we’ve setup a profile for her, me, and guests, and she’s been recording shows and Hallmark Christmas movies (ugh) all without needing to call me.&lt;/p&gt;
+
+&lt;p&gt;And since switching, NOT ONCE has she had a desync or pixelation issue. Even when Steph and I both were there over Thanksgiving and beating the crap outta her wifi.&lt;/p&gt;
+
+&lt;p&gt;The kicker here? &lt;strong&gt;It’s only $16/mo.&lt;/strong&gt; Yeah, you read that right. She went from $100/mo w/ DTV to $45/mo with DTVN (at the end) to $16/mo. &lt;strong&gt;Unreal.&lt;/strong&gt; And on top of that, Philo recently added an extra MTV channel for the hell of it.&lt;/p&gt;
+
+&lt;p&gt;All around a WIN WIN.&lt;/p&gt;
+</description>
+    <link>/posts/The-continuing-adventures-of-Mom-cutting-the-cord/ </link>
+    <pubDate>2019-02-07T02:24:43-05:00</pubDate>
+    <guid isPermaLink="true">/posts/The-continuing-adventures-of-Mom-cutting-the-cord/</guid>
+   </item>
+  
+   <item>
+    <title>Mom cuts the cord</title>
+    <description>&lt;p&gt;OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. My mother. The same woman who spent the better part of a decade (I cut the cord in late 2008) saying how she didn’t understand how I could not have cable. Someone check the temperature in Hell will ya? :)&lt;/p&gt;
+
+&lt;p&gt;All kidding aside, Mom (and Dad before he passed) has spent the past several years canceling Dish and DirecTV and switching back-n-forth between them to get the best ‘new customer’ rates and deals. But as Mom starts eyeing retirement and DirecTV keeps upping her bill $2 at a time for various fees, she’d had enough.&lt;/p&gt;
+
+&lt;p&gt;So, over the course of the last few months, I walked Mom through getting a TCL Roku TV:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/tcl.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Note, that’s actually a picture of the 55” which I bought last Aug. Mom bought the 32” even though I argued for the 37”)&lt;/p&gt;
+
+&lt;p&gt;Then I walked her through using the 1byone 50-mile HDTV antenna I had previously bought her. And finally, I signed up for the DirecTVNow beta on Roku and waited for the DVR functionality to launch.&lt;/p&gt;
+
+&lt;p&gt;With all the pieces in place, we spent the afternoon setting everything up during my recent visit. We had a few little bumps that weekend, and I’m going to be getting her a Tablo DUO in the near future so we can use the 1byone on both TVs, but otherwise she adjusted to it all pretty easily. I even hooked up a Roku stick to the TV in the spare bedroom and showed her its all exactly the same as in the living room (minus the OTA locals, of course). Listening to her argue w/ the DirecTV phone rep during the cancellation call was &lt;em&gt;extremely satisfying&lt;/em&gt; and made me proud. Mom still can’t seem to believe that for $35/mo she is getting everything she used to pay almost $100/mo for. But she’s already been telling her friends about it all :)&lt;/p&gt;
+
+&lt;p&gt;So .. if you still haven’t cut the cord, what are you waiting for?&lt;/p&gt;
+</description>
+    <link>/posts/Mom-cuts-the-cord/ </link>
+    <pubDate>2018-05-31T07:12:06-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Mom-cuts-the-cord/</guid>
+   </item>
+  
+ </channel>
+</rss>

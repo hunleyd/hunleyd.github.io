@@ -1,0 +1,1086 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>Douglas J Hunley - osx</title>
+  <description>Posts tagged as 'osx'</description>
+  <atom:link href="/feeds/feed.osx.xml" rel="self" type="application/rss+xml" />
+  <link>/tags/#osx/</link>
+  <updated>2020-06-24T16:12:42-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>pgBackRest 2.08 and macOS Mojave</title>
+    <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving `-D_POSIX_C_SOURCE` up to the `Makefile` that caused the problem. The solution below is still the same though.&lt;/p&gt;
+
+&lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
+
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nl&quot;&gt;gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;warning&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?&lt;/span&gt;
+      &lt;span class=&quot;err&quot;&gt;[-Wunknown-warning-option]&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;common/lock.c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;76:21: warning: implicit declaration of function 'flock' is invalid in C99&lt;/span&gt;
+      &lt;span class=&quot;err&quot;&gt;[-Wimplicit-function-declaration]&lt;/span&gt;
+                &lt;span class=&quot;err&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;(flock(result,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;LOCK_EX&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;LOCK_NB)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                    &lt;span class=&quot;err&quot;&gt;^&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;common/lock.c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;common/lock.c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;76:35: fatal error: use of undeclared identifier 'LOCK_EX'&lt;/span&gt;
+                &lt;span class=&quot;err&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;(flock(result,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;LOCK_EX&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;LOCK_NB)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                                  &lt;span class=&quot;err&quot;&gt;^&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;warnings&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;generated.&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;*** [common/lock.o] Error 1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To fix this, you will need to edit `src/Makefile` and change line 12 from:&lt;/p&gt;
+
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CSTD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;c99 &lt;span class=&quot;nt&quot;&gt;-D_POSIX_C_SOURCE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;200112L
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;to:&lt;/p&gt;
+
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CSTD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;c99 &lt;span class=&quot;nt&quot;&gt;-D_DARWIN_C_SOURCE&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>/posts/pgBackRest-2.08-and-macOS-Mojave/ </link>
+    <pubDate>2019-01-04T03:30:44-05:00</pubDate>
+    <guid isPermaLink="true">/posts/pgBackRest-2.08-and-macOS-Mojave/</guid>
+   </item>
+  
+   <item>
+    <title>pgBackRest 2.07 and macOS Mojave</title>
+    <description>&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
+
+&lt;p&gt;Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use &lt;a href=&quot;https://brew.sh&quot;&gt;Homebrew&lt;/a&gt; for this:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;openssl
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl version &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
+LibreSSL 2.6.4
+built on: &lt;span class=&quot;nb&quot;&gt;date &lt;/span&gt;not available
+platform: information not available
+options:  bn&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;64,64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; rc4&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ptr,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; des&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx,cisc,16,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; blowfish&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+compiler: information not available
+OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/private/etc/ssl&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;/usr/local/opt/openssl/bin/openssl version &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
+OpenSSL 1.0.2p  14 Aug 2018
+built on: reproducible build, &lt;span class=&quot;nb&quot;&gt;date &lt;/span&gt;unspecified
+platform: darwin64-x86_64-cc
+options:  bn&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;64,64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; rc4&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ptr,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; des&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx,cisc,16,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; idea&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; blowfish&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+compiler: clang &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;.. &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;../include  &lt;span class=&quot;nt&quot;&gt;-fPIC&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-fno-common&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_PIC&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_THREADS&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-D_REENTRANT&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DDSO_DLFCN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DHAVE_DLFCN_H&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-arch&lt;/span&gt; x86_64 &lt;span class=&quot;nt&quot;&gt;-O3&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DL_ENDIAN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-Wall&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_IA32_SSE2&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_BN_ASM_MONT&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_BN_ASM_MONT5&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_BN_ASM_GF2m&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DSHA1_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DSHA256_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DSHA512_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DMD5_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DAES_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DVPAES_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DBSAES_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DWHIRLPOOL_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DGHASH_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DECP_NISTZ256_ASM&lt;/span&gt;
+OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/usr/local/etc/openssl&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, the default SSL from OSX is in `/usr/bin` while the newly installed OpenSSL is in `/usr/local/opt/openssl`. In my testing, this is enough to proceed with pgBackRest but I prefer to have the `openssl` binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mv&lt;/span&gt; /usr/bin/openssl /usr/bin/openssl.old
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/local/opt/openssl/bin/openssl /usr/bin
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt; /usr/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; /usr/local/opt/openssl/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;-rwxr-xr-x&lt;/span&gt; 1 root wheel 1.2M Sep 21 00:16 /usr/bin/openssl.old&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;OK, so now we have an SSL that pgBackRest knows how to speak to. We need to install some Perl modules that it needs. If you haven’t run CPAN before, just accept the defaults when it asks you things:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;perl &lt;span class=&quot;nt&quot;&gt;-MCPAN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; shell
+cpan[1]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBI
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+cpan[2]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBD::Pg
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+cpan[3]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;IO::Socket::SSL
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+cpan[4]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;XML::LibXML
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now we’ve got our Perl modules installed, we have to tell our shell where to find them:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL5LIB&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5/lib/perl5
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_LOCAL_LIB_ROOT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MB_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;--install_base&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/Users/doug/perl5&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MM_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;INSTALL_BASE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (`.profile`, `.bash_profile`, etc) to make them permanent.&lt;/p&gt;
+
+&lt;p&gt;Now, we can actually get down to the business of compiling and installing pgBackRest. Download the 2.07 tarball from the releases tab on GitHub, and let’s get busy:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;tar &lt;/span&gt;xvf Downloads/pgbackrest-release-2.07.tar.gz
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pgbackrest-release-2.07
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, we need to make some edits to the included Makefile. So `vi src/Makefile` and jump to line 42. Edit this line to be:&lt;/p&gt;
+
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;LDEXTRA&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; /usr/local/opt/openssl/lib
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This tells the build process where to find the OpenSSL that we installed. Then, jump to line 149 and change it to:&lt;/p&gt;
+
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   &lt;span class=&quot;err&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;755&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;pgbackrest&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$(DESTDIR)/usr/local/bin&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This makes it install into `/usr/local/bin` which is where Homebrew puts everything else and you shouldn’t need to use `sudo` to write to it.&lt;/p&gt;
+
+&lt;p&gt;Now, compile and install it:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;make &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; ./src &amp;amp;amp&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&amp;amp;amp&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; make &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; ./src/install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Assuming that goes well, you can now run pgBackRest to verify it’s installed and functional:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;/usr/local/bin/pgbackrest
+pgBackRest 2.07 - General &lt;span class=&quot;nb&quot;&gt;help
+
+&lt;/span&gt;Usage:
+    pgbackrest &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;options] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+
+Commands:
+    archive-get     Get a WAL segment from the archive.
+    archive-push    Push a WAL segment to the archive.
+    backup          Backup a database cluster.
+    check           Check the configuration.
+    expire          Expire backups that exceed retention.
+    &lt;span class=&quot;nb&quot;&gt;help            &lt;/span&gt;Get help.
+    info            Retrieve information about backups.
+    restore         Restore a database cluster.
+    stanza-create   Create the required stanza data.
+    stanza-delete   Delete a stanza.
+    stanza-upgrade  Upgrade a stanza.
+    start           Allow pgBackRest processes to run.
+    stop            Stop pgBackRest processes from running.
+    version         Get version.
+
+Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more information.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You should now be able to follow the online docs and setup pgBackRest.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>/posts/pgBackRest-2.07-and-macOS-Mojave/ </link>
+    <pubDate>2018-11-16T01:12:31-05:00</pubDate>
+    <guid isPermaLink="true">/posts/pgBackRest-2.07-and-macOS-Mojave/</guid>
+   </item>
+  
+   <item>
+    <title>Installing pgBackRest on OSX</title>
+    <description>&lt;p&gt;If you’ve followed my previous posts (&lt;a href=&quot;https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt;), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don’t really care about any of the data therein, but if you do, let me guide you to &lt;a href=&quot;http://www.pgbackrest.org/&quot;&gt;pgBackRest&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;pgBackRest aims to be a simple, reliable backup and restore system that can seamlessly scale up to the largest databases and workloads.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Instead of relying on traditional backup tools like tar and rsync, pgBackRest implements all backup features internally and uses a custom protocol for communicating with remote systems. Removing reliance on tar and rsync allows for better solutions to database-specific backup challenges. The custom remote protocol allows for more flexibility and limits the types of connections that are required to perform a backup which increases security.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;pgBackRest is written in Perl, but don’t hold that against it. As of the 1.19 release, pgBackRest can now use S3 buckets as the storage backend. I &lt;em&gt;really&lt;/em&gt; like pgBackRest and tend to use it for myself and customers over any of the other tools in the PostgreSQL ecosphere. So, let’s get started by downloading the latest release from their site, and then installing it. For some reason, no one has added pgBackRest to Homebrew yet (someone, pls!) so let’s do it the manual way:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;wget &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; Downloads/pgbackrest-release-1.19.tar.gz https://github.com/pgbackrest/pgbackrest/archive/release/1.19.tar.gz
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;tar &lt;/span&gt;xvf Downloads/pgbackrest-release-1.19.tar.gz
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pgbackrest-release-1.19
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo cp&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; lib/pgBackRest /Library/Perl/5.18
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;find /Library/Perl/5.18/pgBackRest &lt;span class=&quot;nt&quot;&gt;-type&lt;/span&gt; f &lt;span class=&quot;nt&quot;&gt;-exec&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;644 &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt; +
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;find /Library/Perl/5.18/pgBackRest &lt;span class=&quot;nt&quot;&gt;-type&lt;/span&gt; d &lt;span class=&quot;nt&quot;&gt;-exec&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;755 &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt; +
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mv &lt;/span&gt;bin/pgbackrest /usr/local/bin
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo chmod &lt;/span&gt;755 /usr/local/bin/pgbackrest
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 770 /var/log/pgbackrest
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 770 /var/spool/pgbackrest
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo chown &lt;/span&gt;doug /var/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;log,spool&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;/pgbackrest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(Keep in mind that I already had Perl setup to connect to PostgreSQL for other uses. You might need to install &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DBD::Pg&lt;/code&gt;.)&lt;/p&gt;
+
+&lt;p&gt;Now that pgBackRest is installed, let’s configure it. First, we’ll want to set some of the global properties that affect all pgBackRest operations:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;global&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;level&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;console&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;bucket&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;hunleyd&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;pgbackrest&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;endpoint&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;amazonaws&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;XX&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;secret&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;XXX&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;region&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;us&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;east&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;retention&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;full&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;fast&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, we set the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;force the log level for all console output to ‘info’&lt;/li&gt;
+  &lt;li&gt;define the S3 bucket we want to use&lt;/li&gt;
+  &lt;li&gt;define the S3 endpoint to connect to&lt;/li&gt;
+  &lt;li&gt;define our S3 key&lt;/li&gt;
+  &lt;li&gt;define our S3 secret key&lt;/li&gt;
+  &lt;li&gt;set which region our bucket is in&lt;/li&gt;
+  &lt;li&gt;tell pgBackRest that we’re using S3 as the backend&lt;/li&gt;
+  &lt;li&gt;configure retention of full backups&lt;/li&gt;
+  &lt;li&gt;tell pgBackRest to issue a CHECKPOINT so backups can start right away instead of waiting for the next regular checkpoint&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, we need to tell pgBackRest which instance of PostgreSQL we want to backup and where to find it. Again, if you used my previous posts to install multiple versions via Homebrew, this should look familiar:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;m&quot;&gt;96&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;6&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5496&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;96&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;95&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5495&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;95&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;94&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5494&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;94&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;93&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5493&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;93&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;92&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5492&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;92&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;91&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5491&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;91&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5490&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can see for each pg cluster, we define:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;the path to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; directory&lt;/li&gt;
+  &lt;li&gt;the port the cluster listens on&lt;/li&gt;
+  &lt;li&gt;and the path we want to store the backups in on our backend&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When you put this all together, we’ll be connecting to an S3 bucket called, creatively enough, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; and then we will create a top-level directory (‘96’, ‘95’, etc) to store each cluster’s backups in.&lt;/p&gt;
+
+&lt;p&gt;Now that we’ve got our configuration complete, let’s do an initial backup of one of the clusters. First, we have to create the appropriate directories and metadata on the backend:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pgbackrest &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.config/pgbackrest/pgbackrest.conf stanza-create
+2017-06-14 14:03:46.643 P00   INFO: stanza-create &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;begin 1.19: &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/.config/pgbackrest/pgbackrest.conf &lt;span class=&quot;nt&quot;&gt;--db-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/var/postgres/9.2 &lt;span class=&quot;nt&quot;&gt;--db-port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5492 &lt;span class=&quot;nt&quot;&gt;--log-level-console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nt&quot;&gt;--repo-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/92 &lt;span class=&quot;nt&quot;&gt;--repo-s3-bucket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;hunleyd-pgbackrest &lt;span class=&quot;nt&quot;&gt;--repo-s3-endpoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3.amazonaws.com &lt;span class=&quot;nt&quot;&gt;--repo-s3-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-2 &lt;span class=&quot;nt&quot;&gt;--repo-type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3 &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92
+2017-06-14 14:03:57.971 P00   INFO: stanza-create &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;end: completed successfully
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then, we have pgBackRest verify that everything is properly setup. Note that this includes checking to ensure you tweaked &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; according to the directions on their site (I’m not going to repeat them here):&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pgbackrest &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.config/pgbackrest/pgbackrest.conf check
+2017-06-14 14:04:17.991 P00   INFO: check &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;begin 1.19: &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/.config/pgbackrest/pgbackrest.conf &lt;span class=&quot;nt&quot;&gt;--db-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/var/postgres/9.2 &lt;span class=&quot;nt&quot;&gt;--db-port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5492 &lt;span class=&quot;nt&quot;&gt;--log-level-console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nt&quot;&gt;--repo-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/92 &lt;span class=&quot;nt&quot;&gt;--repo-s3-bucket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;hunleyd-pgbackrest &lt;span class=&quot;nt&quot;&gt;--repo-s3-endpoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3.amazonaws.com &lt;span class=&quot;nt&quot;&gt;--repo-s3-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-2 &lt;span class=&quot;nt&quot;&gt;--repo-type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3 &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92
+2017-06-14 14:04:32.576 P00   INFO: WAL segment 000000010000000000000067 successfully stored &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the archive at &lt;span class=&quot;s1&quot;&gt;'/92/archive/92/9.2-1/0000000100000000/000000010000000000000067-24adde40a35b1f3ed17f545153f0e01c44b0ada5.gz'&lt;/span&gt;
+2017-06-14 14:04:32.576 P00   INFO: check &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;end: completed successfully
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And since that all worked, we can take our first actual backup:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pgbackrest &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.config/pgbackrest/pgbackrest.conf backup
+2017-06-14 14:10:44.378 P00   INFO: backup &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;begin 1.19: &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/.config/pgbackrest/pgbackrest.conf &lt;span class=&quot;nt&quot;&gt;--db-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/var/postgres/9.2 &lt;span class=&quot;nt&quot;&gt;--db-port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5492 &lt;span class=&quot;nt&quot;&gt;--log-level-console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nt&quot;&gt;--repo-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/92 &lt;span class=&quot;nt&quot;&gt;--repo-s3-bucket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;hunleyd-pgbackrest &lt;span class=&quot;nt&quot;&gt;--repo-s3-endpoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3.amazonaws.com &lt;span class=&quot;nt&quot;&gt;--repo-s3-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-2 &lt;span class=&quot;nt&quot;&gt;--repo-type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3 &lt;span class=&quot;nt&quot;&gt;--retention-full&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2 &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--start-fast&lt;/span&gt;
+WARN: no prior backup exists, incr backup has been changed to full
+2017-06-14 14:10:49.435 P00   INFO: execute exclusive pg_start_backup&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; with label &lt;span class=&quot;s2&quot;&gt;&quot;pgBackRest backup started at 2017-06-14 14:10:45&quot;&lt;/span&gt;: backup begins after the requested immediate checkpoint completes
+2017-06-14 14:10:49.846 P00   INFO: backup start archive &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 000000010000000000000068, lsn &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0/68000020
+2017-06-14 14:10:57.090 P01   INFO: backup file /usr/local/var/postgres/9.2/pg_log/2017/week-16/index.html &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.3MB, 3%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; checksum dcc73afe15f48863eb019b9cfbb1e24cbd2a4d7f
+&amp;lt;snip&amp;gt;
+2017-06-14 14:24:23.277 P01   INFO: backup file /usr/local/var/postgres/9.2/base/1/12040 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0B, 100%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+2017-06-14 14:24:23.964 P01   INFO: backup file /usr/local/var/postgres/9.2/base/1/12031 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0B, 100%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+2017-06-14 14:24:24.747 P01   INFO: backup file /usr/local/var/postgres/9.2/base/1/12021 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0B, 100%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+2017-06-14 14:24:24.778 P00   INFO: full backup size &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 38.1MB
+2017-06-14 14:24:24.778 P00   INFO: execute exclusive pg_stop_backup&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; and &lt;span class=&quot;nb&quot;&gt;wait &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;all WAL segments to archive
+2017-06-14 14:24:41.428 P00   INFO: backup stop archive &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 000000010000000000000068, lsn &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0/68000178
+2017-06-14 14:24:45.320 P00   INFO: new backup label &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 20170614-141045F
+2017-06-14 14:24:47.844 P00   INFO: backup &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;end: completed successfully
+2017-06-14 14:24:47.920 P00   INFO: expire &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;begin 1.19: &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/.config/pgbackrest/pgbackrest.conf &lt;span class=&quot;nt&quot;&gt;--log-level-console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nt&quot;&gt;--repo-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/92 &lt;span class=&quot;nt&quot;&gt;--repo-s3-bucket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;hunleyd-pgbackrest &lt;span class=&quot;nt&quot;&gt;--repo-s3-endpoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3.amazonaws.com &lt;span class=&quot;nt&quot;&gt;--repo-s3-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-2 &lt;span class=&quot;nt&quot;&gt;--repo-type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3 &lt;span class=&quot;nt&quot;&gt;--retention-archive&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2 &lt;span class=&quot;nt&quot;&gt;--retention-full&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2 &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92
+2017-06-14 14:24:50.496 P00   INFO: full backup total &amp;lt; 2 - using oldest full backup &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;9.2-1 archive retention
+2017-06-14 14:24:51.796 P00   INFO: expire &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;end: completed successfully
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Neat!&lt;/p&gt;
+
+&lt;p&gt;Now, let’s check our S3 bucket, shall we?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_1.png&quot; alt=&quot;s3_1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see here the top-level contents of my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; bucket. As stated before, each cluster gets its own sub-dir. Since we just backed up the ‘92’ cluster, let’s look inside it’s dir.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_2.png&quot; alt=&quot;s3_2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see that pgBackRest has created as directory for the WALs to be stored in whenever &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;archive_command&lt;/code&gt; fires and another directory for the actual cluster backups. Peeking into the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;archive&lt;/code&gt; dir, we see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_3.png&quot; alt=&quot;s3_3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This shows us some metadata, and shows that pgBackRest creates a directory for each timeline of the cluster. Since we are on timeline 1 in our 92 cluster, we have a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;9.2-1&lt;/code&gt; directory inside of which, we find:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_4.png&quot; alt=&quot;s3_4&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Our archived WALs have been compressed and uploaded. Hurray!&lt;/p&gt;
+
+&lt;p&gt;Now, let’s check inside the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;backup&lt;/code&gt; directory:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_5.png&quot; alt=&quot;s3_5&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see some metadata, and we can see a folder named the same as the backup label that was used when we ran our full backup. Inside that folder, we can see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_6.png&quot; alt=&quot;s3_6&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Hey look, more metadata! And another folder! :) So, let’s dive into the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_data&lt;/code&gt; folder where we see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_7.png&quot; alt=&quot;s3_7&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Holy crap! It’s a basebackup of our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; data directory. And all the files have been nicely compressed for us. Rock on, pgBackRest!&lt;/p&gt;
+
+&lt;p&gt;And just in case you wanted to see the current backup catalog:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pgbackrest &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.config/pgbackrest/pgbackrest.conf info
+stanza: 92
+    status: ok
+    wal archive min/max: 000000010000000000000068 / 000000010000000000000068
+
+    full backup: 20170614-141045F
+        timestamp start/stop: 2017-06-14 14:10:45 / 2017-06-14 14:24:43
+        wal start/stop: 000000010000000000000068 / 000000010000000000000068
+        database size: 38.1MB, backup size: 38.1MB
+        repository size: 5.6MB, repository backup size: 5.6MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(look at that compression!)&lt;/p&gt;
+</description>
+    <link>/posts/Installing-pgBackRest-on-OSX/ </link>
+    <pubDate>2017-06-14T08:40:30-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Installing-pgBackRest-on-OSX/</guid>
+   </item>
+  
+   <item>
+    <title>Managing multiple PostgreSQL installs via Homebrew</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;Following on from &lt;a href=&quot;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;this&lt;/a&gt; post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/zsh&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;no_restart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# is the version requested installed?&lt;/span&gt;
+brew &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--version&lt;/span&gt; postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &amp;amp;&amp;gt;/dev/null
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 0 &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# yes, carry on&lt;/span&gt;
+  :
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# nope, so install it&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Installing PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+  brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;petere/postgresql/postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# is postgresql is running?&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /usr/local/var/postgres/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;do
+  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;basename&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;is_running&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;ps &lt;span class=&quot;nt&quot;&gt;-few&lt;/span&gt;|egrep &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;[p]ostgres.*-D.*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;is_running&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# nope, carry on&lt;/span&gt;
+    :
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# it is. is it the requested version?&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+      &lt;span class=&quot;c&quot;&gt;# yup, carry on&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;no_restart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;t
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+      &lt;span class=&quot;c&quot;&gt;# nope, so kill it&lt;/span&gt;
+      &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Stopping PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+      /usr/local/opt/postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/bin/pg_ctl &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+          &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; /usr/local/var/postgres/&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+          stop &lt;span class=&quot;nt&quot;&gt;-w&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-mf&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'stopped'&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fi
+  fi
+done&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# what version is active?&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; /usr/local/bin/psql &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;/usr/bin/stat &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; %Y /usr/local/bin/psql | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f3&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\-&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f2&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\@&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f2&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else
+    &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# is the active version the requested version?&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# yup, carry on&lt;/span&gt;
+  :
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# nope, so deactivate it&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Deactivating PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+  brew &lt;span class=&quot;nb&quot;&gt;unlink&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--overwrite&lt;/span&gt; postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f3-&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# and activate the correct version&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Activating PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+  brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--overwrite&lt;/span&gt; postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'created'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f3-&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# point to the correct data dir and port&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/var/postgres/&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;PGPORT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;54&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;tr&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; .&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# should we be starting a cluster?&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;no_restart&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;t&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# nope, carry on&lt;/span&gt;
+  :
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# yup. has the cluster been initialized?&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# nope, so let's do that&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Initializing PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; cluster... &quot;&lt;/span&gt;
+    initdb &lt;span class=&quot;nt&quot;&gt;-k&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; initdb &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;port = &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGPORT&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_destination = 'stderr'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;logging_collector = on&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_filename = 'postgresql-%a.log'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_truncate_on_rotation = on&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_rotation_age = 1d&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_rotation_size = 0&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_timezone = 'US/Michigan'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# yup, carry on&lt;/span&gt;
+    :
+  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# start the cluster&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Starting PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+  pg_ctl &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; start  &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /tmp/pg.start 2&amp;gt;&amp;amp;1
+  &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'server start'&lt;/span&gt; /tmp/pg.start
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-x&lt;/span&gt; /usr/local/bin/pg_isready &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+      &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+      &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 1 &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# wait for the cluster to be available before exiting&lt;/span&gt;
+        pg_isready &lt;span class=&quot;nt&quot;&gt;-q&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;done
+    fi
+fi
+
+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;export PGDATA=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;export PGPORT=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGPORT&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg 9.6
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and then the script does the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;checks if the requested version is installed, and installs it if not&lt;/li&gt;
+  &lt;li&gt;checks if another version of PostgreSQL is running, and stops it&lt;/li&gt;
+  &lt;li&gt;checks if another version is linked as the active version, and unlinks it&lt;/li&gt;
+  &lt;li&gt;links the requested version as the active version&lt;/li&gt;
+  &lt;li&gt;sets PGDATA to point to the requested version’s data cluster&lt;/li&gt;
+  &lt;li&gt;does an &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for the requested version if needed&lt;/li&gt;
+  &lt;li&gt;starts the requested version’s cluster&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I’ll be the first to admit that the script could use additional work, but it’s functional enough to start using today. As I continue to improve the script, I’ll update the gist with those changes, so check back every so often.&lt;/p&gt;
+
+&lt;p&gt;Enjoy.&lt;/p&gt;
+</description>
+    <link>/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/ </link>
+    <pubDate>2016-11-16T08:45:27-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Managing-multiple-PostgreSQL-installs-via-Homebrew/</guid>
+   </item>
+  
+   <item>
+    <title>Routing email through GMail on OSX</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.postfix.org/mysza.gif&quot; class=&quot;lleader&quot; /&gt;Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)&lt;/p&gt;
+
+&lt;p&gt;The first thing we’re going to do is open an iTerm and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo -i&lt;/code&gt; to become root. Then we’re going to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi /etc/postfix/main.cf&lt;/code&gt; and we’re going to add/set the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;myhostname&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;relayhost&lt;/span&gt; = [&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_auth_enable&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_password_maps&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;:/&lt;span class=&quot;n&quot;&gt;etc&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postfix&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;sasl_passwd&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_security_options&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;noanonymous&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_mechanism_filter&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_use_tls&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi /etc/postfix/sasl_passwd&lt;/code&gt; and add:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;@&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;:&lt;span class=&quot;n&quot;&gt;app_passwd&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Secure that file by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chmod 0600 /etc/postfix/sasl_passwd&lt;/code&gt; and then have Postfix hash it by doing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postmap /etc/postfix/sasl_passwd&lt;/code&gt;. Finally, restart Postfix:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;launchctl stop org.postfix.master
+launchctl start org.postfix.master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And everything should work.&lt;/p&gt;
+</description>
+    <link>/posts/Routing-email-through-GMail-on-OSX/ </link>
+    <pubDate>2016-11-15T05:51:00-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Routing-email-through-GMail-on-OSX/</guid>
+   </item>
+  
+   <item>
+    <title>Getting fancy with PostgreSQL and Homebrew</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;rleader&quot; /&gt;In our &lt;a href=&quot;https://hunleyd.github.io/PostgreSQL-Homebrew-and-You/&quot;&gt;previous&lt;/a&gt; post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we’re going to take the next step.&lt;/p&gt;
+
+&lt;p&gt;First, if you have any data in your existing cluster that you want to preserve, let’s backup it up. We’re just going to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_dumpall&lt;/code&gt; here since it’s quick-n-dirty:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg_dumpall &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; my_roles.sql
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg_dumpall &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; my_data.sql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, we can stop our cluster:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew services stop postgresql
+Stopping &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;postgresql&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;... &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;might take a &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Successfully stopped &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;postgresql&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;label: homebrew.mxcl.postgresql&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And uninstall the current PostgreSQL:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew uninstall postgresql
+Uninstalling /usr/local/Cellar/postgresql/9.5.5... &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3,154 files, 35.1M&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And remove the remnants of our cluster:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rf&lt;/span&gt; /usr/local/var/postgres
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now we’ve got a clean slate. So, let’s tell Homebrew to stop using the default PostgreSQL and use Peter Eisentraut’s version (if you don’t know, Peter actually contributes to PostgreSQL):&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew tap petere/postgresql
+Updating Homebrew...
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Auto-updated Homebrew!
+Updated 1 tap &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;homebrew/core&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; New Formulae
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;snip]
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Updated Formulae
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;snip]
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Deleted Formulae
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;snip]
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Tapping petere/postgresql
+Cloning into &lt;span class=&quot;s1&quot;&gt;'/usr/local/Homebrew/Library/Taps/petere/homebrew-postgresql'&lt;/span&gt;...
+remote: Counting objects: 15, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+remote: Compressing objects: 100% &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;11/11&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+remote: Total 15 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;delta 9&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, reused 5 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;delta 4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, pack-reused 0
+Unpacking objects: 100% &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;15/15&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Checking connectivity... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Tapped 11 formulae &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;49 files, 71.7K&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As of this writing, Peter makes PostgreSQL 8.3 and above available. However, only PostgreSQL 9.2 and above are officially supported by the PostgreSQL community. So let’s install the supported versions:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;seq &lt;/span&gt;2 6&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;postgresql-9.&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing postgresql-9.2 from petere/postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Tapping homebrew/dupes
+Cloning into &lt;span class=&quot;s1&quot;&gt;'/usr/local/Homebrew/Library/Taps/homebrew/homebrew-dupes'&lt;/span&gt;...
+remote: Counting objects: 42, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+remote: Compressing objects: 100% &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;42/42&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+remote: Total 42 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;delta 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, reused 4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;delta 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, pack-reused 0
+Unpacking objects: 100% &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;42/42&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Checking connectivity... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Tapped 38 formulae &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;103 files, 121.4K&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing dependencies &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;petere/postgresql/postgresql-9.2: gettext, homebrew/dupes/openldap, ossp-uuid, homebrew/dupes/tcl-tk
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing petere/postgresql/postgresql-9.2 dependency: get
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://homebrew.bintray.com/bottles/gettext-0.19.8.1.sierra.bot
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Pouring gettext-0.19.8.1.sierra.bottle.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+macOS provides the BSD gettext library and some software gets confused &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;both are &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the library path.
+
+Generally there are no consequences of this &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you. If you build your
+own software and it requires this formula, you will need to add to your
+build variables:
+
+    LDFLAGS:  &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/usr/local/opt/gettext/lib
+    CPPFLAGS: &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;/usr/local/opt/gettext/include
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/gettext/0.19.8.1: 1,934 files, 16.9M
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing petere/postgresql/postgresql-9.2 dependency: homebrew/dupes/
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://homebrew.bintray.com/bottles-dupes/openldap-2.4.44.sierr
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Pouring openldap-2.4.44.sierra.bottle.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+macOS already provides this software and installing another version &lt;span class=&quot;k&quot;&gt;in
+&lt;/span&gt;parallel can cause all kinds of trouble.
+
+Generally there are no consequences of this &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you. If you build your
+own software and it requires this formula, you will need to add to your
+build variables:
+
+    LDFLAGS:  &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/usr/local/opt/openldap/lib
+    CPPFLAGS: &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;/usr/local/opt/openldap/include
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/openldap/2.4.44: 295 files, 6.3M
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing petere/postgresql/postgresql-9.2 dependency: ossp-uuid
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://homebrew.bintray.com/bottles/ossp-uuid-1.6.2_2.sierra.bo
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Pouring ossp-uuid-1.6.2_2.sierra.bottle.tar.gz
+🍺   /usr/local/Cellar/ossp-uuid/1.6.2_2: 17 files, 206K
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing petere/postgresql/postgresql-9.2 dependency: homebrew/dupes/
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Using the sandbox
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://downloads.sourceforge.net/project/tcl/Tcl/8.6.6/tcl8.6.6
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading from http://iweb.dl.sourceforge.net/project/tcl/Tcl/8.6.6/tcl8.6
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; ./configure &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/tcl-tk/8.6.6 &lt;span class=&quot;nt&quot;&gt;--mandir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cell
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make install-private-headers
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://downloads.sourceforge.net/project/tcl/Tcl/8.6.6/tk8.6.6-
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading from http://heanet.dl.sourceforge.net/project/tcl/Tcl/8.6.6/tk8.
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; ./configure &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/tcl-tk/8.6.6 &lt;span class=&quot;nt&quot;&gt;--mandir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cell
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make &lt;span class=&quot;nv&quot;&gt;TK_LIBRARY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/tcl-tk/8.6.6/lib
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make install-private-headers
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://github.com/tcltk/tcllib/archive/tcllib_1_18.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading from https://codeload.github.com/tcltk/tcllib/tar.gz/tcllib_1_18
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; ./configure &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/tcl-tk/8.6.6 &lt;span class=&quot;nt&quot;&gt;--mandir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cell
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+Tk installs some X11 headers and OS X provides an &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;older&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; Tcl/Tk.
+
+Generally there are no consequences of this &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you. If you build your
+own software and it requires this formula, you will need to add to your
+build variables:
+
+    LDFLAGS:  &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/usr/local/opt/tcl-tk/lib
+    CPPFLAGS: &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;/usr/local/opt/tcl-tk/include
+    PKG_CONFIG_PATH: /usr/local/opt/tcl-tk/lib/pkgconfig
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/tcl-tk/8.6.6: 2,847 files, 29.2M, built &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;5 minutes 31 seconds
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing petere/postgresql/postgresql-9.2
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://ftp.postgresql.org/pub/source/v9.2.19/postgresql-9.2.19.
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Patching
+patching file contrib/uuid-ossp/uuid-ossp.c
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; ./configure &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/postgresql-9.2/9.2.19 &lt;span class=&quot;nt&quot;&gt;--enable-dtrace&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make install-world
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+To use this PostgreSQL installation, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+
+- Call all programs explicitly with /usr/local/opt/postgresql-9.2/bin/...
+- Add /usr/local/opt/postgresql-9.2/bin to your PATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.2
+- Install the postgresql-common package
+
+To access the man pages, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+- Refer to them by their full path, like &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;man /usr/local/opt/postgresql-9.2/share/man/man1/psql.1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+- Add /usr/local/opt/postgresql-9.2/share/man to your MANPATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.2
+
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+The different provided versions of PostgreSQL conflict with each other.
+
+Generally there are no consequences of this &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you. If you build your
+own software and it requires this formula, you will need to add to your
+build variables:
+
+    LDFLAGS:  &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/usr/local/opt/postgresql-9.2/lib
+    CPPFLAGS: &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;/usr/local/opt/postgresql-9.2/include
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/postgresql-9.2/9.2.19: 3,120 files, 40M, built &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;3 minutes 28 seconds
+Updating Homebrew...
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Auto-updated Homebrew!
+Updated 1 tap &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;homebrew/core&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Updated Formulae
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;snip]
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing postgresql-9.3 from petere/postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://ftp.postgresql.org/pub/source/v9.3.15/postgresql-9.3.15.
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Patching
+patching file contrib/uuid-ossp/uuid-ossp.c
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; ./configure &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/postgresql-9.3/9.3.15 &lt;span class=&quot;nt&quot;&gt;--enable-dtrace&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make install-world
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+To use this PostgreSQL installation, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+
+- Call all programs explicitly with /usr/local/opt/postgresql-9.3/bin/...
+- Add /usr/local/opt/postgresql-9.3/bin to your PATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.3
+- Install the postgresql-common package
+
+To access the man pages, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+- Refer to them by their full path, like &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;man /usr/local/opt/postgresql-9.3/share/man/man1/psql.1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+- Add /usr/local/opt/postgresql-9.3/share/man to your MANPATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.3
+
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+The different provided versions of PostgreSQL conflict with each other.
+
+Generally there are no consequences of this &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you. If you build your
+own software and it requires this formula, you will need to add to your
+build variables:
+
+    LDFLAGS:  &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/usr/local/opt/postgresql-9.3/lib
+    CPPFLAGS: &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;/usr/local/opt/postgresql-9.3/include
+    PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.3/lib/pkgconfig
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/postgresql-9.3/9.3.15: 3,190 files, 41M, built &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;3 minutes 17 seconds
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing postgresql-9.4 from petere/postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing dependencies &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;petere/postgresql/postgresql-9.4: e2fsprogs
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing petere/postgresql/postgresql-9.4 dependency: e2fsprogs
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://homebrew.bintray.com/bottles/e2fsprogs-1.42.13.sierra.bo
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Pouring e2fsprogs-1.42.13.sierra.bottle.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+This brew installs several commands which override macOS-provided file system commands.
+
+Generally there are no consequences of this &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you. If you build your
+own software and it requires this formula, you will need to add to your
+build variables:
+
+    LDFLAGS:  &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/usr/local/opt/e2fsprogs/lib
+    CPPFLAGS: &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;/usr/local/opt/e2fsprogs/include
+    PKG_CONFIG_PATH: /usr/local/opt/e2fsprogs/lib/pkgconfig
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/e2fsprogs/1.42.13: 135 files, 5.0M
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing petere/postgresql/postgresql-9.4
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://ftp.postgresql.org/pub/source/v9.4.10/postgresql-9.4.10.
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; ./configure &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/postgresql-9.4/9.4.10 &lt;span class=&quot;nt&quot;&gt;--enable-dtrace&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make install-world
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+To use this PostgreSQL installation, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+
+- Call all programs explicitly with /usr/local/opt/postgresql-9.4/bin/...
+- Add /usr/local/opt/postgresql-9.4/bin to your PATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.4
+- Install the postgresql-common package
+
+To access the man pages, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+- Refer to them by their full path, like &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;man /usr/local/opt/postgresql-9.4/share/man/man1/psql.1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+- Add /usr/local/opt/postgresql-9.4/share/man to your MANPATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.4
+
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+The different provided versions of PostgreSQL conflict with each other.
+
+Generally there are no consequences of this &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you. If you build your
+own software and it requires this formula, you will need to add to your
+build variables:
+
+    LDFLAGS:  &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/usr/local/opt/postgresql-9.4/lib
+    CPPFLAGS: &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;/usr/local/opt/postgresql-9.4/include
+    PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.4/lib/pkgconfig
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/postgresql-9.4/9.4.10: 3,261 files, 42.9M, built &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;3 minutes 17 seconds
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing postgresql-9.5 from petere/postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://ftp.postgresql.org/pub/source/v9.5.5/postgresql-9.5.5.ta
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; ./configure &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/postgresql-9.5/9.5.5 &lt;span class=&quot;nt&quot;&gt;--enable-dtrace&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make install-world
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+To use this PostgreSQL installation, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+
+- Call all programs explicitly with /usr/local/opt/postgresql-9.5/bin/...
+- Add /usr/local/opt/postgresql-9.5/bin to your PATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.5
+- Install the postgresql-common package
+
+To access the man pages, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+- Refer to them by their full path, like &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;man /usr/local/opt/postgresql-9.5/share/man/man1/psql.1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+- Add /usr/local/opt/postgresql-9.5/share/man to your MANPATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.5
+
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+The different provided versions of PostgreSQL conflict with each other.
+
+Generally there are no consequences of this &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you. If you build your
+own software and it requires this formula, you will need to add to your
+build variables:
+
+    LDFLAGS:  &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/usr/local/opt/postgresql-9.5/lib
+    CPPFLAGS: &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;/usr/local/opt/postgresql-9.5/include
+    PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.5/lib/pkgconfig
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/postgresql-9.5/9.5.5: 3,395 files, 45M, built &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;3 minutes 30 seconds
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing postgresql-9.6 from petere/postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://ftp.postgresql.org/pub/source/v9.6.1/postgresql-9.6.1.ta
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; ./configure &lt;span class=&quot;nt&quot;&gt;--prefix&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/Cellar/postgresql-9.6/9.6.1 &lt;span class=&quot;nt&quot;&gt;--enable-dtrace&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; make install-world
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+To use this PostgreSQL installation, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+
+- Call all programs explicitly with /usr/local/opt/postgresql-9.6/bin/...
+- Add /usr/local/opt/postgresql-9.6/bin to your PATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.6
+- Install the postgresql-common package
+
+To access the man pages, &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;one or more of the following:
+- Refer to them by their full path, like &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;man /usr/local/opt/postgresql-9.6/share/man/man1/psql.1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+- Add /usr/local/opt/postgresql-9.6/share/man to your MANPATH
+- brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; postgresql-9.6
+
+This formula is keg-only, which means it was not symlinked into /usr/local.
+
+The different provided versions of PostgreSQL conflict with each other.
+
+Generally there are no consequences of this &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;you. If you build your
+own software and it requires this formula, you will need to add to your
+build variables:
+
+    LDFLAGS:  &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt;/usr/local/opt/postgresql-9.6/lib
+    CPPFLAGS: &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;/usr/local/opt/postgresql-9.6/include
+    PKG_CONFIG_PATH: /usr/local/opt/postgresql-9.6/lib/pkgconfig
+
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/postgresql-9.6/9.6.1: 3,485 files, 46.6M, built &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;3 minutes 38 seconds
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As it says in the output, these are ‘keg-only’, which has the nice side effect that they are automatically installed in side-by-side directories &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/opt/postgresql-9.1/&lt;/code&gt; etc.&lt;/p&gt;
+
+&lt;p&gt;Peter configures PostgreSQL with just about all the options turned on:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg_config |grep ^CONF
+CONFIGURE &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--prefix=/usr/local/Cellar/postgresql-9.6/9.6.1'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--enable-dtrace'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--enable-nls'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-bonjour'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-gssapi'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-ldap'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-libxml'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-libxslt'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-openssl'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-uuid=e2fs'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-pam'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-perl'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-python'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-tcl'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-includes=/usr/local/opt/gettext/include:/usr/local/opt/openldap/include:/usr/local/opt/openssl/include:/usr/local/opt/readline/include:/usr/local/opt/tcl-tk/include'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'--with-libraries=/usr/local/opt/gettext/lib:/usr/local/opt/openldap/lib:/usr/local/opt/openssl/lib:/usr/local/opt/readline/lib:/usr/local/opt/tcl-tk/lib'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'CC=clang'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and you get all the extensions that are in ‘contrib’ as well. However, if you find that you need to install another extension, I advocate using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pex&lt;/code&gt;. You would install it like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;pex
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing dependencies &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;pex: postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing pex dependency: postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.5.sierra.bot
+Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.5.sierra.bottle.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Pouring postgresql-9.5.5.sierra.bottle.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Using the sandbox
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; /usr/local/Cellar/postgresql/9.5.5/bin/initdb /usr/local/var/postgres
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+If builds of PostgreSQL 9 are failing and you have version 8.x installed,
+you may need to remove the previous version first. See:
+  https://github.com/Homebrew/homebrew/issues/2510
+
+To migrate existing data from a previous major version &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;pre-9.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/upgrading.html
+
+To migrate existing data from a previous minor version &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;9.0-9.4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
+
+   You will need your previous PostgreSQL installation from brew to perform &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;pg_upgrade&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+   Do not run &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;brew cleanup postgresql&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;until &lt;/span&gt;you have performed the migration.                                                                  1
+To have launchd start postgresql now and restart at login:
+  brew services start postgresql
+Or, &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;not want/need a background service you can just run:
+  pg_ctl &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; /usr/local/var/postgres start
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/postgresql/9.5.5: 3,154 files, 35.1M
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing pex
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://homebrew.bintray.com/bottles/pex-1.20140409.sierra.bottl
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Pouring pex-1.20140409.sierra.bottle.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+If installing &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;the first &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;, perform the following &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;order to setup the necessary directory structure:
+  pex init
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
+🍺   /usr/local/Cellar/pex/1.20140409: 5 files, 31.6K
+&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pex init
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Sadly, it will reinstall the default PostgreSQL brew recipe, but we’ll simply pretend that it’s not there going forward. Once installed, use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pex&lt;/code&gt; like so:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pex &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt; /usr/local/opt/postgresql-9.4 &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;ip4r
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading ip4r from https://github.com/RhodiumToad/ip4r/archive/2.0.3.tar.gz
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Unpacking ip4r
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;snip]
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Building ip4r
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;snip]
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Installing ip4r
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;snip]
+/usr/bin/install &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 755  ip4r.so &lt;span class=&quot;s1&quot;&gt;'/usr/local/Cellar/postgresql-9.4/9.4.10/lib/ip4r.so'&lt;/span&gt;
+/usr/bin/install &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 644 ip4r.control &lt;span class=&quot;s1&quot;&gt;'/usr/local/Cellar/postgresql-9.4/9.4.10/share/extension/'&lt;/span&gt;
+/usr/bin/install &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 644 ip4r--2.0.sql ip4r--unpackaged2.0--2.0.sql ip4r--unpackaged1--2.0.sql                                                  ↪&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/usr/local/Cellar/postgresql-9.4/9.4.10/share/extension/'&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;snip]
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Package ip4r installed successfully
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ip4r&lt;/code&gt; extension was installed into my PostgreSQL 9.4 instance.&lt;/p&gt;
+
+&lt;p&gt;Now, you might be wondering how to deal with all these concurrent versions. If you type &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt; which one will you get? How can you force it to use a specific version? Right now, you won’t get any version, since it’s not in your path. You will need to specify exactly what you want:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;/usr/local/opt/postgresql-9.6/bin/psql &lt;span class=&quot;nt&quot;&gt;--version&lt;/span&gt;
+psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;PostgreSQL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 9.6.1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;which is a huge pita. So, let’s make a little convenience function in our shell. Edit your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.zshrc&lt;/code&gt; or your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.bashrc&lt;/code&gt; (or whatever) and add a function like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;pg&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+
+      &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /usr/local/var/postgres/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;do
+        &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;running_ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;basename&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;is_running&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;ps &lt;span class=&quot;nt&quot;&gt;-few&lt;/span&gt;|egrep &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;[p]ostgres.*-D.*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;running_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;is_running&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+          &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Stopping PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;running_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+          /usr/local/opt/postgresql-&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;running_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/bin/pg_ctl &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt; stop &lt;span class=&quot;nt&quot;&gt;-mf&lt;/span&gt; &amp;amp;&amp;gt;/dev/null
+          &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;done!&quot;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;fi
+      done
+
+      &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Activating PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+      brew &lt;span class=&quot;nb&quot;&gt;unlink&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--overwrite&lt;/span&gt; postgresql-&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &amp;amp;&amp;gt;/dev/null
+      brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--overwrite&lt;/span&gt; postgresql-&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &amp;amp;&amp;gt;/dev/null
+      &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;done!&quot;&lt;/span&gt;
+
+      &lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/var/postgres/&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Initializing PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; cluster... &quot;&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+        initdb &lt;span class=&quot;nt&quot;&gt;-k&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &amp;amp;&amp;gt;/dev/null &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; initdb &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &amp;amp;&amp;gt;/dev/null
+        &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;done!&quot;&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;fi
+      &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Starting PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+      pg_ctl &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; start &amp;amp;&amp;gt;/dev/null
+      &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;done!&quot;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and then simply call &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg 9.5&lt;/code&gt; to set PostgreSQL 9.5 as your ‘active’ instance:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg 9.5
+Stopping PostgreSQL 9.4... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+Activating PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+Initializing PostgreSQL 9.5 cluster... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+Starting PostgreSQL 9.5... &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Restore your data:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;psql &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; template1 &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; my_roles.sql
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;psql &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; template1 &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; my_data.sql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and there you be. Ain’t it beautiful? :)&lt;/p&gt;
+</description>
+    <link>/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/ </link>
+    <pubDate>2016-11-10T09:58:15-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/</guid>
+   </item>
+  
+   <item>
+    <title>PostgreSQL, Homebrew, and You</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://cdn.curvve.com/wp-content/uploads/2013/09/homebrew_osx_logo.png&quot; class=&quot;lleader&quot; /&gt;If you need to install &lt;a href=&quot;http://www.posatgresql.org&quot;&gt;PostgreSQL&lt;/a&gt; onto your Macbook, you have several options available to you nowadays. You could use the &lt;a href=&quot;https://bigsql.com/postgresql/installers.jsp&quot;&gt;BigSQL&lt;/a&gt; package, or you could use &lt;a href=&quot;http://postgresapp.com&quot;&gt;Postgres.app&lt;/a&gt;, or several others. However, if you’re a geek running OSX, you’ve probably already installed &lt;a href=&quot;http://brew.sh&quot;&gt;Homebrew&lt;/a&gt; and it has a wonderful PostgreSQL package. So let’s use it, shall we?&lt;/p&gt;
+
+&lt;p&gt;I’m not going to walk you through installing Homebrew, so let’s just assume it’s already up and running and you’ve followed all the directions. At this point, you have &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/bin/&lt;/code&gt; in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PATH&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew&lt;/code&gt; is up and running. So, let’s tell &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew&lt;/code&gt; to install PostgreSQL:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.4_1.sierra.b
+Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.4_1.sierra.bottle.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Pouring postgresql-9.5.4_1.sierra.bottle.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Using the sandbox
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; /usr/local/Cellar/postgresql/9.5.4_1/bigsqln/initdb /usr/local/var/postgres
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+If builds of PostgreSQL 9 are failing and you have version 8.x installed,
+you may need to remove the previous version first. See:
+  https://github.com/Homebrew/homebrew/issues/2510
+
+To migrate existing data from a previous major version &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;pre-9.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/upgrading.html
+
+To migrate existing data from a previous minor versionn &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;9.0-9.4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
+
+  You will need your previous PostgreSQL installation from brew to perform &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;pg_upgrade&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+  Do not run &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;brew cleanup postgresql&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;until &lt;/span&gt;you have performed the migration.
+
+To have launchd start postgresql now and restart at login:
+  brew services start postgresql
+Or, &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you don&lt;span class=&quot;s1&quot;&gt;'t want/need a background service you can just run:
+  pg_ctl -D /usr/local/var/postgres start
+==&amp;gt; Summary
+🍺  /usr/local/Cellar/postgresql/9.5.4_1: 3,147 files, 35M
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, it downloaded the package, installed the binaries, and ran &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initdb&lt;/code&gt; for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew services start postgresql
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Successfully started &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;postgresql&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;label: homebrew.mxcl.postgresql&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And if you check your process listing, you can see that the cluster is up and running under your id:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ps &lt;span class=&quot;nt&quot;&gt;-efw&lt;/span&gt;|grep postgres
+  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; /usr/local/var/postgres
+  501  6817  6808   0 11:03AM ??         0:00.00 postgres: logger process
+  501  6819  6808   0 11:03AM ??         0:00.00 postgres: checkpointer process
+  501  6820  6808   0 11:03AM ??         0:00.00 postgres: writer process
+  501  6821  6808   0 11:03AM ??         0:00.00 postgres: wal writer process
+  501  6822  6808   0 11:03AM ??         0:00.00 postgres: autovacuum launcher process
+  501  6823  6808   0 11:03AM ??         0:00.00 postgres: stats collector process
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And just like that, you have PostgreSQL installed and running! Set &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/var/postgres&lt;/code&gt; and you’re all set.&lt;/p&gt;
+
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>/posts/PostgreSQL-Homebrew-and-You/ </link>
+    <pubDate>2016-11-04T09:30:09-04:00</pubDate>
+    <guid isPermaLink="true">/posts/PostgreSQL-Homebrew-and-You/</guid>
+   </item>
+  
+   <item>
+    <title>Glutton for Punishment</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.theshell.guru/wp-content/uploads/2015/12/osx-logo3.png&quot; class=&quot;rleader&quot; /&gt;I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing. As you probably know, I spent a lot of time and effort on the previous mbp to get &lt;a href=&quot;http://www.gentoo.org&quot;&gt;Gentoo&lt;/a&gt; up and running on it. I chose &lt;em&gt;not&lt;/em&gt; to do so with this one.&lt;/p&gt;
+
+&lt;p&gt;While I have looked into it and believe that I could get Gentoo up and running fairly easily, I’ve decided to skip it for now and try to live with OSX. I travel for work and never know what I’m going to be asked to do when onsite. Sometimes I have to present things on a projector while other times the customer only has 5Ghz wifi available. And thanks to the proprietary nature of these machines, these features are either non-functional or sub-optimal under Linux. I’m also getting tired of our IT staff telling me Linux isn’t supported whenever I have an issue, even if that issue clearly doesn’t have anything to do with the OS. And several other minor annoyances that have added up over my three yrs tenure here.&lt;/p&gt;
+
+&lt;p&gt;So, yeah. I’ve decided to sign up for the pain of staying in OSX. So far, I think I’ve managed to coerce the system into a ‘feel-alike’ of my prior KDE 5 Plasma environment but it’s taken a lot of tweaking and Googling and setting of magic CLI commands to get OSX to do my bidding. And I’ve had to buy more than a few apps to get functionality that I got for free on Linux, which chaps my ass.&lt;/p&gt;
+
+&lt;p&gt;So we’ll see how this lasts. Or doesn’t.&lt;/p&gt;
+</description>
+    <link>/posts/Glutton-for-punishment/ </link>
+    <pubDate>2016-02-29T05:14:50-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Glutton-for-punishment/</guid>
+   </item>
+  
+ </channel>
+</rss>

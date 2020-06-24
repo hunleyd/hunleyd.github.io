@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>Douglas J Hunley - computers</title>
+  <description>Posts tagged as 'computers'</description>
+  <atom:link href="/feeds/feed.computers.xml" rel="self" type="application/rss+xml" />
+  <link>/tags/#computers/</link>
+  <updated>2020-06-24T16:12:42-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>Routing email through GMail on OSX</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.postfix.org/mysza.gif&quot; class=&quot;lleader&quot; /&gt;Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)&lt;/p&gt;
+
+&lt;p&gt;The first thing we’re going to do is open an iTerm and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo -i&lt;/code&gt; to become root. Then we’re going to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi /etc/postfix/main.cf&lt;/code&gt; and we’re going to add/set the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;myhostname&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;relayhost&lt;/span&gt; = [&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_auth_enable&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_password_maps&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;:/&lt;span class=&quot;n&quot;&gt;etc&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postfix&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;sasl_passwd&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_security_options&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;noanonymous&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_mechanism_filter&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_use_tls&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi /etc/postfix/sasl_passwd&lt;/code&gt; and add:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;@&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;:&lt;span class=&quot;n&quot;&gt;app_passwd&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Secure that file by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chmod 0600 /etc/postfix/sasl_passwd&lt;/code&gt; and then have Postfix hash it by doing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postmap /etc/postfix/sasl_passwd&lt;/code&gt;. Finally, restart Postfix:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;launchctl stop org.postfix.master
+launchctl start org.postfix.master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And everything should work.&lt;/p&gt;
+</description>
+    <link>/posts/Routing-email-through-GMail-on-OSX/ </link>
+    <pubDate>2016-11-15T05:51:00-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Routing-email-through-GMail-on-OSX/</guid>
+   </item>
+  
+   <item>
+    <title>Glutton for Punishment</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.theshell.guru/wp-content/uploads/2015/12/osx-logo3.png&quot; class=&quot;rleader&quot; /&gt;I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing. As you probably know, I spent a lot of time and effort on the previous mbp to get &lt;a href=&quot;http://www.gentoo.org&quot;&gt;Gentoo&lt;/a&gt; up and running on it. I chose &lt;em&gt;not&lt;/em&gt; to do so with this one.&lt;/p&gt;
+
+&lt;p&gt;While I have looked into it and believe that I could get Gentoo up and running fairly easily, I’ve decided to skip it for now and try to live with OSX. I travel for work and never know what I’m going to be asked to do when onsite. Sometimes I have to present things on a projector while other times the customer only has 5Ghz wifi available. And thanks to the proprietary nature of these machines, these features are either non-functional or sub-optimal under Linux. I’m also getting tired of our IT staff telling me Linux isn’t supported whenever I have an issue, even if that issue clearly doesn’t have anything to do with the OS. And several other minor annoyances that have added up over my three yrs tenure here.&lt;/p&gt;
+
+&lt;p&gt;So, yeah. I’ve decided to sign up for the pain of staying in OSX. So far, I think I’ve managed to coerce the system into a ‘feel-alike’ of my prior KDE 5 Plasma environment but it’s taken a lot of tweaking and Googling and setting of magic CLI commands to get OSX to do my bidding. And I’ve had to buy more than a few apps to get functionality that I got for free on Linux, which chaps my ass.&lt;/p&gt;
+
+&lt;p&gt;So we’ll see how this lasts. Or doesn’t.&lt;/p&gt;
+</description>
+    <link>/posts/Glutton-for-punishment/ </link>
+    <pubDate>2016-02-29T05:14:50-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Glutton-for-punishment/</guid>
+   </item>
+  
+ </channel>
+</rss>
