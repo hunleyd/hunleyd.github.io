@@ -176,7 +176,7 @@
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
           
-Reading time ~2 minutes
+Reading time ~3 minutes
         </p><!-- /.entry-reading-time -->
         
       </div><!-- /.header-title-wrap -->
@@ -188,42 +188,91 @@ Reading time ~2 minutes
 
 <p>First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a> if you need to do this). We’re going to use <code class="language-plaintext highlighter-rouge">pgbench</code> to create some data in our PostgreSQL 9.5 instance:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.5
-doug@Douglass-MacBook-Pro ~/foo » createdb bench1; createdb bench2; createdb bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -i -s 15 bench1 ; pgbench -i -s 70 bench2 ; pgbench -i -s 600 bench3
-doug@Douglass-MacBook-Pro ~/foo » pgbench -c 4 -j 2 -T 600 bench1 ; pgbench -c 4 -j 2 -T 600 bench2 ; pgbench -c 4 -j 2 -T 600 bench3
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg 9.5
+<span class="nv">$ </span>createdb bench1<span class="p">;</span> createdb bench2<span class="p">;</span> createdb bench3
+<span class="nv">$ </span>pgbench <span class="nt">-i</span> <span class="nt">-s</span> 15 bench1 <span class="p">;</span> pgbench <span class="nt">-i</span> <span class="nt">-s</span> 70 bench2 <span class="p">;</span> pgbench <span class="nt">-i</span> <span class="nt">-s</span> 600 bench3
+<span class="nv">$ </span>pgbench <span class="nt">-c</span> 4 <span class="nt">-j</span> 2 <span class="nt">-T</span> 600 bench1 <span class="p">;</span> pgbench <span class="nt">-c</span> 4 <span class="nt">-j</span> 2 <span class="nt">-T</span> 600 bench2 <span class="p">;</span> pgbench <span class="nt">-c</span> 4 <span class="nt">-j</span> 2 <span class="nt">-T</span> 600 bench3
 </code></pre></div></div>
 
 <p>Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, <em>this is where you’d have to stop your application(s)</em>.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » time pg_dumpall &gt; data.sql
-pg_dumpall &gt; data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">time </span>pg_dumpall <span class="o">&gt;</span> data.sql
+pg_dumpall <span class="o">&gt;</span> data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
 </code></pre></div></div>
 
 <p>We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » pg 9.6
-doug@Douglass-MacBook-Pro ~/foo » time psql -f data.sql
-psql -f data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg 9.6
+<span class="nv">$ </span><span class="nb">time </span>psql <span class="nt">-f</span> data.sql
+psql <span class="nt">-f</span> data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
 </code></pre></div></div>
 
 <p>After 37 minutes, our data is back and we can start our applications back up. <em>An outage of approximately 56.5 minutes</em>.</p>
 
 <p>Now, let’s blow away our PostgreSQL 9.6 cluster and use <code class="language-plaintext highlighter-rouge">pg_upgrade</code> to complete the same task. You would do this with the application(s) down as well!</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@Douglass-MacBook-Pro ~/foo » rm -fr $PGDATA/*
-doug@Douglass-MacBook-Pro ~/foo » initdb $PGDATA
-doug@Douglass-MacBook-Pro ~/foo » export OPGDATA=$PGDATA/../9.5
-doug@Douglass-MacBook-Pro ~/foo » time pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B /usr/local/opt/postgresql-9.6/bin
-pg_upgrade -d $OPGDATA -D $PGDATA -b /usr/local/opt/postgresql-9.5/bin -B   0.40s user 12.12s system 1% cpu 10:26.64 total
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">rm</span> <span class="nt">-fr</span> <span class="nv">$PGDATA</span>/<span class="k">*</span>
+<span class="nv">$ </span>initdb <span class="nv">$PGDATA</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">OPGDATA</span><span class="o">=</span><span class="nv">$PGDATA</span>/../9.5
+<span class="nv">$ </span><span class="nb">time </span>pg_upgrade <span class="nt">-d</span> <span class="nv">$OPGDATA</span> <span class="nt">-D</span> <span class="nv">$PGDATA</span> <span class="nt">-b</span> /usr/local/opt/postgresql-9.5/bin <span class="nt">-B</span> /usr/local/opt/postgresql-9.6/bin
+pg_upgrade <span class="nt">-d</span> <span class="nv">$OPGDATA</span> <span class="nt">-D</span> <span class="nv">$PGDATA</span> <span class="nt">-b</span> /usr/local/opt/postgresql-9.5/bin <span class="nt">-B</span>   0.40s user 12.12s system 1% cpu 10:26.64 total
 </code></pre></div></div>
 
 <p>And we’re done <em>in 10.5 minutes</em>. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?</p>
 
 <p>For the curious, the <code class="language-plaintext highlighter-rouge">pg_upgrade</code> output that I omitted above for readability’s sake is:</p>
 
-<script src="https://gist.github.com/3ff1f5503fc42e3446b35715bd0ec932.js"> </script>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Performing Consistency Checks
+<span class="nt">-----------------------------</span>
+Checking cluster versions                                   ok
+Checking database user is the <span class="nb">install </span>user                  ok
+Checking database connection settings                       ok
+Checking <span class="k">for </span>prepared transactions                          ok
+Checking <span class="k">for </span>reg<span class="k">*</span> system OID user data types                ok
+Checking <span class="k">for </span>contrib/isn with bigint-passing mismatch       ok
+Checking <span class="k">for </span>roles starting with <span class="s1">'pg_'</span>                      ok
+Creating dump of global objects                             ok
+Creating dump of database schemas
+                                                            ok
+Checking <span class="k">for </span>presence of required libraries                 ok
+Checking database user is the <span class="nb">install </span>user                  ok
+Checking <span class="k">for </span>prepared transactions                          ok
 
+If pg_upgrade fails after this point, you must re-initdb the
+new cluster before continuing.
+
+Performing Upgrade
+<span class="nt">------------------</span>
+Analyzing all rows <span class="k">in </span>the new cluster                       ok
+Freezing all rows on the new cluster                        ok
+Deleting files from new pg_clog                             ok
+Copying old pg_clog to new server                           ok
+Setting next transaction ID and epoch <span class="k">for </span>new cluster       ok
+Deleting files from new pg_multixact/offsets                ok
+Copying old pg_multixact/offsets to new server              ok
+Deleting files from new pg_multixact/members                ok
+Copying old pg_multixact/members to new server              ok
+Setting next multixact ID and offset <span class="k">for </span>new cluster        ok
+Resetting WAL archives                                      ok
+Setting frozenxid and minmxid counters <span class="k">in </span>new cluster       ok
+Restoring global objects <span class="k">in </span>the new cluster                 ok
+Restoring database schemas <span class="k">in </span>the new cluster
+                                                            ok
+Copying user relation files                                 ok
+Setting next OID <span class="k">for </span>new cluster                            ok
+Sync data directory to disk                                 ok
+Creating script to analyze new cluster                      ok
+Creating script to delete old cluster                       ok
+
+Upgrade Complete
+<span class="nt">----------------</span>
+Optimizer statistics are not transferred by pg_upgrade so,
+once you start the new server, consider running:
+    ./analyze_new_cluster.sh
+
+Running this script will delete the old cluster<span class="s1">'s data files:
+    ./delete_old_cluster.sh
+</span></code></pre></div></div>
 
       <footer class="entry-meta">
         <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a></span>

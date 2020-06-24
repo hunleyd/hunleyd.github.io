@@ -240,30 +240,30 @@ Reading time ~5 minutes
 
 <p>Phew! That was a lot wasn’t it? And where exactly does this come into play? As the <code class="language-plaintext highlighter-rouge">postgresql.conf</code> says:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_filename = 'postgresql-%a.log'      # log file name pattern,
-                                        # can include strftime() escapes
-</code></pre></div></div>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">log_filename</span> = <span class="s1">'postgresql-%a.log'</span>      <span class="c"># log file name pattern,
+</span>                                        <span class="c"># can include strftime() escapes
+</span></code></pre></div></div>
 
 <p>So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I’m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my <code class="language-plaintext highlighter-rouge">$PGDATA/pg_log</code> directory will only ever contain:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
 postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
 postgresql-Sat.log
 </code></pre></div></div>
 
 <p>But wait! The key to all this is that <em>PostgreSQL only evaluates the filename when it first opens/creates the logfile</em>. So, if you start your cluster on Mon and do not restart it and don’t have it configured to log rotate, you’ll still be writing to <code class="language-plaintext highlighter-rouge">postgresql-Mon.log</code> forever. Fortunately, PostgreSQL has you covered here too:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_rotation_age = 1d      # Automatic rotation of logfiles will
-                           # happen after that time.  0 disables.
-log_rotation_size = 10MB   # Automatic rotation of logfiles will
-                           # happen after that much log output.
-                           # 0 disables.
-</code></pre></div></div>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">log_rotation_age</span> = <span class="m">1</span><span class="n">d</span>      <span class="c"># Automatic rotation of logfiles will
+</span>                           <span class="c"># happen after that time.  0 disables.
+</span><span class="n">log_rotation_size</span> = <span class="m">10</span><span class="n">MB</span>   <span class="c"># Automatic rotation of logfiles will
+</span>                           <span class="c"># happen after that much log output.
+</span>                           <span class="c"># 0 disables.
+</span></code></pre></div></div>
 
 <p>So, using my <code class="language-plaintext highlighter-rouge">log_filename</code> from above, I enable <code class="language-plaintext highlighter-rouge">log_rotation_age</code> (set to 1 day) and disable <code class="language-plaintext highlighter-rouge">log_rotation_size</code> and I automatically get a new log every day. If I wanted hourly logs, I could do something like:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_filename = 'postgresql-%a-%H'
-log_rotation_age = 1h
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">log_filename</span> = <span class="s1">'postgresql-%a-%H'</span>
+<span class="n">log_rotation_age</span> = <span class="m">1</span><span class="n">h</span>
 </code></pre></div></div>
 
 <p>which would give me logs of <code class="language-plaintext highlighter-rouge">postgresql-Mon-00</code>, <code class="language-plaintext highlighter-rouge">postgresql-Mon-01</code>, etc. You should be able to see how combining these three <code class="language-plaintext highlighter-rouge">postgresql.conf</code> parameters and some crafty strftime() escapes gives you a <em>ton</em> of flexibility in your logging. So go forth and tweak those logs!</p>

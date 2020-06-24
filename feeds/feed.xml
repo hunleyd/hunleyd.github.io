@@ -5,7 +5,7 @@
   <description>Doug's various musings</description>
   <atom:link href="/feeds/feed.xml" rel="self" type="application/rss+xml" />
   <link></link>
-  <updated>2020-06-23T16:34:57-04:00</updated>
+  <updated>2020-06-24T15:41:47-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -139,33 +139,33 @@ transparent_hugepages=never
   
    <item>
     <title>pgBackRest 2.08 and macOS Mojave</title>
-    <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code class=&quot;highlighter-rouge&quot;&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code class=&quot;highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;
+    <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving `-D_POSIX_C_SOURCE` up to the `Makefile` that caused the problem. The solution below is still the same though.&lt;/p&gt;
 
 &lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils::Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o
-warning: unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?
-      [-Wunknown-warning-option]
-common/lock.c:76:21: warning: implicit declaration of function 'flock' is invalid in C99
-      [-Wimplicit-function-declaration]
-                if (flock(result, LOCK_EX | LOCK_NB) == -1)
-                    ^
-common/lock.c:76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]
-common/lock.c:76:35: fatal error: use of undeclared identifier 'LOCK_EX'
-                if (flock(result, LOCK_EX | LOCK_NB) == -1)
-                                  ^
-3 warnings and 1 error generated.
-make: *** [common/lock.o] Error 1
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nl&quot;&gt;gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;warning&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?&lt;/span&gt;
+      &lt;span class=&quot;err&quot;&gt;[-Wunknown-warning-option]&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;common/lock.c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;76:21: warning: implicit declaration of function 'flock' is invalid in C99&lt;/span&gt;
+      &lt;span class=&quot;err&quot;&gt;[-Wimplicit-function-declaration]&lt;/span&gt;
+                &lt;span class=&quot;err&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;(flock(result,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;LOCK_EX&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;LOCK_NB)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                    &lt;span class=&quot;err&quot;&gt;^&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;common/lock.c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;common/lock.c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;76:35: fatal error: use of undeclared identifier 'LOCK_EX'&lt;/span&gt;
+                &lt;span class=&quot;err&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;(flock(result,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;LOCK_EX&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;LOCK_NB)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                                  &lt;span class=&quot;err&quot;&gt;^&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;warnings&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;generated.&lt;/span&gt;
+&lt;span class=&quot;nl&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;*** [common/lock.o] Error 1&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;To fix this, you will need to edit &lt;code class=&quot;highlighter-rouge&quot;&gt;src/Makefile&lt;/code&gt; and change line 12 from:&lt;/p&gt;
+&lt;p&gt;To fix this, you will need to edit `src/Makefile` and change line 12 from:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_POSIX_C_SOURCE=200112L
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CSTD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;c99 &lt;span class=&quot;nt&quot;&gt;-D_POSIX_C_SOURCE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;200112L
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;to:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;CSTD = -std=c99 -D_DARWIN_C_SOURCE
+&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CSTD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;c99 &lt;span class=&quot;nt&quot;&gt;-D_DARWIN_C_SOURCE&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
@@ -190,16 +190,16 @@ make: *** [common/lock.o] Error 1
 
 &lt;p&gt;Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use &lt;a href=&quot;https://brew.sh&quot;&gt;Homebrew&lt;/a&gt; for this:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;openssl
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;openssl
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; openssl version &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl version &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
 LibreSSL 2.6.4
 built on: &lt;span class=&quot;nb&quot;&gt;date &lt;/span&gt;not available
 platform: information not available
 options:  bn&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;64,64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; rc4&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ptr,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; des&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx,cisc,16,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; blowfish&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 compiler: information not available
 OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/private/etc/ssl&quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /usr/local/opt/openssl/bin/openssl version &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;/usr/local/opt/openssl/bin/openssl version &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
 OpenSSL 1.0.2p  14 Aug 2018
 built on: reproducible build, &lt;span class=&quot;nb&quot;&gt;date &lt;/span&gt;unspecified
 platform: darwin64-x86_64-cc
@@ -208,47 +208,47 @@ compiler: clang &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;&lt;span class=&
 OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/usr/local/etc/openssl&quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;As you can see, the default SSL from OSX is in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/bin&lt;/code&gt; while the newly installed OpenSSL is in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/opt/openssl&lt;/code&gt;. In my testing, this is enough to proceed with pgBackRest but I prefer to have the &lt;code class=&quot;highlighter-rouge&quot;&gt;openssl&lt;/code&gt; binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
+&lt;p&gt;As you can see, the default SSL from OSX is in `/usr/bin` while the newly installed OpenSSL is in `/usr/local/opt/openssl`. In my testing, this is enough to proceed with pgBackRest but I prefer to have the `openssl` binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sudo mv&lt;/span&gt; /usr/bin/openssl /usr/bin/openssl.old
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sudo ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/local/opt/openssl/bin/openssl /usr/bin
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt; /usr/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
-lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&amp;gt; /usr/local/opt/openssl/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mv&lt;/span&gt; /usr/bin/openssl /usr/bin/openssl.old
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/local/opt/openssl/bin/openssl /usr/bin
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt; /usr/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; /usr/local/opt/openssl/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
 &lt;span class=&quot;nt&quot;&gt;-rwxr-xr-x&lt;/span&gt; 1 root wheel 1.2M Sep 21 00:16 /usr/bin/openssl.old&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;OK, so now we have an SSL that pgBackRest knows how to speak to. We need to install some Perl modules that it needs. If you haven’t run CPAN before, just accept the defaults when it asks you things:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; perl &lt;span class=&quot;nt&quot;&gt;-MCPAN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; shell
-cpan[1]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBI
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;perl &lt;span class=&quot;nt&quot;&gt;-MCPAN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; shell
+cpan[1]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBI
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[2]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBD::Pg
+cpan[2]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBD::Pg
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[3]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;IO::Socket::SSL
+cpan[3]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;IO::Socket::SSL
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[4]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;XML::LibXML
+cpan[4]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;XML::LibXML
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[5]&amp;gt; q
+cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we’ve got our Perl modules installed, we have to tell our shell where to find them:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL5LIB&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5/lib/perl5
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_LOCAL_LIB_ROOT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MB_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;--install_base&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/Users/doug/perl5&quot;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MM_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;INSTALL_BASE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL5LIB&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5/lib/perl5
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_LOCAL_LIB_ROOT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MB_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;--install_base&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/Users/doug/perl5&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MM_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;INSTALL_BASE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (&lt;code class=&quot;highlighter-rouge&quot;&gt;.profile&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;.bash_profile&lt;/code&gt;, etc) to make them permanent.&lt;/p&gt;
+&lt;p&gt;Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (`.profile`, `.bash_profile`, etc) to make them permanent.&lt;/p&gt;
 
 &lt;p&gt;Now, we can actually get down to the business of compiling and installing pgBackRest. Download the 2.07 tarball from the releases tab on GitHub, and let’s get busy:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;tar &lt;/span&gt;xvf Downloads/pgbackrest-release-2.07.tar.gz
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;tar &lt;/span&gt;xvf Downloads/pgbackrest-release-2.07.tar.gz
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pgbackrest-release-2.07
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pgbackrest-release-2.07
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Now, we need to make some edits to the included Makefile. So &lt;code class=&quot;highlighter-rouge&quot;&gt;vi src/Makefile&lt;/code&gt; and jump to line 42. Edit this line to be:&lt;/p&gt;
+&lt;p&gt;Now, we need to make some edits to the included Makefile. So `vi src/Makefile` and jump to line 42. Edit this line to be:&lt;/p&gt;
 
 &lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;LDEXTRA&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; /usr/local/opt/openssl/lib
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -258,16 +258,16 @@ cpan[5]&amp;gt; q
 &lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   &lt;span class=&quot;err&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;755&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;pgbackrest&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$(DESTDIR)/usr/local/bin&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;This makes it install into &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/bin&lt;/code&gt; which is where Homebrew puts everything else and you shouldn’t need to use &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo&lt;/code&gt; to write to it.&lt;/p&gt;
+&lt;p&gt;This makes it install into `/usr/local/bin` which is where Homebrew puts everything else and you shouldn’t need to use `sudo` to write to it.&lt;/p&gt;
 
 &lt;p&gt;Now, compile and install it:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; make &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; ./src &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; ./src/install
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;make &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; ./src &amp;amp;amp&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&amp;amp;amp&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; make &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; ./src/install
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Assuming that goes well, you can now run pgBackRest to verify it’s installed and functional:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /usr/local/bin/pgbackrest
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;/usr/local/bin/pgbackrest
 pgBackRest 2.07 - General &lt;span class=&quot;nb&quot;&gt;help
 
 &lt;/span&gt;Usage:
@@ -312,33 +312,32 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
     <title>Monitoring pgBackRest with tail_n_mail</title>
     <description>&lt;p&gt;After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
 
-&lt;p&gt;For reference, our &lt;code class=&quot;highlighter-rouge&quot;&gt;.tail_n_mail.conf&lt;/code&gt; looks like this:&lt;/p&gt;
+&lt;p&gt;For reference, our `.tail_n_mail.conf` looks like this:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Config file for the tail_n_mail program
-## This file is automatically updated
-LOG_LINE_PREFIX: %t P%p
-EMAIL: you@gme.com
-MAILSUBJECT: HOST pgBackRest errors NUMBER
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;## This file is automatically updated
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LOG_LINE_PREFIX&lt;/span&gt;: %&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;P&lt;/span&gt;%&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;EMAIL&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;you&lt;/span&gt;@&lt;span class=&quot;n&quot;&gt;gme&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;MAILSUBJECT&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;HOST&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pgBackRest&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;errors&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NUMBER&lt;/span&gt;
 
-INCLUDE: WARN:
-INCLUDE: ERROR:
-INCLUDE: FATAL:
-INCLUDE: PANIC:
+&lt;span class=&quot;n&quot;&gt;INCLUDE&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;WARN&lt;/span&gt;:
+&lt;span class=&quot;n&quot;&gt;INCLUDE&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;ERROR&lt;/span&gt;:
+&lt;span class=&quot;n&quot;&gt;INCLUDE&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;FATAL&lt;/span&gt;:
+&lt;span class=&quot;n&quot;&gt;INCLUDE&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;PANIC&lt;/span&gt;:
 
 
-FILE1: /var/log/pgbackrest/pgbackrest.log
+&lt;span class=&quot;n&quot;&gt;FILE1&lt;/span&gt;: /&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;pgbackrest&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;pgbackrest&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;You would need to change the &lt;code class=&quot;highlighter-rouge&quot;&gt;EMAIL&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;FILE1&lt;/code&gt; and the rest should just work.&lt;/p&gt;
+&lt;p&gt;You would need to change the `EMAIL` and `FILE1` and the rest should just work.&lt;/p&gt;
 
-&lt;p&gt;To actually invoke the monitoring, simply add a &lt;code class=&quot;highlighter-rouge&quot;&gt;cron&lt;/code&gt; entry that looks like:&lt;/p&gt;
+&lt;p&gt;To actually invoke the monitoring, simply add a `cron` entry that looks like:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;pre&gt;&lt;code class=&quot;language-cron&quot;&gt;* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;(Obviously, you should adjust the periodicity. I &lt;strong&gt;highly&lt;/strong&gt; doubt you need to check every minute.)&lt;/p&gt;
 
-&lt;p&gt;Once you’ve saved the &lt;code class=&quot;highlighter-rouge&quot;&gt;crontab&lt;/code&gt;, you should be all good. If you doubt the setup, you can add &lt;code class=&quot;highlighter-rouge&quot;&gt;--mailzero&lt;/code&gt; to the invocation to get an email even if everything is OK.&lt;/p&gt;
+&lt;p&gt;Once you’ve saved the `crontab`, you should be all good. If you doubt the setup, you can add `--mailzero` to the invocation to get an email even if everything is OK.&lt;/p&gt;
 
 &lt;p&gt;See? Easy.&lt;/p&gt;
 </description>
@@ -357,18 +356,18 @@ hopefully make it clearer how to use ‘pass-thru auth’ and avoid maintaining 
 
 &lt;p&gt;First, install pgBouncer as per your OS (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;apt&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew&lt;/code&gt;, etc):&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; brew install pgbouncer
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;pgbouncer
 Updating Homebrew...
-==&amp;gt; Auto-updated Homebrew!
-Updated 1 tap (homebrew/core).
-==&amp;gt; Updated Formulae
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Auto-updated Homebrew!
+Updated 1 tap &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;homebrew/core&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Updated Formulae
 &amp;lt;snip&amp;gt;
-==&amp;gt; Downloading https://homebrew.bintray.com/bottles/pgbouncer-1.8.1.high_sierra
-######################################################################## 100.0%
-==&amp;gt; Pouring pgbouncer-1.8.1.high_sierra.bottle.tar.gz
-==&amp;gt; Caveats
-The config file: /usr/local/etc/pgbouncer.ini is in the &quot;ini&quot; format and you
-will need to edit it for your particular setup. See:
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Downloading https://homebrew.bintray.com/bottles/pgbouncer-1.8.1.high_sierra
+&lt;span class=&quot;c&quot;&gt;######################################################################## 100.0%&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Pouring pgbouncer-1.8.1.high_sierra.bottle.tar.gz
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Caveats
+The config file: /usr/local/etc/pgbouncer.ini is &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the &lt;span class=&quot;s2&quot;&gt;&quot;ini&quot;&lt;/span&gt; format and you
+will need to edit it &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;your particular setup. See:
 https://pgbouncer.github.io/config.html
 
 The auth_file option should point to the /usr/local/etc/userlist.txt file which
@@ -376,9 +375,9 @@ can be populated by the /usr/local/opt/pgbouncer/bin/mkauth.py script.
 
 To have launchd start pgbouncer now and restart at login:
   brew services start pgbouncer
-Or, if you do not want/need a background service you can just run:
-  pgbouncer -q /usr/local/etc/pgbouncer.ini
-==&amp;gt; Summary
+Or, &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;not want/need a background service you can just run:
+  pgbouncer &lt;span class=&quot;nt&quot;&gt;-q&lt;/span&gt; /usr/local/etc/pgbouncer.ini
+&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; Summary
 🍺  /usr/local/Cellar/pgbouncer/1.8.1: 17 files, 399.9KB
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -386,21 +385,21 @@ Or, if you do not want/need a background service you can just run:
 
 &lt;p&gt;To make life easier on ourselves, we’re going to &lt;strong&gt;temporarily&lt;/strong&gt; enable trusted local socket connections in our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# TYPE  DATABASE        USER            ADDRESS                 METHOD
-
-# &quot;local&quot; is for Unix domain socket connections only
-local   all             all trust
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# TYPE  DATABASE        USER            ADDRESS                 METHOD
+&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# &quot;local&quot; is for Unix domain socket connections only
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt;             &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;trust&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Right now, this is the only line in my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;. Let’s SIGHUP the postmaster so it takes affect:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; pg_ctl &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt; reload
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg_ctl &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt; reload
 server signaled
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;And test it:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;unset &lt;/span&gt;PGPASSWORD &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; psql &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt; doug &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; doug &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;select now();&quot;&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;unset &lt;/span&gt;PGPASSWORD &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; psql &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt; doug &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; doug &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;select now();&quot;&lt;/span&gt;
 ┌───────────────────────────────┐
 │              now              │
 ├───────────────────────────────┤
@@ -415,7 +414,7 @@ Time: 1.959 ms
 
 &lt;p&gt;Let’s configure pgBouncer now. As per the output above, I need to edit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/etc/pgbouncer.ini&lt;/code&gt; but yours is probably in plain old &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc&lt;/code&gt;:&lt;/p&gt;
 
-&lt;div class=&quot;language-config highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;databases&lt;/span&gt;]
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;databases&lt;/span&gt;]
 
 ; &lt;span class=&quot;n&quot;&gt;any&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;db&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;over&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Unix&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;socket&lt;/span&gt;
 * =
@@ -452,14 +451,14 @@ Time: 1.959 ms
 &lt;p&gt;As you can see, we’re gonna pass connections to any db back to the postmaster via a local socket. I put the logs in my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$HOME&lt;/code&gt; for ease of use. I put the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auth_file&lt;/code&gt; in my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$HOME&lt;/code&gt; as well. Then I set myself up as both an admin and stats
 user. I changed the mode into &lt;strong&gt;transaction&lt;/strong&gt; which is &lt;em&gt;usually&lt;/em&gt; the mode you want. Now, I add myself to the auth_file:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&quot;doug&quot; &quot;md5540094bd8172cd963fdfa773fe44b488&quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; userlist.txt
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&quot;doug&quot; &quot;md5540094bd8172cd963fdfa773fe44b488&quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; userlist.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;(NOTE: I did a select on pg_shadow as a SUPERUSER to get these values.)&lt;/p&gt;
 
 &lt;p&gt;And start pgBouncer:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; pgbouncer /usr/local/etc/pgbouncer.ini
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pgbouncer /usr/local/etc/pgbouncer.ini
 2018-08-07 13:43:46.453 92057 LOG File descriptor limit: 7168 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;H:-1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, max_client_conn: 90, max fds possible: 100
 2018-08-07 13:43:46.455 92057 LOG listening on 127.0.0.1:6432
 2018-08-07 13:43:46.455 92057 LOG listening on unix:/tmp/.s.PGSQL.6432
@@ -468,22 +467,22 @@ user. I changed the mode into &lt;strong&gt;transaction&lt;/strong&gt; which is 
 
 &lt;p&gt;Now, we see if we can connect to pgBouncer’s internal db:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; pgbouncer &lt;span class=&quot;nt&quot;&gt;-X&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; pgbouncer &lt;span class=&quot;nt&quot;&gt;-X&lt;/span&gt;
 psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4, server 1.8.1/bouncer&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
-
-&lt;span class=&quot;nv&quot;&gt;pgbouncer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;# show pools;&lt;/span&gt;
- database  |   user    | cl_active | cl_waiting | sv_active | sv_idle | sv_used | sv_tested | sv_login | maxwait | maxwait_us | pool_mode
-&lt;span class=&quot;nt&quot;&gt;-----------&lt;/span&gt;+-----------+-----------+------------+-----------+---------+---------+-----------+----------+---------+------------+-----------
- pgbouncer | pgbouncer |         1 |          0 |         0 |       0 |       0 |         0 |        0 |       0 |          0 | statement
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;show&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pools&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;database&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;user&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cl_active&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cl_waiting&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sv_active&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sv_idle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sv_used&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sv_tested&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sv_login&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;maxwait&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;maxwait_us&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pool_mode&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-----------+-----------+-----------+------------+-----------+---------+---------+-----------+----------+---------+------------+-----------&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;         &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;          &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;         &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;       &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;       &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;         &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;        &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;       &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;          &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;statement&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Success!&lt;/p&gt;
 
 &lt;p&gt;Now, can we connect to one of our PostgreSQL dbs through pgBouncer:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; doug
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; doug
 psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
 
@@ -494,23 +493,25 @@ Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span cla
 
 &lt;p&gt;We will now alter &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pgbouncer.ini&lt;/code&gt; and set &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auth_type = md5&lt;/code&gt; and edit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to use md5 as well to make sure we’re not passing around plaintext passwords. Our retest looks like:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; ^local &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pg_hba.conf
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; ^local &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pg_hba.conf
 &lt;span class=&quot;nb&quot;&gt;local   &lt;/span&gt;all             all md5
 
-doug@ReturnOfTheMac ~&amp;gt; pg_ctl &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt; reload
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg_ctl &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt; reload
 server signaled
 doug@ReturnOfTheMac ~&amp;gt; psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; doug
 Password:
-psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;Type&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
 
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;doug@127.0.0.1:6432/doug[97966]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# \q&lt;/span&gt;
-doug@ReturnOfTheMac ~&amp;gt; psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; pgbouncer &lt;span class=&quot;nt&quot;&gt;-X&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;97966&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; pgbouncer &lt;span class=&quot;nt&quot;&gt;-X&lt;/span&gt;
 Password:
-psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4, server 1.8.1/bouncer&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
-
-&lt;span class=&quot;nv&quot;&gt;pgbouncer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;# \q&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bouncer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;Type&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;\&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Which, as you can see, we were now password prompted both times!&lt;/p&gt;
@@ -552,7 +553,7 @@ we will ensure only our &lt;code class=&quot;language-plaintext highlighter-roug
 
 &lt;p&gt;And, let’s tell PgBouncer to use this function:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; ^auth /usr/local/etc/pgbouncer.ini
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; ^auth /usr/local/etc/pgbouncer.ini
 auth_type &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; md5
 auth_file &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /Users/doug/userlist.txt
 auth_user &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; pgbouncer
@@ -561,16 +562,16 @@ auth_query &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; SELECT &lt;span class=
 
 &lt;p&gt;And let’s edit our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auth_file&lt;/code&gt; to only contain the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pgbouncer&lt;/code&gt; user’s info:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;userlist.txt
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;userlist.txt
 &lt;span class=&quot;s2&quot;&gt;&quot;pgbouncer&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;md509d12ff67352814e4c467c7f55a3a1d7&quot;&lt;/span&gt;
-doug@ReturnOfTheMac ~&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Restart pgBouncer, and let’s recheck:&lt;/p&gt;
 
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ReturnOfTheMac&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;                      &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; doug                      2
+Password:
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;Type&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
 
 &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7076&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
@@ -586,29 +587,30 @@ doug@ReturnOfTheMac ~&amp;gt;
 
 &lt;p&gt;It works! But what about the pgBouncer internal db?&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; pgbouncer
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; pgbouncer
 psql: ERROR:  No such user: doug
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Well, that makes sense. The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auth_file&lt;/code&gt; only has a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pgbouncer&lt;/code&gt; user. So, let’s edit the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pgbouncer.ini&lt;/code&gt;:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'_users'&lt;/span&gt; /usr/local/etc/pgbouncer.ini
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'_users'&lt;/span&gt; /usr/local/etc/pgbouncer.ini
 admin_users &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; pgbouncer
 stats_users &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; pgbouncer
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Retart pgBouncer once more and check:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; pgbouncer &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt; pgbouncer &lt;span class=&quot;nt&quot;&gt;-X&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; psql &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 127.0.0.1 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 6432 &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; pgbouncer &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt; pgbouncer &lt;span class=&quot;nt&quot;&gt;-X&lt;/span&gt;
 Password &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;user pgbouncer:
-psql &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.4, server 1.8.1/bouncer&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;help.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bouncer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;Type&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;help&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
 
-&lt;span class=&quot;nv&quot;&gt;pgbouncer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;# show clients;&lt;/span&gt;
- &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; |   user    | database  | state  |   addr    | port  | local_addr | local_port |    connect_time     |    request_time     | &lt;span class=&quot;nb&quot;&gt;wait&lt;/span&gt; | wait_us |      ptr       | &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; | remote_pid | tls
-&lt;span class=&quot;nt&quot;&gt;------&lt;/span&gt;+-----------+-----------+--------+-----------+-------+------------+------------+---------------------+---------------------+------+---------+----------------+------+------------+-----
- C    | pgbouncer | pgbouncer | active | 127.0.0.1 | 54191 | 127.0.0.1  |       6432 | 2018-08-07 14:48:03 | 2018-08-07 14:48:06 |    0 |       0 | 0x7fa082005010 |      |          0 |
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 row&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;show&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;clients&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;user&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;database&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;state&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;addr&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;local_addr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;local_port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;connect_time&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;request_time&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wait&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wait_us&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;      &lt;span class=&quot;n&quot;&gt;ptr&lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;remote_pid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tls&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;------+-----------+-----------+--------+-----------+-------+------------+------------+---------------------+---------------------+------+---------+----------------+------+------------+-----&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;C&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pgbouncer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;active&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;54191&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;127&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;       &lt;span class=&quot;mi&quot;&gt;6432&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2018&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;07&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;48&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;03&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2018&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;07&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;48&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;06&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;    &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;       &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x7fa082005010&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;          &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;And we’re golden!&lt;/p&gt;
@@ -617,7 +619,7 @@ Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt; &lt;span cla
 
 &lt;p&gt;To complete this setup, we’re gonna move PostgreSQL to port &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;5433&lt;/code&gt; and pgBouncer to port &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;5432&lt;/code&gt;:&lt;/p&gt;
 
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;port /usr/local/etc/pgbouncer.ini
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;port /usr/local/etc/pgbouncer.ini
 listen_port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5432
 doug@ReturnOfTheMac ~&amp;gt; &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;port &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/postgresql.conf
 port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5433				&lt;span class=&quot;c&quot;&gt;# (change requires restart)&lt;/span&gt;
@@ -814,10 +816,10 @@ port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5433				&lt;span class=&quot
 
 &lt;p&gt;Tweak the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; on &lt;strong&gt;both&lt;/strong&gt; the source and destination Pg instances to allow the replication user to connect:&lt;/p&gt;
 
-&lt;div class=&quot;language-apache highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;local  replication  pglogical  trust
-&lt;span class=&quot;nc&quot;&gt;host&lt;/span&gt;   replication  pglogical  0.0.0.0/0  &lt;span class=&quot;ss&quot;&gt;md5&lt;/span&gt;
-local  dbname       pglogical  trust
-&lt;span class=&quot;nc&quot;&gt;host&lt;/span&gt;   dbname       pglogical  0.0.0.0/0  &lt;span class=&quot;ss&quot;&gt;md5&lt;/span&gt;
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;replication&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;trust&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;replication&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;  &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;md5&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;dbname&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;trust&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;dbname&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;  &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;md5&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;NOTE: Make sure to edit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0.0.0.0/0&lt;/code&gt; to match your actual CIDR or IP address and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbname&lt;/code&gt; to match the db you wish to replicate.&lt;/p&gt;

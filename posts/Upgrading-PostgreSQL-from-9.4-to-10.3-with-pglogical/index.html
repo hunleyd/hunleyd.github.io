@@ -288,10 +288,10 @@ Reading time ~5 minutes
 
 <p>Tweak the <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> on <strong>both</strong> the source and destination Pg instances to allow the replication user to connect:</p>
 
-<div class="language-apache highlighter-rouge"><div class="highlight"><pre class="highlight"><code>local  replication  pglogical  trust
-<span class="nc">host</span>   replication  pglogical  0.0.0.0/0  <span class="ss">md5</span>
-local  dbname       pglogical  trust
-<span class="nc">host</span>   dbname       pglogical  0.0.0.0/0  <span class="ss">md5</span>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">local</span>  <span class="n">replication</span>  <span class="n">pglogical</span>  <span class="n">trust</span>
+<span class="n">host</span>   <span class="n">replication</span>  <span class="n">pglogical</span>  <span class="m">0</span>.<span class="m">0</span>.<span class="m">0</span>.<span class="m">0</span>/<span class="m">0</span>  <span class="n">md5</span>
+<span class="n">local</span>  <span class="n">dbname</span>       <span class="n">pglogical</span>  <span class="n">trust</span>
+<span class="n">host</span>   <span class="n">dbname</span>       <span class="n">pglogical</span>  <span class="m">0</span>.<span class="m">0</span>.<span class="m">0</span>.<span class="m">0</span>/<span class="m">0</span>  <span class="n">md5</span>
 </code></pre></div></div>
 
 <p>NOTE: Make sure to edit <code class="language-plaintext highlighter-rouge">0.0.0.0/0</code> to match your actual CIDR or IP address and <code class="language-plaintext highlighter-rouge">dbname</code> to match the db you wish to replicate.</p>

@@ -176,7 +176,7 @@
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
           
-Reading time ~4 minutes
+Reading time ~5 minutes
         </p><!-- /.entry-reading-time -->
         
       </div><!-- /.header-title-wrap -->
@@ -193,32 +193,113 @@ Reading time ~4 minutes
 <p>Which is exactly why I’m writing this blog post. Here’s what I needed to get me through the migration in question. I hope it helps you, should you consider using Londiste for your own replication needs. To whit:</p>
 
 <ul>
-  <li>
-    <p>As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:
-<script src="https://gist.github.com/94d1096767e154486dbfe8dd47f48275.js"> </script></p>
-  </li>
+  <li>As with other logical replication tools, you must ensure that all the tables to be replicated have a valid primary key. So before you even get started, determine which tables are missing them and then pass that list to your junior DBA and have them create pkeys while you continue on:</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">SELECT</span>
+    <span class="n">n</span><span class="p">.</span><span class="n">nspname</span> <span class="k">as</span> <span class="k">schema</span><span class="p">,</span>
+    <span class="k">c</span><span class="p">.</span><span class="n">relname</span> <span class="k">as</span> <span class="k">table</span>
+<span class="k">FROM</span>
+    <span class="n">pg_class</span> <span class="k">c</span>
+<span class="k">JOIN</span>
+    <span class="n">pg_namespace</span> <span class="n">n</span>
+<span class="k">ON</span>
+    <span class="n">n</span><span class="p">.</span><span class="n">oid</span> <span class="o">=</span> <span class="k">c</span><span class="p">.</span><span class="n">relnamespace</span>
+<span class="k">WHERE</span>
+    <span class="k">c</span><span class="p">.</span><span class="n">relkind</span> <span class="o">=</span> <span class="s1">'r'</span>
+<span class="k">AND</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="p">(</span>
+    <span class="k">SELECT</span>
+        <span class="mi">1</span>
+    <span class="k">FROM</span>
+        <span class="n">pg_constraint</span> <span class="n">con</span>
+    <span class="k">WHERE</span>
+        <span class="n">con</span><span class="p">.</span><span class="n">conrelid</span> <span class="o">=</span> <span class="k">c</span><span class="p">.</span><span class="n">oid</span>
+    <span class="k">AND</span>
+        <span class="n">con</span><span class="p">.</span><span class="n">contype</span> <span class="o">=</span> <span class="s1">'p'</span>
+<span class="p">)</span>
+<span class="k">AND</span> <span class="n">n</span><span class="p">.</span><span class="n">nspname</span> <span class="o">&lt;&gt;</span> <span class="k">ALL</span> <span class="p">(</span>
+    <span class="n">ARRAY</span> <span class="p">[</span>
+        <span class="s1">'pg_catalog'</span><span class="p">,</span>
+        <span class="s1">'sys'</span><span class="p">,</span>
+        <span class="s1">'dbo'</span><span class="p">,</span>
+        <span class="s1">'information_schema'</span>
+    <span class="p">]</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<ul>
   <li>
     <p>On the PostgreSQL 9.4.x server that will be receiving the replicated data, we need to ensure that all roles are pre-created. We want all ownerships and grants to be identical when we’re done, right? You can use <code class="language-plaintext highlighter-rouge">pg_dumpall -g</code> on the PostgreSQL 8.4.x to get a listing of roles.</p>
   </li>
   <li>
-    <p>Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I <em>think</em> you can actually get Londiste to do this for you as part of the replication, but I couldn’t find anything online for sure, and I didn’t have time to add more experimentation here (we’re on the customer’s dime here, remember). So, use <code class="language-plaintext highlighter-rouge">pg_dump</code> over the network and pipe it to <code class="language-plaintext highlighter-rouge">pg_restore</code> to transfer the schema thusly:
-<script src="https://gist.github.com/f0fcb06526f3b3f50dd0b57a091403b8.js"> </script></p>
+    <p>Again, like Slony, we should pre-build the schema on the PostgreSQL 9.4.x server. I <em>think</em> you can actually get Londiste to do this for you as part of the replication, but I couldn’t find anything online for sure, and I didn’t have time to add more experimentation here (we’re on the customer’s dime here, remember). So, use <code class="language-plaintext highlighter-rouge">pg_dump</code> over the network and pipe it to <code class="language-plaintext highlighter-rouge">pg_restore</code> to transfer the schema thusly:</p>
   </li>
-  <li>
-    <p>Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:
-<script src="https://gist.github.com/00e6122b49c7f068c46e680f09ed396f.js"> </script></p>
-  </li>
-  <li>
-    <p>Install Skytools from source on the PostgreSQL 8.4.x server:
-<script src="https://gist.github.com/555804964c2e2564b08fff01c0d5a53a.js"> </script></p>
-  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg_dump <span class="se">\</span>
+  <span class="nt">-Fc</span> <span class="se">\</span>
+  <span class="nt">-C</span> <span class="se">\</span>
+  <span class="nt">-S</span> <span class="se">\</span>
+  <span class="nt">-h</span> IPofOldServer <span class="se">\</span>
+  <span class="nt">-U</span> postgres <span class="se">\</span>
+  myapp | <span class="se">\</span>
+pg_restore <span class="se">\</span>
+  <span class="nt">-d</span> template1 <span class="se">\</span>
+  <span class="nt">-v</span> <span class="se">\</span>
+  <span class="nt">-C</span> <span class="se">\</span>
+  <span class="nt">-e</span> <span class="se">\</span>
+  <span class="nt">-s</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Install Skytools on the PostgreSQL 9.4.x server using the PGDG repo:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>yum <span class="nt">-y</span> <span class="nb">install</span> <span class="se">\</span>
+  skytools-94 <span class="se">\</span>
+  skytools-94-modules
+</code></pre></div></div>
+
+<ul>
+  <li>Install Skytools from source on the PostgreSQL 8.4.x server:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>yum <span class="nt">-y</span> <span class="nb">install</span> <span class="se">\</span>
+  python-devel <span class="se">\</span>
+  asciidoc <span class="se">\</span>
+  xmlto <span class="se">\</span>
+  postgresql-devel
+<span class="nv">$ </span>git clone git://github.com/markokr/skytools.git
+<span class="nv">$ </span><span class="nb">cd </span>skytools
+<span class="nv">$ </span>git submodule init
+<span class="nv">$ </span>git submodule update
+<span class="nv">$ </span>./autogen.sh
+<span class="nv">$ </span>./configure
+<span class="nv">$ </span>make
+<span class="nv">$ </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<ul>
   <li>
     <p>Restart the PostgreSQL 8.4.x cluster to load the new libs and modules</p>
   </li>
   <li>
-    <p>Now we configure the Londiste ticker. Note, we have <em>trust</em> setup for the postgres user in <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> so there is no password= in the connection strings. Adjust to meet your setup:
-<script src="https://gist.github.com/d65e5dfd27365b086dcddb118d586308.js"> </script></p>
+    <p>Now we configure the Londiste ticker. Note, we have <em>trust</em> setup for the postgres user in <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> so there is no password= in the connection strings. Adjust to meet your setup:</p>
   </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-pv</span> ~postgres/londiste-config/<span class="o">{</span>log,pid<span class="o">}</span>
+<span class="nv">$ </span><span class="nb">cd</span> ~postgres/londiste-config
+<span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt; ticker.ini
+  [pgqd]
+  base_connstr = user=postgres host=IPofOldServer
+  database_list = myapp
+  logfile = log/ticker.log
+  pidfile = pid/ticker.pid
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<ul>
   <li>
     <p>Start up the ticker, to provide the replication “heartbeat” by running <code class="language-plaintext highlighter-rouge">pgqd -d ticker.ini</code></p>
   </li>
@@ -226,13 +307,32 @@ Reading time ~4 minutes
     <p>Check the <code class="language-plaintext highlighter-rouge">ticker.log</code> to ensure there are no warnings or errors! You can stop the ticker with <code class="language-plaintext highlighter-rouge">pgqd -s ticker.ini</code> while you fix things.</p>
   </li>
   <li>
-    <p>Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):
-<script src="https://gist.github.com/2a9317184569c8fabd26945595c480f9.js"> </script></p>
+    <p>Now, we tell Londiste about the master node (same note applies about the lack of password in the connection string):</p>
   </li>
-  <li>
-    <p>We have to actually create the master node as the root node by doing:
-<script src="https://gist.github.com/fcfb0ff9b3cbb2c724ea8da36723fde1.js"> </script></p>
-  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~postgres/londiste-config
+<span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt; master.ini
+  [londiste3]
+  db = user=postgres host=IPofOldServer dbname=myapp
+  queue_name = myappq
+  loop_delay = 0.5
+  logfile = log/master.log
+  pidfile = pid/master.pid
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<ul>
+  <li>We have to actually create the master node as the root node by doing:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>londiste3 <span class="se">\</span>
+  master.ini <span class="se">\</span>
+  create-root <span class="se">\</span>
+  master <span class="s1">'user=postgres host=IPofOldServer dbname=myapp'</span>
+</code></pre></div></div>
+
+<ul>
   <li>
     <p>Check the master.log to see if you have a line like <code class="language-plaintext highlighter-rouge">INFO Node "master" initialized for queue "myappq" with type "root"</code></p>
   </li>
@@ -240,13 +340,32 @@ Reading time ~4 minutes
     <p>Now, spin up the master’s replication worker process by running <code class="language-plaintext highlighter-rouge">londiste3 -d master.ini worker</code></p>
   </li>
   <li>
-    <p>Next, we configure our slave node (same note applies about the lack of password in the connection string):
-<script src="https://gist.github.com/94ac2474673bd3dd9fe0e1d77a12c791.js"> </script></p>
+    <p>Next, we configure our slave node (same note applies about the lack of password in the connection string):</p>
   </li>
-  <li>
-    <p>Like the master, we have to create the slave node. I created it as a <code class="language-plaintext highlighter-rouge">leaf</code> but I could have created it as a <code class="language-plaintext highlighter-rouge">branch</code> if we we’re going to cascade replication:
-<script src="https://gist.github.com/bdcd1644a185863f823749d4502e2fa8.js"> </script></p>
-  </li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~postgres/londiste-config
+<span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt; slave.ini
+  [londiste3]
+  db = user=postgres host=127.0.0.1 dbname=myapp
+  queue_name = myappq
+  loop_delay = 0.5
+  logfile = log/slave.log
+  pidfile = pid/slave.pid
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<ul>
+  <li>Like the master, we have to create the slave node. I created it as a <code class="language-plaintext highlighter-rouge">leaf</code> but I could have created it as a <code class="language-plaintext highlighter-rouge">branch</code> if we we’re going to cascade replication:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>londiste3 <span class="se">\</span>
+  slave.ini <span class="se">\</span>
+  create-leaf slave <span class="s1">'user=postgres host=127.0.0.1 dbname=myapp'</span> <span class="se">\</span>
+    <span class="nt">--provider</span><span class="o">=</span><span class="s1">'user=postgres host=IPofOldServer dbname=myapp'</span>
+</code></pre></div></div>
+
+<ul>
   <li>
     <p>Check the slave.log to see if you have the line <code class="language-plaintext highlighter-rouge">INFO Node "slave" initialized for queue "myappq" with type "branch"</code></p>
   </li>

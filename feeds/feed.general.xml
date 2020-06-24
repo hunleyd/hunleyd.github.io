@@ -5,7 +5,7 @@
   <description>Posts tagged as 'general'</description>
   <atom:link href="/feeds/feed.general.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#general/</link>
-  <updated>2020-06-23T16:34:57-04:00</updated>
+  <updated>2020-06-24T15:41:47-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -152,7 +152,7 @@ $2,406.59 money in my pocket
   
    <item>
     <title>Functional Blog Archives</title>
-    <description>&lt;p&gt;After an afternoon dicking around with Jekyll templates and Google serching, I’ve fixed up this site’s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I’ve also modified the tag cloud page to fit in the archive pages’ look an feel. It’s not a true tag cloud in that I don’t increae the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it’s own page showing all posts tagged as such.&lt;/p&gt;
+    <description>&lt;p&gt;After an afternoon dicking around with Jekyll templates and Google searching, I’ve fixed up this site’s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I’ve also modified the tag cloud page to fit in the archive pages’ look an feel. It’s not a true tag cloud in that I don’t increase the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it’s own page showing all posts tagged as such.&lt;/p&gt;
 
 &lt;p&gt;So, yeah. Enjoy, or something.&lt;/p&gt;
 </description>

@@ -188,28 +188,70 @@ Reading time ~1 minute
 
 <p>Let’s get started!</p>
 
-<p>On the master, do the following:
-<script src="https://gist.github.com/78f5bca50fb14e5a6525a5f63bb5bf47.js"> </script></p>
+<p>On the master, do the following:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; postgresql.conf
+    wal_level = hot_standby
+    full_page_writes = on
+    wal_log_hints = on
+    max_wal_senders = 6
+    max_replication_slots = 6
+    hot_standby = on
+    hot_standby_feedback = on
+</span><span class="no">EOF
+</span></code></pre></div></div>
 
-<p>On the master, add the external IP addresses of the servers to <code class="language-plaintext highlighter-rouge">pg_hba.conf</code>:
-<script src="https://gist.github.com/8af26b72f5a79632494d3203547d9478.js"> </script></p>
+<p>On the master, add the external IP addresses of the servers to <code class="language-plaintext highlighter-rouge">pg_hba.conf</code>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; pg_hba.conf
+    host replication repl_user IP_of_master/32 md5
+    host replication repl_user IP_of_standby/32 md5
+</span><span class="no">EOF
+</span></code></pre></div></div>
 
 <p>Restart PostgreSQL on the master for the changes to take affect</p>
 
-<p>On the master, create the replication user:
-<script src="https://gist.github.com/a279de475a73e8ee490b1c7af7859ba4.js"> </script></p>
+<p>On the master, create the replication user:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>psql <span class="se">\</span>
+  <span class="nt">-d</span> postgres <span class="se">\</span>
+  <span class="nt">-U</span> postgres <span class="se">\</span>
+  <span class="nt">-c</span> <span class="s2">"CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD 'secretpasswordhere';"</span>
+</code></pre></div></div>
 
-<p>On the master, create the replication slot for the standby:
-<script src="https://gist.github.com/2fb5070785137383fe42eec0225d8c0e.js"> </script></p>
+<p>On the master, create the replication slot for the standby:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>psql <span class="se">\</span>
+  <span class="nt">-d</span> postgres <span class="se">\</span>
+  <span class="nt">-U</span> postgres <span class="se">\</span>
+  <span class="nt">-c</span> <span class="s2">"SELECT * FROM pg_create_physical_replication_slot('standby1', true);"</span>
+</code></pre></div></div>
 
-<p>On the standby, wipe the existing cluster:
-<script src="https://gist.github.com/2adfa47297b9d0006ba172d967e1a575.js"> </script></p>
+<p>On the standby, wipe the existing cluster:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /var/lib/pgsql/9.4/data
+<span class="nv">$ </span>pg_ctl <span class="nt">-D</span> <span class="nv">$PWD</span> <span class="nt">-mf</span> stop
+<span class="nv">$ </span><span class="nb">cd</span> ..
+<span class="nv">$ </span><span class="nb">rm</span> <span class="nt">-rfv</span> data
+</code></pre></div></div>
 
-<p>On the standby, use the <code class="language-plaintext highlighter-rouge">pg_basebackup</code> command to clone the master (enter the <code class="language-plaintext highlighter-rouge">repl_user</code>’s password from above when prompted):
-<script src="https://gist.github.com/3e37d6f4ede70675270b92d7660cd1d0.js"> </script></p>
+<p>On the standby, use the <code class="language-plaintext highlighter-rouge">pg_basebackup</code> command to clone the master (enter the <code class="language-plaintext highlighter-rouge">repl_user</code>’s password from above when prompted):</p>
 
-<p>On the standby, tweak the <code class="language-plaintext highlighter-rouge">recovery.conf</code> that was created for you and add the replication slot name:
-<script src="https://gist.github.com/e914002c0c78c3a1c03515c60e2b5aaa.js"> </script></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg_basebackup <span class="se">\</span>
+  <span class="nt">-D</span> data <span class="se">\</span>
+  <span class="nt">-Fp</span> <span class="se">\</span>
+  <span class="nt">-R</span> <span class="se">\</span>
+  <span class="nt">-Xs</span> <span class="se">\</span>
+  <span class="nt">-c</span> fast <span class="se">\</span>
+  <span class="nt">-l</span> <span class="s1">'initial clone'</span> <span class="se">\</span>
+  <span class="nt">-P</span> <span class="se">\</span>
+  <span class="nt">-v</span> <span class="se">\</span>
+  <span class="nt">-h</span> IP_of_master <span class="se">\</span>
+  <span class="nt">-U</span> repl_user
+</code></pre></div></div>
+
+<p>On the standby, tweak the <code class="language-plaintext highlighter-rouge">recovery.conf</code> that was created for you and add the replication slot name:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>data
+<span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; recovery.conf
+primary_slot_name = 'standby1'
+</span><span class="no">EOF
+</span></code></pre></div></div>
 
 <p>Start the standby up</p>
 

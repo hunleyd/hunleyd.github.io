@@ -187,18 +187,18 @@ hopefully make it clearer how to use ‘pass-thru auth’ and avoid maintaining 
 
 <p>First, install pgBouncer as per your OS (<code class="language-plaintext highlighter-rouge">yum</code>, <code class="language-plaintext highlighter-rouge">apt</code>, <code class="language-plaintext highlighter-rouge">brew</code>, etc):</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; brew install pgbouncer
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>brew <span class="nb">install </span>pgbouncer
 Updating Homebrew...
-==&gt; Auto-updated Homebrew!
-Updated 1 tap (homebrew/core).
-==&gt; Updated Formulae
+<span class="o">==&gt;</span> Auto-updated Homebrew!
+Updated 1 tap <span class="o">(</span>homebrew/core<span class="o">)</span><span class="nb">.</span>
+<span class="o">==&gt;</span> Updated Formulae
 &lt;snip&gt;
-==&gt; Downloading https://homebrew.bintray.com/bottles/pgbouncer-1.8.1.high_sierra
-######################################################################## 100.0%
-==&gt; Pouring pgbouncer-1.8.1.high_sierra.bottle.tar.gz
-==&gt; Caveats
-The config file: /usr/local/etc/pgbouncer.ini is in the "ini" format and you
-will need to edit it for your particular setup. See:
+<span class="o">==&gt;</span> Downloading https://homebrew.bintray.com/bottles/pgbouncer-1.8.1.high_sierra
+<span class="c">######################################################################## 100.0%</span>
+<span class="o">==&gt;</span> Pouring pgbouncer-1.8.1.high_sierra.bottle.tar.gz
+<span class="o">==&gt;</span> Caveats
+The config file: /usr/local/etc/pgbouncer.ini is <span class="k">in </span>the <span class="s2">"ini"</span> format and you
+will need to edit it <span class="k">for </span>your particular setup. See:
 https://pgbouncer.github.io/config.html
 
 The auth_file option should point to the /usr/local/etc/userlist.txt file which
@@ -206,9 +206,9 @@ can be populated by the /usr/local/opt/pgbouncer/bin/mkauth.py script.
 
 To have launchd start pgbouncer now and restart at login:
   brew services start pgbouncer
-Or, if you do not want/need a background service you can just run:
-  pgbouncer -q /usr/local/etc/pgbouncer.ini
-==&gt; Summary
+Or, <span class="k">if </span>you <span class="k">do </span>not want/need a background service you can just run:
+  pgbouncer <span class="nt">-q</span> /usr/local/etc/pgbouncer.ini
+<span class="o">==&gt;</span> Summary
 🍺  /usr/local/Cellar/pgbouncer/1.8.1: 17 files, 399.9KB
 </code></pre></div></div>
 
@@ -216,21 +216,21 @@ Or, if you do not want/need a background service you can just run:
 
 <p>To make life easier on ourselves, we’re going to <strong>temporarily</strong> enable trusted local socket connections in our <code class="language-plaintext highlighter-rouge">pg_hba.conf</code>:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
-
-# "local" is for Unix domain socket connections only
-local   all             all trust
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># TYPE  DATABASE        USER            ADDRESS                 METHOD
+</span>
+<span class="c"># "local" is for Unix domain socket connections only
+</span><span class="n">local</span>   <span class="n">all</span>             <span class="n">all</span> <span class="n">trust</span>
 </code></pre></div></div>
 
 <p>Right now, this is the only line in my <code class="language-plaintext highlighter-rouge">pg_hba.conf</code>. Let’s SIGHUP the postmaster so it takes affect:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; pg_ctl <span class="nt">-D</span> <span class="nv">$PGDATA</span> reload
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg_ctl <span class="nt">-D</span> <span class="nv">$PGDATA</span> reload
 server signaled
 </code></pre></div></div>
 
 <p>And test it:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; <span class="nb">unset </span>PGPASSWORD <span class="p">;</span> psql <span class="nt">-U</span> doug <span class="nt">-d</span> doug <span class="nt">-c</span> <span class="s2">"select now();"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">unset </span>PGPASSWORD <span class="p">;</span> psql <span class="nt">-U</span> doug <span class="nt">-d</span> doug <span class="nt">-c</span> <span class="s2">"select now();"</span>
 ┌───────────────────────────────┐
 │              now              │
 ├───────────────────────────────┤
@@ -245,7 +245,7 @@ Time: 1.959 ms
 
 <p>Let’s configure pgBouncer now. As per the output above, I need to edit <code class="language-plaintext highlighter-rouge">/usr/local/etc/pgbouncer.ini</code> but yours is probably in plain old <code class="language-plaintext highlighter-rouge">/etc</code>:</p>
 
-<div class="language-config highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">databases</span>]
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">databases</span>]
 
 ; <span class="n">any</span> <span class="n">db</span> <span class="n">over</span> <span class="n">Unix</span> <span class="n">socket</span>
 * =
@@ -282,14 +282,14 @@ Time: 1.959 ms
 <p>As you can see, we’re gonna pass connections to any db back to the postmaster via a local socket. I put the logs in my <code class="language-plaintext highlighter-rouge">$HOME</code> for ease of use. I put the <code class="language-plaintext highlighter-rouge">auth_file</code> in my <code class="language-plaintext highlighter-rouge">$HOME</code> as well. Then I set myself up as both an admin and stats
 user. I changed the mode into <strong>transaction</strong> which is <em>usually</em> the mode you want. Now, I add myself to the auth_file:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; <span class="nb">echo</span> <span class="s1">'"doug" "md5540094bd8172cd963fdfa773fe44b488"'</span> <span class="o">&gt;</span> userlist.txt
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'"doug" "md5540094bd8172cd963fdfa773fe44b488"'</span> <span class="o">&gt;</span> userlist.txt
 </code></pre></div></div>
 
 <p>(NOTE: I did a select on pg_shadow as a SUPERUSER to get these values.)</p>
 
 <p>And start pgBouncer:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; pgbouncer /usr/local/etc/pgbouncer.ini
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pgbouncer /usr/local/etc/pgbouncer.ini
 2018-08-07 13:43:46.453 92057 LOG File descriptor limit: 7168 <span class="o">(</span>H:-1<span class="o">)</span>, max_client_conn: 90, max fds possible: 100
 2018-08-07 13:43:46.455 92057 LOG listening on 127.0.0.1:6432
 2018-08-07 13:43:46.455 92057 LOG listening on unix:/tmp/.s.PGSQL.6432
@@ -298,22 +298,22 @@ user. I changed the mode into <strong>transaction</strong> which is <em>usually<
 
 <p>Now, we see if we can connect to pgBouncer’s internal db:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> pgbouncer <span class="nt">-X</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> pgbouncer <span class="nt">-X</span>
 psql <span class="o">(</span>10.4, server 1.8.1/bouncer<span class="o">)</span>
 Type <span class="s2">"help"</span> <span class="k">for </span>help.
-
-<span class="nv">pgbouncer</span><span class="o">=</span><span class="c"># show pools;</span>
- database  |   user    | cl_active | cl_waiting | sv_active | sv_idle | sv_used | sv_tested | sv_login | maxwait | maxwait_us | pool_mode
-<span class="nt">-----------</span>+-----------+-----------+------------+-----------+---------+---------+-----------+----------+---------+------------+-----------
- pgbouncer | pgbouncer |         1 |          0 |         0 |       0 |       0 |         0 |        0 |       0 |          0 | statement
-<span class="o">(</span>1 row<span class="o">)</span>
+</code></pre></div></div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pgbouncer</span><span class="o">=#</span> <span class="k">show</span> <span class="n">pools</span><span class="p">;</span>
+ <span class="k">database</span>  <span class="o">|</span>   <span class="k">user</span>    <span class="o">|</span> <span class="n">cl_active</span> <span class="o">|</span> <span class="n">cl_waiting</span> <span class="o">|</span> <span class="n">sv_active</span> <span class="o">|</span> <span class="n">sv_idle</span> <span class="o">|</span> <span class="n">sv_used</span> <span class="o">|</span> <span class="n">sv_tested</span> <span class="o">|</span> <span class="n">sv_login</span> <span class="o">|</span> <span class="n">maxwait</span> <span class="o">|</span> <span class="n">maxwait_us</span> <span class="o">|</span> <span class="n">pool_mode</span>
+<span class="c1">-----------+-----------+-----------+------------+-----------+---------+---------+-----------+----------+---------+------------+-----------</span>
+ <span class="n">pgbouncer</span> <span class="o">|</span> <span class="n">pgbouncer</span> <span class="o">|</span>         <span class="mi">1</span> <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>         <span class="mi">0</span> <span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span>         <span class="mi">0</span> <span class="o">|</span>        <span class="mi">0</span> <span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span> <span class="k">statement</span>
+<span class="p">(</span><span class="mi">1</span> <span class="k">row</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>Success!</p>
 
 <p>Now, can we connect to one of our PostgreSQL dbs through pgBouncer:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> doug
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> doug
 psql <span class="o">(</span>10.4<span class="o">)</span>
 Type <span class="s2">"help"</span> <span class="k">for </span>help.
 
@@ -324,23 +324,25 @@ Type <span class="s2">"help"</span> <span class="k">for </span>help.
 
 <p>We will now alter <code class="language-plaintext highlighter-rouge">pgbouncer.ini</code> and set <code class="language-plaintext highlighter-rouge">auth_type = md5</code> and edit <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> to use md5 as well to make sure we’re not passing around plaintext passwords. Our retest looks like:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; <span class="nb">grep</span> ^local <span class="nv">$PGDATA</span>/pg_hba.conf
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep</span> ^local <span class="nv">$PGDATA</span>/pg_hba.conf
 <span class="nb">local   </span>all             all md5
 
-doug@ReturnOfTheMac ~&gt; pg_ctl <span class="nt">-D</span> <span class="nv">$PGDATA</span> reload
+<span class="nv">$ </span>pg_ctl <span class="nt">-D</span> <span class="nv">$PGDATA</span> reload
 server signaled
 doug@ReturnOfTheMac ~&gt; psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> doug
 Password:
-psql <span class="o">(</span>10.4<span class="o">)</span>
-Type <span class="s2">"help"</span> <span class="k">for </span>help.
+</code></pre></div></div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">psql</span> <span class="p">(</span><span class="mi">10</span><span class="p">.</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">Type</span> <span class="nv">"help"</span> <span class="k">for</span> <span class="n">help</span><span class="p">.</span>
 
-<span class="o">(</span>doug@127.0.0.1:6432/doug[97966]<span class="o">)</span> <span class="c"># \q</span>
-doug@ReturnOfTheMac ~&gt; psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> pgbouncer <span class="nt">-X</span>
+<span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="mi">6432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">97966</span><span class="p">])</span> <span class="err">\</span><span class="n">q</span>
+</code></pre></div></div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> pgbouncer <span class="nt">-X</span>
 Password:
-psql <span class="o">(</span>10.4, server 1.8.1/bouncer<span class="o">)</span>
-Type <span class="s2">"help"</span> <span class="k">for </span>help.
-
-<span class="nv">pgbouncer</span><span class="o">=</span><span class="c"># \q</span>
+</code></pre></div></div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">psql</span> <span class="p">(</span><span class="mi">10</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span> <span class="n">server</span> <span class="mi">1</span><span class="p">.</span><span class="mi">8</span><span class="p">.</span><span class="mi">1</span><span class="o">/</span><span class="n">bouncer</span><span class="p">)</span>
+<span class="k">Type</span> <span class="nv">"help"</span> <span class="k">for</span> <span class="n">help</span><span class="p">.</span>
+<span class="n">pgbouncer</span><span class="o">=</span> <span class="err">\</span><span class="n">q</span>
 </code></pre></div></div>
 
 <p>Which, as you can see, we were now password prompted both times!</p>
@@ -382,7 +384,7 @@ we will ensure only our <code class="language-plaintext highlighter-rouge">pgbou
 
 <p>And, let’s tell PgBouncer to use this function:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; <span class="nb">grep</span> ^auth /usr/local/etc/pgbouncer.ini
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep</span> ^auth /usr/local/etc/pgbouncer.ini
 auth_type <span class="o">=</span> md5
 auth_file <span class="o">=</span> /Users/doug/userlist.txt
 auth_user <span class="o">=</span> pgbouncer
@@ -391,16 +393,16 @@ auth_query <span class="o">=</span> SELECT <span class="k">*</span> FROM public.
 
 <p>And let’s edit our <code class="language-plaintext highlighter-rouge">auth_file</code> to only contain the <code class="language-plaintext highlighter-rouge">pgbouncer</code> user’s info:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; <span class="nb">cat </span>userlist.txt
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; <span class="nb">cat </span>userlist.txt
 <span class="s2">"pgbouncer"</span> <span class="s2">"md509d12ff67352814e4c467c7f55a3a1d7"</span>
-doug@ReturnOfTheMac ~&gt;
 </code></pre></div></div>
 
 <p>Restart pgBouncer, and let’s recheck:</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">doug</span><span class="o">@</span><span class="n">ReturnOfTheMac</span> <span class="o">~&gt;</span> <span class="n">psql</span> <span class="o">-</span><span class="n">h</span> <span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span> <span class="o">-</span><span class="n">p</span> <span class="mi">6432</span> <span class="o">-</span><span class="n">d</span> <span class="n">doug</span>                      <span class="mi">2</span>
-<span class="n">Password</span><span class="p">:</span>
-<span class="n">psql</span> <span class="p">(</span><span class="mi">10</span><span class="p">.</span><span class="mi">4</span><span class="p">)</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> doug                      2
+Password:
+</code></pre></div></div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">psql</span> <span class="p">(</span><span class="mi">10</span><span class="p">.</span><span class="mi">4</span><span class="p">)</span>
 <span class="k">Type</span> <span class="nv">"help"</span> <span class="k">for</span> <span class="n">help</span><span class="p">.</span>
 
 <span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="mi">6432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">7076</span><span class="p">])</span> <span class="o">#</span> <span class="k">select</span> <span class="n">now</span><span class="p">();</span>
@@ -416,29 +418,30 @@ doug@ReturnOfTheMac ~&gt;
 
 <p>It works! But what about the pgBouncer internal db?</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> pgbouncer
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> pgbouncer
 psql: ERROR:  No such user: doug
 </code></pre></div></div>
 
 <p>Well, that makes sense. The <code class="language-plaintext highlighter-rouge">auth_file</code> only has a <code class="language-plaintext highlighter-rouge">pgbouncer</code> user. So, let’s edit the <code class="language-plaintext highlighter-rouge">pgbouncer.ini</code>:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; <span class="nb">grep</span> <span class="s1">'_users'</span> /usr/local/etc/pgbouncer.ini
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep</span> <span class="s1">'_users'</span> /usr/local/etc/pgbouncer.ini
 admin_users <span class="o">=</span> pgbouncer
 stats_users <span class="o">=</span> pgbouncer
 </code></pre></div></div>
 
 <p>Retart pgBouncer once more and check:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> pgbouncer <span class="nt">-U</span> pgbouncer <span class="nt">-X</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; psql <span class="nt">-h</span> 127.0.0.1 <span class="nt">-p</span> 6432 <span class="nt">-d</span> pgbouncer <span class="nt">-U</span> pgbouncer <span class="nt">-X</span>
 Password <span class="k">for </span>user pgbouncer:
-psql <span class="o">(</span>10.4, server 1.8.1/bouncer<span class="o">)</span>
-Type <span class="s2">"help"</span> <span class="k">for </span>help.
+</code></pre></div></div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">psql</span> <span class="p">(</span><span class="mi">10</span><span class="p">.</span><span class="mi">4</span><span class="p">,</span> <span class="n">server</span> <span class="mi">1</span><span class="p">.</span><span class="mi">8</span><span class="p">.</span><span class="mi">1</span><span class="o">/</span><span class="n">bouncer</span><span class="p">)</span>
+<span class="k">Type</span> <span class="nv">"help"</span> <span class="k">for</span> <span class="n">help</span><span class="p">.</span>
 
-<span class="nv">pgbouncer</span><span class="o">=</span><span class="c"># show clients;</span>
- <span class="nb">type</span> |   user    | database  | state  |   addr    | port  | local_addr | local_port |    connect_time     |    request_time     | <span class="nb">wait</span> | wait_us |      ptr       | <span class="nb">link</span> | remote_pid | tls
-<span class="nt">------</span>+-----------+-----------+--------+-----------+-------+------------+------------+---------------------+---------------------+------+---------+----------------+------+------------+-----
- C    | pgbouncer | pgbouncer | active | 127.0.0.1 | 54191 | 127.0.0.1  |       6432 | 2018-08-07 14:48:03 | 2018-08-07 14:48:06 |    0 |       0 | 0x7fa082005010 |      |          0 |
-<span class="o">(</span>1 row<span class="o">)</span>
+<span class="n">pgbouncer</span><span class="o">=#</span> <span class="k">show</span> <span class="n">clients</span><span class="p">;</span>
+ <span class="k">type</span> <span class="o">|</span>   <span class="k">user</span>    <span class="o">|</span> <span class="k">database</span>  <span class="o">|</span> <span class="k">state</span>  <span class="o">|</span>   <span class="n">addr</span>    <span class="o">|</span> <span class="n">port</span>  <span class="o">|</span> <span class="n">local_addr</span> <span class="o">|</span> <span class="n">local_port</span> <span class="o">|</span>    <span class="n">connect_time</span>     <span class="o">|</span>    <span class="n">request_time</span>     <span class="o">|</span> <span class="n">wait</span> <span class="o">|</span> <span class="n">wait_us</span> <span class="o">|</span>      <span class="n">ptr</span>       <span class="o">|</span> <span class="n">link</span> <span class="o">|</span> <span class="n">remote_pid</span> <span class="o">|</span> <span class="n">tls</span>
+<span class="c1">------+-----------+-----------+--------+-----------+-------+------------+------------+---------------------+---------------------+------+---------+----------------+------+------------+-----</span>
+ <span class="k">C</span>    <span class="o">|</span> <span class="n">pgbouncer</span> <span class="o">|</span> <span class="n">pgbouncer</span> <span class="o">|</span> <span class="n">active</span> <span class="o">|</span> <span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span> <span class="o">|</span> <span class="mi">54191</span> <span class="o">|</span> <span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span>  <span class="o">|</span>       <span class="mi">6432</span> <span class="o">|</span> <span class="mi">2018</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">07</span> <span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">03</span> <span class="o">|</span> <span class="mi">2018</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">07</span> <span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">06</span> <span class="o">|</span>    <span class="mi">0</span> <span class="o">|</span>       <span class="mi">0</span> <span class="o">|</span> <span class="mi">0</span><span class="n">x7fa082005010</span> <span class="o">|</span>      <span class="o">|</span>          <span class="mi">0</span> <span class="o">|</span>
+<span class="p">(</span><span class="mi">1</span> <span class="k">row</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>And we’re golden!</p>
@@ -447,7 +450,7 @@ Type <span class="s2">"help"</span> <span class="k">for </span>help.
 
 <p>To complete this setup, we’re gonna move PostgreSQL to port <code class="language-plaintext highlighter-rouge">5433</code> and pgBouncer to port <code class="language-plaintext highlighter-rouge">5432</code>:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>doug@ReturnOfTheMac ~&gt; <span class="nb">grep </span>port /usr/local/etc/pgbouncer.ini
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep </span>port /usr/local/etc/pgbouncer.ini
 listen_port <span class="o">=</span> 5432
 doug@ReturnOfTheMac ~&gt; <span class="nb">grep </span>port <span class="nv">$PGDATA</span>/postgresql.conf
 port <span class="o">=</span> 5433				<span class="c"># (change requires restart)</span>

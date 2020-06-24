@@ -184,11 +184,20 @@ Reading time ~1 minute
     <div class="entry-content">
       <p><img src="http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg" class="rleader" />Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use <a href="https://github.com/keithf4/pg_partman">pg_partman</a> and be done with it. However, if you’re trying to learn, can’t use <code class="language-plaintext highlighter-rouge">pg_partman</code>, or are a masochist you’ll probably be following the <a href="http://www.postgresql.org/docs/current/static/ddl-partitioning.html">docs</a> and thinking ‘seriously? i have to create indexes on each child? why don’t they copy the indexes of the parent? why isn’t this easier?’. Here’s a little tip to make things slightly easier:</p>
 
-<p>Instead of creating your child tables like the docs say:
-<script src="https://gist.github.com/0b1f8fa43534f53046eed4e63dc54e14.js"> </script></p>
+<p>Instead of creating your child tables like the docs say:</p>
 
-<p>Create your child tables thusly:
-<script src="https://gist.github.com/603c5f6961134422651e2e13b1c6398e.js"> </script></p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">child1</span> <span class="p">(</span>
+  <span class="k">CHECK</span> <span class="p">(</span><span class="n">blah</span> <span class="n">blah</span><span class="p">)</span>
+<span class="p">)</span> <span class="k">INHERITS</span> <span class="p">(</span><span class="n">parent</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Create your child tables thusly:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">child1</span> <span class="p">(</span>
+  <span class="k">LIKE</span> <span class="n">parent</span> <span class="k">INCLUDING</span> <span class="k">ALL</span><span class="p">,</span>
+  <span class="k">CHECK</span> <span class="p">(</span><span class="n">blah</span> <span class="n">blah</span><span class="p">)</span>
+<span class="p">)</span> <span class="k">INHERITS</span> <span class="p">(</span><span class="n">parent</span><span class="p">);</span>
+</code></pre></div></div>
 
 <p>and PostgeSQL <em>will</em> copy all your indexes, primary keys, etc from the parent to the child. Which is what you wanted, right?</p>
 

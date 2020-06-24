@@ -186,8 +186,8 @@ Reading time ~5 minutes
 
 <p>For starters, you as the DBA should have your PostgreSQL logging configured to log these slow performing queries. After all, you and the devs and the users can agree that all queries should complete in some measure of time (1 sec, 1 minute, etc). So, once you know what this acceptable elapsed time is, you can easily log any query that runs longer by just setting this in your <code class="language-plaintext highlighter-rouge">postgresql.conf</code>:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_min_duration_statement = 1000   # log anything running longer than 1s
-</code></pre></div></div>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">log_min_duration_statement</span> = <span class="m">1000</span>   <span class="c"># log anything running longer than 1s
+</span></code></pre></div></div>
 
 <p>And now, you have all queries with long run times logged automatically. And these show up nicely in your pgBadger reports too!</p>
 
@@ -197,23 +197,23 @@ Reading time ~5 minutes
 
 <p>First, in your <code class="language-plaintext highlighter-rouge">postgresql.conf</code> we want to enable the module:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>shared_preload_libraries = 'auto_explain'  # change requires restart
-</code></pre></div></div>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">shared_preload_libraries</span> = <span class="s1">'auto_explain'</span>  <span class="c"># change requires restart
+</span></code></pre></div></div>
 
 <p>As stated, you will have to restart the postmaster to get the module to load. However, let’s configure it in <code class="language-plaintext highlighter-rouge">postgresql.conf</code> first:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Add settings for extensions here
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Add settings for extensions here
 #
 # auto_explain
 # http://www.postgresql.org/docs/current/static/auto-explain.html
-auto_explain.log_analyze = true
-auto_explain.log_timing = true
-auto_explain.log_verbose = true
-auto_explain.log_min_duration = '1000ms'
-auto_explain.log_nested_statements = true
-auto_explain.log_buffers = true
-# auto_explain
-</code></pre></div></div>
+</span><span class="n">auto_explain</span>.<span class="n">log_analyze</span> = <span class="n">true</span>
+<span class="n">auto_explain</span>.<span class="n">log_timing</span> = <span class="n">true</span>
+<span class="n">auto_explain</span>.<span class="n">log_verbose</span> = <span class="n">true</span>
+<span class="n">auto_explain</span>.<span class="n">log_min_duration</span> = <span class="s1">'1000ms'</span>
+<span class="n">auto_explain</span>.<span class="n">log_nested_statements</span> = <span class="n">true</span>
+<span class="n">auto_explain</span>.<span class="n">log_buffers</span> = <span class="n">true</span>
+<span class="c"># auto_explain
+</span></code></pre></div></div>
 
 <p>What we’ve done here is configure <code class="language-plaintext highlighter-rouge">auto_explain</code> to</p>
 
@@ -228,36 +228,35 @@ auto_explain.log_buffers = true
 
 <p>As with most <code class="language-plaintext highlighter-rouge">GUC</code> in PostgreSQL, these can all be changed using <code class="language-plaintext highlighter-rouge">SET</code> in a given session, but we’re setting the defaults here. Now that we have them setup, let’s see what it looks like in practice.</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span> <span class="nb">text</span><span class="p">);</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span> <span class="nb">text</span><span class="p">);</span>
 <span class="k">CREATE</span> <span class="k">TABLE</span>
 <span class="nb">Time</span><span class="p">:</span> <span class="mi">6</span><span class="p">.</span><span class="mi">022</span> <span class="n">ms</span>
 <span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span> <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">x</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">SELECT</span> <span class="n">generate_series</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10000</span><span class="p">);</span>
 <span class="k">INSERT</span> <span class="mi">0</span> <span class="mi">10000</span>
 <span class="nb">Time</span><span class="p">:</span> <span class="mi">23</span><span class="p">.</span><span class="mi">565</span> <span class="n">ms</span>
-<span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span>
 </code></pre></div></div>
 
 <p>We connected to PostgreSQL, created a test table, and then used <code class="language-plaintext highlighter-rouge">generate_series</code> to insert 10k rows. In our logs, the following were added:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2016-11-28 13:20:30 EST [28838]: [18-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 33.987 ms  statement: CREATE TABLE x(t text);
-2016-11-28 13:20:59 EST [28838]: [19-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 16.461 ms  plan:
-  Query Text: INSERT INTO x(t) SELECT generate_series(1,10000);
-  Insert on public.x  (cost=0.00..50.02 rows=1000 width=32) (actual time=16.459..16.459 rows=0 loops=1)
-    Buffers: shared hit=10085 read=47 dirtied=45
-    I/O Timings: read=0.012
-    -&gt;  Subquery Scan on "*SELECT*"  (cost=0.00..50.02 rows=1000 width=32) (actual time=0.010..4.755 rows=10000 loops=1)
-          Output: "*SELECT*".generate_series
-          -&gt;  Result  (cost=0.00..15.02 rows=1000 width=4) (actual time=0.007..1.364 rows=10000 loops=1)
-                Output: generate_series(1, 10000)
-2016-11-28 13:20:59 EST [28838]: [20-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 23.374 ms  statement: INSERT INTO x(t) SELECT generate_series(1,10000);
-2016-11-28 13:21:00 EST [30079]: [1-1] user=,db=,app=,client= LOG:  automatic analyze of table "doug.public.x" system usage: CPU 0.00s/0.11u sec elapsed 0.14 sec
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="m">2016</span>-<span class="m">11</span>-<span class="m">28</span> <span class="m">13</span>:<span class="m">20</span>:<span class="m">30</span> <span class="n">EST</span> [<span class="m">28838</span>]: [<span class="m">18</span>-<span class="m">1</span>] <span class="n">user</span>=<span class="n">doug</span>,<span class="n">db</span>=<span class="n">doug</span>,<span class="n">app</span>=<span class="n">psql</span>,<span class="n">client</span>=[<span class="n">local</span>] <span class="n">LOG</span>:  <span class="n">duration</span>: <span class="m">33</span>.<span class="m">987</span> <span class="n">ms</span>  <span class="n">statement</span>: <span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">x</span>(<span class="n">t</span> <span class="n">text</span>);
+<span class="m">2016</span>-<span class="m">11</span>-<span class="m">28</span> <span class="m">13</span>:<span class="m">20</span>:<span class="m">59</span> <span class="n">EST</span> [<span class="m">28838</span>]: [<span class="m">19</span>-<span class="m">1</span>] <span class="n">user</span>=<span class="n">doug</span>,<span class="n">db</span>=<span class="n">doug</span>,<span class="n">app</span>=<span class="n">psql</span>,<span class="n">client</span>=[<span class="n">local</span>] <span class="n">LOG</span>:  <span class="n">duration</span>: <span class="m">16</span>.<span class="m">461</span> <span class="n">ms</span>  <span class="n">plan</span>:
+  <span class="n">Query</span> <span class="n">Text</span>: <span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">x</span>(<span class="n">t</span>) <span class="n">SELECT</span> <span class="n">generate_series</span>(<span class="m">1</span>,<span class="m">10000</span>);
+  <span class="n">Insert</span> <span class="n">on</span> <span class="n">public</span>.<span class="n">x</span>  (<span class="n">cost</span>=<span class="m">0</span>.<span class="m">00</span>..<span class="m">50</span>.<span class="m">02</span> <span class="n">rows</span>=<span class="m">1000</span> <span class="n">width</span>=<span class="m">32</span>) (<span class="n">actual</span> <span class="n">time</span>=<span class="m">16</span>.<span class="m">459</span>..<span class="m">16</span>.<span class="m">459</span> <span class="n">rows</span>=<span class="m">0</span> <span class="n">loops</span>=<span class="m">1</span>)
+    <span class="n">Buffers</span>: <span class="n">shared</span> <span class="n">hit</span>=<span class="m">10085</span> <span class="n">read</span>=<span class="m">47</span> <span class="n">dirtied</span>=<span class="m">45</span>
+    <span class="n">I</span>/<span class="n">O</span> <span class="n">Timings</span>: <span class="n">read</span>=<span class="m">0</span>.<span class="m">012</span>
+    -&gt;  <span class="n">Subquery</span> <span class="n">Scan</span> <span class="n">on</span> <span class="s2">"*SELECT*"</span>  (<span class="n">cost</span>=<span class="m">0</span>.<span class="m">00</span>..<span class="m">50</span>.<span class="m">02</span> <span class="n">rows</span>=<span class="m">1000</span> <span class="n">width</span>=<span class="m">32</span>) (<span class="n">actual</span> <span class="n">time</span>=<span class="m">0</span>.<span class="m">010</span>..<span class="m">4</span>.<span class="m">755</span> <span class="n">rows</span>=<span class="m">10000</span> <span class="n">loops</span>=<span class="m">1</span>)
+          <span class="n">Output</span>: <span class="s2">"*SELECT*"</span>.<span class="n">generate_series</span>
+          -&gt;  <span class="n">Result</span>  (<span class="n">cost</span>=<span class="m">0</span>.<span class="m">00</span>..<span class="m">15</span>.<span class="m">02</span> <span class="n">rows</span>=<span class="m">1000</span> <span class="n">width</span>=<span class="m">4</span>) (<span class="n">actual</span> <span class="n">time</span>=<span class="m">0</span>.<span class="m">007</span>..<span class="m">1</span>.<span class="m">364</span> <span class="n">rows</span>=<span class="m">10000</span> <span class="n">loops</span>=<span class="m">1</span>)
+                <span class="n">Output</span>: <span class="n">generate_series</span>(<span class="m">1</span>, <span class="m">10000</span>)
+<span class="m">2016</span>-<span class="m">11</span>-<span class="m">28</span> <span class="m">13</span>:<span class="m">20</span>:<span class="m">59</span> <span class="n">EST</span> [<span class="m">28838</span>]: [<span class="m">20</span>-<span class="m">1</span>] <span class="n">user</span>=<span class="n">doug</span>,<span class="n">db</span>=<span class="n">doug</span>,<span class="n">app</span>=<span class="n">psql</span>,<span class="n">client</span>=[<span class="n">local</span>] <span class="n">LOG</span>:  <span class="n">duration</span>: <span class="m">23</span>.<span class="m">374</span> <span class="n">ms</span>  <span class="n">statement</span>: <span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">x</span>(<span class="n">t</span>) <span class="n">SELECT</span> <span class="n">generate_series</span>(<span class="m">1</span>,<span class="m">10000</span>);
+<span class="m">2016</span>-<span class="m">11</span>-<span class="m">28</span> <span class="m">13</span>:<span class="m">21</span>:<span class="m">00</span> <span class="n">EST</span> [<span class="m">30079</span>]: [<span class="m">1</span>-<span class="m">1</span>] <span class="n">user</span>=,<span class="n">db</span>=,<span class="n">app</span>=,<span class="n">client</span>= <span class="n">LOG</span>:  <span class="n">automatic</span> <span class="n">analyze</span> <span class="n">of</span> <span class="n">table</span> <span class="s2">"doug.public.x"</span> <span class="n">system</span> <span class="n">usage</span>: <span class="n">CPU</span> <span class="m">0</span>.<span class="m">00</span><span class="n">s</span>/<span class="m">0</span>.<span class="m">11</span><span class="n">u</span> <span class="n">sec</span> <span class="n">elapsed</span> <span class="m">0</span>.<span class="m">14</span> <span class="n">sec</span>
 </code></pre></div></div>
 
 <p>(Note that for illustrative purposes, I issued <code class="language-plaintext highlighter-rouge">SET auto_explain.log_min_duration = '0ms'</code>)</p>
 
 <p>So, you can see that the <code class="language-plaintext highlighter-rouge">CREATE TABLE</code> didn’t log anything through the <code class="language-plaintext highlighter-rouge">auto_explain</code> module, but the <code class="language-plaintext highlighter-rouge">INSERT INTO</code> did. This is a boring example, so let’s try a <code class="language-plaintext highlighter-rouge">SELECT</code> against our table:</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="n">doug</span><span class="o">@</span><span class="p">[</span><span class="k">local</span><span class="p">]:</span><span class="mi">5432</span><span class="o">/</span><span class="n">doug</span><span class="p">[</span><span class="mi">28838</span><span class="p">])</span> <span class="o">#</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">x</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">t</span> <span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">x</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">t</span> <span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
 <span class="err">┌───────┐</span>
 <span class="err">│</span>   <span class="n">t</span>   <span class="err">│</span>
 <span class="err">├───────┤</span>
@@ -279,22 +278,22 @@ auto_explain.log_buffers = true
 
 <p>and the logs look like:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2016-11-28 13:27:38 EST [322]: [7-1] user=,db=,app=,client= LOG:  checkpoint starting: time
-2016-11-28 13:27:46 EST [322]: [8-1] user=,db=,app=,client= LOG:  checkpoint complete: wrote 75 buffers (0.0%); 0 transaction log file(s) added, 0 removed, 0 recycled; write=7.569 s, sync=0.092 s, total=7.920 s; sync files=23, longest=0.092 s, average=0.004 s; distance=685 kB, estimate=685 kB
-2016-11-28 13:28:48 EST [28838]: [21-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.120 ms  plan:
-  Query Text: SELECT * FROM x ORDER BY t LIMIT 10;
-  Limit  (cost=561.10..561.12 rows=10 width=4) (actual time=11.073..11.073 rows=10 loops=1)
-    Output: t
-    Buffers: shared hit=45
-    -&gt;  Sort  (cost=561.10..586.10 rows=10000 width=4) (actual time=11.072..11.072 rows=10 loops=1)
-          Output: t
-          Sort Key: x.t
-          Sort Method: top-N heapsort  Memory: 25kB
-          Buffers: shared hit=45
-          -&gt;  Seq Scan on public.x  (cost=0.00..345.00 rows=10000 width=4) (actual time=0.018..1.224 rows=10000 loops=1)
-                Output: t
-                Buffers: shared hit=45
-2016-11-28 13:28:48 EST [28838]: [22-1] user=doug,db=doug,app=psql,client=[local] LOG:  duration: 11.813 ms  statement: SELECT * FROM x ORDER BY t LIMIT 10;
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="m">2016</span>-<span class="m">11</span>-<span class="m">28</span> <span class="m">13</span>:<span class="m">27</span>:<span class="m">38</span> <span class="n">EST</span> [<span class="m">322</span>]: [<span class="m">7</span>-<span class="m">1</span>] <span class="n">user</span>=,<span class="n">db</span>=,<span class="n">app</span>=,<span class="n">client</span>= <span class="n">LOG</span>:  <span class="n">checkpoint</span> <span class="n">starting</span>: <span class="n">time</span>
+<span class="m">2016</span>-<span class="m">11</span>-<span class="m">28</span> <span class="m">13</span>:<span class="m">27</span>:<span class="m">46</span> <span class="n">EST</span> [<span class="m">322</span>]: [<span class="m">8</span>-<span class="m">1</span>] <span class="n">user</span>=,<span class="n">db</span>=,<span class="n">app</span>=,<span class="n">client</span>= <span class="n">LOG</span>:  <span class="n">checkpoint</span> <span class="n">complete</span>: <span class="n">wrote</span> <span class="m">75</span> <span class="n">buffers</span> (<span class="m">0</span>.<span class="m">0</span>%); <span class="m">0</span> <span class="n">transaction</span> <span class="n">log</span> <span class="n">file</span>(<span class="n">s</span>) <span class="n">added</span>, <span class="m">0</span> <span class="n">removed</span>, <span class="m">0</span> <span class="n">recycled</span>; <span class="n">write</span>=<span class="m">7</span>.<span class="m">569</span> <span class="n">s</span>, <span class="n">sync</span>=<span class="m">0</span>.<span class="m">092</span> <span class="n">s</span>, <span class="n">total</span>=<span class="m">7</span>.<span class="m">920</span> <span class="n">s</span>; <span class="n">sync</span> <span class="n">files</span>=<span class="m">23</span>, <span class="n">longest</span>=<span class="m">0</span>.<span class="m">092</span> <span class="n">s</span>, <span class="n">average</span>=<span class="m">0</span>.<span class="m">004</span> <span class="n">s</span>; <span class="n">distance</span>=<span class="m">685</span> <span class="n">kB</span>, <span class="n">estimate</span>=<span class="m">685</span> <span class="n">kB</span>
+<span class="m">2016</span>-<span class="m">11</span>-<span class="m">28</span> <span class="m">13</span>:<span class="m">28</span>:<span class="m">48</span> <span class="n">EST</span> [<span class="m">28838</span>]: [<span class="m">21</span>-<span class="m">1</span>] <span class="n">user</span>=<span class="n">doug</span>,<span class="n">db</span>=<span class="n">doug</span>,<span class="n">app</span>=<span class="n">psql</span>,<span class="n">client</span>=[<span class="n">local</span>] <span class="n">LOG</span>:  <span class="n">duration</span>: <span class="m">11</span>.<span class="m">120</span> <span class="n">ms</span>  <span class="n">plan</span>:
+  <span class="n">Query</span> <span class="n">Text</span>: <span class="n">SELECT</span> * <span class="n">FROM</span> <span class="n">x</span> <span class="n">ORDER</span> <span class="n">BY</span> <span class="n">t</span> <span class="n">LIMIT</span> <span class="m">10</span>;
+  <span class="n">Limit</span>  (<span class="n">cost</span>=<span class="m">561</span>.<span class="m">10</span>..<span class="m">561</span>.<span class="m">12</span> <span class="n">rows</span>=<span class="m">10</span> <span class="n">width</span>=<span class="m">4</span>) (<span class="n">actual</span> <span class="n">time</span>=<span class="m">11</span>.<span class="m">073</span>..<span class="m">11</span>.<span class="m">073</span> <span class="n">rows</span>=<span class="m">10</span> <span class="n">loops</span>=<span class="m">1</span>)
+    <span class="n">Output</span>: <span class="n">t</span>
+    <span class="n">Buffers</span>: <span class="n">shared</span> <span class="n">hit</span>=<span class="m">45</span>
+    -&gt;  <span class="n">Sort</span>  (<span class="n">cost</span>=<span class="m">561</span>.<span class="m">10</span>..<span class="m">586</span>.<span class="m">10</span> <span class="n">rows</span>=<span class="m">10000</span> <span class="n">width</span>=<span class="m">4</span>) (<span class="n">actual</span> <span class="n">time</span>=<span class="m">11</span>.<span class="m">072</span>..<span class="m">11</span>.<span class="m">072</span> <span class="n">rows</span>=<span class="m">10</span> <span class="n">loops</span>=<span class="m">1</span>)
+          <span class="n">Output</span>: <span class="n">t</span>
+          <span class="n">Sort</span> <span class="n">Key</span>: <span class="n">x</span>.<span class="n">t</span>
+          <span class="n">Sort</span> <span class="n">Method</span>: <span class="n">top</span>-<span class="n">N</span> <span class="n">heapsort</span>  <span class="n">Memory</span>: <span class="m">25</span><span class="n">kB</span>
+          <span class="n">Buffers</span>: <span class="n">shared</span> <span class="n">hit</span>=<span class="m">45</span>
+          -&gt;  <span class="n">Seq</span> <span class="n">Scan</span> <span class="n">on</span> <span class="n">public</span>.<span class="n">x</span>  (<span class="n">cost</span>=<span class="m">0</span>.<span class="m">00</span>..<span class="m">345</span>.<span class="m">00</span> <span class="n">rows</span>=<span class="m">10000</span> <span class="n">width</span>=<span class="m">4</span>) (<span class="n">actual</span> <span class="n">time</span>=<span class="m">0</span>.<span class="m">018</span>..<span class="m">1</span>.<span class="m">224</span> <span class="n">rows</span>=<span class="m">10000</span> <span class="n">loops</span>=<span class="m">1</span>)
+                <span class="n">Output</span>: <span class="n">t</span>
+                <span class="n">Buffers</span>: <span class="n">shared</span> <span class="n">hit</span>=<span class="m">45</span>
+<span class="m">2016</span>-<span class="m">11</span>-<span class="m">28</span> <span class="m">13</span>:<span class="m">28</span>:<span class="m">48</span> <span class="n">EST</span> [<span class="m">28838</span>]: [<span class="m">22</span>-<span class="m">1</span>] <span class="n">user</span>=<span class="n">doug</span>,<span class="n">db</span>=<span class="n">doug</span>,<span class="n">app</span>=<span class="n">psql</span>,<span class="n">client</span>=[<span class="n">local</span>] <span class="n">LOG</span>:  <span class="n">duration</span>: <span class="m">11</span>.<span class="m">813</span> <span class="n">ms</span>  <span class="n">statement</span>: <span class="n">SELECT</span> * <span class="n">FROM</span> <span class="n">x</span> <span class="n">ORDER</span> <span class="n">BY</span> <span class="n">t</span> <span class="n">LIMIT</span> <span class="m">10</span>;
 </code></pre></div></div>
 
 <p>(You can safely ignore the checkpoint lines at the top there)</p>

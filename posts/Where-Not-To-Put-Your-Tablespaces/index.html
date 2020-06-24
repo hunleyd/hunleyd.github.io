@@ -202,17 +202,29 @@ Reading time ~3 minutes
 
 <p>So what happens when you create a tablespace inside $PGDATA? Let’s find out. First, we’ll create the directory for the tablespace:</p>
 
-<script src="https://gist.github.com/abe0d33a02ae2d5ee515f7f0261d000c.js"> </script>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> <span class="nv">$PGDATA</span>/tablespaces
+<span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$PGDATA</span>/tablespaces
+<span class="nv">$ </span><span class="nb">pwd</span>
+/Users/doug.hunley/pgdata/tablespaces
+</code></pre></div></div>
 
 <p>And we see that nothing bad has happened yet. So, let’s pop over into <code class="language-plaintext highlighter-rouge">psql</code> and actually create the tablespace:</p>
 
-<script src="https://gist.github.com/dba03610d0181abe363378ccaedafb98.js"> </script>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="k">CREATE</span> <span class="n">TABLESPACE</span> <span class="n">ts1</span> <span class="k">LOCATION</span> <span class="s1">'/Users/doug.hunley/pgdata/tablespaces'</span><span class="p">;</span>
+<span class="n">WARNING</span><span class="p">:</span>  <span class="mi">42</span><span class="n">P17</span><span class="p">:</span> <span class="n">tablespace</span> <span class="k">location</span> <span class="n">should</span> <span class="k">not</span> <span class="n">be</span> <span class="n">inside</span> <span class="n">the</span> <span class="k">data</span> <span class="n">directory</span>
+<span class="k">LOCATION</span><span class="p">:</span>  <span class="n">CreateTableSpace</span><span class="p">,</span> <span class="n">tablespace</span><span class="p">.</span><span class="k">c</span><span class="p">:</span><span class="mi">295</span>
+<span class="k">CREATE</span> <span class="n">TABLESPACE</span>
+<span class="nb">Time</span><span class="p">:</span> <span class="mi">7</span><span class="p">.</span><span class="mi">797</span> <span class="n">ms</span>
+</code></pre></div></div>
 
 <p>We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you’ve got a problem. So where does the problem come in?</p>
 
 <p>Let’s try to make a backup of our cluster:</p>
 
-<script src="https://gist.github.com/d55de865904c475ce0099eb03732251b.js"> </script>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg_basebackup <span class="nt">-D</span> pgdata2 <span class="nt">-Fp</span> <span class="nt">-R</span> <span class="nt">-Xs</span> <span class="nt">-c</span> fast <span class="nt">-l</span> <span class="s1">'clone for slave'</span> <span class="nt">-P</span> <span class="nt">-v</span>
+transaction log start point: 2/17000028 on timeline 1
+pg_basebackup: directory <span class="s2">"/Users/doug.hunley/pgdata/tablespaces"</span> exists but is not empty
+</code></pre></div></div>
 
 <p>There it is.</p>
 

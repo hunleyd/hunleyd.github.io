@@ -176,7 +176,7 @@
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
           
-Reading time ~1 minute
+Reading time ~2 minutes
         </p><!-- /.entry-reading-time -->
         
       </div><!-- /.header-title-wrap -->
@@ -186,7 +186,111 @@ Reading time ~1 minute
 
 <p>As always, it’s been added as a gist:</p>
 
-<script src="https://gist.github.com/0ee7d8745c2f9854b34ed48ae9196362.js"> </script>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/zsh</span>
+
+<span class="nv">wanted_ver</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">no_restart</span><span class="o">=</span>
+
+<span class="c"># is the version requested installed?</span>
+brew <span class="nb">ls</span> <span class="nt">--version</span> postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> &amp;&gt;/dev/null
+<span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> <span class="nt">-eq</span> 0 <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="c"># yes, carry on</span>
+  :
+<span class="k">else</span>
+  <span class="c"># nope, so install it</span>
+  <span class="nb">echo</span> <span class="s2">"Installing PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
+  brew <span class="nb">install </span>petere/postgresql/postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span>
+<span class="k">fi</span>
+
+<span class="c"># is postgresql is running?</span>
+<span class="k">for </span>i <span class="k">in</span> /usr/local/var/postgres/<span class="k">*</span>
+<span class="k">do
+  </span><span class="nv">check_ver</span><span class="o">=</span><span class="si">$(</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="si">)</span>
+  <span class="nv">is_running</span><span class="o">=</span><span class="si">$(</span>ps <span class="nt">-few</span>|egrep <span class="nt">--</span> <span class="s2">"[p]ostgres.*-D.*</span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">"</span><span class="si">)</span>
+
+  <span class="k">if</span> <span class="o">[[</span> <span class="nt">-z</span> <span class="k">${</span><span class="nv">is_running</span><span class="k">}</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+    <span class="c"># nope, carry on</span>
+    :
+  <span class="k">else</span>
+    <span class="c"># it is. is it the requested version?</span>
+    <span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+      <span class="c"># yup, carry on</span>
+      <span class="nv">no_restart</span><span class="o">=</span>t
+    <span class="k">else</span>
+      <span class="c"># nope, so kill it</span>
+      <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Stopping PostgreSQL </span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">... "</span>
+      /usr/local/opt/postgresql@<span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span>/bin/pg_ctl <span class="se">\</span>
+          <span class="nt">-D</span> /usr/local/var/postgres/<span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span> <span class="se">\</span>
+          stop <span class="nt">-w</span> <span class="nt">-mf</span> | <span class="nb">grep</span> <span class="s1">'stopped'</span>
+    <span class="k">fi
+  fi
+done</span>
+
+<span class="c"># what version is active?</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="nt">-e</span> /usr/local/bin/psql <span class="o">]]</span> <span class="p">;</span> <span class="k">then
+    </span><span class="nv">active_ver</span><span class="o">=</span><span class="si">$(</span>/usr/bin/stat <span class="nt">-f</span> %Y /usr/local/bin/psql | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\/</span> <span class="nt">-f3</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\-</span> <span class="nt">-f2</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\@</span> <span class="nt">-f2</span><span class="si">)</span>
+<span class="k">else
+    </span><span class="nv">active_ver</span><span class="o">=</span>0
+<span class="k">fi</span>
+
+<span class="c"># is the active version the requested version?</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="c"># yup, carry on</span>
+  :
+<span class="k">else</span>
+  <span class="c"># nope, so deactivate it</span>
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Deactivating PostgreSQL </span><span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span><span class="s2">... "</span>
+  brew <span class="nb">unlink</span> <span class="nt">--force</span> <span class="nt">--overwrite</span> postgresql@<span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\ </span> <span class="nt">-f3-</span>
+  <span class="c"># and activate the correct version</span>
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Activating PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
+  brew <span class="nb">link</span> <span class="nt">--force</span> <span class="nt">--overwrite</span> postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> | <span class="nb">grep</span> <span class="s1">'created'</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\ </span> <span class="nt">-f3-</span>
+<span class="k">fi</span>
+
+<span class="c"># point to the correct data dir and port</span>
+<span class="nv">PGDATA</span><span class="o">=</span>/usr/local/var/postgres/<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span>
+<span class="nv">PGPORT</span><span class="o">=</span><span class="s2">"54</span><span class="si">$(</span><span class="nb">echo</span> <span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> | <span class="nb">tr</span> <span class="nt">-d</span> .<span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># should we be starting a cluster?</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">no_restart</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"t"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="c"># nope, carry on</span>
+  :
+<span class="k">else</span>
+  <span class="c"># yup. has the cluster been initialized?</span>
+  <span class="k">if</span> <span class="o">[[</span> <span class="o">!</span> <span class="nt">-d</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+    <span class="c"># nope, so let's do that</span>
+    <span class="nb">echo</span> <span class="s2">"Initializing PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2"> cluster... "</span>
+    initdb <span class="nt">-k</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> <span class="o">||</span> initdb <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>
+    <span class="nb">echo</span> <span class="s2">"port = </span><span class="k">${</span><span class="nv">PGPORT</span><span class="k">}</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_destination = 'stderr'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"logging_collector = on"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_filename = 'postgresql-%a.log'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_truncate_on_rotation = on"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_rotation_age = 1d"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_rotation_size = 0"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_timezone = 'US/Michigan'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+  <span class="k">else</span>
+    <span class="c"># yup, carry on</span>
+    :
+  <span class="k">fi</span>
+  <span class="c"># start the cluster</span>
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Starting PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
+  pg_ctl <span class="nt">-D</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> start  <span class="o">&gt;</span> /tmp/pg.start 2&gt;&amp;1
+  <span class="nb">grep</span> <span class="s1">'server start'</span> /tmp/pg.start
+  <span class="k">if</span> <span class="o">[[</span> <span class="nt">-x</span> /usr/local/bin/pg_isready <span class="o">]]</span> <span class="p">;</span> <span class="k">then
+      </span><span class="nv">ret</span><span class="o">=</span>1
+      <span class="k">while</span> <span class="o">[[</span> <span class="k">${</span><span class="nv">ret</span><span class="k">}</span> <span class="nt">-eq</span> 1 <span class="o">]]</span>
+      <span class="k">do</span>
+        <span class="c"># wait for the cluster to be available before exiting</span>
+        pg_isready <span class="nt">-q</span>
+        <span class="nv">ret</span><span class="o">=</span><span class="nv">$?</span>
+      <span class="k">done
+    fi
+fi
+
+</span><span class="nb">echo</span> <span class="s2">"export PGDATA=</span><span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"export PGPORT=</span><span class="k">${</span><span class="nv">PGPORT</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div>
 
 <p>Enjoy.</p>
 

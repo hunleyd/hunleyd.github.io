@@ -5,7 +5,7 @@
   <description>Posts tagged as 'work'</description>
   <atom:link href="/feeds/feed.work.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#work/</link>
-  <updated>2020-06-23T16:34:57-04:00</updated>
+  <updated>2020-06-24T15:41:47-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -14,7 +14,7 @@
   
    <item>
     <title>I'm syndicated</title>
-    <description>&lt;p&gt;Someone at work thought it would be a good idea to give me access to the corporate blog so that I might &lt;a href=&quot;http://www.openscg.com/category/postgresql-blogs/doug-postgresql/&quot;&gt;post&lt;/a&gt; PostgreSQL-related things there and have them syndicted to &lt;a href=&quot;http://planet.postgresql.org/&quot;&gt;Planet PostgreSQL&lt;/a&gt;. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!&lt;/p&gt;
+    <description>&lt;p&gt;Someone at work thought it would be a good idea to give me access to the corporate blog so that I might &lt;a href=&quot;http://www.openscg.com/category/postgresql-blogs/doug-postgresql/&quot;&gt;post&lt;/a&gt; PostgreSQL-related things there and have them syndicated to &lt;a href=&quot;http://planet.postgresql.org/&quot;&gt;Planet PostgreSQL&lt;/a&gt;. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!&lt;/p&gt;
 </description>
     <link>/posts/Im-Syndicated/ </link>
     <pubDate>2016-10-08T11:19:57-04:00</pubDate>

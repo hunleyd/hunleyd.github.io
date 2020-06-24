@@ -182,33 +182,33 @@ Reading time ~1 minute
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving <code class="highlighter-rouge">-D_POSIX_C_SOURCE</code> up to the <code class="highlighter-rouge">Makefile</code> that caused the problem. The solution below is still the same though.</p>
+      <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving `-D_POSIX_C_SOURCE` up to the `Makefile` that caused the problem. The solution below is still the same though.</p>
 
 <p>The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils::Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o
-warning: unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?
-      [-Wunknown-warning-option]
-common/lock.c:76:21: warning: implicit declaration of function 'flock' is invalid in C99
-      [-Wimplicit-function-declaration]
-                if (flock(result, LOCK_EX | LOCK_NB) == -1)
-                    ^
-common/lock.c:76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]
-common/lock.c:76:35: fatal error: use of undeclared identifier 'LOCK_EX'
-                if (flock(result, LOCK_EX | LOCK_NB) == -1)
-                                  ^
-3 warnings and 1 error generated.
-make: *** [common/lock.o] Error 1
+<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils</span><span class="o">::</span><span class="nf">Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o</span>
+<span class="nl">warning</span><span class="o">:</span> <span class="nf">unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?</span>
+      <span class="err">[-Wunknown-warning-option]</span>
+<span class="nl">common/lock.c</span><span class="o">:</span><span class="nf">76:21: warning: implicit declaration of function 'flock' is invalid in C99</span>
+      <span class="err">[-Wimplicit-function-declaration]</span>
+                <span class="err">if</span> <span class="err">(flock(result,</span> <span class="err">LOCK_EX</span> <span class="err">|</span> <span class="nv">LOCK_NB)</span> <span class="o">==</span> <span class="nt">-1</span><span class="o">)</span>
+                    <span class="err">^</span>
+<span class="nl">common/lock.c</span><span class="o">:</span><span class="nf">76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]</span>
+<span class="nl">common/lock.c</span><span class="o">:</span><span class="nf">76:35: fatal error: use of undeclared identifier 'LOCK_EX'</span>
+                <span class="err">if</span> <span class="err">(flock(result,</span> <span class="err">LOCK_EX</span> <span class="err">|</span> <span class="nv">LOCK_NB)</span> <span class="o">==</span> <span class="nt">-1</span><span class="o">)</span>
+                                  <span class="err">^</span>
+<span class="err">3</span> <span class="err">warnings</span> <span class="err">and</span> <span class="err">1</span> <span class="err">error</span> <span class="err">generated.</span>
+<span class="nl">make</span><span class="o">:</span> <span class="nf">*** [common/lock.o] Error 1</span>
 </code></pre></div></div>
 
-<p>To fix this, you will need to edit <code class="highlighter-rouge">src/Makefile</code> and change line 12 from:</p>
+<p>To fix this, you will need to edit `src/Makefile` and change line 12 from:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CSTD = -std=c99 -D_POSIX_C_SOURCE=200112L
+<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CSTD</span> <span class="o">=</span> <span class="nt">-std</span><span class="o">=</span>c99 <span class="nt">-D_POSIX_C_SOURCE</span><span class="o">=</span>200112L
 </code></pre></div></div>
 
 <p>to:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CSTD = -std=c99 -D_DARWIN_C_SOURCE
+<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CSTD</span> <span class="o">=</span> <span class="nt">-std</span><span class="o">=</span>c99 <span class="nt">-D_DARWIN_C_SOURCE</span>
 </code></pre></div></div>
 
 <p>Then, you can follow the other steps on my <a href="https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/">previous post</a> and everything should compile and function properly.</p>
