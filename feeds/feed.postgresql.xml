@@ -5,7 +5,7 @@
   <description>Posts tagged as 'postgresql'</description>
   <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#postgresql/</link>
-  <updated>2020-06-24T16:46:41-04:00</updated>
+  <updated>2020-06-24T18:05:18-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -63,22 +63,22 @@ vm.zone_reclaim_mode = 0
 
 &lt;p&gt;This gives you a complete PostgreSQL tuned profile that looks like:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[main]
-include= throughput-performance
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;include&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;throughput&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;performance&lt;/span&gt;
 
-[sysctl]
-kernel.sched_autogroup_enabled = 0
-kernel.sched_migration_cost_ns = 50000000
-vm.dirty_background_bytes = 134217728
-vm.dirty_expire_centisecs = 499
-vm.dirty_ratio = 90
-vm.overcommit_memory = 2
-vm.overcommit_ratio = 90
-vm.swappiness = 1
-vm.zone_reclaim_mode = 0
+[&lt;span class=&quot;n&quot;&gt;sysctl&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;kernel&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;sched_autogroup_enabled&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;kernel&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;sched_migration_cost_ns&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;50000000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;dirty_background_bytes&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;134217728&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;dirty_expire_centisecs&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;499&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;dirty_ratio&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;overcommit_memory&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;overcommit_ratio&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;swappiness&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;zone_reclaim_mode&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
 
-[vm]
-transparent_hugepages=never
+[&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;transparent_hugepages&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;never&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;(well, in a slightly different order, but you get the drift).&lt;/p&gt;
@@ -94,7 +94,7 @@ transparent_hugepages=never
   
    <item>
     <title>pgBackRest 2.08 and macOS Mojave</title>
-    <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving `-D_POSIX_C_SOURCE` up to the `Makefile` that caused the problem. The solution below is still the same though.&lt;/p&gt;
+    <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;
 
 &lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
 
@@ -113,7 +113,7 @@ transparent_hugepages=never
 &lt;span class=&quot;nl&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;*** [common/lock.o] Error 1&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;To fix this, you will need to edit `src/Makefile` and change line 12 from:&lt;/p&gt;
+&lt;p&gt;To fix this, you will need to edit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/Makefile&lt;/code&gt; and change line 12 from:&lt;/p&gt;
 
 &lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CSTD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;c99 &lt;span class=&quot;nt&quot;&gt;-D_POSIX_C_SOURCE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;200112L
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -156,7 +156,7 @@ compiler: clang &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;&lt;span class=&
 OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/usr/local/etc/openssl&quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;As you can see, the default SSL from OSX is in `/usr/bin` while the newly installed OpenSSL is in `/usr/local/opt/openssl`. In my testing, this is enough to proceed with pgBackRest but I prefer to have the `openssl` binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
+&lt;p&gt;As you can see, the default SSL from OSX is in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/bin&lt;/code&gt; while the newly installed OpenSSL is in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/opt/openssl&lt;/code&gt;. In my testing, this is enough to proceed with pgBackRest but I prefer to have the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;openssl&lt;/code&gt; binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mv&lt;/span&gt; /usr/bin/openssl /usr/bin/openssl.old
 &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/local/opt/openssl/bin/openssl /usr/bin
@@ -168,15 +168,15 @@ lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&amp;amp;gt&lt;span 
 &lt;p&gt;OK, so now we have an SSL that pgBackRest knows how to speak to. We need to install some Perl modules that it needs. If you haven’t run CPAN before, just accept the defaults when it asks you things:&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;perl &lt;span class=&quot;nt&quot;&gt;-MCPAN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; shell
-cpan[1]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBI
+cpan[1]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBI
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[2]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBD::Pg
+cpan[2]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBD::Pg
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[3]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;IO::Socket::SSL
+cpan[3]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;IO::Socket::SSL
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[4]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;XML::LibXML
+cpan[4]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;XML::LibXML
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
+cpan[5]&amp;gt; q
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we’ve got our Perl modules installed, we have to tell our shell where to find them:&lt;/p&gt;
@@ -187,7 +187,7 @@ cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
 &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MM_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;INSTALL_BASE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (`.profile`, `.bash_profile`, etc) to make them permanent.&lt;/p&gt;
+&lt;p&gt;Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.profile&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.bash_profile&lt;/code&gt;, etc) to make them permanent.&lt;/p&gt;
 
 &lt;p&gt;Now, we can actually get down to the business of compiling and installing pgBackRest. Download the 2.07 tarball from the releases tab on GitHub, and let’s get busy:&lt;/p&gt;
 
@@ -196,7 +196,7 @@ cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
 &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pgbackrest-release-2.07
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Now, we need to make some edits to the included Makefile. So `vi src/Makefile` and jump to line 42. Edit this line to be:&lt;/p&gt;
+&lt;p&gt;Now, we need to make some edits to the included Makefile. So &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi src/Makefile&lt;/code&gt; and jump to line 42. Edit this line to be:&lt;/p&gt;
 
 &lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;LDEXTRA&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; /usr/local/opt/openssl/lib
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -206,7 +206,7 @@ cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
 &lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   &lt;span class=&quot;err&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;755&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;pgbackrest&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$(DESTDIR)/usr/local/bin&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;This makes it install into `/usr/local/bin` which is where Homebrew puts everything else and you shouldn’t need to use `sudo` to write to it.&lt;/p&gt;
+&lt;p&gt;This makes it install into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/bin&lt;/code&gt; which is where Homebrew puts everything else and you shouldn’t need to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt; to write to it.&lt;/p&gt;
 
 &lt;p&gt;Now, compile and install it:&lt;/p&gt;
 
@@ -253,7 +253,7 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
     <title>Monitoring pgBackRest with tail_n_mail</title>
     <description>&lt;p&gt;After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
 
-&lt;p&gt;For reference, our `.tail_n_mail.conf` looks like this:&lt;/p&gt;
+&lt;p&gt;For reference, our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.tail_n_mail.conf&lt;/code&gt; looks like this:&lt;/p&gt;
 
 &lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;## This file is automatically updated
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LOG_LINE_PREFIX&lt;/span&gt;: %&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;P&lt;/span&gt;%&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;
@@ -269,16 +269,16 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
 &lt;span class=&quot;n&quot;&gt;FILE1&lt;/span&gt;: /&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;pgbackrest&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;pgbackrest&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;You would need to change the `EMAIL` and `FILE1` and the rest should just work.&lt;/p&gt;
+&lt;p&gt;You would need to change the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EMAIL&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FILE1&lt;/code&gt; and the rest should just work.&lt;/p&gt;
 
-&lt;p&gt;To actually invoke the monitoring, simply add a `cron` entry that looks like:&lt;/p&gt;
+&lt;p&gt;To actually invoke the monitoring, simply add a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cron&lt;/code&gt; entry that looks like:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&quot;language-cron&quot;&gt;* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;(Obviously, you should adjust the periodicity. I &lt;strong&gt;highly&lt;/strong&gt; doubt you need to check every minute.)&lt;/p&gt;
 
-&lt;p&gt;Once you’ve saved the `crontab`, you should be all good. If you doubt the setup, you can add `--mailzero` to the invocation to get an email even if everything is OK.&lt;/p&gt;
+&lt;p&gt;Once you’ve saved the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;crontab&lt;/code&gt;, you should be all good. If you doubt the setup, you can add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--mailzero&lt;/code&gt; to the invocation to get an email even if everything is OK.&lt;/p&gt;
 
 &lt;p&gt;See? Easy.&lt;/p&gt;
 </description>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-06-24T16:46:41-04:00</updated><id>/feed.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">tuned, PG, and you</title><link href="/posts/tuned-PG-and-you/" rel="alternate" type="text/html" title="tuned, PG, and you" /><published>2020-06-23T14:22:44-04:00</published><updated>2020-06-23T14:22:44-04:00</updated><id>/posts/tuned-PG-and-you</id><content type="html" xml:base="/posts/tuned-PG-and-you/">&lt;p&gt;We’ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always ‘that depends on your hardware and workload’ and involves a lot of iteration between changing a setting and benchmarking, I thought I’d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned&lt;/code&gt; to make use of. Please, for the love of $diety, stop editing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sysctl.conf&lt;/code&gt; and friends!&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-06-24T18:05:18-04:00</updated><id>/feed.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">tuned, PG, and you</title><link href="/posts/tuned-PG-and-you/" rel="alternate" type="text/html" title="tuned, PG, and you" /><published>2020-06-23T14:22:44-04:00</published><updated>2020-06-23T14:22:44-04:00</updated><id>/posts/tuned-PG-and-you</id><content type="html" xml:base="/posts/tuned-PG-and-you/">&lt;p&gt;We’ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always ‘that depends on your hardware and workload’ and involves a lot of iteration between changing a setting and benchmarking, I thought I’d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned&lt;/code&gt; to make use of. Please, for the love of $diety, stop editing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sysctl.conf&lt;/code&gt; and friends!&lt;/p&gt;
 
 &lt;p&gt;If you’re running RedHat (or a RedHat-derived) OS, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned&lt;/code&gt; is probably already installed and may even be already running. If not, it’s a simple &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum install tuned&lt;/code&gt; to rectify. If you’re on Debian (or a Debian-derived) OS, simply &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;apt install tuned&lt;/code&gt;. Now that you have it installed, you can ask it to recommend a profile for you by issuing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned-adm recommend&lt;/code&gt; and you can see which profile, if any, is in use by issuing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned-adm active&lt;/code&gt;. You can also list all the available profiles with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned-adm list&lt;/code&gt;.&lt;/p&gt;
 
@@ -47,22 +47,22 @@ vm.zone_reclaim_mode = 0
 
 &lt;p&gt;This gives you a complete PostgreSQL tuned profile that looks like:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[main]
-include= throughput-performance
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;include&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;throughput&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;performance&lt;/span&gt;
 
-[sysctl]
-kernel.sched_autogroup_enabled = 0
-kernel.sched_migration_cost_ns = 50000000
-vm.dirty_background_bytes = 134217728
-vm.dirty_expire_centisecs = 499
-vm.dirty_ratio = 90
-vm.overcommit_memory = 2
-vm.overcommit_ratio = 90
-vm.swappiness = 1
-vm.zone_reclaim_mode = 0
+[&lt;span class=&quot;n&quot;&gt;sysctl&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;kernel&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;sched_autogroup_enabled&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;kernel&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;sched_migration_cost_ns&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;50000000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;dirty_background_bytes&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;134217728&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;dirty_expire_centisecs&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;499&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;dirty_ratio&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;overcommit_memory&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;overcommit_ratio&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;swappiness&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;zone_reclaim_mode&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
 
-[vm]
-transparent_hugepages=never
+[&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;transparent_hugepages&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;never&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;(well, in a slightly different order, but you get the drift).&lt;/p&gt;
@@ -95,7 +95,7 @@ transparent_hugepages=never
 
 &lt;p&gt;The kicker here? &lt;strong&gt;It’s only $16/mo.&lt;/strong&gt; Yeah, you read that right. She went from $100/mo w/ DTV to $45/mo with DTVN (at the end) to $16/mo. &lt;strong&gt;Unreal.&lt;/strong&gt; And on top of that, Philo recently added an extra MTV channel for the hell of it.&lt;/p&gt;
 
-&lt;p&gt;All around a WIN WIN.&lt;/p&gt;</content><author><name></name></author><category term="general" /><category term="ott" /><summary type="html">As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving life.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">pgBackRest 2.08 and macOS Mojave</title><link href="/posts/pgBackRest-2.08-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.08 and macOS Mojave" /><published>2019-01-04T03:30:44-05:00</published><updated>2019-01-04T03:30:44-05:00</updated><id>/posts/pgBackRest-2.08-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.08-and-macOS-Mojave/">&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving `-D_POSIX_C_SOURCE` up to the `Makefile` that caused the problem. The solution below is still the same though.&lt;/p&gt;
+&lt;p&gt;All around a WIN WIN.&lt;/p&gt;</content><author><name></name></author><category term="general" /><category term="ott" /><summary type="html">As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving life.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">pgBackRest 2.08 and macOS Mojave</title><link href="/posts/pgBackRest-2.08-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.08 and macOS Mojave" /><published>2019-01-04T03:30:44-05:00</published><updated>2019-01-04T03:30:44-05:00</updated><id>/posts/pgBackRest-2.08-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.08-and-macOS-Mojave/">&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;
 
 &lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
 
@@ -114,7 +114,7 @@ transparent_hugepages=never
 &lt;span class=&quot;nl&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;*** [common/lock.o] Error 1&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;To fix this, you will need to edit `src/Makefile` and change line 12 from:&lt;/p&gt;
+&lt;p&gt;To fix this, you will need to edit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/Makefile&lt;/code&gt; and change line 12 from:&lt;/p&gt;
 
 &lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CSTD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;c99 &lt;span class=&quot;nt&quot;&gt;-D_POSIX_C_SOURCE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;200112L
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -126,7 +126,7 @@ transparent_hugepages=never
 
 &lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
 
-&lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving `-D_POSIX_C_SOURCE` up to the `Makefile` that caused the problem. The solution below is still the same though.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">pgBackRest 2.07 and macOS Mojave</title><link href="/posts/pgBackRest-2.07-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.07 and macOS Mojave" /><published>2018-11-16T01:12:31-05:00</published><updated>2018-11-16T01:12:31-05:00</updated><id>/posts/pgBackRest-2.07-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.07-and-macOS-Mojave/">&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
+&lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving -D_POSIX_C_SOURCE up to the Makefile that caused the problem. The solution below is still the same though.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">pgBackRest 2.07 and macOS Mojave</title><link href="/posts/pgBackRest-2.07-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.07 and macOS Mojave" /><published>2018-11-16T01:12:31-05:00</published><updated>2018-11-16T01:12:31-05:00</updated><id>/posts/pgBackRest-2.07-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.07-and-macOS-Mojave/">&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
 
 &lt;p&gt;Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use &lt;a href=&quot;https://brew.sh&quot;&gt;Homebrew&lt;/a&gt; for this:&lt;/p&gt;
 
@@ -148,7 +148,7 @@ compiler: clang &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;&lt;span class=&
 OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/usr/local/etc/openssl&quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;As you can see, the default SSL from OSX is in `/usr/bin` while the newly installed OpenSSL is in `/usr/local/opt/openssl`. In my testing, this is enough to proceed with pgBackRest but I prefer to have the `openssl` binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
+&lt;p&gt;As you can see, the default SSL from OSX is in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/bin&lt;/code&gt; while the newly installed OpenSSL is in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/opt/openssl&lt;/code&gt;. In my testing, this is enough to proceed with pgBackRest but I prefer to have the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;openssl&lt;/code&gt; binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mv&lt;/span&gt; /usr/bin/openssl /usr/bin/openssl.old
 &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/local/opt/openssl/bin/openssl /usr/bin
@@ -160,15 +160,15 @@ lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&amp;amp;gt&lt;span 
 &lt;p&gt;OK, so now we have an SSL that pgBackRest knows how to speak to. We need to install some Perl modules that it needs. If you haven’t run CPAN before, just accept the defaults when it asks you things:&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;perl &lt;span class=&quot;nt&quot;&gt;-MCPAN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; shell
-cpan[1]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBI
+cpan[1]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBI
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[2]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBD::Pg
+cpan[2]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBD::Pg
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[3]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;IO::Socket::SSL
+cpan[3]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;IO::Socket::SSL
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[4]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;XML::LibXML
+cpan[4]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;XML::LibXML
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
+cpan[5]&amp;gt; q
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we’ve got our Perl modules installed, we have to tell our shell where to find them:&lt;/p&gt;
@@ -179,7 +179,7 @@ cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
 &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MM_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;INSTALL_BASE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (`.profile`, `.bash_profile`, etc) to make them permanent.&lt;/p&gt;
+&lt;p&gt;Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.profile&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.bash_profile&lt;/code&gt;, etc) to make them permanent.&lt;/p&gt;
 
 &lt;p&gt;Now, we can actually get down to the business of compiling and installing pgBackRest. Download the 2.07 tarball from the releases tab on GitHub, and let’s get busy:&lt;/p&gt;
 
@@ -188,7 +188,7 @@ cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
 &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pgbackrest-release-2.07
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Now, we need to make some edits to the included Makefile. So `vi src/Makefile` and jump to line 42. Edit this line to be:&lt;/p&gt;
+&lt;p&gt;Now, we need to make some edits to the included Makefile. So &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi src/Makefile&lt;/code&gt; and jump to line 42. Edit this line to be:&lt;/p&gt;
 
 &lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;LDEXTRA&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; /usr/local/opt/openssl/lib
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -198,7 +198,7 @@ cpan[5]&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; q
 &lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   &lt;span class=&quot;err&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;755&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;pgbackrest&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$(DESTDIR)/usr/local/bin&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;This makes it install into `/usr/local/bin` which is where Homebrew puts everything else and you shouldn’t need to use `sudo` to write to it.&lt;/p&gt;
+&lt;p&gt;This makes it install into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/bin&lt;/code&gt; which is where Homebrew puts everything else and you shouldn’t need to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt; to write to it.&lt;/p&gt;
 
 &lt;p&gt;Now, compile and install it:&lt;/p&gt;
 
@@ -236,7 +236,7 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
 
 &lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">pgBackRest 2.07 was announced today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a Linux system, so I figured I’d write this up for anyone else attempting the same.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Monitoring pgBackRest with tail_n_mail</title><link href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" rel="alternate" type="text/html" title="Monitoring pgBackRest with tail_n_mail" /><published>2018-09-24T06:58:22-04:00</published><updated>2018-09-24T06:58:22-04:00</updated><id>/posts/Monitoring-pgBackRest-with-tail_n_mail</id><content type="html" xml:base="/posts/Monitoring-pgBackRest-with-tail_n_mail/">&lt;p&gt;After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
 
-&lt;p&gt;For reference, our `.tail_n_mail.conf` looks like this:&lt;/p&gt;
+&lt;p&gt;For reference, our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.tail_n_mail.conf&lt;/code&gt; looks like this:&lt;/p&gt;
 
 &lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;## This file is automatically updated
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LOG_LINE_PREFIX&lt;/span&gt;: %&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;P&lt;/span&gt;%&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;
@@ -252,16 +252,16 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
 &lt;span class=&quot;n&quot;&gt;FILE1&lt;/span&gt;: /&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;pgbackrest&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;pgbackrest&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;You would need to change the `EMAIL` and `FILE1` and the rest should just work.&lt;/p&gt;
+&lt;p&gt;You would need to change the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EMAIL&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FILE1&lt;/code&gt; and the rest should just work.&lt;/p&gt;
 
-&lt;p&gt;To actually invoke the monitoring, simply add a `cron` entry that looks like:&lt;/p&gt;
+&lt;p&gt;To actually invoke the monitoring, simply add a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cron&lt;/code&gt; entry that looks like:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&quot;language-cron&quot;&gt;* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;(Obviously, you should adjust the periodicity. I &lt;strong&gt;highly&lt;/strong&gt; doubt you need to check every minute.)&lt;/p&gt;
 
-&lt;p&gt;Once you’ve saved the `crontab`, you should be all good. If you doubt the setup, you can add `--mailzero` to the invocation to get an email even if everything is OK.&lt;/p&gt;
+&lt;p&gt;Once you’ve saved the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;crontab&lt;/code&gt;, you should be all good. If you doubt the setup, you can add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--mailzero&lt;/code&gt; to the invocation to get an email even if everything is OK.&lt;/p&gt;
 
 &lt;p&gt;See? Easy.&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><summary type="html">After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use tail_n_mail, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">pgBouncer and auth pass-thru</title><link href="/posts/pgBouncer-and-auth-pass-thru/" rel="alternate" type="text/html" title="pgBouncer and auth pass-thru" /><published>2018-08-07T08:53:28-04:00</published><updated>2018-08-07T08:53:28-04:00</updated><id>/posts/pgBouncer-and-auth-pass-thru</id><content type="html" xml:base="/posts/pgBouncer-and-auth-pass-thru/">&lt;p&gt;I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auth_file&lt;/code&gt;. After the most recent such inquiry (hi Richard!) I decided I’d write this post to
 hopefully make it clearer how to use ‘pass-thru auth’ and avoid maintaining your users and their passwords in an external file. So let’s see what this takes, shall we?&lt;/p&gt;

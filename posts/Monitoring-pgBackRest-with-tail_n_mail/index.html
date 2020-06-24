@@ -184,7 +184,7 @@ Reading time ~1 minute
     <div class="entry-content">
       <p>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use <a href="https://bucardo.org/tail_n_mail/">tail_n_mail</a>, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.</p>
 
-<p>For reference, our `.tail_n_mail.conf` looks like this:</p>
+<p>For reference, our <code class="language-plaintext highlighter-rouge">.tail_n_mail.conf</code> looks like this:</p>
 
 <div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">## This file is automatically updated
 </span><span class="n">LOG_LINE_PREFIX</span>: %<span class="n">t</span> <span class="n">P</span>%<span class="n">p</span>
@@ -200,16 +200,16 @@ Reading time ~1 minute
 <span class="n">FILE1</span>: /<span class="n">var</span>/<span class="n">log</span>/<span class="n">pgbackrest</span>/<span class="n">pgbackrest</span>.<span class="n">log</span>
 </code></pre></div></div>
 
-<p>You would need to change the `EMAIL` and `FILE1` and the rest should just work.</p>
+<p>You would need to change the <code class="language-plaintext highlighter-rouge">EMAIL</code> and <code class="language-plaintext highlighter-rouge">FILE1</code> and the rest should just work.</p>
 
-<p>To actually invoke the monitoring, simply add a `cron` entry that looks like:</p>
+<p>To actually invoke the monitoring, simply add a <code class="language-plaintext highlighter-rouge">cron</code> entry that looks like:</p>
 
 <pre><code class="language-cron">* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
 </code></pre>
 
 <p>(Obviously, you should adjust the periodicity. I <strong>highly</strong> doubt you need to check every minute.)</p>
 
-<p>Once you’ve saved the `crontab`, you should be all good. If you doubt the setup, you can add `--mailzero` to the invocation to get an email even if everything is OK.</p>
+<p>Once you’ve saved the <code class="language-plaintext highlighter-rouge">crontab</code>, you should be all good. If you doubt the setup, you can add <code class="language-plaintext highlighter-rouge">--mailzero</code> to the invocation to get an email even if everything is OK.</p>
 
 <p>See? Easy.</p>
 

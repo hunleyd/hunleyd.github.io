@@ -182,7 +182,7 @@ Reading time ~1 minute
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving `-D_POSIX_C_SOURCE` up to the `Makefile` that caused the problem. The solution below is still the same though.</p>
+      <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving <code class="language-plaintext highlighter-rouge">-D_POSIX_C_SOURCE</code> up to the <code class="language-plaintext highlighter-rouge">Makefile</code> that caused the problem. The solution below is still the same though.</p>
 
 <p>The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:</p>
 
@@ -201,7 +201,7 @@ Reading time ~1 minute
 <span class="nl">make</span><span class="o">:</span> <span class="nf">*** [common/lock.o] Error 1</span>
 </code></pre></div></div>
 
-<p>To fix this, you will need to edit `src/Makefile` and change line 12 from:</p>
+<p>To fix this, you will need to edit <code class="language-plaintext highlighter-rouge">src/Makefile</code> and change line 12 from:</p>
 
 <div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CSTD</span> <span class="o">=</span> <span class="nt">-std</span><span class="o">=</span>c99 <span class="nt">-D_POSIX_C_SOURCE</span><span class="o">=</span>200112L
 </code></pre></div></div>

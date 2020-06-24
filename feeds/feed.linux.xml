@@ -5,7 +5,7 @@
   <description>Posts tagged as 'linux'</description>
   <atom:link href="/feeds/feed.linux.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#linux/</link>
-  <updated>2020-06-24T16:46:41-04:00</updated>
+  <updated>2020-06-24T18:05:18-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -63,22 +63,22 @@ vm.zone_reclaim_mode = 0
 
 &lt;p&gt;This gives you a complete PostgreSQL tuned profile that looks like:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[main]
-include= throughput-performance
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;include&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;throughput&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;performance&lt;/span&gt;
 
-[sysctl]
-kernel.sched_autogroup_enabled = 0
-kernel.sched_migration_cost_ns = 50000000
-vm.dirty_background_bytes = 134217728
-vm.dirty_expire_centisecs = 499
-vm.dirty_ratio = 90
-vm.overcommit_memory = 2
-vm.overcommit_ratio = 90
-vm.swappiness = 1
-vm.zone_reclaim_mode = 0
+[&lt;span class=&quot;n&quot;&gt;sysctl&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;kernel&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;sched_autogroup_enabled&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;kernel&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;sched_migration_cost_ns&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;50000000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;dirty_background_bytes&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;134217728&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;dirty_expire_centisecs&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;499&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;dirty_ratio&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;overcommit_memory&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;overcommit_ratio&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;swappiness&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;zone_reclaim_mode&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
 
-[vm]
-transparent_hugepages=never
+[&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;transparent_hugepages&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;never&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;(well, in a slightly different order, but you get the drift).&lt;/p&gt;

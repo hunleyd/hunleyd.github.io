@@ -231,22 +231,22 @@ vm.zone_reclaim_mode = 0
 
 <p>This gives you a complete PostgreSQL tuned profile that looks like:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[main]
-include= throughput-performance
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">main</span>]
+<span class="n">include</span>= <span class="n">throughput</span>-<span class="n">performance</span>
 
-[sysctl]
-kernel.sched_autogroup_enabled = 0
-kernel.sched_migration_cost_ns = 50000000
-vm.dirty_background_bytes = 134217728
-vm.dirty_expire_centisecs = 499
-vm.dirty_ratio = 90
-vm.overcommit_memory = 2
-vm.overcommit_ratio = 90
-vm.swappiness = 1
-vm.zone_reclaim_mode = 0
+[<span class="n">sysctl</span>]
+<span class="n">kernel</span>.<span class="n">sched_autogroup_enabled</span> = <span class="m">0</span>
+<span class="n">kernel</span>.<span class="n">sched_migration_cost_ns</span> = <span class="m">50000000</span>
+<span class="n">vm</span>.<span class="n">dirty_background_bytes</span> = <span class="m">134217728</span>
+<span class="n">vm</span>.<span class="n">dirty_expire_centisecs</span> = <span class="m">499</span>
+<span class="n">vm</span>.<span class="n">dirty_ratio</span> = <span class="m">90</span>
+<span class="n">vm</span>.<span class="n">overcommit_memory</span> = <span class="m">2</span>
+<span class="n">vm</span>.<span class="n">overcommit_ratio</span> = <span class="m">90</span>
+<span class="n">vm</span>.<span class="n">swappiness</span> = <span class="m">1</span>
+<span class="n">vm</span>.<span class="n">zone_reclaim_mode</span> = <span class="m">0</span>
 
-[vm]
-transparent_hugepages=never
+[<span class="n">vm</span>]
+<span class="n">transparent_hugepages</span>=<span class="n">never</span>
 </code></pre></div></div>
 
 <p>(well, in a slightly different order, but you get the drift).</p>

@@ -182,7 +182,7 @@ Reading time ~3 minutes
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p><img src="http://www.navops.io/img/launch-samsung-1.gif" class="lleader" />Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
+      <p><img src="https://cdn.shopify.com/s/files/1/0946/8552/files/5xFaster.png" class="lleader" />Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
 
 <p>Thankfully, the PostgreSQL team introduced <code class="language-plaintext highlighter-rouge">pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code class="language-plaintext highlighter-rouge">pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?</p>
 
@@ -222,7 +222,7 @@ pg_upgrade <span class="nt">-d</span> <span class="nv">$OPGDATA</span> <span cla
 
 <p>For the curious, the <code class="language-plaintext highlighter-rouge">pg_upgrade</code> output that I omitted above for readability’s sake is:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Performing Consistency Checks
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Performing Consistency Checks
 <span class="nt">-----------------------------</span>
 Checking cluster versions                                   ok
 Checking database user is the <span class="nb">install </span>user                  ok
