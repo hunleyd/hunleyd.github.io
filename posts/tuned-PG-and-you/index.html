@@ -216,6 +216,8 @@ vm.swappiness = 1
 </span><span class="no">EOF
 </span></code></pre></div></div>
 
+<p>As pointed out in the comments, <code class="language-plaintext highlighter-rouge">vm.overcommit_memory</code> and <code class="language-plaintext highlighter-rouge">vm.dirty_ratio</code> (which I set below) interplay. <code class="language-plaintext highlighter-rouge">vm.dirty_ratio</code> is the value that represents the percentage of MemTotal that can consume dirty pages before all processes must write dirty buffers back to disk and when this value is reached all I/O is blocked for any new writes until dirty pages have been flushed. By default this set to 50% which means that at most only <strong>half</strong> of your MemTotal can ever only be dirty at once. Please see <a href="https://www.kernel.org/doc/Documentation/vm/overcommit-accounting">the kernel documentation</a> for details on all these settings.</p>
+
 <p>I, personally, also then add (after benchmarking, of course):</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
