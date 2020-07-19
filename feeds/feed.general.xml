@@ -5,7 +5,7 @@
   <description>Posts tagged as 'general'</description>
   <atom:link href="/feeds/feed.general.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#general/</link>
-  <updated>2020-07-19T13:41:48-04:00</updated>
+  <updated>2020-07-19T13:44:29-04:00</updated>
   <author>
    <name></name>
    <email></email>
@@ -26,7 +26,7 @@
 
 &lt;p&gt;Make sure you google ‘how to X on ubuntu server’&lt;/p&gt;
 
-&lt;p&gt;2 If you just Google ‘how to X ubuntu’ then a lot of the time what you find won’t apply. Networking, for example, using something called &lt;a href=&quot;https://netplan.io/&quot;&gt;netplan&lt;/a&gt; which is nothing ike regular Ubuntu desktop networking.&lt;/p&gt;
+&lt;p&gt;If you just Google ‘how to X ubuntu’ then a lot of the time what you find won’t apply. Networking, for example, using something called &lt;a href=&quot;https://netplan.io/&quot;&gt;netplan&lt;/a&gt; which is nothing ike regular Ubuntu desktop networking.&lt;/p&gt;
 
 &lt;p&gt;Anyway, that’s all for now. I just wante to post this as background info cause I plan on posting about my travails w/ the Ubuntu Server as I go forward.&lt;/p&gt;
 </description>
