@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>Douglas J Hunley - crowdfunding</title>
+  <description>Posts tagged as 'crowdfunding'</description>
+  <atom:link href="/feeds/feed.crowdfunding.xml" rel="self" type="application/rss+xml" />
+  <link>/tags/#crowdfunding/</link>
+  <updated>2020-07-19T14:30:36-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>Hello, eero</title>
+    <description>&lt;p&gt;&lt;a href=&quot;https://www.eero.com&quot;&gt;&lt;img src=&quot;https://d2vw57jh8139vw.cloudfront.net/abb56b35841139f06625b173a8bb8936.jpg&quot; class=&quot;lleader&quot; /&gt;&lt;/a&gt;I don’t normally back things on Indiegogo (I’m a Kickstarter snob), but I jumped &lt;em&gt;all over&lt;/em&gt; the eero. I have always had issues with the wifi coverage in my home. I’ve tried everything I can think of to alleviate the issues; differernt brands of routers, flashing different OSS firmwares, ‘upgrading’ to SOHO equipment instead of consumer equipment, moving them all over the damn house, etc. Nothing solved all the issues. Until now.&lt;/p&gt;
+
+&lt;p&gt;I’ve actully had the eero up and running for a while now (almost two months already) but I held off saying anything because I wanted to see if issues would crop back up or not and I wanted to get past the initial ‘cool, it works!’ feeling. So here I am ~60 days later, and I’m &lt;em&gt;still&lt;/em&gt; feeling the ‘this is cool’ feeling towards the eero.&lt;/p&gt;
+
+&lt;p&gt;I bought the triple set, put the ‘main’ one in the basement by the cable modem, the next one on the other end of the house on the first floor, and the final one in the middle of the house on the second floor. Setup was stupid simple and hassle free. Like, Tina or Emily could have done this, simple. Once up and talking to each other, they then scanned all the wifi leakage from the neighbors and picked a channel with the least amount of interference and started handing out DHCP leases to my devices. Easy peasy.&lt;/p&gt;
+
+&lt;p&gt;Speaking of ‘my devices’.. here’s everything I’ve got hooked up to the eero-powered wifi:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;1 x Nest thermostat&lt;/li&gt;
+  &lt;li&gt;2 x “smart” tv&lt;/li&gt;
+  &lt;li&gt;1 x “smart” bluray player&lt;/li&gt;
+  &lt;li&gt;1 x Nexus Player /  Android TV&lt;/li&gt;
+  &lt;li&gt;1 x PS3&lt;/li&gt;
+  &lt;li&gt;2 x PS4&lt;/li&gt;
+  &lt;li&gt;1 x Sonos speaker&lt;/li&gt;
+  &lt;li&gt;2 x Macbook Pro&lt;/li&gt;
+  &lt;li&gt;2 x Android phones&lt;/li&gt;
+  &lt;li&gt;3 x Android tablets&lt;/li&gt;
+  &lt;li&gt;2 x iPhone&lt;/li&gt;
+  &lt;li&gt;1 x iPad mini&lt;/li&gt;
+  &lt;li&gt;1 x Chromebook&lt;/li&gt;
+  &lt;li&gt;1 x Lenovo laptop&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, I didn’t make that list to impress you, or to depress myself at how much money I’ve spent over the years. That list is to show what’s connected to the eero and to show that there is a big variety of devices. Some are 2.4GHz, some 5GHz, some both. Some do jumbo frames. Some support wifi media extensions. And they all work &lt;em&gt;flawlessly&lt;/em&gt; while connected to the eero. &lt;em&gt;No matter how many are connected simultaneoussly.&lt;/em&gt; Which is the first time ever. Seriously. It works so well, I went around and &lt;em&gt;unplugged&lt;/em&gt; Ethernet from devices that had it and put them on the wifi!&lt;/p&gt;
+
+&lt;p&gt;We can have multiple Netflix streams going while playing online in an FPS while streaming music to another room while someone else is on the laptop working. And no one even notices the other users. It’s epic. I now actually have a valid reason for buying the most expensive upload speed my ISP offers :)&lt;/p&gt;
+
+&lt;p&gt;As for gripes? Well, of course no system is perfect. In its quest to make things stupid simple, there’s a lot the eero mgmt the app doesn’t let you do. You can’t, for example, blacklist a MAC. Or turn off uplink for certain MACs between certain hours of the day. You can’t throttle certain devices. Basically, all the things nerds love to mess with that just confuse the normal consumer. And I’m (mostly) OK with that. I’m sure some of the functionality is coming in future updates, but even if it doesn’t, I don’t care. It just works. And it works well and easy enough that I can talk the wife through an issue over the phone while I’m on the other side of the planet.&lt;/p&gt;
+
+&lt;p&gt;I &amp;lt;3 my eero.&lt;/p&gt;
+
+&lt;p&gt;★★★★★&lt;/p&gt;
+</description>
+    <link>/posts/Hello_eero/ </link>
+    <pubDate>2016-03-30T10:00:25-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Hello_eero/</guid>
+   </item>
+  
+ </channel>
+</rss>

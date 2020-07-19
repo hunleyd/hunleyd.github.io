@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>Douglas J Hunley - nexus5x</title>
+  <description>Posts tagged as 'nexus5x'</description>
+  <atom:link href="/feeds/feed.nexus5x.xml" rel="self" type="application/rss+xml" />
+  <link>/tags/#nexus5x/</link>
+  <updated>2020-07-19T14:30:36-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>Smart Lock on Android N DP2</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; class=&quot;rleader&quot; /&gt;As mentioned in my previous &lt;a href=&quot;/Now-on-Tap-Android-N-DP2/&quot;&gt;post&lt;/a&gt; I’ve stumbled across two issues with the 2&lt;sup&gt;nd&lt;/sup&gt; Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won’t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.&lt;/p&gt;
+
+&lt;p&gt;I was immediately aware of &lt;em&gt;some&lt;/em&gt; kind of issue since the phone didn’t prompt me to setup Smaet Lock after pairing the watch. So I went into the Android Settings app, then Security, and went to tap on Smart Lock only to find it &lt;em&gt;gone&lt;/em&gt;. Thinking maybe Google had moved it somewherre else, I used the new ‘search Settings’ feature and searched for Smart Lock, Lock, and Smart. None of them tuened up what I was looking for! After some Googling, I had enough clues to figure out what had happened to the option and how to restore it.&lt;/p&gt;
+
+&lt;p&gt;To restore Smart Lock to the Security tab of the Settings app, do this:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;open the Android Settings app&lt;/li&gt;
+  &lt;li&gt;tap Security&lt;/li&gt;
+  &lt;li&gt;scroll down to the Advanced section&lt;/li&gt;
+  &lt;li&gt;tap Trust Agents&lt;/li&gt;
+  &lt;li&gt;toggle Smart Lock (Google)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, when ypou back button to the Security settings, the Smart Lock option will be restored and function like before. I dont know wtf ‘unset’ it as a Trust Agent provider in DP2 or why, but there you go.&lt;/p&gt;
+</description>
+    <link>/posts/Smart-Lock-on-Android-N-DP2/ </link>
+    <pubDate>2016-04-24T18:18:56-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Smart-Lock-on-Android-N-DP2/</guid>
+   </item>
+  
+   <item>
+    <title>Now on Tap on Android N DP2</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&quot; class=&quot;lleader&quot; /&gt;Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program. And for the most part, it’s worked really well for me. I &lt;em&gt;really&lt;/em&gt; like Android N so far and can’t wait for the final release. However, after updating from Developer Preview 1 (DP1) to Developer Preview 2 (DP2) via OTA, I noticed two small issues. The first issue is that I could not, for the life of me, get Now On Tap to enable even though it was previously enabled on DP1.&lt;/p&gt;
+
+&lt;p&gt;I’m happy to report that I figured out, and I thought I’d share it in case anyone else has run this issue and was stumped. Just to be clear, if you open the Google app, then go into Settings, and then into Now on Tap, there’s a toggle. Simply flipping it is &lt;em&gt;supposed&lt;/em&gt; to be enough to turn it on. But in my case, the toggle would &lt;em&gt;not&lt;/em&gt; flip on. It was permanently flipped to off.&lt;/p&gt;
+
+&lt;p&gt;To fix this:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;head into the Android Settings app&lt;/li&gt;
+  &lt;li&gt;touch Apps&lt;/li&gt;
+  &lt;li&gt;touch the gear icon on the top right corner&lt;/li&gt;
+  &lt;li&gt;touch Assist &amp;amp; voice input&lt;/li&gt;
+  &lt;li&gt;touch Assist App&lt;/li&gt;
+  &lt;li&gt;chose Google&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Once you’ve done this, you’ll find that you can enable Now on Tap through the normal toggle.&lt;/p&gt;
+</description>
+    <link>/posts/Now-on-Tap-Android-N-DP2/ </link>
+    <pubDate>2016-04-24T17:53:06-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Now-on-Tap-Android-N-DP2/</guid>
+   </item>
+  
+ </channel>
+</rss>

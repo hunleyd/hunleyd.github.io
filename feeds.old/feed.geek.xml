@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>Douglas J Hunley - geek</title>
+  <description>Posts tagged as 'geek'</description>
+  <atom:link href="/feeds/feed.geek.xml" rel="self" type="application/rss+xml" />
+  <link>/tags/#geek/</link>
+  <updated>2020-07-19T14:30:36-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
+
+  
+   <item>
+    <title>Locking it down</title>
+    <description>&lt;p&gt;I finally saved up and bought myself a smart lock at the end of April. I ended up getting the &lt;a href=&quot;https://smile.amazon.com/gp/product/B0752V8D8D&quot;&gt;August Smart Lock Pro&lt;/a&gt; with the Connect module. Now that I’ve used it for a month and a half, I feel like I can finally review it.&lt;/p&gt;
+
+&lt;p&gt;TL;DR I love this lock.&lt;/p&gt;
+
+&lt;p&gt;Honestly, the hardest part of this whole process was picking the lock to buy. I looked at the August lock, I looked at the Kwikset Bluetooth lock, I even looked at the Nest lock and debating waiting for its release. In the end, I chose the August for two reasons: it integrates with Google Home natively (no ‘talk to August’ bullshit) and it uses the existing lock’s keys so my landlord can’t complain.&lt;/p&gt;
+
+&lt;p&gt;Installing the lock was stupid simple. You are directed to download their app for your phone, create an account, and then it gives you full-screen step-by-step directions. There’s nothing unusual about this deadlock, so if you’ve ever changed one before, you know how to do this. You’ll need a screwdriver and maybe 10 minutes.&lt;/p&gt;
+
+&lt;p&gt;Installation is basically 4 steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Remove the old back on the deadbolt&lt;/li&gt;
+  &lt;li&gt;Find the correct shaft adaptor&lt;/li&gt;
+  &lt;li&gt;Install the new August back&lt;/li&gt;
+  &lt;li&gt;Connect to the wifi&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I don’t leave the house very often, if I’m honest, but the occasions I have since installing this have been very nice. I leave, the door locks (and thanks to other integrations my Blink cameras turn on); I return, the door unlocks (and the cameras turn off). I don’t have to carry a key with me. I don’t have to empty a hand to fish out my key to unlock the door. When I go to bed at night, I just tell Google to lock the door. The only minor annoyance is that Google won’t voice unlock the door (for security reasons).&lt;/p&gt;
+
+&lt;p&gt;I’ve yet to use the app to give anyone a ‘temporary key’ but I have used the app to check on (and change) the lock status. I’ve also used the app to update the firmware on the lock.&lt;/p&gt;
+
+&lt;p&gt;If you’re considering a smart lock, I highly recommend you look at the August Pro.&lt;/p&gt;
+
+&lt;p&gt;★★★★★&lt;/p&gt;
+</description>
+    <link>/posts/Locking-it-down/ </link>
+    <pubDate>2018-06-18T08:45:02-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Locking-it-down/</guid>
+   </item>
+  
+   <item>
+    <title>Routing email through GMail on OSX</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://www.postfix.org/mysza.gif&quot; class=&quot;lleader&quot; /&gt;Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)&lt;/p&gt;
+
+&lt;p&gt;The first thing we’re going to do is open an iTerm and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo -i&lt;/code&gt; to become root. Then we’re going to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi /etc/postfix/main.cf&lt;/code&gt; and we’re going to add/set the following:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;myhostname&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;relayhost&lt;/span&gt; = [&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_auth_enable&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_password_maps&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;hash&lt;/span&gt;:/&lt;span class=&quot;n&quot;&gt;etc&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postfix&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;sasl_passwd&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_security_options&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;noanonymous&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_sasl_mechanism_filter&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;plain&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;smtp_use_tls&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;yes&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi /etc/postfix/sasl_passwd&lt;/code&gt; and add:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;smtp&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;]:&lt;span class=&quot;m&quot;&gt;587&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;@&lt;span class=&quot;n&quot;&gt;gmail&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;:&lt;span class=&quot;n&quot;&gt;app_passwd&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Secure that file by running &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chmod 0600 /etc/postfix/sasl_passwd&lt;/code&gt; and then have Postfix hash it by doing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postmap /etc/postfix/sasl_passwd&lt;/code&gt;. Finally, restart Postfix:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;launchctl stop org.postfix.master
+launchctl start org.postfix.master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And everything should work.&lt;/p&gt;
+</description>
+    <link>/posts/Routing-email-through-GMail-on-OSX/ </link>
+    <pubDate>2016-11-15T05:51:00-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Routing-email-through-GMail-on-OSX/</guid>
+   </item>
+  
+   <item>
+    <title>Huawei Watch Review</title>
+    <description>&lt;p&gt;&lt;a href=&quot;http://www.gethuawei.com/buy-huawei-watch&quot;&gt;&lt;img src=&quot;https://www.androidpolice.com/wp-content/uploads/2015/09/nexus2cee_DSC09617-728x485.jpg&quot; class=&quot;lleader&quot; /&gt;&lt;/a&gt;A couple of my mates wanted me to let them know what I thought of the &lt;a href=&quot;http://www.huawei.com/en/&quot;&gt;Huawei&lt;/a&gt; Watch (hereafter, ‘H’) after upgrading from the &lt;a href=&quot;https://www.motorola.com/us/products/moto-360&quot;&gt;Moto 360&lt;/a&gt; (hereafter, 360) and spending some time getting to know the ‘H’. So here’s my thoughts.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Better than the 360 in every way that counts&lt;/p&gt;
+
+&lt;p&gt;I should probably preface this review by saying that I loved (and still love) the 360. I was excited to buy it, I was excited to see it ship to my house, I was pissed that I wasn’t at my house when it arrived (long-term gig in LA), I was proud to wear it, and I loved showing it to anyone who cared (and probably more than a few who didn’t). Having said that, the 360 I had was a Gen 1 in every sense. It was the first watch Moto had made. It was the first smartwatch Moto had made. It was the flagship Android Wear device. And the minute I got my hands on a 2&lt;sup&gt;nd&lt;/sup&gt; gen device, those things were readily apparent.&lt;/p&gt;
+
+&lt;p&gt;Don’t get me wrong. It’s not all sunshine and roses w/ the ‘H’. For example, charging is actually quite a bit of a sorrier state than with the 360. You see, the 360 has a standard Qi charging mechanism. So while there is a cute little official charging stand, you can make do with &lt;em&gt;any&lt;/em&gt; Qi charger you have once you figure out where to place the watch on the coil. And the official charger uses a standard, I-have-tons-of-them-all-of-the-place USB-A to USB-micro cable. The ‘H’, on the other hand, uses pogo pins to connect to it’s charger. Which means you &lt;u&gt;have&lt;/u&gt; to use a compatible charger (of which there is only one currently). Take a road trip and forget your charger? Buy another one or go without your watch. And to add to the insult, the charger cable, while having a standard USB-A plug on one end, is terminated inside the charging puck. So if the cord should go bad or isn’t long enough, too bad. You can’t use one of those USB cables from the pile in your desk drawer. Nope. Sorry. And then, of course, there’s the &lt;em&gt;act&lt;/em&gt; of charging the watch. With the 360, you simply slide it into its dock, and you’re done. Heck, after a while, you can almost lightly toss it into the charger like a game of corn hole and it will charge. Half asleep? Drunk? No problem. Tis easy. The ‘H’ on the other hand? You have to line up the pogos &lt;b&gt;exactly&lt;/b&gt; or you aren’t getting any juice. And I mean exact. Doesn’t matter if the watch and the charger look perfectly aligned and centered with each other. If the pins aren’t perfect, no juice for you! I’ve already had my share of waking up to find out the watch didn’t charge. It SUCKS.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Pro tip: I’ve found that hovering the ‘H’ right over the charging puck allows the magnets in them to pull them together in such a way that the puck “leaps” up and attaches to the watch with the pogo pins perfectly positioned&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;So yeah, charging. The one thorn in the rose. But worth it, imho.&lt;/p&gt;
+
+&lt;p&gt;Review: ★★★★★&lt;/p&gt;
+</description>
+    <link>/posts/Huawei-Watch-Review/ </link>
+    <pubDate>2016-01-21T12:00:00-05:00</pubDate>
+    <guid isPermaLink="true">/posts/Huawei-Watch-Review/</guid>
+   </item>
+  
+   <item>
+    <title>I Have The Power</title>
+    <description>&lt;p&gt;&lt;a href=&quot;https://www.snappower.com/snaprays-guidelight/&quot;&gt;&lt;img src=&quot;https://cdn.shopify.com/s/files/1/0336/9049/products/Single_GL2_white_07d7acd0-a697-4d12-8cd0-7bfbfd26d969_900x.jpg?v=1564168251&quot; class=&quot;lleader&quot; /&gt;&lt;/a&gt;A while back, I ran across a little project on &lt;a href=&quot;http://www.kickstarter.com&quot;&gt;Kickstarter&lt;/a&gt; from a company called &lt;a href=&quot;http://www.snappower.com&quot;&gt;SnapPower&lt;/a&gt;. The project was for a product called Guidelights.&lt;/p&gt;
+
+&lt;p&gt;Now, I’m a “big boy” and don’t need a night light, but I do wander around the house after dark quite a bit and hate turning on the lights when I’m in a room for like a whole minute. So the concept of having LED lights embedded into the outlet cover and having them turn on/off based on the ambient light in the room sounded pretty cool. And the fact that there’s no wiring or anything was slick. So I ponied up and ordered some.&lt;/p&gt;
+
+&lt;p&gt;I gotta tell you, they rock! I now have one in the upstairs hallyway, another at the bottom of the stairs, and a third on the island in the kitchen. It’s freaking perfect. Seriously. And like I said, there’s &lt;em&gt;no skill involved&lt;/em&gt;. If you can work a flat head screwdriver, you can install these!&lt;/p&gt;
+
+&lt;p&gt;In fact, when Stephanie movies into her apartment (soonish), I’ll be outfitting her place with a few of these as well. They’re really that good,&lt;/p&gt;
+
+&lt;p&gt;Review: ★★★★★&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.snappower.com/snappower-chargers/&quot;&gt;&lt;img src=&quot;https://www.snappower.com/wp-content/themes/enfold-child/images/charger_review.jpg&quot; class=&quot;rleader&quot; /&gt;&lt;/a&gt;As much as I love the Guidelights, I was stoked when SnapPower announced their Snap Power Chargers.&lt;/p&gt;
+
+&lt;p&gt;I don’t know what it’s like in your household, but all four of us have smart phones, three of us have tablets, and two of us have smart watches. Someone &lt;em&gt;always&lt;/em&gt; needs to charge something. And my family is &lt;strong&gt;horrible&lt;/strong&gt; about removing their chargers from outlets when they’re done. And one person in particular has taken to unplugging whatever is “in the way” so she can charge her phone close to wherever she’s sitting! Clearly, a solution that adds USB ports and frees up electrical outlets is a solution I need to have.&lt;/p&gt;
+
+&lt;p&gt;So I eagerly bought &lt;em&gt;five&lt;/em&gt; of these things. I installed all but one yesterday, and I gotta say it is as good of an investment as the light covers. I will be installing a few of these in Steph’s apartment also. Now, I’ll grant you that they are not “quick charge”. And there’s only one USB facing the right side of the cover instead of one on both the left and right. But I understand there’s only so much room in these things, and only so much power you can leech off the contacts. So I’m not terribly upset. It would be nice though if you could choose left or right when ordering.&lt;/p&gt;
+
+&lt;p&gt;Honestly, I’m kinda stoked to see what this company comes up with next. Of all the random crap I’ve backed on Kickstarter, SnapPower is easily the most useful and easiest to recommend to others.&lt;/p&gt;
+
+&lt;p&gt;Review: ★★★★✩&lt;/p&gt;
+</description>
+    <link>/posts/I-Have-The-Power/ </link>
+    <pubDate>2016-01-16T19:00:00-05:00</pubDate>
+    <guid isPermaLink="true">/posts/I-Have-The-Power/</guid>
+   </item>
+  
+ </channel>
+</rss>

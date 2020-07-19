@@ -1,18 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-07-19T14:30:36-04:00</updated><id>/feed.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">Bye Pi Hello NUC</title><link href="/posts/Bye-Pi-Hello-NUC/" rel="alternate" type="text/html" title="Bye Pi Hello NUC" /><published>2020-07-19T08:14:03-04:00</published><updated>2020-07-19T08:14:03-04:00</updated><id>/posts/Bye-Pi-Hello-NUC</id><content type="html" xml:base="/posts/Bye-Pi-Hello-NUC/">&lt;p&gt;About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin  a new experiment with an Intel NUC. It’s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn’t want to go that route. So I looked around, did some research, saved up some money and ended up with:&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+ <channel>
+  <title>Douglas J Hunley - postgresql</title>
+  <description>Posts tagged as 'postgresql'</description>
+  <atom:link href="/feeds/feed.postgresql.xml" rel="self" type="application/rss+xml" />
+  <link>/tags/#postgresql/</link>
+  <updated>2020-07-19T14:30:36-04:00</updated>
+  <author>
+   <name></name>
+   <email></email>
+  </author>
 
-&lt;p&gt;&lt;img src=&quot;/images/posts/intel_nuc_8.jpg&quot; class=&quot;lleader&quot; /&gt;An Intel NUC 8 Performance-G Kit. \  This is a Core i7-based kit (NUC8i7HVK) that just needs RAM and storage added. It’s a Radeon RX Vega M GH 32GB video card, an 802.11{a,b,g,n} device, 2x Gb Ethernet, 2x USB 2.0 ports, 5x USB 3.0 ports. 2x HDMI ports, 2x mini-Display ports, 2x Thunderbolt 3 ports, and a Bluetooth 4.2 radio. All inside a 6.4 lb 10.8”x7.8”x4.8” case. I fricking love it.&lt;/p&gt;
-
-&lt;p&gt;I put a pair of HyperX Kingston Technology Impact 16GB 2400MHz DDR4 sticks in it after talking myself down from a pair of 32GB sticks.&lt;/p&gt;
-
-&lt;p&gt;And finally, I put in a pair of Samsung 970 PRO SSD 1TB M.2 NVMe SSDs (OK, that’s a lie. I went with just one initially, but bought a second one like a month later).&lt;/p&gt;
-
-&lt;p&gt;Given the nature of the beast I’d assembled, I started with &lt;a href=&quot;https://clearlinux.org/&quot;&gt;ClearLinux&lt;/a&gt; as my OS. It’s &lt;strong&gt;stupid fast&lt;/strong&gt;. And it’s neat and interesting in that ‘not like other girls’ kinda way. Ultimately though, I ended up ditching it due to the state of packaging. I’ve read that they have some new packaging initiatives though so you shouldn’t rule it out based on my experience last year. I then move to Ubuntu LTS for a short while, realized my mistake, and am currently on Ubuntu Server. So far, it’s doing what I need it to do but, protip:&lt;/p&gt;
-
-&lt;p&gt;Make sure you google ‘how to X on ubuntu server’&lt;/p&gt;
-
-&lt;p&gt;If you just Google ‘how to X ubuntu’ then a lot of the time what you find won’t apply. Networking, for example, using something called &lt;a href=&quot;https://netplan.io/&quot;&gt;netplan&lt;/a&gt; which is nothing ike regular Ubuntu desktop networking.&lt;/p&gt;
-
-&lt;p&gt;Anyway, that’s all for now. I just wante to post this as background info cause I plan on posting about my travails w/ the Ubuntu Server as I go forward.&lt;/p&gt;</content><author><name></name></author><category term="computers" /><category term="linux" /><summary type="html">About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin a new experiment with an Intel NUC. It’s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn’t want to go that route. So I looked around, did some research, saved up some money and ended up with:</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">tuned, PG, and you</title><link href="/posts/tuned-PG-and-you/" rel="alternate" type="text/html" title="tuned, PG, and you" /><published>2020-06-23T14:22:44-04:00</published><updated>2020-06-23T14:22:44-04:00</updated><id>/posts/tuned-PG-and-you</id><content type="html" xml:base="/posts/tuned-PG-and-you/">&lt;p&gt;We’ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always ‘that depends on your hardware and workload’ and involves a lot of iteration between changing a setting and benchmarking, I thought I’d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned&lt;/code&gt; to make use of. Please, for the love of $diety, stop editing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sysctl.conf&lt;/code&gt; and friends!&lt;/p&gt;
+  
+   <item>
+    <title>tuned, PG, and you</title>
+    <description>&lt;p&gt;We’ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always ‘that depends on your hardware and workload’ and involves a lot of iteration between changing a setting and benchmarking, I thought I’d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned&lt;/code&gt; to make use of. Please, for the love of $diety, stop editing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sysctl.conf&lt;/code&gt; and friends!&lt;/p&gt;
 
 &lt;p&gt;If you’re running RedHat (or a RedHat-derived) OS, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned&lt;/code&gt; is probably already installed and may even be already running. If not, it’s a simple &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum install tuned&lt;/code&gt; to rectify. If you’re on Debian (or a Debian-derived) OS, simply &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;apt install tuned&lt;/code&gt;. Now that you have it installed, you can ask it to recommend a profile for you by issuing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned-adm recommend&lt;/code&gt; and you can see which profile, if any, is in use by issuing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned-adm active&lt;/code&gt;. You can also list all the available profiles with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned-adm list&lt;/code&gt;.&lt;/p&gt;
 
@@ -85,33 +87,16 @@ vm.zone_reclaim_mode = 0
 
 &lt;p&gt;Now that we have our profile, run a quick &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tuned-adm list&lt;/code&gt; to ensure that it is listed as available. Assuming it is, you can enable it with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tune-adm profile postgresql&lt;/code&gt; and then double-check that it took effect with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tune-adm active&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;Once activated, you should be all set. Happy computing, or something. ;)&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><category term="linux" /><summary type="html">We’ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always ‘that depends on your hardware and workload’ and involves a lot of iteration between changing a setting and benchmarking, I thought I’d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for tuned to make use of. Please, for the love of $diety, stop editing sysctl.conf and friends!</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">The continuing adventures of Mom cutting the cord</title><link href="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/" rel="alternate" type="text/html" title="The continuing adventures of Mom cutting the cord" /><published>2019-02-07T02:24:43-05:00</published><updated>2019-02-07T02:24:43-05:00</updated><id>/posts/The-continuing-adventures-of-Mom-cutting-the-cord</id><content type="html" xml:base="/posts/The-continuing-adventures-of-Mom-cutting-the-cord/">&lt;p&gt;As a belated update to &lt;a href=&quot;/posts/Mom-cuts-the-cord/&quot;&gt;this&lt;/a&gt; post, Mom has told DirecTV to completely go screw and she’s moved over to &lt;a href=&quot;https://www.philo.com&quot;&gt;Philo&lt;/a&gt; where she’s currently loving life.&lt;/p&gt;
-
-&lt;p&gt;I had initially proposed DirecTV Now to her since it was an uphill battle to convince her to abandon DirecTV satellite. I figured it was the path of least resistance since she’d know the UI and the channel line-up . And, at first, it was exactly that. However, after about three months, I had grown tired of hearing the following:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;when will I get &lt;em&gt;my&lt;/em&gt; locals, not yours&lt;/li&gt;
-  &lt;li&gt;when will I be able to record stuff&lt;/li&gt;
-  &lt;li&gt;why are the previous episodes so inconsistent&lt;/li&gt;
-  &lt;li&gt;why can’t I record show X&lt;/li&gt;
-  &lt;li&gt;does your picture look all blocky&lt;/li&gt;
-  &lt;li&gt;why is the guide so slow&lt;/li&gt;
-  &lt;li&gt;they raised the price?!&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;That’s right, in the quick span of just three months, she’d seen that while DirecTV Now &lt;em&gt;was&lt;/em&gt; better than her old DirecTV, it was still plagued by, well, AT&amp;amp;T incompetence. It took them forever to launch the DVR, and it still didn’t work right even after the beta. I actually had to change the account’s billing address to get the correct locals cause they can’t seem to figure out GeoIP. Their licensing of channels/shows makes no goddamn sense. As an example, record whatever you want off the Discovery channel, just not Dirty Jobs. I’m willing to grant that the licensing is on the fault of the network/studio but you’re AT&amp;amp;T/DirecTV for fuck’s sake! Spend some damn money and make it happen for your users. And then there was the app itself. I’ve never seen another Roku app be so unresponsive, so slow, and so bandwidth sensitive. When mom can be on her Chromebook doing whatever, while I’m watching a movie on her TV via Google Play, and my niece is watching Youtube on her iPhone and there are &lt;em&gt;no issues for any of us&lt;/em&gt; the problem is &lt;strong&gt;not&lt;/strong&gt; Mom’s connection. Yet Mom could be the only one in the house and she’d get desync on the audio, or pixelation/blocking in the video. WTF, AT&amp;amp;T? Buy a real CDN!&lt;/p&gt;
-
-&lt;p&gt;And then, of course, they raised the price on her. That’s right. With all the issues above (and trust me, I checked /r/directvnow religiously. This was not unique to Mom) they had the gall to raise prices. And not just for new sign-ups. Oh no no no. Existing and even &lt;em&gt;grandfathered&lt;/em&gt; accounts got hit in the wallet! It’s like they don’t know how to be anything but a greedy cable company.&lt;/p&gt;
-
-&lt;p&gt;So, I signed up for Philo and installed it on Mom’s TV. I asked her to use it for the free week and see how it went. I kid you not, she called me on day 5 and said she liked it so much better that she agreed to me canceling DirecTV Now right then and there. To say I was floored is an understatement.&lt;/p&gt;
-
-&lt;p&gt;I will grant you that losing the locals and having to use the OTA antenna isn’t ideal. We’re keeping an eye on &lt;a href=&quot;https://www.locast.org&quot;&gt;Locast&lt;/a&gt; to see if we can solve that “soon”. But Mom was already using the antenna to watch a few of the local sub-channels, so it wasn’t a deal breaker. So far, Mom has adapted to the Philo interface easily (I prefer it), we’ve setup a profile for her, me, and guests, and she’s been recording shows and Hallmark Christmas movies (ugh) all without needing to call me.&lt;/p&gt;
-
-&lt;p&gt;And since switching, NOT ONCE has she had a desync or pixelation issue. Even when Steph and I both were there over Thanksgiving and beating the crap outta her wifi.&lt;/p&gt;
-
-&lt;p&gt;The kicker here? &lt;strong&gt;It’s only $16/mo.&lt;/strong&gt; Yeah, you read that right. She went from $100/mo w/ DTV to $45/mo with DTVN (at the end) to $16/mo. &lt;strong&gt;Unreal.&lt;/strong&gt; And on top of that, Philo recently added an extra MTV channel for the hell of it.&lt;/p&gt;
-
-&lt;p&gt;All around a WIN WIN.&lt;/p&gt;</content><author><name></name></author><category term="general" /><category term="ott" /><summary type="html">As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving life.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">pgBackRest 2.08 and macOS Mojave</title><link href="/posts/pgBackRest-2.08-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.08 and macOS Mojave" /><published>2019-01-04T03:30:44-05:00</published><updated>2019-01-04T03:30:44-05:00</updated><id>/posts/pgBackRest-2.08-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.08-and-macOS-Mojave/">&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;
+&lt;p&gt;Once activated, you should be all set. Happy computing, or something. ;)&lt;/p&gt;
+</description>
+    <link>/posts/tuned-PG-and-you/ </link>
+    <pubDate>2020-06-23T14:22:44-04:00</pubDate>
+    <guid isPermaLink="true">/posts/tuned-PG-and-you/</guid>
+   </item>
+  
+   <item>
+    <title>pgBackRest 2.08 and macOS Mojave</title>
+    <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;
 
 &lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
 
@@ -142,7 +127,16 @@ vm.zone_reclaim_mode = 0
 
 &lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
 
-&lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving -D_POSIX_C_SOURCE up to the Makefile that caused the problem. The solution below is still the same though.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">pgBackRest 2.07 and macOS Mojave</title><link href="/posts/pgBackRest-2.07-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.07 and macOS Mojave" /><published>2018-11-16T01:12:31-05:00</published><updated>2018-11-16T01:12:31-05:00</updated><id>/posts/pgBackRest-2.07-and-macOS-Mojave</id><content type="html" xml:base="/posts/pgBackRest-2.07-and-macOS-Mojave/">&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>/posts/pgBackRest-2.08-and-macOS-Mojave/ </link>
+    <pubDate>2019-01-04T03:30:44-05:00</pubDate>
+    <guid isPermaLink="true">/posts/pgBackRest-2.08-and-macOS-Mojave/</guid>
+   </item>
+  
+   <item>
+    <title>pgBackRest 2.07 and macOS Mojave</title>
+    <description>&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
 
 &lt;p&gt;Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use &lt;a href=&quot;https://brew.sh&quot;&gt;Homebrew&lt;/a&gt; for this:&lt;/p&gt;
 
@@ -250,7 +244,16 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
 
 &lt;p&gt;You should now be able to follow the online docs and setup pgBackRest.&lt;/p&gt;
 
-&lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">pgBackRest 2.07 was announced today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a Linux system, so I figured I’d write this up for anyone else attempting the same.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Monitoring pgBackRest with tail_n_mail</title><link href="/posts/Monitoring-pgBackRest-with-tail_n_mail/" rel="alternate" type="text/html" title="Monitoring pgBackRest with tail_n_mail" /><published>2018-09-24T06:58:22-04:00</published><updated>2018-09-24T06:58:22-04:00</updated><id>/posts/Monitoring-pgBackRest-with-tail_n_mail</id><content type="html" xml:base="/posts/Monitoring-pgBackRest-with-tail_n_mail/">&lt;p&gt;After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
+&lt;p&gt;Enjoy!&lt;/p&gt;
+</description>
+    <link>/posts/pgBackRest-2.07-and-macOS-Mojave/ </link>
+    <pubDate>2018-11-16T01:12:31-05:00</pubDate>
+    <guid isPermaLink="true">/posts/pgBackRest-2.07-and-macOS-Mojave/</guid>
+   </item>
+  
+   <item>
+    <title>Monitoring pgBackRest with tail_n_mail</title>
+    <description>&lt;p&gt;After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use &lt;a href=&quot;https://bucardo.org/tail_n_mail/&quot;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;
 
 &lt;p&gt;For reference, our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.tail_n_mail.conf&lt;/code&gt; looks like this:&lt;/p&gt;
 
@@ -279,7 +282,16 @@ Use &lt;span class=&quot;s1&quot;&gt;'pgbackrest help [command]'&lt;/span&gt; &l
 
 &lt;p&gt;Once you’ve saved the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;crontab&lt;/code&gt;, you should be all good. If you doubt the setup, you can add &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--mailzero&lt;/code&gt; to the invocation to get an email even if everything is OK.&lt;/p&gt;
 
-&lt;p&gt;See? Easy.&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><summary type="html">After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use tail_n_mail, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">pgBouncer and auth pass-thru</title><link href="/posts/pgBouncer-and-auth-pass-thru/" rel="alternate" type="text/html" title="pgBouncer and auth pass-thru" /><published>2018-08-07T08:53:28-04:00</published><updated>2018-08-07T08:53:28-04:00</updated><id>/posts/pgBouncer-and-auth-pass-thru</id><content type="html" xml:base="/posts/pgBouncer-and-auth-pass-thru/">&lt;p&gt;I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auth_file&lt;/code&gt;. After the most recent such inquiry (hi Richard!) I decided I’d write this post to
+&lt;p&gt;See? Easy.&lt;/p&gt;
+</description>
+    <link>/posts/Monitoring-pgBackRest-with-tail_n_mail/ </link>
+    <pubDate>2018-09-24T06:58:22-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Monitoring-pgBackRest-with-tail_n_mail/</guid>
+   </item>
+  
+   <item>
+    <title>pgBouncer and auth pass-thru</title>
+    <description>&lt;p&gt;I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auth_file&lt;/code&gt;. After the most recent such inquiry (hi Richard!) I decided I’d write this post to
 hopefully make it clearer how to use ‘pass-thru auth’ and avoid maintaining your users and their passwords in an external file. So let’s see what this takes, shall we?&lt;/p&gt;
 
 &lt;p&gt;First, install pgBouncer as per your OS (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;apt&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew&lt;/code&gt;, etc):&lt;/p&gt;
@@ -559,44 +571,16 @@ port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5433				&lt;span class=&quot
 
 &lt;p&gt;One final note: this is only working for the ‘doug’ database currently. If I wanted this to also work for another database, say ‘postgres’ or ‘prod_app’ then I would need to GRANT CONNECT on those dbs to ‘pgbouncer’ &lt;strong&gt;and&lt;/strong&gt; would need to create my function in them as well.&lt;/p&gt;
 
-&lt;p&gt;☮️&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><summary type="html">I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s auth_file. After the most recent such inquiry (hi Richard!) I decided I’d write this post to hopefully make it clearer how to use ‘pass-thru auth’ and avoid maintaining your users and their passwords in an external file. So let’s see what this takes, shall we?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Locking it down</title><link href="/posts/Locking-it-down/" rel="alternate" type="text/html" title="Locking it down" /><published>2018-06-18T08:45:02-04:00</published><updated>2018-06-18T08:45:02-04:00</updated><id>/posts/Locking-it-down</id><content type="html" xml:base="/posts/Locking-it-down/">&lt;p&gt;I finally saved up and bought myself a smart lock at the end of April. I ended up getting the &lt;a href=&quot;https://smile.amazon.com/gp/product/B0752V8D8D&quot;&gt;August Smart Lock Pro&lt;/a&gt; with the Connect module. Now that I’ve used it for a month and a half, I feel like I can finally review it.&lt;/p&gt;
-
-&lt;p&gt;TL;DR I love this lock.&lt;/p&gt;
-
-&lt;p&gt;Honestly, the hardest part of this whole process was picking the lock to buy. I looked at the August lock, I looked at the Kwikset Bluetooth lock, I even looked at the Nest lock and debating waiting for its release. In the end, I chose the August for two reasons: it integrates with Google Home natively (no ‘talk to August’ bullshit) and it uses the existing lock’s keys so my landlord can’t complain.&lt;/p&gt;
-
-&lt;p&gt;Installing the lock was stupid simple. You are directed to download their app for your phone, create an account, and then it gives you full-screen step-by-step directions. There’s nothing unusual about this deadlock, so if you’ve ever changed one before, you know how to do this. You’ll need a screwdriver and maybe 10 minutes.&lt;/p&gt;
-
-&lt;p&gt;Installation is basically 4 steps:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Remove the old back on the deadbolt&lt;/li&gt;
-  &lt;li&gt;Find the correct shaft adaptor&lt;/li&gt;
-  &lt;li&gt;Install the new August back&lt;/li&gt;
-  &lt;li&gt;Connect to the wifi&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;I don’t leave the house very often, if I’m honest, but the occasions I have since installing this have been very nice. I leave, the door locks (and thanks to other integrations my Blink cameras turn on); I return, the door unlocks (and the cameras turn off). I don’t have to carry a key with me. I don’t have to empty a hand to fish out my key to unlock the door. When I go to bed at night, I just tell Google to lock the door. The only minor annoyance is that Google won’t voice unlock the door (for security reasons).&lt;/p&gt;
-
-&lt;p&gt;I’ve yet to use the app to give anyone a ‘temporary key’ but I have used the app to check on (and change) the lock status. I’ve also used the app to update the firmware on the lock.&lt;/p&gt;
-
-&lt;p&gt;If you’re considering a smart lock, I highly recommend you look at the August Pro.&lt;/p&gt;
-
-&lt;p&gt;★★★★★&lt;/p&gt;</content><author><name></name></author><category term="geek" /><category term="smarthome" /><category term="review" /><summary type="html">I finally saved up and bought myself a smart lock at the end of April. I ended up getting the August Smart Lock Pro with the Connect module. Now that I’ve used it for a month and a half, I feel like I can finally review it.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22review.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22review.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Mom cuts the cord</title><link href="/posts/Mom-cuts-the-cord/" rel="alternate" type="text/html" title="Mom cuts the cord" /><published>2018-05-31T07:12:06-04:00</published><updated>2018-05-31T07:12:06-04:00</updated><id>/posts/Mom-cuts-the-cord</id><content type="html" xml:base="/posts/Mom-cuts-the-cord/">&lt;p&gt;OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. My mother. The same woman who spent the better part of a decade (I cut the cord in late 2008) saying how she didn’t understand how I could not have cable. Someone check the temperature in Hell will ya? :)&lt;/p&gt;
-
-&lt;p&gt;All kidding aside, Mom (and Dad before he passed) has spent the past several years canceling Dish and DirecTV and switching back-n-forth between them to get the best ‘new customer’ rates and deals. But as Mom starts eyeing retirement and DirecTV keeps upping her bill $2 at a time for various fees, she’d had enough.&lt;/p&gt;
-
-&lt;p&gt;So, over the course of the last few months, I walked Mom through getting a TCL Roku TV:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/tcl.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;(Note, that’s actually a picture of the 55” which I bought last Aug. Mom bought the 32” even though I argued for the 37”)&lt;/p&gt;
-
-&lt;p&gt;Then I walked her through using the 1byone 50-mile HDTV antenna I had previously bought her. And finally, I signed up for the DirecTVNow beta on Roku and waited for the DVR functionality to launch.&lt;/p&gt;
-
-&lt;p&gt;With all the pieces in place, we spent the afternoon setting everything up during my recent visit. We had a few little bumps that weekend, and I’m going to be getting her a Tablo DUO in the near future so we can use the 1byone on both TVs, but otherwise she adjusted to it all pretty easily. I even hooked up a Roku stick to the TV in the spare bedroom and showed her its all exactly the same as in the living room (minus the OTA locals, of course). Listening to her argue w/ the DirecTV phone rep during the cancellation call was &lt;em&gt;extremely satisfying&lt;/em&gt; and made me proud. Mom still can’t seem to believe that for $35/mo she is getting everything she used to pay almost $100/mo for. But she’s already been telling her friends about it all :)&lt;/p&gt;
-
-&lt;p&gt;So .. if you still haven’t cut the cord, what are you waiting for?&lt;/p&gt;</content><author><name></name></author><category term="general" /><category term="ott" /><summary type="html">OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. My mother. The same woman who spent the better part of a decade (I cut the cord in late 2008) saying how she didn’t understand how I could not have cable. Someone check the temperature in Hell will ya? :)</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title><link href="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" rel="alternate" type="text/html" title="Upgrading PostgreSQL from 9.4 to 10.3 with pglogical" /><published>2018-04-05T09:15:46-04:00</published><updated>2018-04-05T09:15:46-04:00</updated><id>/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical</id><content type="html" xml:base="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/">&lt;p&gt;I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.&lt;/p&gt;
+&lt;p&gt;☮️&lt;/p&gt;
+</description>
+    <link>/posts/pgBouncer-and-auth-pass-thru/ </link>
+    <pubDate>2018-08-07T08:53:28-04:00</pubDate>
+    <guid isPermaLink="true">/posts/pgBouncer-and-auth-pass-thru/</guid>
+   </item>
+  
+   <item>
+    <title>Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title>
+    <description>&lt;p&gt;I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; is a logical replication system implemented entirely as a PostgreSQL extension. Fully integrated, it requires no triggers or external programs. This makes it faster than Slony, Londiste, et al. It is also (roughly) the basis upon which logical replication in Pg 10 core is built.&lt;/p&gt;
 
@@ -802,4 +786,533 @@ port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5433				&lt;span class=&quot
 
 &lt;p&gt;7: Reload PostgreSQL&lt;/p&gt;
 
-&lt;p&gt;8: Remove the OS packages using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;apt&lt;/code&gt;&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><summary type="html">I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of pglogical and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;p&gt;8: Remove the OS packages using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;apt&lt;/code&gt;&lt;/p&gt;
+</description>
+    <link>/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/ </link>
+    <pubDate>2018-04-05T09:15:46-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/</guid>
+   </item>
+  
+   <item>
+    <title>updated PostgreSQL homebrew script</title>
+    <description>&lt;p&gt;With the release of PostgreSQL 10, I’ve updated my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg&lt;/code&gt; script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter’s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I’m pretty pleased with the new version actually.&lt;/p&gt;
+
+&lt;p&gt;As always, it’s been added as a gist:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/zsh&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;no_restart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# is the version requested installed?&lt;/span&gt;
+brew &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--version&lt;/span&gt; postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &amp;amp;&amp;gt;/dev/null
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 0 &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# yes, carry on&lt;/span&gt;
+  :
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# nope, so install it&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Installing PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+  brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;petere/postgresql/postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# is postgresql is running?&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /usr/local/var/postgres/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;do
+  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;basename&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;is_running&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;ps &lt;span class=&quot;nt&quot;&gt;-few&lt;/span&gt;|egrep &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;[p]ostgres.*-D.*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;is_running&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# nope, carry on&lt;/span&gt;
+    :
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# it is. is it the requested version?&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+      &lt;span class=&quot;c&quot;&gt;# yup, carry on&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;no_restart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;t
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+      &lt;span class=&quot;c&quot;&gt;# nope, so kill it&lt;/span&gt;
+      &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Stopping PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+      /usr/local/opt/postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/bin/pg_ctl &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+          &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; /usr/local/var/postgres/&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;check_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+          stop &lt;span class=&quot;nt&quot;&gt;-w&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-mf&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'stopped'&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fi
+  fi
+done&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# what version is active?&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; /usr/local/bin/psql &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;/usr/bin/stat &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; %Y /usr/local/bin/psql | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f3&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\-&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f2&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\@&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f2&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else
+    &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# is the active version the requested version?&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# yup, carry on&lt;/span&gt;
+  :
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# nope, so deactivate it&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Deactivating PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+  brew &lt;span class=&quot;nb&quot;&gt;unlink&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--overwrite&lt;/span&gt; postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;active_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f3-&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# and activate the correct version&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Activating PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+  brew &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--overwrite&lt;/span&gt; postgresql@&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'created'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;cut&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f3-&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# point to the correct data dir and port&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/var/postgres/&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;PGPORT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;54&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;tr&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; .&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# should we be starting a cluster?&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;no_restart&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;t&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# nope, carry on&lt;/span&gt;
+  :
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# yup. has the cluster been initialized?&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# nope, so let's do that&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Initializing PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; cluster... &quot;&lt;/span&gt;
+    initdb &lt;span class=&quot;nt&quot;&gt;-k&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; initdb &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;port = &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGPORT&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_destination = 'stderr'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;logging_collector = on&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_filename = 'postgresql-%a.log'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_truncate_on_rotation = on&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_rotation_age = 1d&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_rotation_size = 0&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_timezone = 'US/Michigan'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/postgresql.conf
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# yup, carry on&lt;/span&gt;
+    :
+  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# start the cluster&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Starting PostgreSQL &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;wanted_ver&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;... &quot;&lt;/span&gt;
+  pg_ctl &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; start  &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /tmp/pg.start 2&amp;gt;&amp;amp;1
+  &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'server start'&lt;/span&gt; /tmp/pg.start
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-x&lt;/span&gt; /usr/local/bin/pg_isready &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then
+      &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+      &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-eq&lt;/span&gt; 1 &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# wait for the cluster to be available before exiting&lt;/span&gt;
+        pg_isready &lt;span class=&quot;nt&quot;&gt;-q&lt;/span&gt;
+        &lt;span class=&quot;nv&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;done
+    fi
+fi
+
+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;export PGDATA=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGDATA&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;export PGPORT=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PGPORT&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Enjoy.&lt;/p&gt;
+</description>
+    <link>/posts/updated-PostgreSQL-homebrew-script/ </link>
+    <pubDate>2017-10-16T09:09:23-04:00</pubDate>
+    <guid isPermaLink="true">/posts/updated-PostgreSQL-homebrew-script/</guid>
+   </item>
+  
+   <item>
+    <title>When you cannot get there from here</title>
+    <description>&lt;p&gt;Connecting to a PostgreSQL instance isn’t hard generally, but sometimes you can run into issues. Sometimes a port isn’t open on a firewall, or the server is in a VLAN that you can’t get to, or perhaps the server isn’t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you’re connection isn’t authorized (which is not the same as being unable to &lt;em&gt;authenticate&lt;/em&gt;). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you’re facing. Let’s dive into each scenario and see what the error looks like, shall we?&lt;/p&gt;
+
+&lt;h4 id=&quot;scenario-1---bad-password&quot;&gt;Scenario 1 - Bad password&lt;/h4&gt;
+
+&lt;p&gt;Let’s first assume that everything is working and you &lt;em&gt;can&lt;/em&gt; actually connect to the PostgreSQL instance, but you can’t authenticate. The error will look like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/authentication.png&quot; alt=&quot;auth failed&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see, the message makes it pretty clear that you were able to connect, but your credentials were wrong (you were &lt;em&gt;authorized&lt;/em&gt; to connect, but failed to &lt;em&gt;authenticate&lt;/em&gt;). Did you type the password incorrectly? Is there a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;~/.pgpass&lt;/code&gt; &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-pgpass.html&quot;&gt;file&lt;/a&gt; that is providing the password for you? Do you have &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGPASSWORD&lt;/code&gt; defined in your &lt;a href=&quot;https://www.postgresql.org/docs/current/static/libpq-envars.html&quot;&gt;environment&lt;/a&gt;? Fix the password being passed to PostgreSQL, and you won’t have further issues in this scenario.&lt;/p&gt;
+
+&lt;h4 id=&quot;scenario-2---pg_hbaconf-rejects-you&quot;&gt;Scenario 2 - pg_hba.conf rejects you&lt;/h4&gt;
+
+&lt;p&gt;For our second scenario, we’re going to assume that you &lt;em&gt;can&lt;/em&gt; actually connect to the PostgreSQL instance, but there is an entry in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; denying you access. First, we’ll try connecting via a local Unix socket:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/reject_socket.png&quot; alt=&quot;reject socket&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As you can see, it straight up tells you that you have been &lt;em&gt;explicitly denied access&lt;/em&gt;. It may be rejecting connections via Unix sockets completely, or it may be rejecting connection as the specified user via Unix socket, or it may be rejecting connections to the specified database via Unix sock. You could determine which of these scenarios is true by trying a different user on the same database and then trying the same user on a different database. In any case, the problem &lt;em&gt;is not&lt;/em&gt; networking or firewall related. The DBA needs to adjust &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to allow connections of this type, or you need to connect via a TCP port instead of a Unix socket. Discuss with your DBA.&lt;/p&gt;
+
+&lt;p&gt;Now, let’s try via a TCP port:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/reject_port.png&quot; alt=&quot;reject port&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Again, you can see that it pretty plainly tells you that you have been &lt;em&gt;explicitly denied&lt;/em&gt;. In this case though, it may be rejecting your IP address specifically, your entire network segment, your id, that database, or the fact that you didn’t make an SSL connection. You can whittle this down by trying a different user on the same db, trying the same user on a different db, or switching to an SSL connection and repeating these tests. (I assume that you can’t change your IP address. But perhaps you could make the same test cases from another computer). Again, you’ll probably need the DBA to resolve this with you.&lt;/p&gt;
+
+&lt;h4 id=&quot;scenario-3---pg_hbaconf-doesnt-allow-you&quot;&gt;Scenario 3 - pg_hba.conf doesn’t allow you&lt;/h4&gt;
+
+&lt;p&gt;I know what you’re thinking. “Isn’t this the same as above?”. And the answer is “no it is not”. Above, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; file had an entry that matched your incoming connection and said to &lt;strong&gt;explicitly&lt;/strong&gt; reject it. In this scenario, there is &lt;em&gt;no entry that matches your connection&lt;/em&gt; and you end up &lt;strong&gt;implicitly&lt;/strong&gt; denied.&lt;/p&gt;
+
+&lt;p&gt;Again, we’ll start by using a Unix socket:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/noentry_socket.png&quot; alt=&quot;no entry socket&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once more, the message pretty clearly tells you what is wrong. As it says, &lt;em&gt;there is no entry in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; that matches your incoming connection&lt;/em&gt;. And since PostgreSQL tries to err on the side of caution, when it can’t find an entry stating definitively what to do, it rejects you. The same troubleshooting steps as above apply (change the user/db, etc). And also like above, the DBA is going to need to edit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to add an entry for your connection.&lt;/p&gt;
+
+&lt;p&gt;Now, what does it look like over a TCP port:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/noentry_port.png&quot; alt=&quot;no entry port&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It’s the same error message as above but showing your IP address instead of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[local]&lt;/code&gt;. And the same debugging applies. Once again, the DBA will need to add an entry to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; to resolve this.&lt;/p&gt;
+
+&lt;h4 id=&quot;scenario-4---everything-else-no-really&quot;&gt;Scenario 4 - everything else (no, really)&lt;/h4&gt;
+
+&lt;p&gt;By default, PostgreSQL listens for connections on port 5432. Sometimes, your DBA (or your vendor) has chosen to run PostgreSQL on a different port for some reason. If you are not trying to connect to the correct port, you’ll get an error from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;psql&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you were trying to connect via a Unix socket, you’ll see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/socket_nope.png&quot; alt=&quot;socket nope&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If you were trying a TCP port connection, you’d see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/port_nope.png&quot; alt=&quot;port nope&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This error indicates that it cannot establish a network connection with PostgreSQL at the IP address (or UNix socket) you specified on the default port. Check to make sure you don’t have &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGPORT&lt;/code&gt; set incorrectly in your environment.&lt;/p&gt;
+
+&lt;p&gt;If you &lt;em&gt;are&lt;/em&gt; using the correct port, and you still see one of two errors above, then the issue will be one of the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;PostgreSQL isn’t running&lt;/li&gt;
+  &lt;li&gt;PostgreSQL is running, but on a different IP address than you’re trying to connect to&lt;/li&gt;
+  &lt;li&gt;PostgreSQL is running, but you cannot establish a network connection from here to there&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If PostgreSQL isn’t running, talk to your DBA about why (maybe it died, maybe it’s a maintenance window). If you are affected by the 2&lt;sup&gt;nd&lt;/sup&gt; bullet item, you’ll have to talk with your DBA about the proper IP address to use when connecting. Note that, by default, PostgreSQL only listens on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;localhost&lt;/code&gt; and none of your other interfaces. If this hasn’t been changed (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;listen_addresses&lt;/code&gt; in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt;) then you’ll fall into this failure category. And if you’re plagued by the 3&lt;sup&gt;rd&lt;/sup&gt; bullet item, you’ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can’t connect to the other VLAN, or some other layer 3/4 tomfoolery.&lt;/p&gt;
+
+&lt;p&gt;So now you know all the (common) ways that connecting to PostgreSQL can fail and how to distinguish between them. With just a little bit of knowledge, you can communicate exactly what is happening to your DBA and make it easier for him/her to rectify the issue. Go forth, and happy PostgreSQL-ing.&lt;/p&gt;
+</description>
+    <link>/posts/When-you-cannot-get-there-from-here/ </link>
+    <pubDate>2017-07-25T07:42:47-04:00</pubDate>
+    <guid isPermaLink="true">/posts/When-you-cannot-get-there-from-here/</guid>
+   </item>
+  
+   <item>
+    <title>Installing pgBackRest on OSX</title>
+    <description>&lt;p&gt;If you’ve followed my previous posts (&lt;a href=&quot;https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/&quot;&gt;here&lt;/a&gt;), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don’t really care about any of the data therein, but if you do, let me guide you to &lt;a href=&quot;http://www.pgbackrest.org/&quot;&gt;pgBackRest&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;pgBackRest aims to be a simple, reliable backup and restore system that can seamlessly scale up to the largest databases and workloads.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Instead of relying on traditional backup tools like tar and rsync, pgBackRest implements all backup features internally and uses a custom protocol for communicating with remote systems. Removing reliance on tar and rsync allows for better solutions to database-specific backup challenges. The custom remote protocol allows for more flexibility and limits the types of connections that are required to perform a backup which increases security.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;pgBackRest is written in Perl, but don’t hold that against it. As of the 1.19 release, pgBackRest can now use S3 buckets as the storage backend. I &lt;em&gt;really&lt;/em&gt; like pgBackRest and tend to use it for myself and customers over any of the other tools in the PostgreSQL ecosphere. So, let’s get started by downloading the latest release from their site, and then installing it. For some reason, no one has added pgBackRest to Homebrew yet (someone, pls!) so let’s do it the manual way:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;wget &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; Downloads/pgbackrest-release-1.19.tar.gz https://github.com/pgbackrest/pgbackrest/archive/release/1.19.tar.gz
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;tar &lt;/span&gt;xvf Downloads/pgbackrest-release-1.19.tar.gz
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pgbackrest-release-1.19
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo cp&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; lib/pgBackRest /Library/Perl/5.18
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;find /Library/Perl/5.18/pgBackRest &lt;span class=&quot;nt&quot;&gt;-type&lt;/span&gt; f &lt;span class=&quot;nt&quot;&gt;-exec&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;644 &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt; +
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;find /Library/Perl/5.18/pgBackRest &lt;span class=&quot;nt&quot;&gt;-type&lt;/span&gt; d &lt;span class=&quot;nt&quot;&gt;-exec&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;755 &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt; +
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mv &lt;/span&gt;bin/pgbackrest /usr/local/bin
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo chmod &lt;/span&gt;755 /usr/local/bin/pgbackrest
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 770 /var/log/pgbackrest
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 770 /var/spool/pgbackrest
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo chown &lt;/span&gt;doug /var/&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;log,spool&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;/pgbackrest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(Keep in mind that I already had Perl setup to connect to PostgreSQL for other uses. You might need to install &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DBD::Pg&lt;/code&gt;.)&lt;/p&gt;
+
+&lt;p&gt;Now that pgBackRest is installed, let’s configure it. First, we’ll want to set some of the global properties that affect all pgBackRest operations:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;n&quot;&gt;global&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;level&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;console&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;bucket&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;hunleyd&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;pgbackrest&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;endpoint&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;amazonaws&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;com&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;XX&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;secret&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;XXX&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;region&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;us&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;east&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;retention&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;full&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;fast&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, we set the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;force the log level for all console output to ‘info’&lt;/li&gt;
+  &lt;li&gt;define the S3 bucket we want to use&lt;/li&gt;
+  &lt;li&gt;define the S3 endpoint to connect to&lt;/li&gt;
+  &lt;li&gt;define our S3 key&lt;/li&gt;
+  &lt;li&gt;define our S3 secret key&lt;/li&gt;
+  &lt;li&gt;set which region our bucket is in&lt;/li&gt;
+  &lt;li&gt;tell pgBackRest that we’re using S3 as the backend&lt;/li&gt;
+  &lt;li&gt;configure retention of full backups&lt;/li&gt;
+  &lt;li&gt;tell pgBackRest to issue a CHECKPOINT so backups can start right away instead of waiting for the next regular checkpoint&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, we need to tell pgBackRest which instance of PostgreSQL we want to backup and where to find it. Again, if you used my previous posts to install multiple versions via Homebrew, this should look familiar:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[&lt;span class=&quot;m&quot;&gt;96&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;6&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5496&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;96&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;95&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5495&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;95&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;94&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5494&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;94&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;93&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5493&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;93&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;92&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5492&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;92&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;91&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5491&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;91&lt;/span&gt;
+
+[&lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;]
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;n&quot;&gt;usr&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;postgres&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;5490&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;repo&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;=/&lt;span class=&quot;m&quot;&gt;90&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You can see for each pg cluster, we define:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;the path to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; directory&lt;/li&gt;
+  &lt;li&gt;the port the cluster listens on&lt;/li&gt;
+  &lt;li&gt;and the path we want to store the backups in on our backend&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When you put this all together, we’ll be connecting to an S3 bucket called, creatively enough, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; and then we will create a top-level directory (‘96’, ‘95’, etc) to store each cluster’s backups in.&lt;/p&gt;
+
+&lt;p&gt;Now that we’ve got our configuration complete, let’s do an initial backup of one of the clusters. First, we have to create the appropriate directories and metadata on the backend:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pgbackrest &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.config/pgbackrest/pgbackrest.conf stanza-create
+2017-06-14 14:03:46.643 P00   INFO: stanza-create &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;begin 1.19: &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/.config/pgbackrest/pgbackrest.conf &lt;span class=&quot;nt&quot;&gt;--db-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/var/postgres/9.2 &lt;span class=&quot;nt&quot;&gt;--db-port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5492 &lt;span class=&quot;nt&quot;&gt;--log-level-console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nt&quot;&gt;--repo-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/92 &lt;span class=&quot;nt&quot;&gt;--repo-s3-bucket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;hunleyd-pgbackrest &lt;span class=&quot;nt&quot;&gt;--repo-s3-endpoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3.amazonaws.com &lt;span class=&quot;nt&quot;&gt;--repo-s3-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-2 &lt;span class=&quot;nt&quot;&gt;--repo-type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3 &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92
+2017-06-14 14:03:57.971 P00   INFO: stanza-create &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;end: completed successfully
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Then, we have pgBackRest verify that everything is properly setup. Note that this includes checking to ensure you tweaked &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; according to the directions on their site (I’m not going to repeat them here):&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pgbackrest &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.config/pgbackrest/pgbackrest.conf check
+2017-06-14 14:04:17.991 P00   INFO: check &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;begin 1.19: &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/.config/pgbackrest/pgbackrest.conf &lt;span class=&quot;nt&quot;&gt;--db-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/var/postgres/9.2 &lt;span class=&quot;nt&quot;&gt;--db-port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5492 &lt;span class=&quot;nt&quot;&gt;--log-level-console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nt&quot;&gt;--repo-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/92 &lt;span class=&quot;nt&quot;&gt;--repo-s3-bucket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;hunleyd-pgbackrest &lt;span class=&quot;nt&quot;&gt;--repo-s3-endpoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3.amazonaws.com &lt;span class=&quot;nt&quot;&gt;--repo-s3-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-2 &lt;span class=&quot;nt&quot;&gt;--repo-type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3 &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92
+2017-06-14 14:04:32.576 P00   INFO: WAL segment 000000010000000000000067 successfully stored &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the archive at &lt;span class=&quot;s1&quot;&gt;'/92/archive/92/9.2-1/0000000100000000/000000010000000000000067-24adde40a35b1f3ed17f545153f0e01c44b0ada5.gz'&lt;/span&gt;
+2017-06-14 14:04:32.576 P00   INFO: check &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;end: completed successfully
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And since that all worked, we can take our first actual backup:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pgbackrest &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.config/pgbackrest/pgbackrest.conf backup
+2017-06-14 14:10:44.378 P00   INFO: backup &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;begin 1.19: &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/.config/pgbackrest/pgbackrest.conf &lt;span class=&quot;nt&quot;&gt;--db-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/var/postgres/9.2 &lt;span class=&quot;nt&quot;&gt;--db-port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;5492 &lt;span class=&quot;nt&quot;&gt;--log-level-console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nt&quot;&gt;--repo-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/92 &lt;span class=&quot;nt&quot;&gt;--repo-s3-bucket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;hunleyd-pgbackrest &lt;span class=&quot;nt&quot;&gt;--repo-s3-endpoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3.amazonaws.com &lt;span class=&quot;nt&quot;&gt;--repo-s3-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-2 &lt;span class=&quot;nt&quot;&gt;--repo-type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3 &lt;span class=&quot;nt&quot;&gt;--retention-full&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2 &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--start-fast&lt;/span&gt;
+WARN: no prior backup exists, incr backup has been changed to full
+2017-06-14 14:10:49.435 P00   INFO: execute exclusive pg_start_backup&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; with label &lt;span class=&quot;s2&quot;&gt;&quot;pgBackRest backup started at 2017-06-14 14:10:45&quot;&lt;/span&gt;: backup begins after the requested immediate checkpoint completes
+2017-06-14 14:10:49.846 P00   INFO: backup start archive &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 000000010000000000000068, lsn &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0/68000020
+2017-06-14 14:10:57.090 P01   INFO: backup file /usr/local/var/postgres/9.2/pg_log/2017/week-16/index.html &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1.3MB, 3%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; checksum dcc73afe15f48863eb019b9cfbb1e24cbd2a4d7f
+&amp;lt;snip&amp;gt;
+2017-06-14 14:24:23.277 P01   INFO: backup file /usr/local/var/postgres/9.2/base/1/12040 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0B, 100%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+2017-06-14 14:24:23.964 P01   INFO: backup file /usr/local/var/postgres/9.2/base/1/12031 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0B, 100%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+2017-06-14 14:24:24.747 P01   INFO: backup file /usr/local/var/postgres/9.2/base/1/12021 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0B, 100%&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+2017-06-14 14:24:24.778 P00   INFO: full backup size &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 38.1MB
+2017-06-14 14:24:24.778 P00   INFO: execute exclusive pg_stop_backup&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; and &lt;span class=&quot;nb&quot;&gt;wait &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;all WAL segments to archive
+2017-06-14 14:24:41.428 P00   INFO: backup stop archive &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 000000010000000000000068, lsn &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0/68000178
+2017-06-14 14:24:45.320 P00   INFO: new backup label &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 20170614-141045F
+2017-06-14 14:24:47.844 P00   INFO: backup &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;end: completed successfully
+2017-06-14 14:24:47.920 P00   INFO: expire &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;begin 1.19: &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/.config/pgbackrest/pgbackrest.conf &lt;span class=&quot;nt&quot;&gt;--log-level-console&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nt&quot;&gt;--repo-path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/92 &lt;span class=&quot;nt&quot;&gt;--repo-s3-bucket&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;hunleyd-pgbackrest &lt;span class=&quot;nt&quot;&gt;--repo-s3-endpoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3.amazonaws.com &lt;span class=&quot;nt&quot;&gt;--repo-s3-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-2 &lt;span class=&quot;nt&quot;&gt;--repo-type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s3 &lt;span class=&quot;nt&quot;&gt;--retention-archive&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2 &lt;span class=&quot;nt&quot;&gt;--retention-full&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2 &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92
+2017-06-14 14:24:50.496 P00   INFO: full backup total &amp;lt; 2 - using oldest full backup &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;9.2-1 archive retention
+2017-06-14 14:24:51.796 P00   INFO: expire &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;end: completed successfully
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Neat!&lt;/p&gt;
+
+&lt;p&gt;Now, let’s check our S3 bucket, shall we?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_1.png&quot; alt=&quot;s3_1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see here the top-level contents of my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hunleyd-pgbackrest&lt;/code&gt; bucket. As stated before, each cluster gets its own sub-dir. Since we just backed up the ‘92’ cluster, let’s look inside it’s dir.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_2.png&quot; alt=&quot;s3_2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see that pgBackRest has created as directory for the WALs to be stored in whenever &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;archive_command&lt;/code&gt; fires and another directory for the actual cluster backups. Peeking into the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;archive&lt;/code&gt; dir, we see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_3.png&quot; alt=&quot;s3_3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This shows us some metadata, and shows that pgBackRest creates a directory for each timeline of the cluster. Since we are on timeline 1 in our 92 cluster, we have a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;9.2-1&lt;/code&gt; directory inside of which, we find:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_4.png&quot; alt=&quot;s3_4&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Our archived WALs have been compressed and uploaded. Hurray!&lt;/p&gt;
+
+&lt;p&gt;Now, let’s check inside the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;backup&lt;/code&gt; directory:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_5.png&quot; alt=&quot;s3_5&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see some metadata, and we can see a folder named the same as the backup label that was used when we ran our full backup. Inside that folder, we can see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_6.png&quot; alt=&quot;s3_6&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Hey look, more metadata! And another folder! :) So, let’s dive into the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_data&lt;/code&gt; folder where we see:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/s3_7.png&quot; alt=&quot;s3_7&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Holy crap! It’s a basebackup of our &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGDATA&lt;/code&gt; data directory. And all the files have been nicely compressed for us. Rock on, pgBackRest!&lt;/p&gt;
+
+&lt;p&gt;And just in case you wanted to see the current backup catalog:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pgbackrest &lt;span class=&quot;nt&quot;&gt;--stanza&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;92 &lt;span class=&quot;nt&quot;&gt;--config&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.config/pgbackrest/pgbackrest.conf info
+stanza: 92
+    status: ok
+    wal archive min/max: 000000010000000000000068 / 000000010000000000000068
+
+    full backup: 20170614-141045F
+        timestamp start/stop: 2017-06-14 14:10:45 / 2017-06-14 14:24:43
+        wal start/stop: 000000010000000000000068 / 000000010000000000000068
+        database size: 38.1MB, backup size: 38.1MB
+        repository size: 5.6MB, repository backup size: 5.6MB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(look at that compression!)&lt;/p&gt;
+</description>
+    <link>/posts/Installing-pgBackRest-on-OSX/ </link>
+    <pubDate>2017-06-14T08:40:30-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Installing-pgBackRest-on-OSX/</guid>
+   </item>
+  
+   <item>
+    <title>EXPLAINing intermittent perf problems</title>
+    <description>&lt;p&gt;&lt;img src=&quot;http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg&quot; class=&quot;lleader&quot; /&gt;We’ve all gotten the dreaded email/call from a user stating that a query is “slow sometimes”. If you’re lucky, the “sometimes” actually ends up being fairly consistent and you can fairly easily determine what’s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?&lt;/p&gt;
+
+&lt;p&gt;For starters, you as the DBA should have your PostgreSQL logging configured to log these slow performing queries. After all, you and the devs and the users can agree that all queries should complete in some measure of time (1 sec, 1 minute, etc). So, once you know what this acceptable elapsed time is, you can easily log any query that runs longer by just setting this in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;log_min_duration_statement&lt;/span&gt; = &lt;span class=&quot;m&quot;&gt;1000&lt;/span&gt;   &lt;span class=&quot;c&quot;&gt;# log anything running longer than 1s
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And now, you have all queries with long run times logged automatically. And these show up nicely in your pgBadger reports too!&lt;/p&gt;
+
+&lt;p&gt;If you’re lucky, you’ll be able to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; to see why the query is behaving poorly. However, if your life is like mine, the explain plan will be reasonable and won’t have any smoking guns to speak of. Which means the performance is either load dependent or being influenced by other processes (something is blowing out your caches, for example). In these cases, what you really need is the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; output from the very instant that it performed poorly. However, you can’t go back in time to get it. But what you can do is make use of the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; module that ships with PostgreSQL.&lt;/p&gt;
+
+&lt;p&gt;In case the name wasn’t obvious enough, the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; module causes PostgreSQL to automatically run &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; on queries according to thresholds that you configure. These automatically generated plans are then logged into the normal PostgreSQL logs. Let’s walk through setting it up and see how it works.&lt;/p&gt;
+
+&lt;p&gt;First, in your &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; we want to enable the module:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;shared_preload_libraries&lt;/span&gt; = &lt;span class=&quot;s1&quot;&gt;'auto_explain'&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# change requires restart
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As stated, you will have to restart the postmaster to get the module to load. However, let’s configure it in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; first:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Add settings for extensions here
+#
+# auto_explain
+# http://www.postgresql.org/docs/current/static/auto-explain.html
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;auto_explain&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log_analyze&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auto_explain&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log_timing&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auto_explain&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log_verbose&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auto_explain&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log_min_duration&lt;/span&gt; = &lt;span class=&quot;s1&quot;&gt;'1000ms'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auto_explain&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log_nested_statements&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;auto_explain&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;log_buffers&lt;/span&gt; = &lt;span class=&quot;n&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# auto_explain
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;What we’ve done here is configure &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; to&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN ANALYZE&lt;/code&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/li&gt;
+  &lt;li&gt;to use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TIMING&lt;/code&gt; option of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;to use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;VERBOSE&lt;/code&gt; option of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;to log the plan for anything running longer than 1 second (matches &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;log_min_duration_statement&lt;/code&gt;, above)&lt;/li&gt;
+  &lt;li&gt;to include statements inside a function to also be logged&lt;/li&gt;
+  &lt;li&gt;to use the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BUFFERS&lt;/code&gt; option of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As with most &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GUC&lt;/code&gt; in PostgreSQL, these can all be changed using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SET&lt;/code&gt; in a given session, but we’re setting the defaults here. Now that we have them setup, let’s see what it looks like in practice.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;022&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;generate_series&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;23&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;565&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We connected to PostgreSQL, created a test table, and then used &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;generate_series&lt;/code&gt; to insert 10k rows. In our logs, the following were added:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;m&quot;&gt;2016&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;20&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;30&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EST&lt;/span&gt; [&lt;span class=&quot;m&quot;&gt;28838&lt;/span&gt;]: [&lt;span class=&quot;m&quot;&gt;18&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;=[&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt;:  &lt;span class=&quot;n&quot;&gt;duration&lt;/span&gt;: &lt;span class=&quot;m&quot;&gt;33&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;987&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;statement&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;(&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;);
+&lt;span class=&quot;m&quot;&gt;2016&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;20&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;59&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EST&lt;/span&gt; [&lt;span class=&quot;m&quot;&gt;28838&lt;/span&gt;]: [&lt;span class=&quot;m&quot;&gt;19&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;=[&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt;:  &lt;span class=&quot;n&quot;&gt;duration&lt;/span&gt;: &lt;span class=&quot;m&quot;&gt;16&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;461&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;plan&lt;/span&gt;:
+  &lt;span class=&quot;n&quot;&gt;Query&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Text&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;(&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;) &lt;span class=&quot;n&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;generate_series&lt;/span&gt;(&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt;);
+  &lt;span class=&quot;n&quot;&gt;Insert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;public&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  (&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;00&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;50&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;02&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;1000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;32&lt;/span&gt;) (&lt;span class=&quot;n&quot;&gt;actual&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;16&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;459&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;16&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;459&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loops&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;)
+    &lt;span class=&quot;n&quot;&gt;Buffers&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;shared&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hit&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;10085&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;47&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dirtied&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;45&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;I&lt;/span&gt;/&lt;span class=&quot;n&quot;&gt;O&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Timings&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;012&lt;/span&gt;
+    -&amp;gt;  &lt;span class=&quot;n&quot;&gt;Subquery&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Scan&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;*SELECT*&quot;&lt;/span&gt;  (&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;00&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;50&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;02&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;1000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;32&lt;/span&gt;) (&lt;span class=&quot;n&quot;&gt;actual&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;010&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;755&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loops&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;)
+          &lt;span class=&quot;n&quot;&gt;Output&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;*SELECT*&quot;&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;generate_series&lt;/span&gt;
+          -&amp;gt;  &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt;  (&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;00&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;15&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;02&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;1000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;) (&lt;span class=&quot;n&quot;&gt;actual&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;007&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;364&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loops&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;)
+                &lt;span class=&quot;n&quot;&gt;Output&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;generate_series&lt;/span&gt;(&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt;)
+&lt;span class=&quot;m&quot;&gt;2016&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;20&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;59&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EST&lt;/span&gt; [&lt;span class=&quot;m&quot;&gt;28838&lt;/span&gt;]: [&lt;span class=&quot;m&quot;&gt;20&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;=[&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt;:  &lt;span class=&quot;n&quot;&gt;duration&lt;/span&gt;: &lt;span class=&quot;m&quot;&gt;23&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;374&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;statement&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;(&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;) &lt;span class=&quot;n&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;generate_series&lt;/span&gt;(&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt;);
+&lt;span class=&quot;m&quot;&gt;2016&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;21&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;00&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EST&lt;/span&gt; [&lt;span class=&quot;m&quot;&gt;30079&lt;/span&gt;]: [&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;=,&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;=,&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;=,&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt;:  &lt;span class=&quot;n&quot;&gt;automatic&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;analyze&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;doug.public.x&quot;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;system&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;usage&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;CPU&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;00&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;u&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sec&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;elapsed&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sec&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(Note that for illustrative purposes, I issued &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SET auto_explain.log_min_duration = '0ms'&lt;/code&gt;)&lt;/p&gt;
+
+&lt;p&gt;So, you can see that the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CREATE TABLE&lt;/code&gt; didn’t log anything through the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; module, but the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INSERT INTO&lt;/code&gt; did. This is a boring example, so let’s try a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; against our table:&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;┌───────┐&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;   &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;├───────┤&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;     &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;    &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;   &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1001&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1002&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1003&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1004&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;│&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1005&lt;/span&gt;  &lt;span class=&quot;err&quot;&gt;│&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;└───────┘&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;982&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and the logs look like:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;m&quot;&gt;2016&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;27&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;38&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EST&lt;/span&gt; [&lt;span class=&quot;m&quot;&gt;322&lt;/span&gt;]: [&lt;span class=&quot;m&quot;&gt;7&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;=,&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;=,&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;=,&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt;:  &lt;span class=&quot;n&quot;&gt;checkpoint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;starting&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;
+&lt;span class=&quot;m&quot;&gt;2016&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;27&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;46&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EST&lt;/span&gt; [&lt;span class=&quot;m&quot;&gt;322&lt;/span&gt;]: [&lt;span class=&quot;m&quot;&gt;8&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;=,&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;=,&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;=,&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;= &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt;:  &lt;span class=&quot;n&quot;&gt;checkpoint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;complete&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;wrote&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;75&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffers&lt;/span&gt; (&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;%); &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;transaction&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;(&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;) &lt;span class=&quot;n&quot;&gt;added&lt;/span&gt;, &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;removed&lt;/span&gt;, &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;recycled&lt;/span&gt;; &lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;7&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;569&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;092&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;total&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;7&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;920&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;; &lt;span class=&quot;n&quot;&gt;sync&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;files&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;23&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;longest&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;092&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;average&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;004&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;; &lt;span class=&quot;n&quot;&gt;distance&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;685&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kB&lt;/span&gt;, &lt;span class=&quot;n&quot;&gt;estimate&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;685&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;kB&lt;/span&gt;
+&lt;span class=&quot;m&quot;&gt;2016&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;48&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EST&lt;/span&gt; [&lt;span class=&quot;m&quot;&gt;28838&lt;/span&gt;]: [&lt;span class=&quot;m&quot;&gt;21&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;=[&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt;:  &lt;span class=&quot;n&quot;&gt;duration&lt;/span&gt;: &lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;120&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;plan&lt;/span&gt;:
+  &lt;span class=&quot;n&quot;&gt;Query&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Text&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;SELECT&lt;/span&gt; * &lt;span class=&quot;n&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;;
+  &lt;span class=&quot;n&quot;&gt;Limit&lt;/span&gt;  (&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;561&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;561&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;12&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;) (&lt;span class=&quot;n&quot;&gt;actual&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;073&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;073&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loops&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;)
+    &lt;span class=&quot;n&quot;&gt;Output&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Buffers&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;shared&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hit&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;45&lt;/span&gt;
+    -&amp;gt;  &lt;span class=&quot;n&quot;&gt;Sort&lt;/span&gt;  (&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;561&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;586&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;) (&lt;span class=&quot;n&quot;&gt;actual&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;072&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;072&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loops&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;)
+          &lt;span class=&quot;n&quot;&gt;Output&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;Sort&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Key&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;Sort&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Method&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;top&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;heapsort&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;Memory&lt;/span&gt;: &lt;span class=&quot;m&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kB&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;Buffers&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;shared&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hit&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;45&lt;/span&gt;
+          -&amp;gt;  &lt;span class=&quot;n&quot;&gt;Seq&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Scan&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;public&lt;/span&gt;.&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  (&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;00&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;345&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;00&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;) (&lt;span class=&quot;n&quot;&gt;actual&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;018&lt;/span&gt;..&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;224&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;10000&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;loops&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;)
+                &lt;span class=&quot;n&quot;&gt;Output&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;Buffers&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;shared&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hit&lt;/span&gt;=&lt;span class=&quot;m&quot;&gt;45&lt;/span&gt;
+&lt;span class=&quot;m&quot;&gt;2016&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;13&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;28&lt;/span&gt;:&lt;span class=&quot;m&quot;&gt;48&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EST&lt;/span&gt; [&lt;span class=&quot;m&quot;&gt;28838&lt;/span&gt;]: [&lt;span class=&quot;m&quot;&gt;22&lt;/span&gt;-&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;doug&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;=&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt;,&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;=[&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;] &lt;span class=&quot;n&quot;&gt;LOG&lt;/span&gt;:  &lt;span class=&quot;n&quot;&gt;duration&lt;/span&gt;: &lt;span class=&quot;m&quot;&gt;11&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;813&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;statement&lt;/span&gt;: &lt;span class=&quot;n&quot;&gt;SELECT&lt;/span&gt; * &lt;span class=&quot;n&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(You can safely ignore the checkpoint lines at the top there)&lt;/p&gt;
+
+&lt;p&gt;There you have both the statement we ran, and the full &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN&lt;/code&gt; plan. You can see we did a sequential scan on the table (looks like it was all in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;shared_buffers&lt;/code&gt; too) and then we passed that up to a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sort&lt;/code&gt; node for an in-memory sort, and then passed that result set up to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;limit&lt;/code&gt; node.&lt;/p&gt;
+
+&lt;p&gt;While this is a stupid simple example, I hope you can see that having this in production for large, complicated queries will allow you to better diagnose issues. For example, simply doing a manual &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXPLAIN ANALYZE&lt;/code&gt; on the same query and seeing that you get a different plan is potentially enough to rule out (or in) certain culprits for the intermittent performance issue.
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;sup&gt;1&lt;/sup&gt; - This option causes the postmaster to collect info on &lt;em&gt;every&lt;/em&gt; statement executed, even if &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;auto_explain&lt;/code&gt; isn’t going to log it. It has a measurable impact on overall performance. Please test on your workload and decide for yourself if the overhead is worth the trade-off&lt;/p&gt;
+</description>
+    <link>/posts/EXPLAINing-intermittent-perf-problems/ </link>
+    <pubDate>2016-11-28T07:24:12-05:00</pubDate>
+    <guid isPermaLink="true">/posts/EXPLAINing-intermittent-perf-problems/</guid>
+   </item>
+  
+ </channel>
+</rss>
