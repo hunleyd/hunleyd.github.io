@@ -5,12 +5,35 @@
   <description>Posts tagged as 'general'</description>
   <atom:link href="/feeds/feed.general.xml" rel="self" type="application/rss+xml" />
   <link>/tags/#general/</link>
-  <updated>2020-06-25T08:42:03-04:00</updated>
+  <updated>2020-07-19T13:41:48-04:00</updated>
   <author>
    <name></name>
    <email></email>
   </author>
 
+  
+   <item>
+    <title>Bye Pi Hello NUC</title>
+    <description>&lt;p&gt;About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin  a new experiment with an Intel NUC. It’s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn’t want to go that route. So I looked around, did some research, saved up some money and ended up with:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/intel_nuc_8.jpg&quot; class=&quot;lleader&quot; /&gt;An Intel NUC 8 Performance-G Kit. \  This is a Core i7-based kit (NUC8i7HVK) that just needs RAM and storage added. It’s a Radeon RX Vega M GH 32GB video card, an 802.11{a,b,g,n} device, 2x Gb Ethernet, 2x USB 2.0 ports, 5x USB 3.0 ports. 2x HDMI ports, 2x mini-Display ports, 2x Thunderbolt 3 ports, and a Bluetooth 4.2 radio. All inside a 6.4 lb 10.8”x7.8”x4.8” case. I fricking love it.&lt;/p&gt;
+
+&lt;p&gt;I put a pair of HyperX Kingston Technology Impact 16GB 2400MHz DDR4 sticks in it after talking myself down from a pair of 32GB sticks.&lt;/p&gt;
+
+&lt;p&gt;And finally, I put in a pair of Samsung 970 PRO SSD 1TB M.2 NVMe SSDs (OK, that’s a lie. I went with just one initially, but bought a second one like a month later).&lt;/p&gt;
+
+&lt;p&gt;Given the nature of the beast I’d assembled, I started with &lt;a href=&quot;https://clearlinux.org/&quot;&gt;ClearLinux&lt;/a&gt; as my OS. It’s &lt;strong&gt;stupid fast&lt;/strong&gt;. And it’s neat and interesting in that ‘not like other girls’ kinda way. Ultimately though, I ended up ditching it due to the state of packaging. I’ve read that they have some new packaging initiatives though so you shouldn’t rule it out based on my experience last year. I then move to Ubuntu LTS for a short while, realized my mistake, and am currently on Ubuntu Server. So far, it’s doing what I need it to do but, protip:&lt;/p&gt;
+
+&lt;p&gt;Make sure you google ‘how to X on ubuntu server’&lt;/p&gt;
+
+&lt;p&gt;2 If you just Google ‘how to X ubuntu’ then a lot of the time what you find won’t apply. Networking, for example, using something called &lt;a href=&quot;https://netplan.io/&quot;&gt;netplan&lt;/a&gt; which is nothing ike regular Ubuntu desktop networking.&lt;/p&gt;
+
+&lt;p&gt;Anyway, that’s all for now. I just wante to post this as background info cause I plan on posting about my travails w/ the Ubuntu Server as I go forward.&lt;/p&gt;
+</description>
+    <link>/posts/Bye-Pi-Hello-NUC/ </link>
+    <pubDate>2020-07-19T08:14:03-04:00</pubDate>
+    <guid isPermaLink="true">/posts/Bye-Pi-Hello-NUC/</guid>
+   </item>
   
    <item>
     <title>The continuing adventures of Mom cutting the cord</title>
@@ -210,23 +233,6 @@ $2,406.59 money in my pocket
     <link>/posts/Hello_eero/ </link>
     <pubDate>2016-03-30T10:00:25-04:00</pubDate>
     <guid isPermaLink="true">/posts/Hello_eero/</guid>
-   </item>
-  
-   <item>
-    <title>Flyover State</title>
-    <description>&lt;p&gt;&lt;a href=&quot;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&quot;&gt;&lt;img src=&quot;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&quot; class=&quot;lleader&quot; /&gt;&lt;/a&gt;&amp;lt;/a&amp;gt;Being a native of Ohio, I can assure you that I’ve heard every form of ‘flyover state’ insult you could care to level at me. And while I won’t debate the merits of Ohio in this post, I will take a minute to point out something that I’ve been saying for quite some time.&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;Ohio really is pretty centrally located to anywhere you might care to be other than the left coast.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;The map I’ve linked to in this post shows what $50 worth of gas means to someone from Columbus, OH as far as their ability to drive anywhere. Of course, it makes an assumption about the price of gas and the car’s mpg (24mpg, iirc) but the point stands.&lt;/p&gt;
-
-&lt;p&gt;And this is what I’ve been telling my coworker a lot lately. I travel periodically for business, and whenever I do, I &lt;strong&gt;drive&lt;/strong&gt; (unless it’s just way too impractical). It &lt;em&gt;alway&lt;/em&gt; trips people out when I do. I’d much rather grab a rental car, and spend a day on my own schedule seeing the country then being crammed in like cattle and dealing with the TSA. And this image shows that I’m generally saving the company money as well.&lt;/p&gt;
-
-&lt;p&gt;So, you all can keep flying over. In the meantime, I’ll be driving around enjoying myself,&lt;/p&gt;
-</description>
-    <link>/posts/Flyover-state/ </link>
-    <pubDate>2016-02-09T11:59:24-05:00</pubDate>
-    <guid isPermaLink="true">/posts/Flyover-state/</guid>
    </item>
   
  </channel>
