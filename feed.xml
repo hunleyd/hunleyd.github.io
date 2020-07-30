@@ -1,4 +1,80 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-07-19T14:39:06-04:00</updated><id>/feed.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">Bye Pi Hello NUC</title><link href="/posts/Bye-Pi-Hello-NUC/" rel="alternate" type="text/html" title="Bye Pi Hello NUC" /><published>2020-07-19T08:14:03-04:00</published><updated>2020-07-19T08:14:03-04:00</updated><id>/posts/Bye-Pi-Hello-NUC</id><content type="html" xml:base="/posts/Bye-Pi-Hello-NUC/">&lt;p&gt;About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin  a new experiment with an Intel NUC. It’s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn’t want to go that route. So I looked around, did some research, saved up some money and ended up with:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-07-30T13:10:07-04:00</updated><id>/feed.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">It’s Podman, man</title><link href="/posts/It-s-Podman-man/" rel="alternate" type="text/html" title="It’s Podman, man" /><published>2020-07-30T08:44:51-04:00</published><updated>2020-07-30T08:44:51-04:00</updated><id>/posts/It-s-Podman-man</id><content type="html" xml:base="/posts/It-s-Podman-man/">&lt;p&gt;As mentioned (very) briefly in other posts, I run &lt;a href=&quot;https://www.home-assistant.io/&quot;&gt;Home Assistant&lt;/a&gt; as the ‘control hub’ for all my “smart” devices in my home. I originally ran it via their ‘HASSOS’ Docker image but was never really happy with it. So when I most recently rebuilt my NUC, I decided to give this Podman thing a look. And so far, I seem to like it better. I’m still not entirely sold on this whole container bullshit, but whatever ;)&lt;/p&gt;
+
+&lt;p&gt;When I first decided to use Podman, the install directions for Ubuntu on the Podman &lt;a href=&quot;https://podman.io/getting-started/installation.html&quot;&gt;site&lt;/a&gt; were not updated to point to the proper Apt source, and I had to dig around on various GitHub issues for the project before finding the correct info:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; /etc/os-release
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;VERSION_ID&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/ /&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sudo tee&lt;/span&gt; /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+curl &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;VERSION_ID&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/Release.key | &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-key add -
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;podman
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;These are now on the site and they work for today but if you’re visiting this post in the future it might have changed.&lt;/p&gt;
+
+&lt;p&gt;So anyway, after installing and playing with Podman for a while, I ended up deciding to run three containers (pods?) under rootfull Podman (technically, two of them could run rootless, but I’d rather be consistent). My next step was to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;podman-generate-systemd&lt;/code&gt; to write some systemd service scripts for me. I can’t recall exactly why now, but I ended up tweaking the service files by hand and they now look like this:&lt;/p&gt;
+
+&lt;p&gt;Home Assistant:&lt;/p&gt;
+&lt;div class=&quot;language-ini highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[Unit]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;homeassistant system monitor Podman container&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Service]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;simple&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30s&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm homeassistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/usr/bin/podman run --name=homeassistant -v /root/podman/hassio:/config --net=host -v /proc&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;:/host/proc:ro&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;/sys:/host/sys:ro&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;--cap-add&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;SYS_PTRACE&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;--security-opt&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;apparmor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;unconfined -v /:/mnt&lt;/span&gt;
+ &lt;span class=&quot;err&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;/home:/srv&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;homeassistant/home-assistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop homeassistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm homeassistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop homeassistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;never&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Install]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multi-user.target&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Netdata:&lt;/p&gt;
+&lt;div class=&quot;language-ini highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[Unit]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;netdata system monitor Podman container&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Service]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;simple&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30s&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/usr/bin/podman run --name netdata -p 19999:19999 -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /root/podman/netdata:/etc/netdata --cap-add SYS_PTRACE --security-opt apparmor=unconfined netdata/netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;never&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Install]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multi-user.target&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;BOINC:&lt;/p&gt;
+&lt;div class=&quot;language-ini highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[Unit]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;boinc system monitor Podman container&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Service]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;simple&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30s&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm boinc&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/usr/bin/podman run --name boinc --net=host -v /root/podman/boinc:/var/lib/boinc --security-opt apparmor=unconfined -e BOINC_GUI_RPC_PASSWORD=&quot;123&quot; -e BOINC_CMD_LINE_OPTIONS=&quot;--allow_remote_gui_rpc&quot; boinc/client&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop boinc&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm boinc&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop boinc&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;never&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Install]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multi-user.target&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It’s been running like this now for a while and I’m pretty happy with things. I was eagerly watching the planned Podman feature that would self-update the pods, but I think I’m gonna leave that process manual for now since Home Assistant has been pushing a lot of ‘breaking changes’ lately and I need to review my configs before updating anyway.&lt;/p&gt;
+
+&lt;p&gt;In any case, I kinda like Podman for when I need to use a container. So if you’re running Docker at home and don’t have a specific need for Docker itself, see if Podman will meet your needs.&lt;/p&gt;</content><author><name></name></author><category term="computers" /><category term="geek" /><category term="linux" /><summary type="html">As mentioned (very) briefly in other posts, I run Home Assistant as the ‘control hub’ for all my “smart” devices in my home. I originally ran it via their ‘HASSOS’ Docker image but was never really happy with it. So when I most recently rebuilt my NUC, I decided to give this Podman thing a look. And so far, I seem to like it better. I’m still not entirely sold on this whole container bullshit, but whatever ;)</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Bye Pi Hello NUC</title><link href="/posts/Bye-Pi-Hello-NUC/" rel="alternate" type="text/html" title="Bye Pi Hello NUC" /><published>2020-07-19T08:14:03-04:00</published><updated>2020-07-19T08:14:03-04:00</updated><id>/posts/Bye-Pi-Hello-NUC</id><content type="html" xml:base="/posts/Bye-Pi-Hello-NUC/">&lt;p&gt;About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin  a new experiment with an Intel NUC. It’s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn’t want to go that route. So I looked around, did some research, saved up some money and ended up with:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/posts/intel_nuc_8.jpg&quot; class=&quot;lleader&quot; /&gt;An Intel NUC 8 Performance-G Kit. \  This is a Core i7-based kit (NUC8i7HVK) that just needs RAM and storage added. It’s a Radeon RX Vega M GH 32GB video card, an 802.11{a,b,g,n} device, 2x Gb Ethernet, 2x USB 2.0 ports, 5x USB 3.0 ports. 2x HDMI ports, 2x mini-Display ports, 2x Thunderbolt 3 ports, and a Bluetooth 4.2 radio. All inside a 6.4 lb 10.8”x7.8”x4.8” case. I fricking love it.&lt;/p&gt;
 
@@ -596,210 +672,4 @@ port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5433				&lt;span class=&quot
 
 &lt;p&gt;With all the pieces in place, we spent the afternoon setting everything up during my recent visit. We had a few little bumps that weekend, and I’m going to be getting her a Tablo DUO in the near future so we can use the 1byone on both TVs, but otherwise she adjusted to it all pretty easily. I even hooked up a Roku stick to the TV in the spare bedroom and showed her its all exactly the same as in the living room (minus the OTA locals, of course). Listening to her argue w/ the DirecTV phone rep during the cancellation call was &lt;em&gt;extremely satisfying&lt;/em&gt; and made me proud. Mom still can’t seem to believe that for $35/mo she is getting everything she used to pay almost $100/mo for. But she’s already been telling her friends about it all :)&lt;/p&gt;
 
-&lt;p&gt;So .. if you still haven’t cut the cord, what are you waiting for?&lt;/p&gt;</content><author><name></name></author><category term="general" /><category term="ott" /><summary type="html">OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. My mother. The same woman who spent the better part of a decade (I cut the cord in late 2008) saying how she didn’t understand how I could not have cable. Someone check the temperature in Hell will ya? :)</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title><link href="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/" rel="alternate" type="text/html" title="Upgrading PostgreSQL from 9.4 to 10.3 with pglogical" /><published>2018-04-05T09:15:46-04:00</published><updated>2018-04-05T09:15:46-04:00</updated><id>/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical</id><content type="html" xml:base="/posts/Upgrading-PostgreSQL-from-9.4-to-10.3-with-pglogical/">&lt;p&gt;I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; is a logical replication system implemented entirely as a PostgreSQL extension. Fully integrated, it requires no triggers or external programs. This makes it faster than Slony, Londiste, et al. It is also (roughly) the basis upon which logical replication in Pg 10 core is built.&lt;/p&gt;
-
-&lt;h3 id=&quot;installing-pglogical&quot;&gt;Installing pglogical&lt;/h3&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; is available from 2ndQuadrant in both a YUM repository for RedHat-based distros and in an APT repository for Debian-based distros. It will need to be installed on both the source (old Pg version) and destination servers (new Pg version).&lt;/p&gt;
-
-&lt;p&gt;The instructions for installing their repo and the needed packages can be found &lt;a href=&quot;https://www.2ndquadrant.com/en/resources/pglogical/pglogical-installation-instructions/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;configuring-pglogical&quot;&gt;Configuring pglogical&lt;/h3&gt;
-
-&lt;h4 id=&quot;tweaking-the-cluster-config&quot;&gt;Tweaking the cluster config&lt;/h4&gt;
-
-&lt;p&gt;You will need to adjust the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;postgresql.conf&lt;/code&gt; file to accommodate &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt;. On both the source &lt;em&gt;and&lt;/em&gt; destination servers, do the following:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;include 'pglogical.conf'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/postgresql.conf
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;wal_level = 'logical'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;max_worker_processes = 10&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;max_replication_slots = 10&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;max_wal_senders = 10&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;shared_preload_libraries = 'pglogical'&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PGDATA&lt;/span&gt;/pglogical.conf
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;NOTE: If you already have one or more values in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;shared_preload_libraries&lt;/code&gt;, simply append &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; to the list of values already there.&lt;/p&gt;
-
-&lt;h4 id=&quot;ensure-the-presence-of-pks&quot;&gt;Ensure the presence of PKs&lt;/h4&gt;
-
-&lt;p&gt;Logical replication doesn’t work without primary keys. Identify all tables that do not have one:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nspname&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relname&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;table&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;pg_class&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;pg_namespace&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relnamespace&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relkind&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'r'&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pg_constraint&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conrelid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oid&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contype&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'p'&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nspname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ALL&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;ARRAY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-    &lt;span class=&quot;s1&quot;&gt;'pg_catalog'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s1&quot;&gt;'sys'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s1&quot;&gt;'dbo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;s1&quot;&gt;'information_schema'&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;create-the-pglogical-extension&quot;&gt;Create the pglogical extension&lt;/h4&gt;
-
-&lt;p&gt;On both the source &lt;em&gt;and&lt;/em&gt; destination Pg instances, create the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; extension &lt;em&gt;in every database you wish to replicate&lt;/em&gt;:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EXTENSION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;NOTE: On Pg 9.4 &lt;strong&gt;only&lt;/strong&gt; you will need to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CREATE EXTENSION pglogical_origin;&lt;/code&gt; FIRST.&lt;/p&gt;
-
-&lt;h3 id=&quot;running-pglogical&quot;&gt;Running pglogical&lt;/h3&gt;
-
-&lt;h4 id=&quot;ensure-global-objects-are-copied&quot;&gt;Ensure global objects are copied&lt;/h4&gt;
-
-&lt;p&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; tool runs at the database level which means that global objects like roles are &lt;strong&gt;not&lt;/strong&gt; copied. Therefore, you need to ensure these objects are created yourself.&lt;/p&gt;
-
-&lt;p&gt;On the source Pg server:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg_dumpall &lt;span class=&quot;nt&quot;&gt;-g&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; globals.sql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Then copy &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;globals.sql&lt;/code&gt; to the destination server and run:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;psql &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; globals.sql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;prep-the-destination-schema&quot;&gt;Prep the destination schema&lt;/h4&gt;
-
-&lt;p&gt;At this time, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; doesn’t replicate DDL, so it is necessary to ensure that both the source and destination have matching schema object definitions before attempting to replicate.&lt;/p&gt;
-
-&lt;p&gt;As such, for each source database that you want to replicate, you need to run a ‘schema only’ dump:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg_dump &lt;span class=&quot;nt&quot;&gt;-Fc&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; dbname_schema.dmp dbname
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Now copy the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbname_schema.dmp&lt;/code&gt; file(s) to the destination server, and run for each database:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg_restore &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; dbname dbname_schema.dmp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h4 id=&quot;create-a-replication-user&quot;&gt;Create a replication user&lt;/h4&gt;
-
-&lt;p&gt;We’ll need a user that has the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;replication&lt;/code&gt; permission for this all to work, so let’s create one:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOGIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;REPLICATION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SUPERUSER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ENCRYPTED&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PASSWORD&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'secret'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Do this on &lt;strong&gt;both&lt;/strong&gt; the source and destination Pg instances.&lt;/p&gt;
-
-&lt;p&gt;Tweak the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt; on &lt;strong&gt;both&lt;/strong&gt; the source and destination Pg instances to allow the replication user to connect:&lt;/p&gt;
-
-&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;replication&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;trust&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;replication&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;  &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;md5&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;dbname&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;trust&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;dbname&lt;/span&gt;       &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;  &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;.&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;/&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;md5&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;NOTE: Make sure to edit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;0.0.0.0/0&lt;/code&gt; to match your actual CIDR or IP address and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbname&lt;/code&gt; to match the db you wish to replicate.&lt;/p&gt;
-
-&lt;h4 id=&quot;create-your-publication&quot;&gt;Create your publication&lt;/h4&gt;
-
-&lt;p&gt;Now, we’re ready to actually setup and start the replication. First, we need to SIGHUP the postmaster so it sees all the config changes we made on &lt;strong&gt;both&lt;/strong&gt; the source and target Pg instances:&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;pg_ctl &lt;span class=&quot;nt&quot;&gt;-D&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;ps &lt;span class=&quot;nt&quot;&gt;-efw&lt;/span&gt;|grep &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;[p]ost.*-D&quot;&lt;/span&gt;|cut &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\-&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f2&lt;/span&gt;|cut &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f2&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt; reload
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;On the &lt;strong&gt;source&lt;/strong&gt; Pg instance, we need to create a publication to ‘push’ the data to the new instance:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'dbname_provider'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'host=127.0.0.1 port=5432 dbname=test user=pglogical'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Adjust the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;port=&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbname=&lt;/code&gt; parameters to match your &lt;strong&gt;source&lt;/strong&gt; Pg instance. If replicating more than one database, repeat this command for each database, changing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbname&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbname_provider&lt;/code&gt; accordingly.&lt;/p&gt;
-
-&lt;h4 id=&quot;add-your-tables-to-the-publication&quot;&gt;Add your tables to the publication&lt;/h4&gt;
-
-&lt;p&gt;Now that we have a publication channel, we need content to publish. Let’s add that now:&lt;/p&gt;
-
-&lt;p&gt;1: Add all your tables:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replication_set_add_all_tables&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{public}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;2: Add all your sequences:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replication_set_add_all_sequences&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;schema_names&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{public}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;synchronize_data&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Obviously, you should change &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;public&lt;/code&gt; in both the above if you are using a different schema for your objects. If you are using multiple schemas, simply repeat the above and change &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;public&lt;/code&gt; appropriately.&lt;/p&gt;
-
-&lt;p&gt;NOTE: The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nextval&lt;/code&gt; of sequences will be synced every 60-70s roughly.&lt;/p&gt;
-
-&lt;h4 id=&quot;create-your-subscription&quot;&gt;Create your subscription&lt;/h4&gt;
-
-&lt;p&gt;Now that we have a publication channel and its content defined, we need to setup a subscriber on the &lt;strong&gt;target&lt;/strong&gt; Pg instance to consume the channel:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;node_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'subscriber'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'host=127.0.0.1 port=5432 dbname=test user=pglogical'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Adjust the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbname=&lt;/code&gt; parameter to match your &lt;strong&gt;target&lt;/strong&gt; Pg instance. If replicating more than one database, repeat this command for each database.&lt;/p&gt;
-
-&lt;p&gt;Now, tell the subscriber what to subscribe to:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_subscription&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subscription_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'subscription'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;provider_dsn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'host=172.28.173.18 port=5432 dbname=test user=pglogical'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;replication_sets&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{default}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Adjust &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;host=&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;port=&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbname=&lt;/code&gt; parameters to match your &lt;strong&gt;source&lt;/strong&gt; Pg instance. If replicating more than one database, repeat this command for each database, changing &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbname&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;subscription_name&lt;/code&gt; accordingly.&lt;/p&gt;
-
-&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
-
-&lt;p&gt;At this point, data should be replicating and (if not already) it will catch up to ‘current’ quickly. Once caught up, replication will maintain sync between the source and target instances in almost real time. You can easily determine the current state of &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; by issuing this SQL on the subscriber:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subscription_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show_subscription_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;If the query returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;initializing&lt;/code&gt; then it is copying the original source data to the destination. If the query returns &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;replicating&lt;/code&gt; then the initial synchronization has completed and replicating is now happening in real time as data changes.&lt;/p&gt;
-
-&lt;p&gt;When ready, you can simply stop any applications pointing at the &lt;em&gt;source&lt;/em&gt; Pg instance, wait a few minutes to ensure replication drains any outstanding items, force an update of your sequences:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;synchronize_sequence&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seqoid&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sequence_state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;and then re-point your applications at the &lt;em&gt;target&lt;/em&gt; instance.&lt;/p&gt;
-
-&lt;p&gt;Post-upgrade, if you wish to clean everything up, simply:&lt;/p&gt;
-
-&lt;p&gt;1: Remove the subscription:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drop_subscription&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'subscription'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;2: Remove the subscriber:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drop_node&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'subscriber'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;3: Remove the extension:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;DROP&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EXTENSION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CASCADE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;4: Remove the user:&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;DROP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pglogical&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;5: Remove any &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pglogical&lt;/code&gt; lines in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pg_hba.conf&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;6: Remove &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$PGDATA/pglogical.conf&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;7: Reload PostgreSQL&lt;/p&gt;
-
-&lt;p&gt;8: Remove the OS packages using &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;yum&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;apt&lt;/code&gt;&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><summary type="html">I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of pglogical and some planning actually made it rather straightforward. While there’s nothing new or original in this post, I still felt compelled to write it up both for posterity’s sake and for anyone else that might find the info useful as an example in their own endeavors.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;p&gt;So .. if you still haven’t cut the cord, what are you waiting for?&lt;/p&gt;</content><author><name></name></author><category term="general" /><category term="ott" /><summary type="html">OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. My mother. The same woman who spent the better part of a decade (I cut the cord in late 2008) saying how she didn’t understand how I could not have cable. Someone check the temperature in Hell will ya? :)</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22cordcutting.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

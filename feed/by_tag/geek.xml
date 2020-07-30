@@ -1,4 +1,80 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed/by_tag/geek.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-07-19T14:39:06-04:00</updated><id>/feed/by_tag/geek.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">Locking it down</title><link href="/posts/Locking-it-down/" rel="alternate" type="text/html" title="Locking it down" /><published>2018-06-18T08:45:02-04:00</published><updated>2018-06-18T08:45:02-04:00</updated><id>/posts/Locking-it-down</id><content type="html" xml:base="/posts/Locking-it-down/">&lt;p&gt;I finally saved up and bought myself a smart lock at the end of April. I ended up getting the &lt;a href=&quot;https://smile.amazon.com/gp/product/B0752V8D8D&quot;&gt;August Smart Lock Pro&lt;/a&gt; with the Connect module. Now that I’ve used it for a month and a half, I feel like I can finally review it.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed/by_tag/geek.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-07-30T13:10:07-04:00</updated><id>/feed/by_tag/geek.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">It’s Podman, man</title><link href="/posts/It-s-Podman-man/" rel="alternate" type="text/html" title="It’s Podman, man" /><published>2020-07-30T08:44:51-04:00</published><updated>2020-07-30T08:44:51-04:00</updated><id>/posts/It-s-Podman-man</id><content type="html" xml:base="/posts/It-s-Podman-man/">&lt;p&gt;As mentioned (very) briefly in other posts, I run &lt;a href=&quot;https://www.home-assistant.io/&quot;&gt;Home Assistant&lt;/a&gt; as the ‘control hub’ for all my “smart” devices in my home. I originally ran it via their ‘HASSOS’ Docker image but was never really happy with it. So when I most recently rebuilt my NUC, I decided to give this Podman thing a look. And so far, I seem to like it better. I’m still not entirely sold on this whole container bullshit, but whatever ;)&lt;/p&gt;
+
+&lt;p&gt;When I first decided to use Podman, the install directions for Ubuntu on the Podman &lt;a href=&quot;https://podman.io/getting-started/installation.html&quot;&gt;site&lt;/a&gt; were not updated to point to the proper Apt source, and I had to dig around on various GitHub issues for the project before finding the correct info:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; /etc/os-release
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;VERSION_ID&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/ /&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sudo tee&lt;/span&gt; /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+curl &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;VERSION_ID&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;/Release.key | &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-key add -
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get update &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-get &lt;span class=&quot;nt&quot;&gt;-qq&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-y&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;podman
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;These are now on the site and they work for today but if you’re visiting this post in the future it might have changed.&lt;/p&gt;
+
+&lt;p&gt;So anyway, after installing and playing with Podman for a while, I ended up deciding to run three containers (pods?) under rootfull Podman (technically, two of them could run rootless, but I’d rather be consistent). My next step was to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;podman-generate-systemd&lt;/code&gt; to write some systemd service scripts for me. I can’t recall exactly why now, but I ended up tweaking the service files by hand and they now look like this:&lt;/p&gt;
+
+&lt;p&gt;Home Assistant:&lt;/p&gt;
+&lt;div class=&quot;language-ini highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[Unit]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;homeassistant system monitor Podman container&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Service]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;simple&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30s&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm homeassistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/usr/bin/podman run --name=homeassistant -v /root/podman/hassio:/config --net=host -v /proc&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;:/host/proc:ro&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;/sys:/host/sys:ro&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;--cap-add&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;SYS_PTRACE&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;--security-opt&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;apparmor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;unconfined -v /:/mnt&lt;/span&gt;
+ &lt;span class=&quot;err&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;/home:/srv&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;homeassistant/home-assistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop homeassistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm homeassistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop homeassistant&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;never&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Install]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multi-user.target&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Netdata:&lt;/p&gt;
+&lt;div class=&quot;language-ini highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[Unit]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;netdata system monitor Podman container&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Service]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;simple&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30s&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/usr/bin/podman run --name netdata -p 19999:19999 -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /root/podman/netdata:/etc/netdata --cap-add SYS_PTRACE --security-opt apparmor=unconfined netdata/netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop netdata&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;never&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Install]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multi-user.target&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;BOINC:&lt;/p&gt;
+&lt;div class=&quot;language-ini highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[Unit]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;boinc system monitor Podman container&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Service]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;simple&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30s&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm boinc&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/usr/bin/podman run --name boinc --net=host -v /root/podman/boinc:/var/lib/boinc --security-opt apparmor=unconfined -e BOINC_GUI_RPC_PASSWORD=&quot;123&quot; -e BOINC_CMD_LINE_OPTIONS=&quot;--allow_remote_gui_rpc&quot; boinc/client&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop boinc&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm boinc&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop boinc&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;never&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;
+
+&lt;span class=&quot;nn&quot;&gt;[Install]&lt;/span&gt;
+&lt;span class=&quot;py&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multi-user.target&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;It’s been running like this now for a while and I’m pretty happy with things. I was eagerly watching the planned Podman feature that would self-update the pods, but I think I’m gonna leave that process manual for now since Home Assistant has been pushing a lot of ‘breaking changes’ lately and I need to review my configs before updating anyway.&lt;/p&gt;
+
+&lt;p&gt;In any case, I kinda like Podman for when I need to use a container. So if you’re running Docker at home and don’t have a specific need for Docker itself, see if Podman will meet your needs.&lt;/p&gt;</content><author><name></name></author><category term="computers" /><category term="geek" /><category term="linux" /><summary type="html">As mentioned (very) briefly in other posts, I run Home Assistant as the ‘control hub’ for all my “smart” devices in my home. I originally ran it via their ‘HASSOS’ Docker image but was never really happy with it. So when I most recently rebuilt my NUC, I decided to give this Podman thing a look. And so far, I seem to like it better. I’m still not entirely sold on this whole container bullshit, but whatever ;)</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Locking it down</title><link href="/posts/Locking-it-down/" rel="alternate" type="text/html" title="Locking it down" /><published>2018-06-18T08:45:02-04:00</published><updated>2018-06-18T08:45:02-04:00</updated><id>/posts/Locking-it-down</id><content type="html" xml:base="/posts/Locking-it-down/">&lt;p&gt;I finally saved up and bought myself a smart lock at the end of April. I ended up getting the &lt;a href=&quot;https://smile.amazon.com/gp/product/B0752V8D8D&quot;&gt;August Smart Lock Pro&lt;/a&gt; with the Connect module. Now that I’ve used it for a month and a half, I feel like I can finally review it.&lt;/p&gt;
 
 &lt;p&gt;TL;DR I love this lock.&lt;/p&gt;
 
