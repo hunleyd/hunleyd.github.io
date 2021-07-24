@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed/by_tag/replication.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-07-30T13:11:20-04:00</updated><id>/feed/by_tag/replication.xml</id><title type="html">Douglas J Hunley</title><subtitle>It's not that I'm anti-social; I'm just not user-friendly</subtitle><entry><title type="html">Logical Replication with Skytools3</title><link href="/posts/Logical-Replication-With-Skytool3/" rel="alternate" type="text/html" title="Logical Replication with Skytools3" /><published>2016-04-19T09:55:11-04:00</published><updated>2016-04-19T09:55:11-04:00</updated><id>/posts/Logical-Replication-With-Skytool3</id><content type="html" xml:base="/posts/Logical-Replication-With-Skytool3/">&lt;p&gt;&lt;img src=&quot;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&quot; class=&quot;lleader&quot; /&gt; UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it &lt;a href=&quot;https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed/by_tag/replication.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-24T10:02:40-04:00</updated><id>/feed/by_tag/replication.xml</id><title type="html">Douglas J Hunley</title><subtitle>It&apos;s not that I&apos;m anti-social; I&apos;m just not user-friendly</subtitle><entry><title type="html">Logical Replication with Skytools3</title><link href="/posts/Logical-Replication-With-Skytool3/" rel="alternate" type="text/html" title="Logical Replication with Skytools3" /><published>2016-04-19T09:55:11-04:00</published><updated>2016-04-19T09:55:11-04:00</updated><id>/posts/Logical-Replication-With-Skytool3</id><content type="html" xml:base="/posts/Logical-Replication-With-Skytool3/">&lt;p&gt;&lt;img src=&quot;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&quot; class=&quot;lleader&quot; /&gt; UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it &lt;a href=&quot;https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;I recently had to do a &lt;em&gt;near-zero downtime&lt;/em&gt; upgrade from PostgreSQL 8.4.x to PostgreSQL 9.4.x for a custmer. I couldn’t use streaming replication because of the change in major version (and because it’s simply not present in 8.x), so that left me looking at &lt;em&gt;logical replication&lt;/em&gt; options. Usually, everyone else would be thinking Slony right here. I’ve only messed with Slony a few times, but each time was a pita, and the whole thing just seemed overly complicated to me. So I decided to give Londiste a look.&lt;/p&gt;
 
@@ -22,7 +22,7 @@
 &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relnamespace&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relkind&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'r'&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;relkind&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;r&apos;&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt;
         &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
@@ -31,14 +31,14 @@
     &lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conrelid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;oid&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contype&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'p'&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contype&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;p&apos;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;AND&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nspname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ALL&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;ARRAY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-        &lt;span class=&quot;s1&quot;&gt;'pg_catalog'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;s1&quot;&gt;'sys'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;s1&quot;&gt;'dbo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;s1&quot;&gt;'information_schema'&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&apos;pg_catalog&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&apos;sys&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&apos;dbo&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&apos;information_schema&apos;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -145,7 +145,7 @@ pg_restore &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;londiste3 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   master.ini &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   create-root &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  master &lt;span class=&quot;s1&quot;&gt;'user=postgres host=IPofOldServer dbname=myapp'&lt;/span&gt;
+  master &lt;span class=&quot;s1&quot;&gt;&apos;user=postgres host=IPofOldServer dbname=myapp&apos;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
@@ -177,8 +177,8 @@ pg_restore &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;londiste3 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   slave.ini &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  create-leaf slave &lt;span class=&quot;s1&quot;&gt;'user=postgres host=127.0.0.1 dbname=myapp'&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;--provider&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'user=postgres host=IPofOldServer dbname=myapp'&lt;/span&gt;
+  create-leaf slave &lt;span class=&quot;s1&quot;&gt;&apos;user=postgres host=127.0.0.1 dbname=myapp&apos;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--provider&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;user=postgres host=IPofOldServer dbname=myapp&apos;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
@@ -233,14 +233,14 @@ pg_restore &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;psql &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; postgres &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt; postgres &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD 'secretpasswordhere';&quot;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD &apos;secretpasswordhere&apos;;&quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;On the master, create the replication slot for the standby:&lt;/p&gt;
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;psql &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; postgres &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-U&lt;/span&gt; postgres &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;SELECT * FROM pg_create_physical_replication_slot('standby1', true);&quot;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;SELECT * FROM pg_create_physical_replication_slot(&apos;standby1&apos;, true);&quot;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;On the standby, wipe the existing cluster:&lt;/p&gt;
@@ -258,7 +258,7 @@ pg_restore &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-R&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-Xs&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; fast &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'initial clone'&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;initial clone&apos;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-P&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
   &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; IP_of_master &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
@@ -269,7 +269,7 @@ pg_restore &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;data
 &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;EOF&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt; &amp;gt;&amp;gt; recovery.conf
-primary_slot_name = 'standby1'
+primary_slot_name = &apos;standby1&apos;
 &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;EOF
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
