@@ -5,31 +5,31 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>pgBackRest 2.08 and macOS Mojave &#8211; Douglas J Hunley</title>
+<title>I'm blue da ba dee da ba di &#8211; Douglas J Hunley</title>
 <meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta name="keywords" content="postgresql, pgbackrest, osx">
+<meta name="keywords" content="smarthome">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="/images/db.jpg">
+<meta name="twitter:image" content="/images/tech.jpg">
 
-<meta name="twitter:title" content="pgBackRest 2.08 and macOS Mojave">
+<meta name="twitter:title" content="I'm blue da ba dee da ba di">
 <meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
 <meta name="twitter:creator" content="@hunleyd">
 
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="pgBackRest 2.08 and macOS Mojave">
+<meta property="og:title" content="I'm blue da ba dee da ba di">
 <meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta property="og:url" content="/posts/pgBackRest-2.08-and-macOS-Mojave/">
+<meta property="og:url" content="/posts/I-m-blue-da-ba-dee-da-ba-di/">
 <meta property="og:site_name" content="Douglas J Hunley">
 
 
 
 
 
-<link rel="canonical" href="/posts/pgBackRest-2.08-and-macOS-Mojave/">
+<link rel="canonical" href="/posts/I-m-blue-da-ba-dee-da-ba-di/">
 <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -159,7 +159,7 @@
 <div class="entry-header">
   
   <div class="entry-image">
-    <img src="/images/db.jpg" alt="pgBackRest 2.08 and macOS Mojave">
+    <img src="/images/tech.jpg" alt="I'm blue da ba dee da ba di">
   </div><!-- /.entry-image -->
 </div><!-- /.entry-header -->
 
@@ -169,9 +169,9 @@
     <header class="header-title">
       <div class="header-title-wrap">
         
-          <h1 class="entry-title"><a href="/posts/pgBackRest-2.08-and-macOS-Mojave/" rel="bookmark" title="pgBackRest 2.08 and macOS Mojave">pgBackRest 2.08 and macOS Mojave</a></h1>
+          <h1 class="entry-title"><a href="/posts/I-m-blue-da-ba-dee-da-ba-di/" rel="bookmark" title="I'm blue da ba dee da ba di">I'm blue da ba dee da ba di</a></h1>
         
-        <h2><span class="entry-date date published"><time datetime="2019-01-04T03:30:44-05:00">January 04, 2019</time></span></h2>
+        <h2><span class="entry-date date published"><time datetime="2021-07-26T08:47:03-04:00">July 26, 2021</time></span></h2>
         
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
@@ -182,47 +182,36 @@ Reading time ~1 minute
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving <code class="language-plaintext highlighter-rouge">-D_POSIX_C_SOURCE</code> up to the <code class="language-plaintext highlighter-rouge">Makefile</code> that caused the problem. The solution below is still the same though.</p>
+      <p>An update on my use <a href="https://www.home-assistant.io/">Home Assistant</a>, I’m no
+longer running it inside Podman as detailed <a href="/posts/It-s-Podman-man/">here</a>.
+In fact, I’m no longer running it on the NUC at all. Instead, I bought myself
+a <a href="posts/It-s-Podman-man/">Home Assistant Blue</a>. I bought the ‘dev mode’
+version just in case I want to tinker with things further, but I could have
+gone with the ‘Zen mode’ version just as easily.</p>
 
-<p>The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:</p>
+<p>The ODROID-N2+ is remarkably capable and having the entire stack being
+HA-managed (Home Assistant OS, running Home Assistant Supervisor, running Home
+Assistant Core) is a dream. It really Just Works™ and I’ve not had any
+issues over the few months it’s been running. I used the add-on store to have
+it launch a MariaDB container and moved the ‘recorder’ component it with
+a simple config tweak (and sped up startup time almost 4x in the process).
+I’ve since added the community store (HACS) and a bunch of automations and it
+still just keeps chugging along. At the moment, I’ve got 22 integrations, 49
+devices, 10 areas, and ~372 entities and my system dashboard looks like:</p>
 
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils</span><span class="o">::</span><span class="nf">Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o</span>
-<span class="nl">warning</span><span class="o">:</span> <span class="nf">unknown warning option '-Wno-clobbered'; did you mean '-Wno-consumed'?</span>
-      <span class="err">[-Wunknown-warning-option]</span>
-<span class="nl">common/lock.c</span><span class="o">:</span><span class="nf">76:21: warning: implicit declaration of function 'flock' is invalid in C99</span>
-      <span class="err">[-Wimplicit-function-declaration]</span>
-                <span class="err">if</span> <span class="err">(flock(result,</span> <span class="err">LOCK_EX</span> <span class="err">|</span> <span class="nv">LOCK_NB)</span> <span class="o">==</span> <span class="nt">-1</span><span class="o">)</span>
-                    <span class="err">^</span>
-<span class="nl">common/lock.c</span><span class="o">:</span><span class="nf">76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]</span>
-<span class="nl">common/lock.c</span><span class="o">:</span><span class="nf">76:35: fatal error: use of undeclared identifier 'LOCK_EX'</span>
-                <span class="err">if</span> <span class="err">(flock(result,</span> <span class="err">LOCK_EX</span> <span class="err">|</span> <span class="nv">LOCK_NB)</span> <span class="o">==</span> <span class="nt">-1</span><span class="o">)</span>
-                                  <span class="err">^</span>
-<span class="err">3</span> <span class="err">warnings</span> <span class="err">and</span> <span class="err">1</span> <span class="err">error</span> <span class="err">generated.</span>
-<span class="nl">make</span><span class="o">:</span> <span class="nf">*** [common/lock.o] Error 1</span>
-</code></pre></div></div>
+<p>&lt;img src=”/images/posts/ha_blue.png”</p>
 
-<p>To fix this, you will need to edit <code class="language-plaintext highlighter-rouge">src/Makefile</code> and change line 12 from:</p>
-
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CSTD</span> <span class="o">=</span> <span class="nt">-std</span><span class="o">=</span>c99 <span class="nt">-D_POSIX_C_SOURCE</span><span class="o">=</span>200112L
-</code></pre></div></div>
-
-<p>to:</p>
-
-<div class="language-make highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CSTD</span> <span class="o">=</span> <span class="nt">-std</span><span class="o">=</span>c99 <span class="nt">-D_DARWIN_C_SOURCE</span>
-</code></pre></div></div>
-
-<p>Then, you can follow the other steps on my <a href="https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/">previous post</a> and everything should compile and function properly.</p>
-
-<p>Enjoy!</p>
+<p>If you’re considering taking the pllunge into home automation, I can very
+easily recommend getting a Blue.</p>
 
       <footer class="entry-meta">
-        <span class="entry-tags"><a href="/tags/#postgresql" title="Pages tagged postgresql" class="tag"><span class="term">postgresql</span></a><a href="/tags/#pgbackrest" title="Pages tagged pgbackrest" class="tag"><span class="term">pgbackrest</span></a><a href="/tags/#osx" title="Pages tagged osx" class="tag"><span class="term">osx</span></a></span>
+        <span class="entry-tags"><a href="/tags/#smarthome" title="Pages tagged smarthome" class="tag"><span class="term">smarthome</span></a></span>
         
         <div class="social-share">
   <ul class="socialcount socialcount-small inline-list">
-    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/pgBackRest-2.08-and-macOS-Mojave/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
-    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/pgBackRest-2.08-and-macOS-Mojave/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
-    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/pgBackRest-2.08-and-macOS-Mojave/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/I-m-blue-da-ba-dee-da-ba-di/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/I-m-blue-da-ba-dee-da-ba-di/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/I-m-blue-da-ba-dee-da-ba-di/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
   </ul>
 </div><!-- /.social-share -->
       </footer>
@@ -231,23 +220,23 @@ Reading time ~1 minute
     <div class="read-more">
   
     <div class="read-more-header">
-      <a href="/posts/pgBackRest-2.07-and-macOS-Mojave/" class="read-more-btn">Read More</a>
+      <a href="/posts/Hello-again-old-friend/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/I-m-blue-da-ba-dee-da-ba-di/" title="I'm blue da ba dee da ba di">I'm blue da ba dee da ba di</a></h3>
-      <p>An update on my use [Home Assistant](https://www.home-assistant.io/), I'm nolonger running it inside Podman as detailed [here](/posts/It-...&hellip; <a href="/posts/I-m-blue-da-ba-dee-da-ba-di/">Continue reading</a></p>
+      <h3><a href="/posts/Hello-again-old-friend/" title="Hello again old friend">Hello again old friend</a></h3>
+      <p>I posted a year ago about dropping ClearLinux andswitching to Ubuntu Server on my NUC. While that little experiment was fun, itdidn’t las...&hellip; <a href="/posts/Hello-again-old-friend/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/Hello-again-old-friend/" title="Hello again old friend">Hello again old friend</a></h4>
-        <span>Published on July 24, 2021</span>
+        <h4><a href="/posts/It-s-Podman-man/" title="It's Podman, man">It's Podman, man</a></h4>
+        <span>Published on July 30, 2020</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/It-s-Podman-man/" title="It's Podman, man">It's Podman, man</a></h4>
-        <span>Published on July 30, 2020</span>
+        <h4><a href="/posts/Bye-Pi-Hello-NUC/" title="Bye Pi, Hello NUC">Bye Pi, Hello NUC</a></h4>
+        <span>Published on July 19, 2020</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

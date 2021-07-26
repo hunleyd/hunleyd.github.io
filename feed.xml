@@ -1,4 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-24T10:14:58-04:00</updated><id>/feed.xml</id><title type="html">Douglas J Hunley</title><subtitle>It&apos;s not that I&apos;m anti-social; I&apos;m just not user-friendly</subtitle><entry><title type="html">Hello again old friend</title><link href="/posts/Hello-again-old-friend/" rel="alternate" type="text/html" title="Hello again old friend" /><published>2021-07-24T06:04:49-04:00</published><updated>2021-07-24T06:04:49-04:00</updated><id>/posts/Hello-again-old-friend</id><content type="html" xml:base="/posts/Hello-again-old-friend/">&lt;p&gt;I &lt;a href=&quot;/posts/Bye-Pi-Hello-NUC&quot;&gt;posted&lt;/a&gt; a year ago about dropping ClearLinux and
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-26T13:07:34-04:00</updated><id>/feed.xml</id><title type="html">Douglas J Hunley</title><subtitle>It&apos;s not that I&apos;m anti-social; I&apos;m just not user-friendly</subtitle><entry><title type="html">I’m blue da ba dee da ba di</title><link href="/posts/I-m-blue-da-ba-dee-da-ba-di/" rel="alternate" type="text/html" title="I’m blue da ba dee da ba di" /><published>2021-07-26T08:47:03-04:00</published><updated>2021-07-26T08:47:03-04:00</updated><id>/posts/I-m-blue-da-ba-dee-da-ba-di</id><content type="html" xml:base="/posts/I-m-blue-da-ba-dee-da-ba-di/">&lt;p&gt;An update on my use &lt;a href=&quot;https://www.home-assistant.io/&quot;&gt;Home Assistant&lt;/a&gt;, I’m no
+longer running it inside Podman as detailed &lt;a href=&quot;/posts/It-s-Podman-man/&quot;&gt;here&lt;/a&gt;.
+In fact, I’m no longer running it on the NUC at all. Instead, I bought myself
+a &lt;a href=&quot;posts/It-s-Podman-man/&quot;&gt;Home Assistant Blue&lt;/a&gt;. I bought the ‘dev mode’
+version just in case I want to tinker with things further, but I could have
+gone with the ‘Zen mode’ version just as easily.&lt;/p&gt;
+
+&lt;p&gt;The ODROID-N2+ is remarkably capable and having the entire stack being
+HA-managed (Home Assistant OS, running Home Assistant Supervisor, running Home
+Assistant Core) is a dream. It really Just Works™ and I’ve not had any
+issues over the few months it’s been running. I used the add-on store to have
+it launch a MariaDB container and moved the ‘recorder’ component it with
+a simple config tweak (and sped up startup time almost 4x in the process).
+I’ve since added the community store (HACS) and a bunch of automations and it
+still just keeps chugging along. At the moment, I’ve got 22 integrations, 49
+devices, 10 areas, and ~372 entities and my system dashboard looks like:&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;img src=”/images/posts/ha_blue.png”&lt;/p&gt;
+
+&lt;p&gt;If you’re considering taking the pllunge into home automation, I can very
+easily recommend getting a Blue.&lt;/p&gt;</content><author><name></name></author><category term="smarthome" /><summary type="html">An update on my use Home Assistant, I’m no longer running it inside Podman as detailed here. In fact, I’m no longer running it on the NUC at all. Instead, I bought myself a Home Assistant Blue. I bought the ‘dev mode’ version just in case I want to tinker with things further, but I could have gone with the ‘Zen mode’ version just as easily.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Hello again old friend</title><link href="/posts/Hello-again-old-friend/" rel="alternate" type="text/html" title="Hello again old friend" /><published>2021-07-24T06:04:49-04:00</published><updated>2021-07-24T06:04:49-04:00</updated><id>/posts/Hello-again-old-friend</id><content type="html" xml:base="/posts/Hello-again-old-friend/">&lt;p&gt;I &lt;a href=&quot;/posts/Bye-Pi-Hello-NUC&quot;&gt;posted&lt;/a&gt; a year ago about dropping ClearLinux and
 switching to Ubuntu Server on my NUC. While that little experiment was fun, it
 didn’t last long. I’m not entirely sure what it is about my brain/personality, but
 I just do not like any of the binary Linux distros out there for my own long-term use so I went back to my old friend, Gentoo.&lt;/p&gt;
@@ -647,27 +667,4 @@ port &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 5433				&lt;span class=&quot
 
 &lt;p&gt;One final note: this is only working for the ‘doug’ database currently. If I wanted this to also work for another database, say ‘postgres’ or ‘prod_app’ then I would need to GRANT CONNECT on those dbs to ‘pgbouncer’ &lt;strong&gt;and&lt;/strong&gt; would need to create my function in them as well.&lt;/p&gt;
 
-&lt;p&gt;☮️&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><summary type="html">I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s auth_file. After the most recent such inquiry (hi Richard!) I decided I’d write this post to hopefully make it clearer how to use ‘pass-thru auth’ and avoid maintaining your users and their passwords in an external file. So let’s see what this takes, shall we?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Locking it down</title><link href="/posts/Locking-it-down/" rel="alternate" type="text/html" title="Locking it down" /><published>2018-06-18T08:45:02-04:00</published><updated>2018-06-18T08:45:02-04:00</updated><id>/posts/Locking-it-down</id><content type="html" xml:base="/posts/Locking-it-down/">&lt;p&gt;I finally saved up and bought myself a smart lock at the end of April. I ended up getting the &lt;a href=&quot;https://smile.amazon.com/gp/product/B0752V8D8D&quot;&gt;August Smart Lock Pro&lt;/a&gt; with the Connect module. Now that I’ve used it for a month and a half, I feel like I can finally review it.&lt;/p&gt;
-
-&lt;p&gt;TL;DR I love this lock.&lt;/p&gt;
-
-&lt;p&gt;Honestly, the hardest part of this whole process was picking the lock to buy. I looked at the August lock, I looked at the Kwikset Bluetooth lock, I even looked at the Nest lock and debating waiting for its release. In the end, I chose the August for two reasons: it integrates with Google Home natively (no ‘talk to August’ bullshit) and it uses the existing lock’s keys so my landlord can’t complain.&lt;/p&gt;
-
-&lt;p&gt;Installing the lock was stupid simple. You are directed to download their app for your phone, create an account, and then it gives you full-screen step-by-step directions. There’s nothing unusual about this deadlock, so if you’ve ever changed one before, you know how to do this. You’ll need a screwdriver and maybe 10 minutes.&lt;/p&gt;
-
-&lt;p&gt;Installation is basically 4 steps:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Remove the old back on the deadbolt&lt;/li&gt;
-  &lt;li&gt;Find the correct shaft adaptor&lt;/li&gt;
-  &lt;li&gt;Install the new August back&lt;/li&gt;
-  &lt;li&gt;Connect to the wifi&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;I don’t leave the house very often, if I’m honest, but the occasions I have since installing this have been very nice. I leave, the door locks (and thanks to other integrations my Blink cameras turn on); I return, the door unlocks (and the cameras turn off). I don’t have to carry a key with me. I don’t have to empty a hand to fish out my key to unlock the door. When I go to bed at night, I just tell Google to lock the door. The only minor annoyance is that Google won’t voice unlock the door (for security reasons).&lt;/p&gt;
-
-&lt;p&gt;I’ve yet to use the app to give anyone a ‘temporary key’ but I have used the app to check on (and change) the lock status. I’ve also used the app to update the firmware on the lock.&lt;/p&gt;
-
-&lt;p&gt;If you’re considering a smart lock, I highly recommend you look at the August Pro.&lt;/p&gt;
-
-&lt;p&gt;★★★★★&lt;/p&gt;</content><author><name></name></author><category term="geek" /><category term="smarthome" /><category term="review" /><summary type="html">I finally saved up and bought myself a smart lock at the end of April. I ended up getting the August Smart Lock Pro with the Connect module. Now that I’ve used it for a month and a half, I feel like I can finally review it.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22review.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22review.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+&lt;p&gt;☮️&lt;/p&gt;</content><author><name></name></author><category term="postgresql" /><summary type="html">I’ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it’s auth_file. After the most recent such inquiry (hi Richard!) I decided I’d write this post to hopefully make it clearer how to use ‘pass-thru auth’ and avoid maintaining your users and their passwords in an external file. So let’s see what this takes, shall we?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22db.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
