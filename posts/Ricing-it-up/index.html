@@ -5,31 +5,31 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>I Have The Power &#8211; Douglas J Hunley</title>
+<title>Ricing it up &#8211; Douglas J Hunley</title>
 <meta name="description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta name="keywords" content="geek, kickstarter, review">
+<meta name="keywords" content="computers, linux, gentoo, technology">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="/images/review.jpg">
+<meta name="twitter:image" content="/images/tech.jpg">
 
-<meta name="twitter:title" content="I Have The Power">
+<meta name="twitter:title" content="Ricing it up">
 <meta name="twitter:description" content="It's not that I'm anti-social; I'm just not user-friendly">
 <meta name="twitter:creator" content="@hunleyd">
 
 <!-- Open Graph -->
 <meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="I Have The Power">
+<meta property="og:title" content="Ricing it up">
 <meta property="og:description" content="It's not that I'm anti-social; I'm just not user-friendly">
-<meta property="og:url" content="/posts/I-Have-The-Power/">
+<meta property="og:url" content="/posts/Ricing-it-up/">
 <meta property="og:site_name" content="Douglas J Hunley">
 
 
 
 
 
-<link rel="canonical" href="/posts/I-Have-The-Power/">
+<link rel="canonical" href="/posts/Ricing-it-up/">
 <link href="/feed.xml" type="application/atom+xml" rel="alternate" title="Douglas J Hunley Feed">
 
 <!-- http://t.co/dKP3o1e -->
@@ -159,7 +159,7 @@
 <div class="entry-header">
   
   <div class="entry-image">
-    <img src="/images/review.jpg" alt="I Have The Power">
+    <img src="/images/tech.jpg" alt="Ricing it up">
   </div><!-- /.entry-image -->
 </div><!-- /.entry-header -->
 
@@ -169,47 +169,73 @@
     <header class="header-title">
       <div class="header-title-wrap">
         
-          <h1 class="entry-title"><a href="/posts/I-Have-The-Power/" rel="bookmark" title="I Have The Power">I Have The Power</a></h1>
+          <h1 class="entry-title"><a href="/posts/Ricing-it-up/" rel="bookmark" title="Ricing it up">Ricing it up</a></h1>
         
-        <h2><span class="entry-date date published"><time datetime="2016-01-16T19:00:00-05:00">January 16, 2016</time></span></h2>
+        <h2><span class="entry-date date published"><time datetime="2021-07-31T05:12:54-04:00">July 31, 2021</time></span></h2>
         
         <p class="entry-reading-time">
           <i class="fa fa-clock-o"></i>
           
-Reading time ~2 minutes
+Reading time ~1 minute
         </p><!-- /.entry-reading-time -->
         
       </div><!-- /.header-title-wrap -->
     </header>
     <div class="entry-content">
-      <p><a href="https://www.snappower.com/snaprays-guidelight/"><img src="https://cdn.shopify.com/s/files/1/0336/9049/products/Single_GL2_white_07d7acd0-a697-4d12-8cd0-7bfbfd26d969_900x.jpg?v=1564168251" class="lleader" /></a>A while back, I ran across a little project on <a href="http://www.kickstarter.com">Kickstarter</a> from a company called <a href="http://www.snappower.com">SnapPower</a>. The project was for a product called Guidelights.</p>
+      <p>One of the reasons that I find myself going back to Gentoo is that you compile the entire system <em>for your hardware</em> which, in theory, leads to be best performance possible. So the first task that I undertook when switching the NUC over to it was to figure out what compile options ClearLinux uses. Once I had figured those settings out, I then decided to use LTO optimization for all packages that support it. However, I didn’t want to use the <a href="https://github.com/gentoo-mirror/lto-overlay">LTO overlay</a>.</p>
 
-<p>Now, I’m a “big boy” and don’t need a night light, but I do wander around the house after dark quite a bit and hate turning on the lights when I’m in a room for like a whole minute. So the concept of having LED lights embedded into the outlet cover and having them turn on/off based on the ambient light in the room sounded pretty cool. And the fact that there’s no wiring or anything was slick. So I ponied up and ordered some.</p>
+<p>After doing a lot of digging around and some experimentation, I finally
+settled on the following configuration:</p>
 
-<p>I gotta tell you, they rock! I now have one in the upstairs hallyway, another at the bottom of the stairs, and a third on the island in the kitchen. It’s freaking perfect. Seriously. And like I said, there’s <em>no skill involved</em>. If you can work a flat head screwdriver, you can install these!</p>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /etc/portage/make.conf
+</span><span class="n">CFLAGS</span>=<span class="s2">"-march=skylake -mtune=skylake -O3 -pipe -w -falign-functions=32"</span>
+<span class="n">CFLAGS</span>=<span class="s2">"${CFLAGS} -fgraphite-identity -floop-nest-optimize -floop-parallelize-all"</span>
+<span class="n">CFLAGS</span>=<span class="s2">"${CFLAGS} -flto=auto -flto-partition=one -fuse-linker-plugin"</span>
+<span class="n">CHOST</span>=<span class="s2">"x86_64-pc-linux-gnu"</span>
+<span class="n">CPU_FLAGS_X86</span>=<span class="s2">"aes avx avx2 f16c fma3 mmx mmxext pclmul popcnt rdrand sse sse2 sse3 sse4_1 sse4_2 ssse3"</span>
+<span class="n">CXXFLAGS</span>=<span class="s2">"${CFLAGS}"</span>
+<span class="n">LDFLAGS</span>=<span class="s2">"-Wl,-O3 -Wl,--sort-common -Wl,--as-needed"</span>
+</code></pre></div></div>
 
-<p>In fact, when Stephanie movies into her apartment (soonish), I’ll be outfitting her place with a few of these as well. They’re really that good,</p>
+<p>As you can see, I start with a base CFLAGS, then I add Graphite optimizations,
+and finally the LTO optimizations are added. Occasionally, LTO will cause
+undefined symbols and the build will fails, so for that I have:</p>
 
-<p>Review: ★★★★★</p>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /etc/portage/env/cflags-ffat-lto-objects
+</span><span class="n">CFLAGS</span> = <span class="s2">"${CFLAGS} -ffat-lto-objects"</span>
+</code></pre></div></div>
 
-<p><a href="https://www.snappower.com/snappower-chargers/"><img src="https://www.snappower.com/wp-content/themes/enfold-child/images/charger_review.jpg" class="rleader" /></a>As much as I love the Guidelights, I was stoked when SnapPower announced their Snap Power Chargers.</p>
+<p>And occasionally a package just won’t compile with LTO, so that I use:</p>
 
-<p>I don’t know what it’s like in your household, but all four of us have smart phones, three of us have tablets, and two of us have smart watches. Someone <em>always</em> needs to charge something. And my family is <strong>horrible</strong> about removing their chargers from outlets when they’re done. And one person in particular has taken to unplugging whatever is “in the way” so she can charge her phone close to wherever she’s sitting! Clearly, a solution that adds USB ports and frees up electrical outlets is a solution I need to have.</p>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /etc/portage/env/cflags-fno-lto
+</span><span class="n">CFLAGS</span>=<span class="s2">"-march=skylake -mtune=skylake -O3 -pipe -w -falign-functions=32"</span>
+<span class="n">CFLAGS</span>=<span class="s2">"${CFLAGS} -fgraphite-identity -floop-nest-optimize -floop-parallelize-all"</span>
+<span class="n">CXXFLAGS</span> = <span class="s2">"${CFLAGS}"</span>
+</code></pre></div></div>
 
-<p>So I eagerly bought <em>five</em> of these things. I installed all but one yesterday, and I gotta say it is as good of an investment as the light covers. I will be installing a few of these in Steph’s apartment also. Now, I’ll grant you that they are not “quick charge”. And there’s only one USB facing the right side of the cover instead of one on both the left and right. But I understand there’s only so much room in these things, and only so much power you can leech off the contacts. So I’m not terribly upset. It would be nice though if you could choose left or right when ordering.</p>
+<p>Whenever I run into a package that has compile issues, I simply create a file
+for it in <code class="language-plaintext highlighter-rouge">/etc/portage/package.env</code> that looks like:</p>
 
-<p>Honestly, I’m kinda stoked to see what this company comes up with next. Of all the random crap I’ve backed on Kickstarter, SnapPower is easily the most useful and easiest to recommend to others.</p>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">package_atom</span> <span class="n">cflags</span>-<span class="n">ffat</span>-<span class="n">lto</span>-<span class="n">objects</span>
+</code></pre></div></div>
+<p>or</p>
 
-<p>Review: ★★★★✩</p>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">package_atom</span> <span class="n">cflags</span>-<span class="n">fno</span>-<span class="n">lto</span>
+</code></pre></div></div>
+
+<p>This little setup has, so far, worked like a charm for me. Out of the 63
+packages in my world file, only 12 need an env file to compile properly on my
+~amd64 install. And everything feels snappy during my day to day. I’m quite
+pleased.</p>
 
       <footer class="entry-meta">
-        <span class="entry-tags"><a href="/tags/#geek" title="Pages tagged geek" class="tag"><span class="term">geek</span></a><a href="/tags/#kickstarter" title="Pages tagged kickstarter" class="tag"><span class="term">kickstarter</span></a><a href="/tags/#review" title="Pages tagged review" class="tag"><span class="term">review</span></a></span>
+        <span class="entry-tags"><a href="/tags/#computers" title="Pages tagged computers" class="tag"><span class="term">computers</span></a><a href="/tags/#linux" title="Pages tagged linux" class="tag"><span class="term">linux</span></a><a href="/tags/#gentoo" title="Pages tagged gentoo" class="tag"><span class="term">gentoo</span></a><a href="/tags/#technology" title="Pages tagged technology" class="tag"><span class="term">technology</span></a></span>
         
         <div class="social-share">
   <ul class="socialcount socialcount-small inline-list">
-    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/I-Have-The-Power/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
-    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/I-Have-The-Power/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
-    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/I-Have-The-Power/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
+    <li class="facebook"><a href="https://www.facebook.com/sharer/sharer.php?u=/posts/Ricing-it-up/" title="Share on Facebook"><span class="count"><i class="fa fa-facebook-square"></i> Like</span></a></li>
+    <li class="twitter"><a href="https://twitter.com/intent/tweet?text=/posts/Ricing-it-up/" title="Share on Twitter"><span class="count"><i class="fa fa-twitter-square"></i> Tweet</span></a></li>
+    <li class="googleplus"><a href="https://plus.google.com/share?url=/posts/Ricing-it-up/" title="Share on Google Plus"><span class="count"><i class="fa fa-google-plus-square"></i> +1</span></a></li>
   </ul>
 </div><!-- /.social-share -->
       </footer>
@@ -218,23 +244,23 @@ Reading time ~2 minutes
     <div class="read-more">
   
     <div class="read-more-header">
-      <a href="/posts/More-Bloggy-Goodness/" class="read-more-btn">Read More</a>
+      <a href="/posts/I-m-blue-da-ba-dee-da-ba-di/" class="read-more-btn">Read More</a>
     </div><!-- /.read-more-header -->
     <div class="read-more-content">
-      <h3><a href="/posts/Ricing-it-up/" title="Ricing it up">Ricing it up</a></h3>
-      <p>One of the reasons that I find myself going back to Gentoo is that you compile the entire system _for your hardware_ which, in theory, le...&hellip; <a href="/posts/Ricing-it-up/">Continue reading</a></p>
+      <h3><a href="/posts/I-m-blue-da-ba-dee-da-ba-di/" title="I'm blue da ba dee da ba di">I'm blue da ba dee da ba di</a></h3>
+      <p>An update on my use Home Assistant, I’m nolonger running it inside Podman as detailed here.In fact, I’m no longer running it on the NUC a...&hellip; <a href="/posts/I-m-blue-da-ba-dee-da-ba-di/">Continue reading</a></p>
     </div><!-- /.read-more-content -->
   
   <div class="read-more-list">
     
       <div class="list-item">
-        <h4><a href="/posts/I-m-blue-da-ba-dee-da-ba-di/" title="I'm blue da ba dee da ba di">I'm blue da ba dee da ba di</a></h4>
-        <span>Published on July 26, 2021</span>
+        <h4><a href="/posts/Hello-again-old-friend/" title="Hello again old friend">Hello again old friend</a></h4>
+        <span>Published on July 24, 2021</span>
       </div><!-- /.list-item -->
     
       <div class="list-item">
-        <h4><a href="/posts/Hello-again-old-friend/" title="Hello again old friend">Hello again old friend</a></h4>
-        <span>Published on July 24, 2021</span>
+        <h4><a href="/posts/It-s-Podman-man/" title="It's Podman, man">It's Podman, man</a></h4>
+        <span>Published on July 30, 2020</span>
       </div><!-- /.list-item -->
     
   </div><!-- /.read-more-list -->

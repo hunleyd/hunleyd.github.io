@@ -1,4 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed/by_tag/linux.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-26T13:11:21-04:00</updated><id>/feed/by_tag/linux.xml</id><title type="html">Douglas J Hunley</title><subtitle>It&apos;s not that I&apos;m anti-social; I&apos;m just not user-friendly</subtitle><entry><title type="html">Hello again old friend</title><link href="/posts/Hello-again-old-friend/" rel="alternate" type="text/html" title="Hello again old friend" /><published>2021-07-24T06:04:49-04:00</published><updated>2021-07-24T06:04:49-04:00</updated><id>/posts/Hello-again-old-friend</id><content type="html" xml:base="/posts/Hello-again-old-friend/">&lt;p&gt;I &lt;a href=&quot;/posts/Bye-Pi-Hello-NUC&quot;&gt;posted&lt;/a&gt; a year ago about dropping ClearLinux and
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed/by_tag/linux.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-31T09:35:07-04:00</updated><id>/feed/by_tag/linux.xml</id><title type="html">Douglas J Hunley</title><subtitle>It&apos;s not that I&apos;m anti-social; I&apos;m just not user-friendly</subtitle><entry><title type="html">Ricing it up</title><link href="/posts/Ricing-it-up/" rel="alternate" type="text/html" title="Ricing it up" /><published>2021-07-31T05:12:54-04:00</published><updated>2021-07-31T05:12:54-04:00</updated><id>/posts/Ricing-it-up</id><content type="html" xml:base="/posts/Ricing-it-up/">&lt;p&gt;One of the reasons that I find myself going back to Gentoo is that you compile the entire system &lt;em&gt;for your hardware&lt;/em&gt; which, in theory, leads to be best performance possible. So the first task that I undertook when switching the NUC over to it was to figure out what compile options ClearLinux uses. Once I had figured those settings out, I then decided to use LTO optimization for all packages that support it. However, I didn’t want to use the &lt;a href=&quot;https://github.com/gentoo-mirror/lto-overlay&quot;&gt;LTO overlay&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;After doing a lot of digging around and some experimentation, I finally
+settled on the following configuration:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# /etc/portage/make.conf
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CFLAGS&lt;/span&gt;=&lt;span class=&quot;s2&quot;&gt;&quot;-march=skylake -mtune=skylake -O3 -pipe -w -falign-functions=32&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CFLAGS&lt;/span&gt;=&lt;span class=&quot;s2&quot;&gt;&quot;${CFLAGS} -fgraphite-identity -floop-nest-optimize -floop-parallelize-all&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CFLAGS&lt;/span&gt;=&lt;span class=&quot;s2&quot;&gt;&quot;${CFLAGS} -flto=auto -flto-partition=one -fuse-linker-plugin&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CHOST&lt;/span&gt;=&lt;span class=&quot;s2&quot;&gt;&quot;x86_64-pc-linux-gnu&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CPU_FLAGS_X86&lt;/span&gt;=&lt;span class=&quot;s2&quot;&gt;&quot;aes avx avx2 f16c fma3 mmx mmxext pclmul popcnt rdrand sse sse2 sse3 sse4_1 sse4_2 ssse3&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CXXFLAGS&lt;/span&gt;=&lt;span class=&quot;s2&quot;&gt;&quot;${CFLAGS}&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;LDFLAGS&lt;/span&gt;=&lt;span class=&quot;s2&quot;&gt;&quot;-Wl,-O3 -Wl,--sort-common -Wl,--as-needed&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, I start with a base CFLAGS, then I add Graphite optimizations,
+and finally the LTO optimizations are added. Occasionally, LTO will cause
+undefined symbols and the build will fails, so for that I have:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# /etc/portage/env/cflags-ffat-lto-objects
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CFLAGS&lt;/span&gt; = &lt;span class=&quot;s2&quot;&gt;&quot;${CFLAGS} -ffat-lto-objects&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And occasionally a package just won’t compile with LTO, so that I use:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# /etc/portage/env/cflags-fno-lto
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CFLAGS&lt;/span&gt;=&lt;span class=&quot;s2&quot;&gt;&quot;-march=skylake -mtune=skylake -O3 -pipe -w -falign-functions=32&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CFLAGS&lt;/span&gt;=&lt;span class=&quot;s2&quot;&gt;&quot;${CFLAGS} -fgraphite-identity -floop-nest-optimize -floop-parallelize-all&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CXXFLAGS&lt;/span&gt; = &lt;span class=&quot;s2&quot;&gt;&quot;${CFLAGS}&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Whenever I run into a package that has compile issues, I simply create a file
+for it in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/portage/package.env&lt;/code&gt; that looks like:&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;package_atom&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cflags&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;ffat&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;lto&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;or&lt;/p&gt;
+
+&lt;div class=&quot;language-conf highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;package_atom&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cflags&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;fno&lt;/span&gt;-&lt;span class=&quot;n&quot;&gt;lto&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This little setup has, so far, worked like a charm for me. Out of the 63
+packages in my world file, only 12 need an env file to compile properly on my
+~amd64 install. And everything feels snappy during my day to day. I’m quite
+pleased.&lt;/p&gt;</content><author><name></name></author><category term="computers" /><category term="linux" /><category term="gentoo" /><category term="technology" /><summary type="html">One of the reasons that I find myself going back to Gentoo is that you compile the entire system for your hardware which, in theory, leads to be best performance possible. So the first task that I undertook when switching the NUC over to it was to figure out what compile options ClearLinux uses. Once I had figured those settings out, I then decided to use LTO optimization for all packages that support it. However, I didn’t want to use the LTO overlay.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" /><media:content medium="image" url="/%7B%22feature%22=%3E%22tech.jpg%22%7D" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Hello again old friend</title><link href="/posts/Hello-again-old-friend/" rel="alternate" type="text/html" title="Hello again old friend" /><published>2021-07-24T06:04:49-04:00</published><updated>2021-07-24T06:04:49-04:00</updated><id>/posts/Hello-again-old-friend</id><content type="html" xml:base="/posts/Hello-again-old-friend/">&lt;p&gt;I &lt;a href=&quot;/posts/Bye-Pi-Hello-NUC&quot;&gt;posted&lt;/a&gt; a year ago about dropping ClearLinux and
 switching to Ubuntu Server on my NUC. While that little experiment was fun, it
 didn’t last long. I’m not entirely sure what it is about my brain/personality, but
 I just do not like any of the binary Linux distros out there for my own long-term use so I went back to my old friend, Gentoo.&lt;/p&gt;
