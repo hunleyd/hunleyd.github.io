@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Smart Lock on Android N DP2 &middot; Doug's Dabblings
+    
+  </title>
+
+  
+  <link rel="canonical" href="/2016/04/24/Smart-Lock-on-Android-N-DP2/">
+  
+
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+<!-- font awesome -->
+<script src="https://kit.fontawesome.com/89f4c31870.js" crossorigin="anonymous"></script>
+</head>
+
+
+  <body class="theme-base-0d">
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>A collection of thoughts on things in my life that I'm experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+
+    <a class="sidebar-nav-item " href="/posts/">All Posts</a>
+    <a class="sidebar-nav-item " href="/tags/">All Tags</a>
+  </nav>
+
+  <div class="sidebar-item">
+      <a href="https://www.deviantart.com/dhunley"><i class="fab fa-deviantart"></i></a>
+    <a href="mailto:doug.hunley@gmail.com"><i class="fas fa-envelope"></i></a>
+      <a href="https://github.com/hunleyd"><i class="fab fa-github"></i></a>
+      <a href="https://instagram.com/doughunley"><i class="fab fa-instagram-square"></i></a>
+      <a href="https://last.fm/user/hunleyd"><i class="fab fa-lastfm-square"></i></a>
+      <a href="https://www.linkedin.com/in/dhunley"><i class="fab fa-linkedin"></i></a>
+      <a href="https://www.meetup.com/members/43608152/"><i class="fab fa-meetup"></i></a>
+      <a href="https://reddit.com/u/hunleyd"><i class="fab fa-reddit-square"></i></a>
+      <a href="https://https://open.spotify.com/user/z0emrjhe6h1bieo81fkrmdbqq"><i class="fab fa-spotify"></i></a>
+      <a href="https://twitter.com/hunleyd"><i class="fab fa-twitter-square"></i></a>
+      <a href="https://youtube.com/c/DouglasHunley"><i class="fab fa-youtube"></i></a>
+    <p></p>
+    <p>
+      <a href="/atom.xml"><i class="fas fa-rss-square"></i></a>
+    </p>
+    <p></p>
+    <p>
+      &copy; 2021. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Doug's Dabblings</a>
+            <small>Quick thoughts on stuff I'm playing with</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">Smart Lock on Android N DP2</h1>
+  <span class="post-date">
+    24 Apr 2016,
+    
+    Reading time ~1 minute<br />
+    android &bullet; nexus5x &bullet; protip <br />
+  </span>
+
+  <p><img src="http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png" class="rleader" />As mentioned in my previous <a href="/Now-on-Tap-Android-N-DP2/">post</a> I’ve stumbled across two issues with the 2<sup>nd</sup> Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won’t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.</p>
+
+<p>I was immediately aware of <em>some</em> kind of issue since the phone didn’t prompt me to setup Smaet Lock after pairing the watch. So I went into the Android Settings app, then Security, and went to tap on Smart Lock only to find it <em>gone</em>. Thinking maybe Google had moved it somewherre else, I used the new ‘search Settings’ feature and searched for Smart Lock, Lock, and Smart. None of them tuened up what I was looking for! After some Googling, I had enough clues to figure out what had happened to the option and how to restore it.</p>
+
+<p>To restore Smart Lock to the Security tab of the Settings app, do this:</p>
+
+<ul>
+  <li>open the Android Settings app</li>
+  <li>tap Security</li>
+  <li>scroll down to the Advanced section</li>
+  <li>tap Trust Agents</li>
+  <li>toggle Smart Lock (Google)</li>
+</ul>
+
+<p>Now, when ypou back button to the Security settings, the Smart Lock option will be restored and function like before. I dont know wtf ‘unset’ it as a Trust Agent provider in DP2 or why, but there you go.</p>
+
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script src='/public/js/script.js'></script>
+  </body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Happy 20th Birthday, PostgreSQL &middot; Doug's Dabblings
+    
+  </title>
+
+  
+  <link rel="canonical" href="/2016/05/12/Happy-20th-PostgreSQL/">
+  
+
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+<!-- font awesome -->
+<script src="https://kit.fontawesome.com/89f4c31870.js" crossorigin="anonymous"></script>
+</head>
+
+
+  <body class="theme-base-0d">
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>A collection of thoughts on things in my life that I'm experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+
+    <a class="sidebar-nav-item " href="/posts/">All Posts</a>
+    <a class="sidebar-nav-item " href="/tags/">All Tags</a>
+  </nav>
+
+  <div class="sidebar-item">
+      <a href="https://www.deviantart.com/dhunley"><i class="fab fa-deviantart"></i></a>
+    <a href="mailto:doug.hunley@gmail.com"><i class="fas fa-envelope"></i></a>
+      <a href="https://github.com/hunleyd"><i class="fab fa-github"></i></a>
+      <a href="https://instagram.com/doughunley"><i class="fab fa-instagram-square"></i></a>
+      <a href="https://last.fm/user/hunleyd"><i class="fab fa-lastfm-square"></i></a>
+      <a href="https://www.linkedin.com/in/dhunley"><i class="fab fa-linkedin"></i></a>
+      <a href="https://www.meetup.com/members/43608152/"><i class="fab fa-meetup"></i></a>
+      <a href="https://reddit.com/u/hunleyd"><i class="fab fa-reddit-square"></i></a>
+      <a href="https://https://open.spotify.com/user/z0emrjhe6h1bieo81fkrmdbqq"><i class="fab fa-spotify"></i></a>
+      <a href="https://twitter.com/hunleyd"><i class="fab fa-twitter-square"></i></a>
+      <a href="https://youtube.com/c/DouglasHunley"><i class="fab fa-youtube"></i></a>
+    <p></p>
+    <p>
+      <a href="/atom.xml"><i class="fas fa-rss-square"></i></a>
+    </p>
+    <p></p>
+    <p>
+      &copy; 2021. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Doug's Dabblings</a>
+            <small>Quick thoughts on stuff I'm playing with</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">Happy 20th Birthday, PostgreSQL</h1>
+  <span class="post-date">
+    12 May 2016,
+    
+    Reading time ~1 minute<br />
+    postgresql <br />
+  </span>
+
+  <p><img src="/images/posts/pgsql_20th.png" class="lleader" />Just a quick shout out to PostgreSQL, the world’s most advanced open source database, as it celebrates it’s 20<sup>th</sup> year in existence. Happy birthday, y’all!</p>
+
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script src='/public/js/script.js'></script>
+  </body>
+</html>

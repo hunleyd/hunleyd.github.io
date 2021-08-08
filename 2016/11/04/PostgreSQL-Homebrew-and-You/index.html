@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      PostgreSQL, Homebrew, and You &middot; Doug's Dabblings
+    
+  </title>
+
+  
+  <link rel="canonical" href="/2016/11/04/PostgreSQL-Homebrew-and-You/">
+  
+
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  
+<!-- font awesome -->
+<script src="https://kit.fontawesome.com/89f4c31870.js" crossorigin="anonymous"></script>
+</head>
+
+
+  <body class="theme-base-0d">
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>A collection of thoughts on things in my life that I'm experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+      
+    
+
+    <a class="sidebar-nav-item " href="/posts/">All Posts</a>
+    <a class="sidebar-nav-item " href="/tags/">All Tags</a>
+  </nav>
+
+  <div class="sidebar-item">
+      <a href="https://www.deviantart.com/dhunley"><i class="fab fa-deviantart"></i></a>
+    <a href="mailto:doug.hunley@gmail.com"><i class="fas fa-envelope"></i></a>
+      <a href="https://github.com/hunleyd"><i class="fab fa-github"></i></a>
+      <a href="https://instagram.com/doughunley"><i class="fab fa-instagram-square"></i></a>
+      <a href="https://last.fm/user/hunleyd"><i class="fab fa-lastfm-square"></i></a>
+      <a href="https://www.linkedin.com/in/dhunley"><i class="fab fa-linkedin"></i></a>
+      <a href="https://www.meetup.com/members/43608152/"><i class="fab fa-meetup"></i></a>
+      <a href="https://reddit.com/u/hunleyd"><i class="fab fa-reddit-square"></i></a>
+      <a href="https://https://open.spotify.com/user/z0emrjhe6h1bieo81fkrmdbqq"><i class="fab fa-spotify"></i></a>
+      <a href="https://twitter.com/hunleyd"><i class="fab fa-twitter-square"></i></a>
+      <a href="https://youtube.com/c/DouglasHunley"><i class="fab fa-youtube"></i></a>
+    <p></p>
+    <p>
+      <a href="/atom.xml"><i class="fas fa-rss-square"></i></a>
+    </p>
+    <p></p>
+    <p>
+      &copy; 2021. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">Doug's Dabblings</a>
+            <small>Quick thoughts on stuff I'm playing with</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">PostgreSQL, Homebrew, and You</h1>
+  <span class="post-date">
+    04 Nov 2016,
+    
+    Reading time ~1 minute<br />
+    osx &bullet; postgresql <br />
+  </span>
+
+  <p><img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png" class="lleader" />If you need to install <a href="http://www.posatgresql.org">PostgreSQL</a> onto your Macbook, you have several options available to you nowadays. You could use the <a href="https://bigsql.com/postgresql/installers.jsp">BigSQL</a> package, or you could use <a href="http://postgresapp.com">Postgres.app</a>, or several others. However, if you’re a geek running OSX, you’ve probably already installed <a href="http://brew.sh">Homebrew</a> and it has a wonderful PostgreSQL package. So let’s use it, shall we?</p>
+
+<p>I’m not going to walk you through installing Homebrew, so let’s just assume it’s already up and running and you’ve followed all the directions. At this point, you have <code class="language-plaintext highlighter-rouge">/usr/local/bin/</code> in your <code class="language-plaintext highlighter-rouge">$PATH</code> and <code class="language-plaintext highlighter-rouge">brew</code> is up and running. So, let’s tell <code class="language-plaintext highlighter-rouge">brew</code> to install PostgreSQL:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>brew <span class="nb">install </span>postgresql
+<span class="o">==&gt;</span> Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.4_1.sierra.b
+Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.4_1.sierra.bottle.tar.gz
+<span class="o">==&gt;</span> Pouring postgresql-9.5.4_1.sierra.bottle.tar.gz
+<span class="o">==&gt;</span> Using the sandbox
+<span class="o">==&gt;</span> /usr/local/Cellar/postgresql/9.5.4_1/bigsqln/initdb /usr/local/var/postgres
+<span class="o">==&gt;</span> Caveats
+If builds of PostgreSQL 9 are failing and you have version 8.x installed,
+you may need to remove the previous version first. See:
+  https://github.com/Homebrew/homebrew/issues/2510
+
+To migrate existing data from a previous major version <span class="o">(</span>pre-9.0<span class="o">)</span> of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/upgrading.html
+
+To migrate existing data from a previous minor versionn <span class="o">(</span>9.0-9.4<span class="o">)</span> of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
+
+  You will need your previous PostgreSQL installation from brew to perform <span class="sb">`</span>pg_upgrade<span class="sb">`</span><span class="nb">.</span>
+  Do not run <span class="sb">`</span>brew cleanup postgresql<span class="sb">`</span> <span class="k">until </span>you have performed the migration.
+
+To have launchd start postgresql now and restart at login:
+  brew services start postgresql
+Or, <span class="k">if </span>you don<span class="s1">'t want/need a background service you can just run:
+  pg_ctl -D /usr/local/var/postgres start
+==&gt; Summary
+🍺  /usr/local/Cellar/postgresql/9.5.4_1: 3,147 files, 35M
+</span></code></pre></div></div>
+
+<p>As you can see, it downloaded the package, installed the binaries, and ran <code class="language-plaintext highlighter-rouge">initdb</code> for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>brew services start postgresql
+<span class="o">==&gt;</span> Successfully started <span class="sb">`</span>postgresql<span class="sb">`</span> <span class="o">(</span>label: homebrew.mxcl.postgresql<span class="o">)</span>
+</code></pre></div></div>
+
+<p>And if you check your process listing, you can see that the cluster is up and running under your id:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ps <span class="nt">-efw</span>|grep postgres
+  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres <span class="nt">-D</span> /usr/local/var/postgres
+  501  6817  6808   0 11:03AM ??         0:00.00 postgres: logger process
+  501  6819  6808   0 11:03AM ??         0:00.00 postgres: checkpointer process
+  501  6820  6808   0 11:03AM ??         0:00.00 postgres: writer process
+  501  6821  6808   0 11:03AM ??         0:00.00 postgres: wal writer process
+  501  6822  6808   0 11:03AM ??         0:00.00 postgres: autovacuum launcher process
+  501  6823  6808   0 11:03AM ??         0:00.00 postgres: stats collector process
+</code></pre></div></div>
+
+<p>And just like that, you have PostgreSQL installed and running! Set <code class="language-plaintext highlighter-rouge">$PGDATA</code> to <code class="language-plaintext highlighter-rouge">/usr/local/var/postgres</code> and you’re all set.</p>
+
+<p>Enjoy!</p>
+
+</div>
+
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script src='/public/js/script.js'></script>
+  </body>
+</html>
