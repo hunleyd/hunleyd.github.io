@@ -4,7 +4,7 @@
  <title>Doug's Dabblings</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2021-08-08T16:54:28-04:00</updated>
+ <updated>2021-08-09T15:33:02-04:00</updated>
  <id></id>
  <author>
    <name>Douglas J Hunley</name>
@@ -136,62 +136,62 @@ curl &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; https://download.opensuse.
 &lt;p&gt;So anyway, after installing and playing with Podman for a while, I ended up deciding to run three containers (pods?) under rootfull Podman (technically, two of them could run rootless, but I’d rather be consistent). My next step was to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;podman-generate-systemd&lt;/code&gt; to write some systemd service scripts for me. I can’t recall exactly why now, but I ended up tweaking the service files by hand and they now look like this:&lt;/p&gt;
 
 &lt;p&gt;Home Assistant:&lt;/p&gt;
-&lt;div class=&quot;language-ini highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[Unit]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;homeassistant system monitor Podman container&lt;/span&gt;
+&lt;div class=&quot;language-systemd highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;[Unit]&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;homeassistant system monitor Podman container
 
-&lt;span class=&quot;nn&quot;&gt;[Service]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;simple&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30s&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm homeassistant&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/usr/bin/podman run --name=homeassistant -v /root/podman/hassio:/config --net=host -v /proc&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;:/host/proc:ro&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;/sys:/host/sys:ro&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;--cap-add&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;SYS_PTRACE&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;--security-opt&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;apparmor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;unconfined -v /:/mnt&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;[Service]&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;simple
+&lt;span class=&quot;nt&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;30s
+&lt;span class=&quot;nt&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman rm homeassistant
+&lt;span class=&quot;nt&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;/usr/bin/podman run --name=homeassistant -v /root/podman/hassio:/config --net=host -v /proc
+&lt;span class=&quot;nt&quot;&gt;:/host/proc:ro -v /sys:/host/sys:ro --cap-add SYS_PTRACE --security-opt apparmor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;unconfined -v /:/mnt
  &lt;span class=&quot;err&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;/home:/srv&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;homeassistant/home-assistant&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop homeassistant&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm homeassistant&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop homeassistant&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;never&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman stop homeassistant
+&lt;span class=&quot;nt&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman rm homeassistant
+&lt;span class=&quot;nt&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman stop homeassistant
+&lt;span class=&quot;nt&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;never
+&lt;span class=&quot;nt&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;30
 
-&lt;span class=&quot;nn&quot;&gt;[Install]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multi-user.target&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;[Install]&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;multi-user.target
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Netdata:&lt;/p&gt;
-&lt;div class=&quot;language-ini highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[Unit]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;netdata system monitor Podman container&lt;/span&gt;
+&lt;div class=&quot;language-systemd highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;[Unit]&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;netdata system monitor Podman container
 
-&lt;span class=&quot;nn&quot;&gt;[Service]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;simple&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30s&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm netdata&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/usr/bin/podman run --name netdata -p 19999:19999 -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /root/podman/netdata:/etc/netdata --cap-add SYS_PTRACE --security-opt apparmor=unconfined netdata/netdata&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop netdata&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm netdata&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop netdata&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;never&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;[Service]&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;simple
+&lt;span class=&quot;nt&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;30s
+&lt;span class=&quot;nt&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman rm netdata
+&lt;span class=&quot;nt&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;/usr/bin/podman run --name netdata -p 19999:19999 -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /root/podman/netdata:/etc/netdata --cap-add SYS_PTRACE --security-opt apparmor=unconfined netdata/netdata
+&lt;span class=&quot;nt&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman stop netdata
+&lt;span class=&quot;nt&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman rm netdata
+&lt;span class=&quot;nt&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman stop netdata
+&lt;span class=&quot;nt&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;never
+&lt;span class=&quot;nt&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;30
 
-&lt;span class=&quot;nn&quot;&gt;[Install]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multi-user.target&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;[Install]&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;multi-user.target
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;BOINC:&lt;/p&gt;
-&lt;div class=&quot;language-ini highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;[Unit]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;boinc system monitor Podman container&lt;/span&gt;
+&lt;div class=&quot;language-systemd highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;[Unit]&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;boinc system monitor Podman container
 
-&lt;span class=&quot;nn&quot;&gt;[Service]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;simple&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30s&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm boinc&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/usr/bin/podman run --name boinc --net=host -v /root/podman/boinc:/var/lib/boinc --security-opt apparmor=unconfined -e BOINC_GUI_RPC_PASSWORD=&quot;123&quot; -e BOINC_CMD_LINE_OPTIONS=&quot;--allow_remote_gui_rpc&quot; boinc/client&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop boinc&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman rm boinc&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;-/usr/bin/podman stop boinc&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;never&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;30&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;[Service]&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;simple
+&lt;span class=&quot;nt&quot;&gt;TimeoutStartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;30s
+&lt;span class=&quot;nt&quot;&gt;ExecStartPre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman rm boinc
+&lt;span class=&quot;nt&quot;&gt;ExecStart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;/usr/bin/podman run --name boinc --net=host -v /root/podman/boinc:/var/lib/boinc --security-opt apparmor=unconfined -e BOINC_GUI_RPC_PASSWORD=&quot;123&quot; -e BOINC_CMD_LINE_OPTIONS=&quot;--allow_remote_gui_rpc&quot; boinc/client
+&lt;span class=&quot;nt&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman stop boinc
+&lt;span class=&quot;nt&quot;&gt;ExecReload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman rm boinc
+&lt;span class=&quot;nt&quot;&gt;ExecStop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;-/usr/bin/podman stop boinc
+&lt;span class=&quot;nt&quot;&gt;Restart&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;never
+&lt;span class=&quot;nt&quot;&gt;RestartSec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;30
 
-&lt;span class=&quot;nn&quot;&gt;[Install]&lt;/span&gt;
-&lt;span class=&quot;py&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multi-user.target&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;[Install]&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;WantedBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;multi-user.target
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;It’s been running like this now for a while and I’m pretty happy with things. I was eagerly watching the planned Podman feature that would self-update the pods, but I think I’m gonna leave that process manual for now since Home Assistant has been pushing a lot of ‘breaking changes’ lately and I need to review my configs before updating anyway.&lt;/p&gt;
