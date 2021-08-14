@@ -336,6 +336,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -382,87 +386,28 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2020/06/23/tuned-PG-and-you/">
-        tuned, PG, and you
+      <a href="/2020/07/19/Bye-Pi-Hello-NUC/">
+        Bye Pi, Hello NUC
       </a>
     </h1>
 
-    <span class="post-date">23 Jun 2020</span>
+    <span class="post-date">19 Jul 2020</span>
 
-    <p>We’ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always ‘that depends on your hardware and workload’ and involves a lot of iteration between changing a setting and benchmarking, I thought I’d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for <code class="language-plaintext highlighter-rouge">tuned</code> to make use of. Please, for the love of $diety, stop editing <code class="language-plaintext highlighter-rouge">sysctl.conf</code> and friends!</p>
+    <p>About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin  a new experiment with an Intel NUC. It’s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn’t want to go that route. So I looked around, did some research, saved up some money and ended up with:</p>
 
-<p>If you’re running RedHat (or a RedHat-derived) OS, <code class="language-plaintext highlighter-rouge">tuned</code> is probably already installed and may even be already running. If not, it’s a simple <code class="language-plaintext highlighter-rouge">yum install tuned</code> to rectify. If you’re on Debian (or a Debian-derived) OS, simply <code class="language-plaintext highlighter-rouge">apt install tuned</code>. Now that you have it installed, you can ask it to recommend a profile for you by issuing <code class="language-plaintext highlighter-rouge">tuned-adm recommend</code> and you can see which profile, if any, is in use by issuing <code class="language-plaintext highlighter-rouge">tuned-adm active</code>. You can also list all the available profiles with <code class="language-plaintext highlighter-rouge">tuned-adm list</code>.</p>
+<p><img src="/images/posts/intel_nuc_8.jpg" class="lleader" />An Intel NUC 8 Performance-G Kit. \  This is a Core i7-based kit (NUC8i7HVK) that just needs RAM and storage added. It’s a Radeon RX Vega M GH 32GB video card, an 802.11{a,b,g,n} device, 2x Gb Ethernet, 2x USB 2.0 ports, 5x USB 3.0 ports. 2x HDMI ports, 2x mini-Display ports, 2x Thunderbolt 3 ports, and a Bluetooth 4.2 radio. All inside a 6.4 lb 10.8”x7.8”x4.8” case. I fricking love it.</p>
 
-<p>That’s great and all, but there’s no PostgreSQL profile that ships with <code class="language-plaintext highlighter-rouge">tuned</code>. So, let’s build one! First, decide which of the profiles in <code class="language-plaintext highlighter-rouge">tuned-adm list</code> is the most appropriate starting point for you. If you’re running on bare metal, this is probably <code class="language-plaintext highlighter-rouge">throughput-performance</code>. If your system is virtualized, you probably want <code class="language-plaintext highlighter-rouge">virtual-guest</code>. We’re going to use this profile as the ‘base’ of our profile. Profiles are stored in <code class="language-plaintext highlighter-rouge">/etc/tuned</code>, so let’s start setting ours up:</p>
+<p>I put a pair of HyperX Kingston Technology Impact 16GB 2400MHz DDR4 sticks in it after talking myself down from a pair of 32GB sticks.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> /etc/tuned/postgresql
-<span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt; /etc/tuned/postgresql/tuned.conf
-[main]
-include= throughput-performance
-</span><span class="no">
-EOF
-</span></code></pre></div></div>
+<p>And finally, I put in a pair of Samsung 970 PRO SSD 1TB M.2 NVMe SSDs (OK, that’s a lie. I went with just one initially, but bought a second one like a month later).</p>
 
-<p>As you can see, we’re going to start with the <code class="language-plaintext highlighter-rouge">throughput-performance</code> profile as a base, and then make tweaks from there. The first tweak? Disable Transparent Huge Pages (THP):</p>
+<p>Given the nature of the beast I’d assembled, I started with <a href="https://clearlinux.org/">ClearLinux</a> as my OS. It’s <strong>stupid fast</strong>. And it’s neat and interesting in that ‘not like other girls’ kinda way. Ultimately though, I ended up ditching it due to the state of packaging. I’ve read that they have some new packaging initiatives though so you shouldn’t rule it out based on my experience last year. I then move to Ubuntu LTS for a short while, realized my mistake, and am currently on Ubuntu Server. So far, it’s doing what I need it to do but, protip:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
-[vm]
-transparent_hugepages=never
-</span><span class="no">EOF
-</span></code></pre></div></div>
+<p>Make sure you google ‘how to X on ubuntu server’</p>
 
-<p>If you’re not aware, THP on a dedicated PostgreSQL server really don’t play nicely. It’s best to avoid them completely.</p>
+<p>If you just Google ‘how to X ubuntu’ then a lot of the time what you find won’t apply. Networking, for example, using something called <a href="https://netplan.io/">netplan</a> which is nothing like regular Ubuntu desktop networking.</p>
 
-<p>Now, we want to set the ‘standard database VM config’ so we:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
-
-[sysctl]
-vm.overcommit_memory = 2
-vm.swappiness = 1
-</span><span class="no">EOF
-</span></code></pre></div></div>
-
-<p>As pointed out in the comments, <code class="language-plaintext highlighter-rouge">vm.overcommit_memory</code> and <code class="language-plaintext highlighter-rouge">vm.dirty_ratio</code> (which I set below) interplay. <code class="language-plaintext highlighter-rouge">vm.dirty_ratio</code> is the value that represents the percentage of MemTotal that can consume dirty pages before all processes must write dirty buffers back to disk and when this value is reached all I/O is blocked for any new writes until dirty pages have been flushed. By default this set to 50% which means that at most only <strong>half</strong> of your MemTotal can ever only be dirty at once. Please see <a href="https://www.kernel.org/doc/Documentation/vm/overcommit-accounting">the kernel documentation</a> for details on all these settings.</p>
-
-<p>I, personally, also then add (after benchmarking, of course):</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
-kernel.sched_autogroup_enabled = 0
-kernel.sched_migration_cost_ns = 50000000
-vm.dirty_background_bytes = 134217728
-vm.dirty_expire_centisecs = 499
-vm.dirty_ratio = 90
-vm.overcommit_ratio = 90
-vm.zone_reclaim_mode = 0
-</span><span class="no">EOF
-</span></code></pre></div></div>
-
-<p>This gives you a complete PostgreSQL tuned profile that looks like:</p>
-
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">main</span>]
-<span class="n">include</span>= <span class="n">throughput</span>-<span class="n">performance</span>
-
-[<span class="n">sysctl</span>]
-<span class="n">kernel</span>.<span class="n">sched_autogroup_enabled</span> = <span class="m">0</span>
-<span class="n">kernel</span>.<span class="n">sched_migration_cost_ns</span> = <span class="m">50000000</span>
-<span class="n">vm</span>.<span class="n">dirty_background_bytes</span> = <span class="m">134217728</span>
-<span class="n">vm</span>.<span class="n">dirty_expire_centisecs</span> = <span class="m">499</span>
-<span class="n">vm</span>.<span class="n">dirty_ratio</span> = <span class="m">90</span>
-<span class="n">vm</span>.<span class="n">overcommit_memory</span> = <span class="m">2</span>
-<span class="n">vm</span>.<span class="n">overcommit_ratio</span> = <span class="m">90</span>
-<span class="n">vm</span>.<span class="n">swappiness</span> = <span class="m">1</span>
-<span class="n">vm</span>.<span class="n">zone_reclaim_mode</span> = <span class="m">0</span>
-
-[<span class="n">vm</span>]
-<span class="n">transparent_hugepages</span>=<span class="n">never</span>
-</code></pre></div></div>
-
-<p>(well, in a slightly different order, but you get the drift).</p>
-
-<p>Now that we have our profile, run a quick <code class="language-plaintext highlighter-rouge">tuned-adm list</code> to ensure that it is listed as available. Assuming it is, you can enable it with <code class="language-plaintext highlighter-rouge">tune-adm profile postgresql</code> and then double-check that it took effect with <code class="language-plaintext highlighter-rouge">tune-adm active</code>.</p>
-
-<p>Once activated, you should be all set. Happy computing, or something. ;)</p>
+<p>Anyway, that’s all for now. I just wanted to post this as background info cause I plan on posting about my travails w/ the Ubuntu Server as I go forward.</p>
 
   </div>
   

@@ -336,6 +336,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -382,34 +386,58 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2021/07/26/I-m-blue-da-ba-dee-da-ba-di/">
-        I'm blue da ba dee da ba di
+      <a href="/2021/07/31/Ricing-it-up/">
+        Ricing it up
       </a>
     </h1>
 
-    <span class="post-date">26 Jul 2021</span>
+    <span class="post-date">31 Jul 2021</span>
 
-    <p>An update on my use <a href="https://www.home-assistant.io/">Home Assistant</a>, I’m no
-longer running it inside Podman as detailed <a href="/posts/It-s-Podman-man/">here</a>.
-In fact, I’m no longer running it on the NUC at all. Instead, I bought myself
-a <a href="https://www.home-assistant.io/blue">Home Assistant Blue</a>. I bought the ‘dev mode’
-version just in case I want to tinker with things further, but I could have
-gone with the ‘Zen mode’ version just as easily.</p>
+    <p>One of the reasons that I find myself going back to Gentoo is that you compile the entire system <em>for your hardware</em> which, in theory, leads to the best performance possible. So the first task that I undertook when switching the NUC over to it was to figure out what compile options ClearLinux uses. Once I had figured those settings out, I then decided to use LTO optimization for all packages that support it. However, I didn’t want to use the <a href="https://github.com/gentoo-mirror/lto-overlay">LTO overlay</a>.</p>
 
-<p>The ODROID-N2+ is remarkably capable and having the entire stack being
-HA-managed (Home Assistant OS, running Home Assistant Supervisor, running Home
-Assistant Core) is a dream. It really Just Works™ and I’ve not had any
-issues over the few months it’s been running. I used the add-on store to have
-it launch a MariaDB container and moved the ‘recorder’ component it with
-a simple config tweak (and sped up startup time almost 4x in the process).
-I’ve since added the community store (HACS) and a bunch of automations and it
-still just keeps chugging along. At the moment, I’ve got 22 integrations, 49
-devices, 10 areas, and ~372 entities and my system dashboard looks like:</p>
+<p>After doing a lot of digging around and some experimentation, I finally
+settled on the following configuration:</p>
 
-<p><img src="/images/posts/ha_blue.png" /></p>
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /etc/portage/make.conf
+</span><span class="n">CFLAGS</span>=<span class="s2">"-march=skylake -mtune=skylake -O3 -pipe -w -falign-functions=32"</span>
+<span class="n">CFLAGS</span>=<span class="s2">"${CFLAGS} -fgraphite-identity -floop-nest-optimize -floop-parallelize-all"</span>
+<span class="n">CFLAGS</span>=<span class="s2">"${CFLAGS} -flto=auto -flto-partition=one -fuse-linker-plugin"</span>
+<span class="n">CHOST</span>=<span class="s2">"x86_64-pc-linux-gnu"</span>
+<span class="n">CPU_FLAGS_X86</span>=<span class="s2">"aes avx avx2 f16c fma3 mmx mmxext pclmul popcnt rdrand sse sse2 sse3 sse4_1 sse4_2 ssse3"</span>
+<span class="n">CXXFLAGS</span>=<span class="s2">"${CFLAGS}"</span>
+<span class="n">LDFLAGS</span>=<span class="s2">"-Wl,-O3 -Wl,--sort-common -Wl,--as-needed"</span>
+</code></pre></div></div>
 
-<p>If you’re considering taking the plunge into home automation, I can very
-easily recommend getting a Blue.</p>
+<p>As you can see, I start with a base CFLAGS, then I add Graphite optimizations,
+and finally the LTO optimizations are added. Occasionally, LTO will cause
+undefined symbols and the build will fails, so for that I have:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /etc/portage/env/cflags-ffat-lto-objects
+</span><span class="n">CFLAGS</span> = <span class="s2">"${CFLAGS} -ffat-lto-objects"</span>
+</code></pre></div></div>
+
+<p>And occasionally a package just won’t compile with LTO, so that I use:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /etc/portage/env/cflags-fno-lto
+</span><span class="n">CFLAGS</span>=<span class="s2">"-march=skylake -mtune=skylake -O3 -pipe -w -falign-functions=32"</span>
+<span class="n">CFLAGS</span>=<span class="s2">"${CFLAGS} -fgraphite-identity -floop-nest-optimize -floop-parallelize-all"</span>
+<span class="n">CXXFLAGS</span> = <span class="s2">"${CFLAGS}"</span>
+</code></pre></div></div>
+
+<p>Whenever I run into a package that has compile issues, I simply create a file
+for it in <code class="language-plaintext highlighter-rouge">/etc/portage/package.env</code> that looks like:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">package_atom</span> <span class="n">cflags</span>-<span class="n">ffat</span>-<span class="n">lto</span>-<span class="n">objects</span>
+</code></pre></div></div>
+<p>or</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">package_atom</span> <span class="n">cflags</span>-<span class="n">fno</span>-<span class="n">lto</span>
+</code></pre></div></div>
+
+<p>This little setup has, so far, worked like a charm for me. Out of the 63
+packages in my world file, only 12 need an env file to compile properly on my
+~amd64 install. And everything feels snappy during my day to day. I’m quite
+pleased.</p>
 
   </div>
   

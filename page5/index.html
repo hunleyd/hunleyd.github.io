@@ -336,6 +336,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -382,28 +386,90 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2020/07/19/Bye-Pi-Hello-NUC/">
-        Bye Pi, Hello NUC
+      <a href="/2020/07/30/It-s-Podman-man/">
+        It's Podman, man
       </a>
     </h1>
 
-    <span class="post-date">19 Jul 2020</span>
+    <span class="post-date">30 Jul 2020</span>
 
-    <p>About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin  a new experiment with an Intel NUC. It’s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn’t want to go that route. So I looked around, did some research, saved up some money and ended up with:</p>
+    <p>As mentioned (very) briefly in other posts, I run <a href="https://www.home-assistant.io/">Home Assistant</a> as the ‘control hub’ for all my “smart” devices in my home. I originally ran it via their ‘HASSOS’ Docker image but was never really happy with it. So when I most recently rebuilt my NUC, I decided to give this Podman thing a look. And so far, I seem to like it better. I’m still not entirely sold on this whole container bullshit, but whatever ;)</p>
 
-<p><img src="/images/posts/intel_nuc_8.jpg" class="lleader" />An Intel NUC 8 Performance-G Kit. \  This is a Core i7-based kit (NUC8i7HVK) that just needs RAM and storage added. It’s a Radeon RX Vega M GH 32GB video card, an 802.11{a,b,g,n} device, 2x Gb Ethernet, 2x USB 2.0 ports, 5x USB 3.0 ports. 2x HDMI ports, 2x mini-Display ports, 2x Thunderbolt 3 ports, and a Bluetooth 4.2 radio. All inside a 6.4 lb 10.8”x7.8”x4.8” case. I fricking love it.</p>
+<p>When I first decided to use Podman, the install directions for Ubuntu on the Podman <a href="https://podman.io/getting-started/installation.html">site</a> were not updated to point to the proper Apt source, and I had to dig around on various GitHub issues for the project before finding the correct info:</p>
 
-<p>I put a pair of HyperX Kingston Technology Impact 16GB 2400MHz DDR4 sticks in it after talking myself down from a pair of 32GB sticks.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span> /etc/os-release
+<span class="nb">echo</span> <span class="s2">"deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_</span><span class="k">${</span><span class="nv">VERSION_ID</span><span class="k">}</span><span class="s2">/ /"</span> | <span class="nb">sudo tee</span> /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+curl <span class="nt">-L</span> https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_<span class="k">${</span><span class="nv">VERSION_ID</span><span class="k">}</span>/Release.key | <span class="nb">sudo </span>apt-key add -
+<span class="nb">sudo </span>apt-get update <span class="nt">-qq</span>
+<span class="nb">sudo </span>apt-get <span class="nt">-qq</span> <span class="nt">-y</span> <span class="nb">install </span>podman
+</code></pre></div></div>
 
-<p>And finally, I put in a pair of Samsung 970 PRO SSD 1TB M.2 NVMe SSDs (OK, that’s a lie. I went with just one initially, but bought a second one like a month later).</p>
+<p>These are now on the site and they work for today but if you’re visiting this post in the future it might have changed.</p>
 
-<p>Given the nature of the beast I’d assembled, I started with <a href="https://clearlinux.org/">ClearLinux</a> as my OS. It’s <strong>stupid fast</strong>. And it’s neat and interesting in that ‘not like other girls’ kinda way. Ultimately though, I ended up ditching it due to the state of packaging. I’ve read that they have some new packaging initiatives though so you shouldn’t rule it out based on my experience last year. I then move to Ubuntu LTS for a short while, realized my mistake, and am currently on Ubuntu Server. So far, it’s doing what I need it to do but, protip:</p>
+<p>So anyway, after installing and playing with Podman for a while, I ended up deciding to run three containers (pods?) under rootfull Podman (technically, two of them could run rootless, but I’d rather be consistent). My next step was to use <code class="language-plaintext highlighter-rouge">podman-generate-systemd</code> to write some systemd service scripts for me. I can’t recall exactly why now, but I ended up tweaking the service files by hand and they now look like this:</p>
 
-<p>Make sure you google ‘how to X on ubuntu server’</p>
+<p>Home Assistant:</p>
+<div class="language-systemd highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[Unit]</span>
+<span class="nt">description</span><span class="p">=</span>homeassistant system monitor Podman container
 
-<p>If you just Google ‘how to X ubuntu’ then a lot of the time what you find won’t apply. Networking, for example, using something called <a href="https://netplan.io/">netplan</a> which is nothing like regular Ubuntu desktop networking.</p>
+<span class="k">[Service]</span>
+<span class="nt">Type</span><span class="p">=</span>simple
+<span class="nt">TimeoutStartSec</span><span class="p">=</span>30s
+<span class="nt">ExecStartPre</span><span class="p">=</span>-/usr/bin/podman rm homeassistant
+<span class="nt">ExecStart</span><span class="p">=</span>/usr/bin/podman run --name=homeassistant -v /root/podman/hassio:/config --net=host -v /proc
+<span class="nt">:/host/proc:ro -v /sys:/host/sys:ro --cap-add SYS_PTRACE --security-opt apparmor</span><span class="p">=</span>unconfined -v /:/mnt
+ <span class="err">-v</span> <span class="err">/home:/srv</span> <span class="err">homeassistant/home-assistant</span>
+<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman stop homeassistant
+<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman rm homeassistant
+<span class="nt">ExecStop</span><span class="p">=</span>-/usr/bin/podman stop homeassistant
+<span class="nt">Restart</span><span class="p">=</span>never
+<span class="nt">RestartSec</span><span class="p">=</span>30
 
-<p>Anyway, that’s all for now. I just wanted to post this as background info cause I plan on posting about my travails w/ the Ubuntu Server as I go forward.</p>
+<span class="k">[Install]</span>
+<span class="nt">WantedBy</span><span class="p">=</span>multi-user.target
+</code></pre></div></div>
+
+<p>Netdata:</p>
+<div class="language-systemd highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[Unit]</span>
+<span class="nt">description</span><span class="p">=</span>netdata system monitor Podman container
+
+<span class="k">[Service]</span>
+<span class="nt">Type</span><span class="p">=</span>simple
+<span class="nt">TimeoutStartSec</span><span class="p">=</span>30s
+<span class="nt">ExecStartPre</span><span class="p">=</span>-/usr/bin/podman rm netdata
+<span class="nt">ExecStart</span><span class="p">=</span>/usr/bin/podman run --name netdata -p 19999:19999 -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /root/podman/netdata:/etc/netdata --cap-add SYS_PTRACE --security-opt apparmor=unconfined netdata/netdata
+<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman stop netdata
+<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman rm netdata
+<span class="nt">ExecStop</span><span class="p">=</span>-/usr/bin/podman stop netdata
+<span class="nt">Restart</span><span class="p">=</span>never
+<span class="nt">RestartSec</span><span class="p">=</span>30
+
+<span class="k">[Install]</span>
+<span class="nt">WantedBy</span><span class="p">=</span>multi-user.target
+</code></pre></div></div>
+
+<p>BOINC:</p>
+<div class="language-systemd highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[Unit]</span>
+<span class="nt">description</span><span class="p">=</span>boinc system monitor Podman container
+
+<span class="k">[Service]</span>
+<span class="nt">Type</span><span class="p">=</span>simple
+<span class="nt">TimeoutStartSec</span><span class="p">=</span>30s
+<span class="nt">ExecStartPre</span><span class="p">=</span>-/usr/bin/podman rm boinc
+<span class="nt">ExecStart</span><span class="p">=</span>/usr/bin/podman run --name boinc --net=host -v /root/podman/boinc:/var/lib/boinc --security-opt apparmor=unconfined -e BOINC_GUI_RPC_PASSWORD="123" -e BOINC_CMD_LINE_OPTIONS="--allow_remote_gui_rpc" boinc/client
+<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman stop boinc
+<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman rm boinc
+<span class="nt">ExecStop</span><span class="p">=</span>-/usr/bin/podman stop boinc
+<span class="nt">Restart</span><span class="p">=</span>never
+<span class="nt">RestartSec</span><span class="p">=</span>30
+
+<span class="k">[Install]</span>
+<span class="nt">WantedBy</span><span class="p">=</span>multi-user.target
+</code></pre></div></div>
+
+<p>It’s been running like this now for a while and I’m pretty happy with things. I was eagerly watching the planned Podman feature that would self-update the pods, but I think I’m gonna leave that process manual for now since Home Assistant has been pushing a lot of ‘breaking changes’ lately and I need to review my configs before updating anyway.</p>
+
+<p>In any case, I kinda like Podman for when I need to use a container. So if you’re running Docker at home and don’t have a specific need for Docker itself, see if Podman will meet your needs.</p>
 
   </div>
   

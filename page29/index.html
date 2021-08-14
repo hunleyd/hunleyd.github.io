@@ -336,6 +336,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -382,24 +386,66 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/11/03/Inaugural-pgCMH-mtg/">
-        Inaugural pgCMH mtg scheduled
+      <a href="/2016/11/04/PostgreSQL-Homebrew-and-You/">
+        PostgreSQL, Homebrew, and You
       </a>
     </h1>
 
-    <span class="post-date">03 Nov 2016</span>
+    <span class="post-date">04 Nov 2016</span>
 
-    <p><img src="/images/posts/pgCMH.png" class="rleader" /> As announced on our <a href="http://www.twitter.com/pgCMH">Twitter</a>, we’ve scheduled our inaugural meeting for Jan 24, 2017 at 1800 hrs. The folks at CoverMyMeds will graciously provide the meeting space (and parking garage) while OpenSCG is buying the pizza!</p>
+    <p><img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png" class="lleader" />If you need to install <a href="http://www.posatgresql.org">PostgreSQL</a> onto your Macbook, you have several options available to you nowadays. You could use the <a href="https://bigsql.com/postgresql/installers.jsp">BigSQL</a> package, or you could use <a href="http://postgresapp.com">Postgres.app</a>, or several others. However, if you’re a geek running OSX, you’ve probably already installed <a href="http://brew.sh">Homebrew</a> and it has a wonderful PostgreSQL package. So let’s use it, shall we?</p>
 
-<p>At this first meeting, we’ll be discussing what you, the members, would like to get from the meetings, we’ll talk about future topics, and general organizational things. I know it’s not exciting, but I need everyone’s input to make this group something you get value from.</p>
+<p>I’m not going to walk you through installing Homebrew, so let’s just assume it’s already up and running and you’ve followed all the directions. At this point, you have <code class="language-plaintext highlighter-rouge">/usr/local/bin/</code> in your <code class="language-plaintext highlighter-rouge">$PATH</code> and <code class="language-plaintext highlighter-rouge">brew</code> is up and running. So, let’s tell <code class="language-plaintext highlighter-rouge">brew</code> to install PostgreSQL:</p>
 
-<div class="jekyll-twitter-plugin"><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Our first mtg is happening on Jan 24 at <a href="https://twitter.com/CoverMyMeds?ref_src=twsrc%5Etfw">@covermymeds</a> with <a href="https://twitter.com/OpenSCG?ref_src=twsrc%5Etfw">@openscg</a> buying pizza. Bring a friend! RSVP at <a href="https://t.co/600ZNbPV8e">https://t.co/600ZNbPV8e</a></p>&mdash; pgCMH (@pgCMH) <a href="https://twitter.com/pgCMH/status/788780137630216192?ref_src=twsrc%5Etfw">October 19, 2016</a></blockquote>
-<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>brew <span class="nb">install </span>postgresql
+<span class="o">==&gt;</span> Downloading https://homebrew.bintray.com/bottles/postgresql-9.5.4_1.sierra.b
+Already downloaded: /Users/doug/Library/Caches/Homebrew/postgresql-9.5.4_1.sierra.bottle.tar.gz
+<span class="o">==&gt;</span> Pouring postgresql-9.5.4_1.sierra.bottle.tar.gz
+<span class="o">==&gt;</span> Using the sandbox
+<span class="o">==&gt;</span> /usr/local/Cellar/postgresql/9.5.4_1/bigsqln/initdb /usr/local/var/postgres
+<span class="o">==&gt;</span> Caveats
+If builds of PostgreSQL 9 are failing and you have version 8.x installed,
+you may need to remove the previous version first. See:
+  https://github.com/Homebrew/homebrew/issues/2510
 
-<p>Please RSVP via the <a href="https://www.meetup.com/postgresCMH/events/234969649/">MeetUP event</a> so we have sufficient food and drink!</p>
+To migrate existing data from a previous major version <span class="o">(</span>pre-9.0<span class="o">)</span> of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/upgrading.html
 
-<p>See you there!</p>
+To migrate existing data from a previous minor versionn <span class="o">(</span>9.0-9.4<span class="o">)</span> of PostgreSQL, see:
+  https://www.postgresql.org/docs/9.5/static/pgupgrade.html
+
+  You will need your previous PostgreSQL installation from brew to perform <span class="sb">`</span>pg_upgrade<span class="sb">`</span><span class="nb">.</span>
+  Do not run <span class="sb">`</span>brew cleanup postgresql<span class="sb">`</span> <span class="k">until </span>you have performed the migration.
+
+To have launchd start postgresql now and restart at login:
+  brew services start postgresql
+Or, <span class="k">if </span>you don<span class="s1">'t want/need a background service you can just run:
+  pg_ctl -D /usr/local/var/postgres start
+==&gt; Summary
+🍺  /usr/local/Cellar/postgresql/9.5.4_1: 3,147 files, 35M
+</span></code></pre></div></div>
+
+<p>As you can see, it downloaded the package, installed the binaries, and ran <code class="language-plaintext highlighter-rouge">initdb</code> for us! As the output tells us, we can set PostgreSQL to auto-start when we login by issuing:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>brew services start postgresql
+<span class="o">==&gt;</span> Successfully started <span class="sb">`</span>postgresql<span class="sb">`</span> <span class="o">(</span>label: homebrew.mxcl.postgresql<span class="o">)</span>
+</code></pre></div></div>
+
+<p>And if you check your process listing, you can see that the cluster is up and running under your id:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ps <span class="nt">-efw</span>|grep postgres
+  501  6808     1   0 11:03AM ??         0:00.02 /usr/local/opt/postgresql/bin/postgres <span class="nt">-D</span> /usr/local/var/postgres
+  501  6817  6808   0 11:03AM ??         0:00.00 postgres: logger process
+  501  6819  6808   0 11:03AM ??         0:00.00 postgres: checkpointer process
+  501  6820  6808   0 11:03AM ??         0:00.00 postgres: writer process
+  501  6821  6808   0 11:03AM ??         0:00.00 postgres: wal writer process
+  501  6822  6808   0 11:03AM ??         0:00.00 postgres: autovacuum launcher process
+  501  6823  6808   0 11:03AM ??         0:00.00 postgres: stats collector process
+</code></pre></div></div>
+
+<p>And just like that, you have PostgreSQL installed and running! Set <code class="language-plaintext highlighter-rouge">$PGDATA</code> to <code class="language-plaintext highlighter-rouge">/usr/local/var/postgres</code> and you’re all set.</p>
+
+<p>Enjoy!</p>
 
   </div>
   

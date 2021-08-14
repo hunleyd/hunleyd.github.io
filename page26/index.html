@@ -336,6 +336,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -382,38 +386,141 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/11/15/Routing-email-through-GMail-on-OSX/">
-        Routing email through GMail on OSX
+      <a href="/2016/11/16/Managing-multiple-PostgreSQL-installs-via-Homebrew/">
+        Managing multiple PostgreSQL installs via Homebrew
       </a>
     </h1>
 
-    <span class="post-date">15 Nov 2016</span>
+    <span class="post-date">16 Nov 2016</span>
 
-    <p><img src="http://www.postfix.org/mysza.gif" class="lleader" />Like most geeks, I have scripts that I’ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I’m going to commit the steps here for my future self to reference :)</p>
+    <p><img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png" class="rleader" />Following on from <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">this</a> post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:</p>
 
-<p>The first thing we’re going to do is open an iTerm and <code class="language-plaintext highlighter-rouge">sudo -i</code> to become root. Then we’re going to <code class="language-plaintext highlighter-rouge">vi /etc/postfix/main.cf</code> and we’re going to add/set the following:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/zsh</span>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">myhostname</span> = <span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>
-<span class="n">relayhost</span> = [<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span>
-<span class="n">smtp_sasl_auth_enable</span> = <span class="n">yes</span>
-<span class="n">smtp_sasl_password_maps</span>= <span class="n">hash</span>:/<span class="n">etc</span>/<span class="n">postfix</span>/<span class="n">sasl_passwd</span>
-<span class="n">smtp_sasl_security_options</span> = <span class="n">noanonymous</span>
-<span class="n">smtp_sasl_mechanism_filter</span> = <span class="n">plain</span>
-<span class="n">smtp_use_tls</span> = <span class="n">yes</span>
+<span class="nv">wanted_ver</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">no_restart</span><span class="o">=</span>
+
+<span class="c"># is the version requested installed?</span>
+brew <span class="nb">ls</span> <span class="nt">--version</span> postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> &amp;&gt;/dev/null
+<span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> <span class="nt">-eq</span> 0 <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="c"># yes, carry on</span>
+  :
+<span class="k">else</span>
+  <span class="c"># nope, so install it</span>
+  <span class="nb">echo</span> <span class="s2">"Installing PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
+  brew <span class="nb">install </span>petere/postgresql/postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span>
+<span class="k">fi</span>
+
+<span class="c"># is postgresql is running?</span>
+<span class="k">for </span>i <span class="k">in</span> /usr/local/var/postgres/<span class="k">*</span>
+<span class="k">do
+  </span><span class="nv">check_ver</span><span class="o">=</span><span class="si">$(</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="si">)</span>
+  <span class="nv">is_running</span><span class="o">=</span><span class="si">$(</span>ps <span class="nt">-few</span>|egrep <span class="nt">--</span> <span class="s2">"[p]ostgres.*-D.*</span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">"</span><span class="si">)</span>
+
+  <span class="k">if</span> <span class="o">[[</span> <span class="nt">-z</span> <span class="k">${</span><span class="nv">is_running</span><span class="k">}</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+    <span class="c"># nope, carry on</span>
+    :
+  <span class="k">else</span>
+    <span class="c"># it is. is it the requested version?</span>
+    <span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+      <span class="c"># yup, carry on</span>
+      <span class="nv">no_restart</span><span class="o">=</span>t
+    <span class="k">else</span>
+      <span class="c"># nope, so kill it</span>
+      <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Stopping PostgreSQL </span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">... "</span>
+      /usr/local/opt/postgresql@<span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span>/bin/pg_ctl <span class="se">\</span>
+          <span class="nt">-D</span> /usr/local/var/postgres/<span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span> <span class="se">\</span>
+          stop <span class="nt">-w</span> <span class="nt">-mf</span> | <span class="nb">grep</span> <span class="s1">'stopped'</span>
+    <span class="k">fi
+  fi
+done</span>
+
+<span class="c"># what version is active?</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="nt">-e</span> /usr/local/bin/psql <span class="o">]]</span> <span class="p">;</span> <span class="k">then
+    </span><span class="nv">active_ver</span><span class="o">=</span><span class="si">$(</span>/usr/bin/stat <span class="nt">-f</span> %Y /usr/local/bin/psql | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\/</span> <span class="nt">-f3</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\-</span> <span class="nt">-f2</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\@</span> <span class="nt">-f2</span><span class="si">)</span>
+<span class="k">else
+    </span><span class="nv">active_ver</span><span class="o">=</span>0
+<span class="k">fi</span>
+
+<span class="c"># is the active version the requested version?</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="c"># yup, carry on</span>
+  :
+<span class="k">else</span>
+  <span class="c"># nope, so deactivate it</span>
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Deactivating PostgreSQL </span><span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span><span class="s2">... "</span>
+  brew <span class="nb">unlink</span> <span class="nt">--force</span> <span class="nt">--overwrite</span> postgresql@<span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\ </span> <span class="nt">-f3-</span>
+  <span class="c"># and activate the correct version</span>
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Activating PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
+  brew <span class="nb">link</span> <span class="nt">--force</span> <span class="nt">--overwrite</span> postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> | <span class="nb">grep</span> <span class="s1">'created'</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\ </span> <span class="nt">-f3-</span>
+<span class="k">fi</span>
+
+<span class="c"># point to the correct data dir and port</span>
+<span class="nv">PGDATA</span><span class="o">=</span>/usr/local/var/postgres/<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span>
+<span class="nv">PGPORT</span><span class="o">=</span><span class="s2">"54</span><span class="si">$(</span><span class="nb">echo</span> <span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> | <span class="nb">tr</span> <span class="nt">-d</span> .<span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># should we be starting a cluster?</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">no_restart</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"t"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="c"># nope, carry on</span>
+  :
+<span class="k">else</span>
+  <span class="c"># yup. has the cluster been initialized?</span>
+  <span class="k">if</span> <span class="o">[[</span> <span class="o">!</span> <span class="nt">-d</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+    <span class="c"># nope, so let's do that</span>
+    <span class="nb">echo</span> <span class="s2">"Initializing PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2"> cluster... "</span>
+    initdb <span class="nt">-k</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> <span class="o">||</span> initdb <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>
+    <span class="nb">echo</span> <span class="s2">"port = </span><span class="k">${</span><span class="nv">PGPORT</span><span class="k">}</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_destination = 'stderr'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"logging_collector = on"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_filename = 'postgresql-%a.log'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_truncate_on_rotation = on"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_rotation_age = 1d"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_rotation_size = 0"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_timezone = 'US/Michigan'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+  <span class="k">else</span>
+    <span class="c"># yup, carry on</span>
+    :
+  <span class="k">fi</span>
+  <span class="c"># start the cluster</span>
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Starting PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
+  pg_ctl <span class="nt">-D</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> start  <span class="o">&gt;</span> /tmp/pg.start 2&gt;&amp;1
+  <span class="nb">grep</span> <span class="s1">'server start'</span> /tmp/pg.start
+  <span class="k">if</span> <span class="o">[[</span> <span class="nt">-x</span> /usr/local/bin/pg_isready <span class="o">]]</span> <span class="p">;</span> <span class="k">then
+      </span><span class="nv">ret</span><span class="o">=</span>1
+      <span class="k">while</span> <span class="o">[[</span> <span class="k">${</span><span class="nv">ret</span><span class="k">}</span> <span class="nt">-eq</span> 1 <span class="o">]]</span>
+      <span class="k">do</span>
+        <span class="c"># wait for the cluster to be available before exiting</span>
+        pg_isready <span class="nt">-q</span>
+        <span class="nv">ret</span><span class="o">=</span><span class="nv">$?</span>
+      <span class="k">done
+    fi
+fi
+
+</span><span class="nb">echo</span> <span class="s2">"export PGDATA=</span><span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"export PGPORT=</span><span class="k">${</span><span class="nv">PGPORT</span><span class="k">}</span><span class="s2">"</span>
 </code></pre></div></div>
 
-<p>I have Two-Factor Auth (2FA) enabled on my Google account (you should too!), so for me, the next step is to log into Google and create an ‘app password’. Once I have that password in hand, we <code class="language-plaintext highlighter-rouge">vi /etc/postfix/sasl_passwd</code> and add:</p>
+<p>But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:</p>
 
-<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">smtp</span>.<span class="n">gmail</span>.<span class="n">com</span>]:<span class="m">587</span> <span class="n">username</span>@<span class="n">gmail</span>.<span class="n">com</span>:<span class="n">app_passwd</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg 9.6
 </code></pre></div></div>
 
-<p>Secure that file by running <code class="language-plaintext highlighter-rouge">chmod 0600 /etc/postfix/sasl_passwd</code> and then have Postfix hash it by doing <code class="language-plaintext highlighter-rouge">postmap /etc/postfix/sasl_passwd</code>. Finally, restart Postfix:</p>
+<p>and then the script does the following:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>launchctl stop org.postfix.master
-launchctl start org.postfix.master
-</code></pre></div></div>
+<ul>
+  <li>checks if the requested version is installed, and installs it if not</li>
+  <li>checks if another version of PostgreSQL is running, and stops it</li>
+  <li>checks if another version is linked as the active version, and unlinks it</li>
+  <li>links the requested version as the active version</li>
+  <li>sets PGDATA to point to the requested version’s data cluster</li>
+  <li>does an <code class="language-plaintext highlighter-rouge">initdb</code> for the requested version if needed</li>
+  <li>starts the requested version’s cluster</li>
+</ul>
 
-<p>And everything should work.</p>
+<p>I’ll be the first to admit that the script could use additional work, but it’s functional enough to start using today. As I continue to improve the script, I’ll update the post with those changes, so check back every so often.</p>
+
+<p>Enjoy.</p>
 
   </div>
   
