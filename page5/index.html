@@ -340,6 +340,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -386,90 +390,26 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2020/07/30/It-s-Podman-man/">
-        It's Podman, man
+      <a href="/2021/07/24/Hello-again-old-friend/">
+        Hello again old friend
       </a>
     </h1>
 
-    <span class="post-date">30 Jul 2020</span>
+    <span class="post-date">24 Jul 2021</span>
 
-    <p>As mentioned (very) briefly in other posts, I run <a href="https://www.home-assistant.io/">Home Assistant</a> as the ‘control hub’ for all my “smart” devices in my home. I originally ran it via their ‘HASSOS’ Docker image but was never really happy with it. So when I most recently rebuilt my NUC, I decided to give this Podman thing a look. And so far, I seem to like it better. I’m still not entirely sold on this whole container bullshit, but whatever ;)</p>
+    <p>I <a href="/posts/Bye-Pi-Hello-NUC">posted</a> a year ago about dropping ClearLinux and
+switching to Ubuntu Server on my NUC. While that little experiment was fun, it
+didn’t last long. I’m not entirely sure what it is about my brain/personality, but
+I just do not like any of the binary Linux distros out there for my own long-term use so I went back to my old friend, Gentoo.</p>
 
-<p>When I first decided to use Podman, the install directions for Ubuntu on the Podman <a href="https://podman.io/getting-started/installation.html">site</a> were not updated to point to the proper Apt source, and I had to dig around on various GitHub issues for the project before finding the correct info:</p>
+<p>It’s been a few months now, and I must say that running Gentoo on the NUC has
+been a pleasant experience. It took a little work to get up to speed on recent
+changes in Gentoo, and I had to dig into things to get an optimized install
+going on the NUC, but I’m pretty happy with the results.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span> /etc/os-release
-<span class="nb">echo</span> <span class="s2">"deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_</span><span class="k">${</span><span class="nv">VERSION_ID</span><span class="k">}</span><span class="s2">/ /"</span> | <span class="nb">sudo tee</span> /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-curl <span class="nt">-L</span> https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_<span class="k">${</span><span class="nv">VERSION_ID</span><span class="k">}</span>/Release.key | <span class="nb">sudo </span>apt-key add -
-<span class="nb">sudo </span>apt-get update <span class="nt">-qq</span>
-<span class="nb">sudo </span>apt-get <span class="nt">-qq</span> <span class="nt">-y</span> <span class="nb">install </span>podman
-</code></pre></div></div>
-
-<p>These are now on the site and they work for today but if you’re visiting this post in the future it might have changed.</p>
-
-<p>So anyway, after installing and playing with Podman for a while, I ended up deciding to run three containers (pods?) under rootfull Podman (technically, two of them could run rootless, but I’d rather be consistent). My next step was to use <code class="language-plaintext highlighter-rouge">podman-generate-systemd</code> to write some systemd service scripts for me. I can’t recall exactly why now, but I ended up tweaking the service files by hand and they now look like this:</p>
-
-<p>Home Assistant:</p>
-<div class="language-systemd highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[Unit]</span>
-<span class="nt">description</span><span class="p">=</span>homeassistant system monitor Podman container
-
-<span class="k">[Service]</span>
-<span class="nt">Type</span><span class="p">=</span>simple
-<span class="nt">TimeoutStartSec</span><span class="p">=</span>30s
-<span class="nt">ExecStartPre</span><span class="p">=</span>-/usr/bin/podman rm homeassistant
-<span class="nt">ExecStart</span><span class="p">=</span>/usr/bin/podman run --name=homeassistant -v /root/podman/hassio:/config --net=host -v /proc
-<span class="nt">:/host/proc:ro -v /sys:/host/sys:ro --cap-add SYS_PTRACE --security-opt apparmor</span><span class="p">=</span>unconfined -v /:/mnt
- <span class="err">-v</span> <span class="err">/home:/srv</span> <span class="err">homeassistant/home-assistant</span>
-<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman stop homeassistant
-<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman rm homeassistant
-<span class="nt">ExecStop</span><span class="p">=</span>-/usr/bin/podman stop homeassistant
-<span class="nt">Restart</span><span class="p">=</span>never
-<span class="nt">RestartSec</span><span class="p">=</span>30
-
-<span class="k">[Install]</span>
-<span class="nt">WantedBy</span><span class="p">=</span>multi-user.target
-</code></pre></div></div>
-
-<p>Netdata:</p>
-<div class="language-systemd highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[Unit]</span>
-<span class="nt">description</span><span class="p">=</span>netdata system monitor Podman container
-
-<span class="k">[Service]</span>
-<span class="nt">Type</span><span class="p">=</span>simple
-<span class="nt">TimeoutStartSec</span><span class="p">=</span>30s
-<span class="nt">ExecStartPre</span><span class="p">=</span>-/usr/bin/podman rm netdata
-<span class="nt">ExecStart</span><span class="p">=</span>/usr/bin/podman run --name netdata -p 19999:19999 -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /root/podman/netdata:/etc/netdata --cap-add SYS_PTRACE --security-opt apparmor=unconfined netdata/netdata
-<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman stop netdata
-<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman rm netdata
-<span class="nt">ExecStop</span><span class="p">=</span>-/usr/bin/podman stop netdata
-<span class="nt">Restart</span><span class="p">=</span>never
-<span class="nt">RestartSec</span><span class="p">=</span>30
-
-<span class="k">[Install]</span>
-<span class="nt">WantedBy</span><span class="p">=</span>multi-user.target
-</code></pre></div></div>
-
-<p>BOINC:</p>
-<div class="language-systemd highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[Unit]</span>
-<span class="nt">description</span><span class="p">=</span>boinc system monitor Podman container
-
-<span class="k">[Service]</span>
-<span class="nt">Type</span><span class="p">=</span>simple
-<span class="nt">TimeoutStartSec</span><span class="p">=</span>30s
-<span class="nt">ExecStartPre</span><span class="p">=</span>-/usr/bin/podman rm boinc
-<span class="nt">ExecStart</span><span class="p">=</span>/usr/bin/podman run --name boinc --net=host -v /root/podman/boinc:/var/lib/boinc --security-opt apparmor=unconfined -e BOINC_GUI_RPC_PASSWORD="123" -e BOINC_CMD_LINE_OPTIONS="--allow_remote_gui_rpc" boinc/client
-<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman stop boinc
-<span class="nt">ExecReload</span><span class="p">=</span>-/usr/bin/podman rm boinc
-<span class="nt">ExecStop</span><span class="p">=</span>-/usr/bin/podman stop boinc
-<span class="nt">Restart</span><span class="p">=</span>never
-<span class="nt">RestartSec</span><span class="p">=</span>30
-
-<span class="k">[Install]</span>
-<span class="nt">WantedBy</span><span class="p">=</span>multi-user.target
-</code></pre></div></div>
-
-<p>It’s been running like this now for a while and I’m pretty happy with things. I was eagerly watching the planned Podman feature that would self-update the pods, but I think I’m gonna leave that process manual for now since Home Assistant has been pushing a lot of ‘breaking changes’ lately and I need to review my configs before updating anyway.</p>
-
-<p>In any case, I kinda like Podman for when I need to use a container. So if you’re running Docker at home and don’t have a specific need for Docker itself, see if Podman will meet your needs.</p>
+<p>Maybe I’ll actually blog more this time about what I’m doing with this
+install. Or maybe I’ll lapse back into old habits and forget to. Only time
+will tell.</p>
 
   </div>
   

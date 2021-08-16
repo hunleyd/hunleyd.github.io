@@ -1,4 +1,139 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed/by_tag/computers.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-08-14T17:17:43-04:00</updated><id>/feed/by_tag/computers.xml</id><title type="html">Doug’s Dabblings</title><subtitle>A collection of thoughts on things in my life that I&apos;m experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</subtitle><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><entry><title type="html">Generating DNS noise</title><link href="/2021/08/14/Generating-DNS-noise/" rel="alternate" type="text/html" title="Generating DNS noise" /><published>2021-08-14T12:27:09-04:00</published><updated>2021-08-14T12:27:09-04:00</updated><id>/2021/08/14/Generating-DNS-noise</id><content type="html" xml:base="/2021/08/14/Generating-DNS-noise/">&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Domain_Name_System&quot;&gt;DNS&lt;/a&gt; is one of those thing
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed/by_tag/computers.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-08-16T14:53:14-04:00</updated><id>/feed/by_tag/computers.xml</id><title type="html">Doug’s Dabblings</title><subtitle>A collection of thoughts on things in my life that I&apos;m experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</subtitle><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><entry><title type="html">Automations, timers, and you</title><link href="/2021/08/16/Automations-timers-and-you/" rel="alternate" type="text/html" title="Automations, timers, and you" /><published>2021-08-16T09:48:35-04:00</published><updated>2021-08-16T09:48:35-04:00</updated><id>/2021/08/16/Automations--timers--and-you</id><content type="html" xml:base="/2021/08/16/Automations-timers-and-you/">&lt;p&gt;For a while now, I’ve been automating my apartment using the
+&lt;a href=&quot;https://www.home-assistant.io/docs/automation/basics/&quot;&gt;automations&lt;/a&gt; component
+of &lt;a href=&quot;https://www.home-assistant.io&quot;&gt;Home Assistant&lt;/a&gt;. In fact, I had amassed
+quite the collection of automations and was starting to have a problem keeping
+track of them all and their various interactions (intentional or otherwise).
+So earlier this year when Home Assistant introduced &lt;a href=&quot;https://www.home-assistant.io/blog/2021/04/07/release-20214/#automation-debugging&quot;&gt;automation
+debugging&lt;/a&gt;
+I decided to sit down and refactor the whole thing.&lt;/p&gt;
+
+&lt;p&gt;At first, I considered deploying and using
+&lt;a href=&quot;https://en.wikipedia.org/wiki/MQTT&quot;&gt;MQTT&lt;/a&gt; which, it seems, a lot of Home
+Assistant users do. However, I wasn’t overly excited at running another
+container or at learning Yet Another Thing. Likewise, I considered
+&lt;a href=&quot;https://community.home-assistant.io/t/home-assistant-community-add-on-node-red/55023&quot;&gt;Node-RED&lt;/a&gt;
+and discarded it too. I’m probably making things harder for myself by sticking
+to editing YAML in Vim but I knew my needs weren’t overly complicated and by
+sticking to ‘the basics’ I knew it would force me to stop being overly-clever
+and make something that Just Works™. So I sat down with the new
+debugging tool, wrote out all of my ‘what do i want automated’ needs, and
+pored back over the automation documentation.&lt;/p&gt;
+
+&lt;p&gt;And that’s when I realized that
+a &lt;a href=&quot;https://www.home-assistant.io/integrations/timer/&quot;&gt;timer&lt;/a&gt; was the component
+I’d been overlooking all this time. Timers, it turns out, can be used very
+much in an MQTT-lite fashion. You see, you can have one or more routines
+triggered by the same timer; in fact, some set of routines can listen for
+timer (re)start and another set can listen for timer finish/idle. Mix-n-match
+these up and you can make some very interesting actions happen. And it means
+my automations each generally do one thing and only one thing (KISS) which, in
+turn, means they are less likely to fail and easier to debug when they do.
+I was stoked! I was also annoyed at not having paid any attention to timers
+from the get-go, but what are you gonna do?&lt;/p&gt;
+
+&lt;p&gt;My first task was thinking about what timers I’d need. I knew right away I’d want
+a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;timer.away&lt;/code&gt; for when I leave home:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;timer&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;away&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;duration&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;00:05:00&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But what other timers do I need? I quickly realized that I need a timer for
+almost every switch I have defined in Home Assistant. I could get away with
+fewer, but I allowed myself a little bit of cleverness and created one for
+each switch &lt;em&gt;with the name of the timer being the name of the switch it
+controls&lt;/em&gt;. So, for example, I have a TP Link Kasa smart switch controlling my
+hallway light called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;switch.hallway_light&lt;/code&gt;. So I created a matching timer
+called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;timer.switch_hallway_light&lt;/code&gt;. This allows me to to write a simple
+automation like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Trigger - Start light switch trigger&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;1625266493&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;When&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;light&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;turns&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on,&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;its&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;corresponding&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;power&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;off&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;trigger&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;trigger&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.bar_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.closet_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.dining_room_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.entryway_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.hallway_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+     &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.start&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+         &lt;span class=&quot;na&quot;&gt;duration&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;0:10:00&apos;&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+         &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;timer.&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;What this does is exactly what it says in the description. Whenever one of the
+lights in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;trigger&lt;/code&gt; section turns on, it starts the corresponding timer.
+The magic is in the very last line of the automation:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;timer.&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;What we’re doing here it taking the entity id that fired the automation (e.g.
+what switch did we turn on) from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;trigger.entity_id&lt;/code&gt; value then we
+swap out the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.&lt;/code&gt; for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_&lt;/code&gt; which gives us the name of our timer. So here we
+have one automation, that does one very simple thing which makes it kinda hard
+to break this automation.&lt;/p&gt;
+
+&lt;p&gt;So we’ve turned on the hallway light, and started our timer. What happens when
+the timer runs out? Well, we have an automation that is triggered by that:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Trigger - Kill the lights&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;1625267293&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;When&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;timer&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;runs&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;out,&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;kill&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;its&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;corresponding&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;light&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;trigger&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_bar_light&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_closet_light&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_dining_room_light&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_entryway_light&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_hallway_light&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;homeassistant.turn_off&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;switch.&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, it’s basically the opposite of the previous automation. We
+list which timers we care about, and when they finish, we munge the timer name
+a bit to get the switch’s name and then we turn that switch off. Simplicity.&lt;/p&gt;
+
+&lt;p&gt;Hopefully, you can see the utility of timers in Home Assistant. This is just
+a very basic example of how I use them, but I think it illustrates their user
+pretty well. I still have just over 50 automations, but that’s way down from
+what I had, and the automations themselves are now way simpler. Overall,
+I consider this a win.&lt;/p&gt;
+
+&lt;p&gt;Happy hacking!&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="smarthome" /><category term="computers" /><category term="howto" /><summary type="html">For a while now, I’ve been automating my apartment using the automations component of Home Assistant. In fact, I had amassed quite the collection of automations and was starting to have a problem keeping track of them all and their various interactions (intentional or otherwise). So earlier this year when Home Assistant introduced automation debugging I decided to sit down and refactor the whole thing.</summary></entry><entry><title type="html">Generating DNS noise</title><link href="/2021/08/14/Generating-DNS-noise/" rel="alternate" type="text/html" title="Generating DNS noise" /><published>2021-08-14T12:27:09-04:00</published><updated>2021-08-14T12:27:09-04:00</updated><id>/2021/08/14/Generating-DNS-noise</id><content type="html" xml:base="/2021/08/14/Generating-DNS-noise/">&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Domain_Name_System&quot;&gt;DNS&lt;/a&gt; is one of those thing
 most people never think about. It’s one of those things in the background that
 quietly does its job and no one pays it no mind. Which is why it’s surprising
 to people when they discover that if their DNS traffic can be logged, a very

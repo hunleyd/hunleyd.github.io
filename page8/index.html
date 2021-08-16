@@ -340,6 +340,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -386,40 +390,87 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2019/02/07/The-continuing-adventures-of-Mom-cutting-the-cord/">
-        The continuing adventures of Mom cutting the cord
+      <a href="/2020/06/23/tuned-PG-and-you/">
+        tuned, PG, and you
       </a>
     </h1>
 
-    <span class="post-date">07 Feb 2019</span>
+    <span class="post-date">23 Jun 2020</span>
 
-    <p>As a belated update to <a href="/posts/Mom-cuts-the-cord/">this</a> post, Mom has told DirecTV to completely go screw and she’s moved over to <a href="https://www.philo.com">Philo</a> where she’s currently loving life.</p>
+    <p>We’ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always ‘that depends on your hardware and workload’ and involves a lot of iteration between changing a setting and benchmarking, I thought I’d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for <code class="language-plaintext highlighter-rouge">tuned</code> to make use of. Please, for the love of $diety, stop editing <code class="language-plaintext highlighter-rouge">sysctl.conf</code> and friends!</p>
 
-<p>I had initially proposed DirecTV Now to her since it was an uphill battle to convince her to abandon DirecTV satellite. I figured it was the path of least resistance since she’d know the UI and the channel line-up . And, at first, it was exactly that. However, after about three months, I had grown tired of hearing the following:</p>
+<p>If you’re running RedHat (or a RedHat-derived) OS, <code class="language-plaintext highlighter-rouge">tuned</code> is probably already installed and may even be already running. If not, it’s a simple <code class="language-plaintext highlighter-rouge">yum install tuned</code> to rectify. If you’re on Debian (or a Debian-derived) OS, simply <code class="language-plaintext highlighter-rouge">apt install tuned</code>. Now that you have it installed, you can ask it to recommend a profile for you by issuing <code class="language-plaintext highlighter-rouge">tuned-adm recommend</code> and you can see which profile, if any, is in use by issuing <code class="language-plaintext highlighter-rouge">tuned-adm active</code>. You can also list all the available profiles with <code class="language-plaintext highlighter-rouge">tuned-adm list</code>.</p>
 
-<ul>
-  <li>when will I get <em>my</em> locals, not yours</li>
-  <li>when will I be able to record stuff</li>
-  <li>why are the previous episodes so inconsistent</li>
-  <li>why can’t I record show X</li>
-  <li>does your picture look all blocky</li>
-  <li>why is the guide so slow</li>
-  <li>they raised the price?!</li>
-</ul>
+<p>That’s great and all, but there’s no PostgreSQL profile that ships with <code class="language-plaintext highlighter-rouge">tuned</code>. So, let’s build one! First, decide which of the profiles in <code class="language-plaintext highlighter-rouge">tuned-adm list</code> is the most appropriate starting point for you. If you’re running on bare metal, this is probably <code class="language-plaintext highlighter-rouge">throughput-performance</code>. If your system is virtualized, you probably want <code class="language-plaintext highlighter-rouge">virtual-guest</code>. We’re going to use this profile as the ‘base’ of our profile. Profiles are stored in <code class="language-plaintext highlighter-rouge">/etc/tuned</code>, so let’s start setting ours up:</p>
 
-<p>That’s right, in the quick span of just three months, she’d seen that while DirecTV Now <em>was</em> better than her old DirecTV, it was still plagued by, well, AT&amp;T incompetence. It took them forever to launch the DVR, and it still didn’t work right even after the beta. I actually had to change the account’s billing address to get the correct locals cause they can’t seem to figure out GeoIP. Their licensing of channels/shows makes no goddamn sense. As an example, record whatever you want off the Discovery channel, just not Dirty Jobs. I’m willing to grant that the licensing is on the fault of the network/studio but you’re AT&amp;T/DirecTV for fuck’s sake! Spend some damn money and make it happen for your users. And then there was the app itself. I’ve never seen another Roku app be so unresponsive, so slow, and so bandwidth sensitive. When mom can be on her Chromebook doing whatever, while I’m watching a movie on her TV via Google Play, and my niece is watching Youtube on her iPhone and there are <em>no issues for any of us</em> the problem is <strong>not</strong> Mom’s connection. Yet Mom could be the only one in the house and she’d get desync on the audio, or pixelation/blocking in the video. WTF, AT&amp;T? Buy a real CDN!</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> /etc/tuned/postgresql
+<span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt; /etc/tuned/postgresql/tuned.conf
+[main]
+include= throughput-performance
+</span><span class="no">
+EOF
+</span></code></pre></div></div>
 
-<p>And then, of course, they raised the price on her. That’s right. With all the issues above (and trust me, I checked /r/directvnow religiously. This was not unique to Mom) they had the gall to raise prices. And not just for new sign-ups. Oh no no no. Existing and even <em>grandfathered</em> accounts got hit in the wallet! It’s like they don’t know how to be anything but a greedy cable company.</p>
+<p>As you can see, we’re going to start with the <code class="language-plaintext highlighter-rouge">throughput-performance</code> profile as a base, and then make tweaks from there. The first tweak? Disable Transparent Huge Pages (THP):</p>
 
-<p>So, I signed up for Philo and installed it on Mom’s TV. I asked her to use it for the free week and see how it went. I kid you not, she called me on day 5 and said she liked it so much better that she agreed to me canceling DirecTV Now right then and there. To say I was floored is an understatement.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
+[vm]
+transparent_hugepages=never
+</span><span class="no">EOF
+</span></code></pre></div></div>
 
-<p>I will grant you that losing the locals and having to use the OTA antenna isn’t ideal. We’re keeping an eye on <a href="https://www.locast.org">Locast</a> to see if we can solve that “soon”. But Mom was already using the antenna to watch a few of the local sub-channels, so it wasn’t a deal breaker. So far, Mom has adapted to the Philo interface easily (I prefer it), we’ve setup a profile for her, me, and guests, and she’s been recording shows and Hallmark Christmas movies (ugh) all without needing to call me.</p>
+<p>If you’re not aware, THP on a dedicated PostgreSQL server really don’t play nicely. It’s best to avoid them completely.</p>
 
-<p>And since switching, NOT ONCE has she had a desync or pixelation issue. Even when Steph and I both were there over Thanksgiving and beating the crap outta her wifi.</p>
+<p>Now, we want to set the ‘standard database VM config’ so we:</p>
 
-<p>The kicker here? <strong>It’s only $16/mo.</strong> Yeah, you read that right. She went from $100/mo w/ DTV to $45/mo with DTVN (at the end) to $16/mo. <strong>Unreal.</strong> And on top of that, Philo recently added an extra MTV channel for the hell of it.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
 
-<p>All around a WIN WIN.</p>
+[sysctl]
+vm.overcommit_memory = 2
+vm.swappiness = 1
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<p>As pointed out in the comments, <code class="language-plaintext highlighter-rouge">vm.overcommit_memory</code> and <code class="language-plaintext highlighter-rouge">vm.dirty_ratio</code> (which I set below) interplay. <code class="language-plaintext highlighter-rouge">vm.dirty_ratio</code> is the value that represents the percentage of MemTotal that can consume dirty pages before all processes must write dirty buffers back to disk and when this value is reached all I/O is blocked for any new writes until dirty pages have been flushed. By default this set to 50% which means that at most only <strong>half</strong> of your MemTotal can ever only be dirty at once. Please see <a href="https://www.kernel.org/doc/Documentation/vm/overcommit-accounting">the kernel documentation</a> for details on all these settings.</p>
+
+<p>I, personally, also then add (after benchmarking, of course):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; /etc/tuned/postgresql/tuned.conf
+kernel.sched_autogroup_enabled = 0
+kernel.sched_migration_cost_ns = 50000000
+vm.dirty_background_bytes = 134217728
+vm.dirty_expire_centisecs = 499
+vm.dirty_ratio = 90
+vm.overcommit_ratio = 90
+vm.zone_reclaim_mode = 0
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<p>This gives you a complete PostgreSQL tuned profile that looks like:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">main</span>]
+<span class="n">include</span>= <span class="n">throughput</span>-<span class="n">performance</span>
+
+[<span class="n">sysctl</span>]
+<span class="n">kernel</span>.<span class="n">sched_autogroup_enabled</span> = <span class="m">0</span>
+<span class="n">kernel</span>.<span class="n">sched_migration_cost_ns</span> = <span class="m">50000000</span>
+<span class="n">vm</span>.<span class="n">dirty_background_bytes</span> = <span class="m">134217728</span>
+<span class="n">vm</span>.<span class="n">dirty_expire_centisecs</span> = <span class="m">499</span>
+<span class="n">vm</span>.<span class="n">dirty_ratio</span> = <span class="m">90</span>
+<span class="n">vm</span>.<span class="n">overcommit_memory</span> = <span class="m">2</span>
+<span class="n">vm</span>.<span class="n">overcommit_ratio</span> = <span class="m">90</span>
+<span class="n">vm</span>.<span class="n">swappiness</span> = <span class="m">1</span>
+<span class="n">vm</span>.<span class="n">zone_reclaim_mode</span> = <span class="m">0</span>
+
+[<span class="n">vm</span>]
+<span class="n">transparent_hugepages</span>=<span class="n">never</span>
+</code></pre></div></div>
+
+<p>(well, in a slightly different order, but you get the drift).</p>
+
+<p>Now that we have our profile, run a quick <code class="language-plaintext highlighter-rouge">tuned-adm list</code> to ensure that it is listed as available. Assuming it is, you can enable it with <code class="language-plaintext highlighter-rouge">tune-adm profile postgresql</code> and then double-check that it took effect with <code class="language-plaintext highlighter-rouge">tune-adm active</code>.</p>
+
+<p>Once activated, you should be all set. Happy computing, or something. ;)</p>
 
   </div>
   

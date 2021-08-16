@@ -340,6 +340,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -386,104 +390,98 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/11/18/Upgrading-PostgreSQL-5x-faster/">
-        Upgrading PostgreSQL 5x faster
+      <a href="/2016/11/21/PostgreSQL-logging-strftime-and-you/">
+        PostgreSQL logging, strftime, and you
       </a>
     </h1>
 
-    <span class="post-date">18 Nov 2016</span>
+    <span class="post-date">21 Nov 2016</span>
 
-    <p><img src="https://cdn.shopify.com/s/files/1/0946/8552/files/5xFaster.png" class="lleader" />Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
+    <p><img src="https://image.flaticon.com/icons/svg/1878/1878375.svg" class="rleader" />PostgreSQL has a pretty extensive logging facility. I’ve talked briefly about configuring it to get the most out of pgBadger before, but today I’m gonna talk a bit about the naming of the log file itself. The chosen filename doesn’t have to be static. You can, in fact, have the name dynamically created by using <code class="language-plaintext highlighter-rouge">strftime()</code> escapes. But what exactly are those?</p>
 
-<p>Thankfully, the PostgreSQL team introduced <code class="language-plaintext highlighter-rouge">pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code class="language-plaintext highlighter-rouge">pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?</p>
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    The strftime() function formats the information from timeptr into the buffer s,
+    according to the string pointed to by format.
 
-<p>First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a> if you need to do this). We’re going to use <code class="language-plaintext highlighter-rouge">pgbench</code> to create some data in our PostgreSQL 9.5 instance:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg 9.5
-<span class="nv">$ </span>createdb bench1<span class="p">;</span> createdb bench2<span class="p">;</span> createdb bench3
-<span class="nv">$ </span>pgbench <span class="nt">-i</span> <span class="nt">-s</span> 15 bench1 <span class="p">;</span> pgbench <span class="nt">-i</span> <span class="nt">-s</span> 70 bench2 <span class="p">;</span> pgbench <span class="nt">-i</span> <span class="nt">-s</span> 600 bench3
-<span class="nv">$ </span>pgbench <span class="nt">-c</span> 4 <span class="nt">-j</span> 2 <span class="nt">-T</span> 600 bench1 <span class="p">;</span> pgbench <span class="nt">-c</span> 4 <span class="nt">-j</span> 2 <span class="nt">-T</span> 600 bench2 <span class="p">;</span> pgbench <span class="nt">-c</span> 4 <span class="nt">-j</span> 2 <span class="nt">-T</span> 600 bench3
+    The format string consists of zero or more conversion specifications and ordi-
+    nary characters.  All ordinary characters are copied directly into the buffer.
+    A conversion specification consists of a percent sign ```%''' and one other
+    character.
 </code></pre></div></div>
 
-<p>Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, <em>this is where you’d have to stop your application(s)</em>.</p>
+<p>Say what? Essentially, given a timestamp and a format specification, you’ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems <code class="language-plaintext highlighter-rouge">libc</code> implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it’s BSD libc. You really shouldn’t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we’ll use today’s date of Monday, November 21, 2016 with a timestamp of 1pm EST):</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">time </span>pg_dumpall <span class="o">&gt;</span> data.sql
-pg_dumpall <span class="o">&gt;</span> data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    %<span class="n">A</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">national</span> <span class="n">representation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">full</span> <span class="n">weekday</span> <span class="n">name</span> (<span class="s2">"Monday"</span>)
+    %<span class="n">a</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">national</span> <span class="n">representation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">abbreviated</span> <span class="n">weekday</span> <span class="n">name</span> (<span class="s2">"Mon"</span>)
+    %<span class="n">B</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">national</span> <span class="n">representation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">full</span> <span class="n">month</span> <span class="n">name</span> (<span class="s2">"November"</span>)
+    %<span class="n">b</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">national</span> <span class="n">representation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">abbreviated</span> <span class="n">month</span> <span class="n">name</span> (<span class="s2">"Nov"</span>)
+    %<span class="n">C</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> (<span class="n">year</span> / <span class="m">100</span>) <span class="n">as</span> <span class="n">decimal</span> <span class="n">number</span>; <span class="n">single</span> <span class="n">digits</span> <span class="n">are</span> <span class="n">preceded</span> <span class="n">by</span> <span class="n">a</span> <span class="n">zero</span> (<span class="s2">"20"</span>)
+    %<span class="n">c</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">national</span> <span class="n">representation</span> <span class="n">of</span> <span class="n">time</span> <span class="n">and</span> <span class="n">date</span> (<span class="s2">"Mon Nov 21 13:00:00 2016"</span>)
+    %<span class="n">D</span>    <span class="n">is</span> <span class="n">equivalent</span> <span class="n">to</span> ``%<span class="n">m</span>/%<span class="n">d</span>/%<span class="n">y</span><span class="s1">''</span> (<span class="s2">"11/21/16"</span>)
+    %<span class="n">d</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">day</span> <span class="n">of</span> <span class="n">the</span> <span class="n">month</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">01</span>-<span class="m">31</span>) (<span class="s2">"21"</span>)
+    %<span class="n">e</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">day</span> <span class="n">of</span> <span class="n">the</span> <span class="n">month</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">1</span>-<span class="m">31</span>); <span class="n">single</span> <span class="n">digits</span> <span class="n">are</span> <span class="n">preceded</span> <span class="n">by</span> <span class="n">a</span> <span class="n">blank</span> (<span class="s2">"21"</span>)
+    %<span class="n">F</span>    <span class="n">is</span> <span class="n">equivalent</span> <span class="n">to</span> ``%<span class="n">Y</span>-%<span class="n">m</span>-%<span class="n">d</span><span class="s1">''</span> (<span class="s2">"2016-11-21"</span>)
+    %<span class="n">G</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">a</span> <span class="n">year</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> <span class="n">with</span> <span class="n">century</span>.  <span class="n">This</span> <span class="n">year</span> <span class="n">is</span> <span class="n">the</span> <span class="n">one</span> <span class="n">that</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">greater</span> <span class="n">part</span> <span class="n">of</span> <span class="n">the</span> <span class="n">week</span> (<span class="n">Monday</span> <span class="n">as</span> <span class="n">the</span> <span class="n">first</span> <span class="n">day</span> <span class="n">of</span> <span class="n">the</span> <span class="n">week</span>) (<span class="s2">"2016"</span>)
+    %<span class="n">g</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">same</span> <span class="n">year</span> <span class="n">as</span> <span class="n">in</span> ``%<span class="n">G</span><span class="s1">''</span>, <span class="n">but</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> <span class="n">without</span> <span class="n">century</span> (<span class="m">00</span>-<span class="m">99</span>) (<span class="s2">"16"</span>)
+    %<span class="n">H</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">hour</span> (<span class="m">24</span>-<span class="n">hour</span> <span class="n">clock</span>) <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">00</span>-<span class="m">23</span>) (<span class="s2">"12"</span>)
+    %<span class="n">h</span>    <span class="n">the</span> <span class="n">same</span> <span class="n">as</span> %<span class="n">b</span> (<span class="s2">"Nov"</span>)
+    %<span class="n">I</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">hour</span> (<span class="m">12</span>-<span class="n">hour</span> <span class="n">clock</span>) <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">01</span>-<span class="m">12</span>) (<span class="s2">"12"</span>)
+    %<span class="n">j</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">day</span> <span class="n">of</span> <span class="n">the</span> <span class="n">year</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">001</span>-<span class="m">366</span>) (<span class="s2">"326"</span>)
+    %<span class="n">k</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">hour</span> (<span class="m">24</span>-<span class="n">hour</span> <span class="n">clock</span>) <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">0</span>-<span class="m">23</span>); <span class="n">single</span> <span class="n">digits</span> <span class="n">are</span> <span class="n">preceded</span> <span class="n">by</span> <span class="n">a</span> <span class="n">blank</span> (<span class="s2">"13"</span>)
+    %<span class="n">l</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">hour</span> (<span class="m">12</span>-<span class="n">hour</span> <span class="n">clock</span>) <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">1</span>-<span class="m">12</span>); <span class="n">single</span> <span class="n">digits</span> <span class="n">are</span> <span class="n">preceded</span> <span class="n">by</span> <span class="n">a</span> <span class="n">blank</span> (<span class="s2">" 1"</span>)
+    %<span class="n">M</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">minute</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">00</span>-<span class="m">59</span>) (<span class="s2">"00"</span>)
+    %<span class="n">m</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">month</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">01</span>-<span class="m">12</span>) (<span class="s2">"11"</span>)
+    %<span class="n">n</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">a</span> <span class="n">newline</span>
+    %<span class="n">p</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">national</span> <span class="n">representation</span> <span class="n">of</span> <span class="n">either</span> <span class="s2">"ante meridiem"</span> (<span class="n">a</span>.<span class="n">m</span>.) <span class="n">or</span> <span class="s2">"post meridiem"</span> (<span class="n">p</span>.<span class="n">m</span>.)  <span class="n">as</span> <span class="n">appropriate</span> (<span class="s2">"PM"</span>)
+    %<span class="n">R</span>    <span class="n">is</span> <span class="n">equivalent</span> <span class="n">to</span> ``%<span class="n">H</span>:%<span class="n">M</span><span class="s1">''</span> (<span class="s2">"13:00"</span>)
+    %<span class="n">r</span>    <span class="n">is</span> <span class="n">equivalent</span> <span class="n">to</span> ``%<span class="n">I</span>:%<span class="n">M</span>:%<span class="n">S</span> %<span class="n">p</span><span class="s1">''</span> (<span class="s2">"01:00:00 PM"</span>)
+    %<span class="n">S</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">second</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">00</span>-<span class="m">60</span>) (<span class="s2">"00"</span>)
+    %<span class="n">s</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">seconds</span> <span class="n">since</span> <span class="n">the</span> <span class="n">Epoch</span>, <span class="n">UTC</span> (<span class="s2">"1479751200"</span>)
+    %<span class="n">T</span>    <span class="n">is</span> <span class="n">equivalent</span> <span class="n">to</span> ``%<span class="n">H</span>:%<span class="n">M</span>:%<span class="n">S</span><span class="s1">''</span> (<span class="s2">"13:00:00"</span>)
+    %<span class="n">t</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">a</span> <span class="n">tab</span>
+    %<span class="n">U</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">week</span> <span class="n">number</span> <span class="n">of</span> <span class="n">the</span> <span class="n">year</span> (<span class="n">Sunday</span> <span class="n">as</span> <span class="n">the</span> <span class="n">first</span> <span class="n">day</span> <span class="n">of</span> <span class="n">the</span> <span class="n">week</span>) <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">00</span>-<span class="m">53</span>) (<span class="s2">"47"</span>)
+    %<span class="n">u</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">weekday</span> (<span class="n">Monday</span> <span class="n">as</span> <span class="n">the</span> <span class="n">first</span> <span class="n">day</span> <span class="n">of</span> <span class="n">the</span> <span class="n">week</span>) <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">1</span>-<span class="m">7</span>) (<span class="s2">"1"</span>)
+    %<span class="n">V</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">week</span> <span class="n">number</span> <span class="n">of</span> <span class="n">the</span> <span class="n">year</span> (<span class="n">Monday</span> <span class="n">as</span> <span class="n">the</span> <span class="n">first</span> <span class="n">day</span> <span class="n">of</span> <span class="n">the</span> <span class="n">week</span>) <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">01</span>-<span class="m">53</span>).  <span class="n">If</span> <span class="n">the</span> <span class="n">week</span> <span class="n">containing</span> <span class="n">January</span> <span class="m">1</span> <span class="n">has</span> <span class="n">four</span> <span class="n">or</span> <span class="n">more</span> <span class="n">days</span> <span class="n">in</span> <span class="n">the</span> <span class="n">new</span> <span class="n">year</span>, <span class="n">then</span> <span class="n">it</span> <span class="n">is</span> <span class="n">week</span> <span class="m">1</span>; <span class="n">otherwise</span> <span class="n">it</span> <span class="n">is</span> <span class="n">the</span> <span class="n">last</span> <span class="n">week</span> <span class="n">of</span> <span class="n">the</span> <span class="n">previous</span> <span class="n">year</span>, <span class="n">and</span> <span class="n">the</span> <span class="n">next</span> <span class="n">week</span> <span class="n">is</span> <span class="n">week</span> <span class="m">1</span> (<span class="s2">"47"</span>)
+    %<span class="n">v</span>    <span class="n">is</span> <span class="n">equivalent</span> <span class="n">to</span> ``%<span class="n">e</span>-%<span class="n">b</span>-%<span class="n">Y</span><span class="s1">''</span> (<span class="s2">"21-Nov-2016"</span>)
+    %<span class="n">W</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">week</span> <span class="n">number</span> <span class="n">of</span> <span class="n">the</span> <span class="n">year</span> (<span class="n">Monday</span> <span class="n">as</span> <span class="n">the</span> <span class="n">first</span> <span class="n">day</span> <span class="n">of</span> <span class="n">the</span> <span class="n">week</span>) <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">00</span>-<span class="m">53</span>) (<span class="s2">"47"</span>)
+    %<span class="n">w</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">weekday</span> (<span class="n">Sunday</span> <span class="n">as</span> <span class="n">the</span> <span class="n">first</span> <span class="n">day</span> <span class="n">of</span> <span class="n">the</span> <span class="n">week</span>) <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">0</span>-<span class="m">6</span>) (<span class="s2">"1"</span>)
+    %<span class="n">X</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">national</span> <span class="n">representation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">time</span> (<span class="s2">"13:00:00"</span>)
+    %<span class="n">x</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">national</span> <span class="n">representation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">date</span> (<span class="s2">"11/21/2016"</span>)
+    %<span class="n">Y</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">year</span> <span class="n">with</span> <span class="n">century</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="s2">"2016"</span>)
+    %<span class="n">y</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">year</span> <span class="n">without</span> <span class="n">century</span> <span class="n">as</span> <span class="n">a</span> <span class="n">decimal</span> <span class="n">number</span> (<span class="m">00</span>-<span class="m">99</span>) (<span class="s2">"16"</span>)
+    %<span class="n">Z</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">time</span> <span class="n">zone</span> <span class="n">name</span> (<span class="s2">"EST"</span>)
+    %<span class="n">z</span>    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> <span class="n">the</span> <span class="n">time</span> <span class="n">zone</span> <span class="n">offset</span> <span class="n">from</span> <span class="n">UTC</span>; <span class="n">a</span> <span class="n">leading</span> <span class="n">plus</span> <span class="n">sign</span> <span class="n">stands</span> <span class="n">for</span> <span class="n">east</span> <span class="n">of</span> <span class="n">UTC</span>, <span class="n">a</span> <span class="n">minus</span> <span class="n">sign</span> <span class="n">for</span> <span class="n">west</span> <span class="n">of</span> <span class="n">UTC</span>, <span class="n">hours</span> <span class="n">and</span> <span class="n">minutes</span> <span class="n">follow</span> <span class="n">with</span> <span class="n">two</span> <span class="n">digits</span> <span class="n">each</span> <span class="n">and</span> <span class="n">no</span> <span class="n">delimiter</span> <span class="n">between</span> <span class="n">them</span> (<span class="s2">"-0500"</span>)
+    %%    <span class="n">is</span> <span class="n">replaced</span> <span class="n">by</span> `%<span class="err">'</span>
 </code></pre></div></div>
 
-<p>We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:</p>
+<p>Phew! That was a lot wasn’t it? And where exactly does this come into play? As the <code class="language-plaintext highlighter-rouge">postgresql.conf</code> says:</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg 9.6
-<span class="nv">$ </span><span class="nb">time </span>psql <span class="nt">-f</span> data.sql
-psql <span class="nt">-f</span> data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
-</code></pre></div></div>
-
-<p>After 37 minutes, our data is back and we can start our applications back up. <em>An outage of approximately 56.5 minutes</em>.</p>
-
-<p>Now, let’s blow away our PostgreSQL 9.6 cluster and use <code class="language-plaintext highlighter-rouge">pg_upgrade</code> to complete the same task. You would do this with the application(s) down as well!</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">rm</span> <span class="nt">-fr</span> <span class="nv">$PGDATA</span>/<span class="k">*</span>
-<span class="nv">$ </span>initdb <span class="nv">$PGDATA</span>
-<span class="nv">$ </span><span class="nb">export </span><span class="nv">OPGDATA</span><span class="o">=</span><span class="nv">$PGDATA</span>/../9.5
-<span class="nv">$ </span><span class="nb">time </span>pg_upgrade <span class="nt">-d</span> <span class="nv">$OPGDATA</span> <span class="nt">-D</span> <span class="nv">$PGDATA</span> <span class="nt">-b</span> /usr/local/opt/postgresql-9.5/bin <span class="nt">-B</span> /usr/local/opt/postgresql-9.6/bin
-pg_upgrade <span class="nt">-d</span> <span class="nv">$OPGDATA</span> <span class="nt">-D</span> <span class="nv">$PGDATA</span> <span class="nt">-b</span> /usr/local/opt/postgresql-9.5/bin <span class="nt">-B</span>   0.40s user 12.12s system 1% cpu 10:26.64 total
-</code></pre></div></div>
-
-<p>And we’re done <em>in 10.5 minutes</em>. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?</p>
-
-<p>For the curious, the <code class="language-plaintext highlighter-rouge">pg_upgrade</code> output that I omitted above for readability’s sake is:</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Performing Consistency Checks
-<span class="nt">-----------------------------</span>
-Checking cluster versions                                   ok
-Checking database user is the <span class="nb">install </span>user                  ok
-Checking database connection settings                       ok
-Checking <span class="k">for </span>prepared transactions                          ok
-Checking <span class="k">for </span>reg<span class="k">*</span> system OID user data types                ok
-Checking <span class="k">for </span>contrib/isn with bigint-passing mismatch       ok
-Checking <span class="k">for </span>roles starting with <span class="s1">'pg_'</span>                      ok
-Creating dump of global objects                             ok
-Creating dump of database schemas
-                                                            ok
-Checking <span class="k">for </span>presence of required libraries                 ok
-Checking database user is the <span class="nb">install </span>user                  ok
-Checking <span class="k">for </span>prepared transactions                          ok
-
-If pg_upgrade fails after this point, you must re-initdb the
-new cluster before continuing.
-
-Performing Upgrade
-<span class="nt">------------------</span>
-Analyzing all rows <span class="k">in </span>the new cluster                       ok
-Freezing all rows on the new cluster                        ok
-Deleting files from new pg_clog                             ok
-Copying old pg_clog to new server                           ok
-Setting next transaction ID and epoch <span class="k">for </span>new cluster       ok
-Deleting files from new pg_multixact/offsets                ok
-Copying old pg_multixact/offsets to new server              ok
-Deleting files from new pg_multixact/members                ok
-Copying old pg_multixact/members to new server              ok
-Setting next multixact ID and offset <span class="k">for </span>new cluster        ok
-Resetting WAL archives                                      ok
-Setting frozenxid and minmxid counters <span class="k">in </span>new cluster       ok
-Restoring global objects <span class="k">in </span>the new cluster                 ok
-Restoring database schemas <span class="k">in </span>the new cluster
-                                                            ok
-Copying user relation files                                 ok
-Setting next OID <span class="k">for </span>new cluster                            ok
-Sync data directory to disk                                 ok
-Creating script to analyze new cluster                      ok
-Creating script to delete old cluster                       ok
-
-Upgrade Complete
-<span class="nt">----------------</span>
-Optimizer statistics are not transferred by pg_upgrade so,
-once you start the new server, consider running:
-    ./analyze_new_cluster.sh
-
-Running this script will delete the old cluster<span class="s1">'s data files:
-    ./delete_old_cluster.sh
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">log_filename</span> = <span class="s1">'postgresql-%a.log'</span>      <span class="c"># log file name pattern,
+</span>                                        <span class="c"># can include strftime() escapes
 </span></code></pre></div></div>
+
+<p>So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I’m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my <code class="language-plaintext highlighter-rouge">$PGDATA/pg_log</code> directory will only ever contain:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
+postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
+postgresql-Sat.log
+</code></pre></div></div>
+
+<p>But wait! The key to all this is that <em>PostgreSQL only evaluates the filename when it first opens/creates the logfile</em>. So, if you start your cluster on Mon and do not restart it and don’t have it configured to log rotate, you’ll still be writing to <code class="language-plaintext highlighter-rouge">postgresql-Mon.log</code> forever. Fortunately, PostgreSQL has you covered here too:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">log_rotation_age</span> = <span class="m">1</span><span class="n">d</span>      <span class="c"># Automatic rotation of logfiles will
+</span>                           <span class="c"># happen after that time.  0 disables.
+</span><span class="n">log_rotation_size</span> = <span class="m">10</span><span class="n">MB</span>   <span class="c"># Automatic rotation of logfiles will
+</span>                           <span class="c"># happen after that much log output.
+</span>                           <span class="c"># 0 disables.
+</span></code></pre></div></div>
+
+<p>So, using my <code class="language-plaintext highlighter-rouge">log_filename</code> from above, I enable <code class="language-plaintext highlighter-rouge">log_rotation_age</code> (set to 1 day) and disable <code class="language-plaintext highlighter-rouge">log_rotation_size</code> and I automatically get a new log every day. If I wanted hourly logs, I could do something like:</p>
+
+<div class="language-conf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">log_filename</span> = <span class="s1">'postgresql-%a-%H'</span>
+<span class="n">log_rotation_age</span> = <span class="m">1</span><span class="n">h</span>
+</code></pre></div></div>
+
+<p>which would give me logs of <code class="language-plaintext highlighter-rouge">postgresql-Mon-00</code>, <code class="language-plaintext highlighter-rouge">postgresql-Mon-01</code>, etc. You should be able to see how combining these three <code class="language-plaintext highlighter-rouge">postgresql.conf</code> parameters and some crafty <code class="language-plaintext highlighter-rouge">strftime()</code> escapes gives you a <em>ton</em> of flexibility in your logging. So go forth and tweak those logs!</p>
 
   </div>
   

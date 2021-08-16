@@ -1,4 +1,139 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-08-14T17:17:43-04:00</updated><id>/feed.xml</id><title type="html">Doug’s Dabblings</title><subtitle>A collection of thoughts on things in my life that I&apos;m experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</subtitle><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><entry><title type="html">Generating DNS noise</title><link href="/2021/08/14/Generating-DNS-noise/" rel="alternate" type="text/html" title="Generating DNS noise" /><published>2021-08-14T12:27:09-04:00</published><updated>2021-08-14T12:27:09-04:00</updated><id>/2021/08/14/Generating-DNS-noise</id><content type="html" xml:base="/2021/08/14/Generating-DNS-noise/">&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Domain_Name_System&quot;&gt;DNS&lt;/a&gt; is one of those thing
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-08-16T14:53:14-04:00</updated><id>/feed.xml</id><title type="html">Doug’s Dabblings</title><subtitle>A collection of thoughts on things in my life that I&apos;m experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</subtitle><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><entry><title type="html">Automations, timers, and you</title><link href="/2021/08/16/Automations-timers-and-you/" rel="alternate" type="text/html" title="Automations, timers, and you" /><published>2021-08-16T09:48:35-04:00</published><updated>2021-08-16T09:48:35-04:00</updated><id>/2021/08/16/Automations--timers--and-you</id><content type="html" xml:base="/2021/08/16/Automations-timers-and-you/">&lt;p&gt;For a while now, I’ve been automating my apartment using the
+&lt;a href=&quot;https://www.home-assistant.io/docs/automation/basics/&quot;&gt;automations&lt;/a&gt; component
+of &lt;a href=&quot;https://www.home-assistant.io&quot;&gt;Home Assistant&lt;/a&gt;. In fact, I had amassed
+quite the collection of automations and was starting to have a problem keeping
+track of them all and their various interactions (intentional or otherwise).
+So earlier this year when Home Assistant introduced &lt;a href=&quot;https://www.home-assistant.io/blog/2021/04/07/release-20214/#automation-debugging&quot;&gt;automation
+debugging&lt;/a&gt;
+I decided to sit down and refactor the whole thing.&lt;/p&gt;
+
+&lt;p&gt;At first, I considered deploying and using
+&lt;a href=&quot;https://en.wikipedia.org/wiki/MQTT&quot;&gt;MQTT&lt;/a&gt; which, it seems, a lot of Home
+Assistant users do. However, I wasn’t overly excited at running another
+container or at learning Yet Another Thing. Likewise, I considered
+&lt;a href=&quot;https://community.home-assistant.io/t/home-assistant-community-add-on-node-red/55023&quot;&gt;Node-RED&lt;/a&gt;
+and discarded it too. I’m probably making things harder for myself by sticking
+to editing YAML in Vim but I knew my needs weren’t overly complicated and by
+sticking to ‘the basics’ I knew it would force me to stop being overly-clever
+and make something that Just Works™. So I sat down with the new
+debugging tool, wrote out all of my ‘what do i want automated’ needs, and
+pored back over the automation documentation.&lt;/p&gt;
+
+&lt;p&gt;And that’s when I realized that
+a &lt;a href=&quot;https://www.home-assistant.io/integrations/timer/&quot;&gt;timer&lt;/a&gt; was the component
+I’d been overlooking all this time. Timers, it turns out, can be used very
+much in an MQTT-lite fashion. You see, you can have one or more routines
+triggered by the same timer; in fact, some set of routines can listen for
+timer (re)start and another set can listen for timer finish/idle. Mix-n-match
+these up and you can make some very interesting actions happen. And it means
+my automations each generally do one thing and only one thing (KISS) which, in
+turn, means they are less likely to fail and easier to debug when they do.
+I was stoked! I was also annoyed at not having paid any attention to timers
+from the get-go, but what are you gonna do?&lt;/p&gt;
+
+&lt;p&gt;My first task was thinking about what timers I’d need. I knew right away I’d want
+a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;timer.away&lt;/code&gt; for when I leave home:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;timer&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;away&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;duration&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;00:05:00&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But what other timers do I need? I quickly realized that I need a timer for
+almost every switch I have defined in Home Assistant. I could get away with
+fewer, but I allowed myself a little bit of cleverness and created one for
+each switch &lt;em&gt;with the name of the timer being the name of the switch it
+controls&lt;/em&gt;. So, for example, I have a TP Link Kasa smart switch controlling my
+hallway light called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;switch.hallway_light&lt;/code&gt;. So I created a matching timer
+called &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;timer.switch_hallway_light&lt;/code&gt;. This allows me to to write a simple
+automation like this:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Trigger - Start light switch trigger&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;1625266493&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;When&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;light&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;turns&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on,&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;its&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;corresponding&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;power&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;off&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;trigger&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;trigger&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.bar_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.closet_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.dining_room_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.entryway_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;switch.hallway_light&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;on&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+     &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.start&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+         &lt;span class=&quot;na&quot;&gt;duration&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;0:10:00&apos;&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+         &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;timer.&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;What this does is exactly what it says in the description. Whenever one of the
+lights in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;trigger&lt;/code&gt; section turns on, it starts the corresponding timer.
+The magic is in the very last line of the automation:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;timer.&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;What we’re doing here it taking the entity id that fired the automation (e.g.
+what switch did we turn on) from the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;trigger.entity_id&lt;/code&gt; value then we
+swap out the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.&lt;/code&gt; for a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_&lt;/code&gt; which gives us the name of our timer. So here we
+have one automation, that does one very simple thing which makes it kinda hard
+to break this automation.&lt;/p&gt;
+
+&lt;p&gt;So we’ve turned on the hallway light, and started our timer. What happens when
+the timer runs out? Well, we have an automation that is triggered by that:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Trigger - Kill the lights&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;1625267293&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;When&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;timer&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;runs&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;out,&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;kill&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;its&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;corresponding&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;light&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;trigger&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_bar_light&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_closet_light&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_dining_room_light&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_entryway_light&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;event&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.finished&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;event_data&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;timer.switch_hallway_light&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[]&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;homeassistant.turn_off&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;switch.&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, it’s basically the opposite of the previous automation. We
+list which timers we care about, and when they finish, we munge the timer name
+a bit to get the switch’s name and then we turn that switch off. Simplicity.&lt;/p&gt;
+
+&lt;p&gt;Hopefully, you can see the utility of timers in Home Assistant. This is just
+a very basic example of how I use them, but I think it illustrates their user
+pretty well. I still have just over 50 automations, but that’s way down from
+what I had, and the automations themselves are now way simpler. Overall,
+I consider this a win.&lt;/p&gt;
+
+&lt;p&gt;Happy hacking!&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="smarthome" /><category term="computers" /><category term="howto" /><summary type="html">For a while now, I’ve been automating my apartment using the automations component of Home Assistant. In fact, I had amassed quite the collection of automations and was starting to have a problem keeping track of them all and their various interactions (intentional or otherwise). So earlier this year when Home Assistant introduced automation debugging I decided to sit down and refactor the whole thing.</summary></entry><entry><title type="html">Generating DNS noise</title><link href="/2021/08/14/Generating-DNS-noise/" rel="alternate" type="text/html" title="Generating DNS noise" /><published>2021-08-14T12:27:09-04:00</published><updated>2021-08-14T12:27:09-04:00</updated><id>/2021/08/14/Generating-DNS-noise</id><content type="html" xml:base="/2021/08/14/Generating-DNS-noise/">&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Domain_Name_System&quot;&gt;DNS&lt;/a&gt; is one of those thing
 most people never think about. It’s one of those things in the background that
 quietly does its job and no one pays it no mind. Which is why it’s surprising
 to people when they discover that if their DNS traffic can be logged, a very
@@ -440,112 +575,4 @@ vm.zone_reclaim_mode = 0
 
 &lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
 
-&lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving -D_POSIX_C_SOURCE up to the Makefile that caused the problem. The solution below is still the same though.</summary></entry><entry><title type="html">pgBackRest 2.07 and macOS Mojave</title><link href="/2018/11/16/pgBackRest-2.07-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.07 and macOS Mojave" /><published>2018-11-16T01:12:31-05:00</published><updated>2018-11-16T01:12:31-05:00</updated><id>/2018/11/16/pgBackRest-2.07-and-macOS-Mojave</id><content type="html" xml:base="/2018/11/16/pgBackRest-2.07-and-macOS-Mojave/">&lt;p&gt;pgBackRest 2.07 was &lt;a href=&quot;https://twitter.com/pgBackRest/status/1063458495700320258&quot;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;
-
-&lt;p&gt;Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use &lt;a href=&quot;https://brew.sh&quot;&gt;Homebrew&lt;/a&gt; for this:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;openssl
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;openssl version &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
-LibreSSL 2.6.4
-built on: &lt;span class=&quot;nb&quot;&gt;date &lt;/span&gt;not available
-platform: information not available
-options:  bn&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;64,64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; rc4&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ptr,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; des&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx,cisc,16,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; blowfish&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-compiler: information not available
-OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/private/etc/ssl&quot;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;/usr/local/opt/openssl/bin/openssl version &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
-OpenSSL 1.0.2p  14 Aug 2018
-built on: reproducible build, &lt;span class=&quot;nb&quot;&gt;date &lt;/span&gt;unspecified
-platform: darwin64-x86_64-cc
-options:  bn&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;64,64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; rc4&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ptr,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; des&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx,cisc,16,int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; idea&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;int&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; blowfish&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;idx&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-compiler: clang &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;.. &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt;../include  &lt;span class=&quot;nt&quot;&gt;-fPIC&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-fno-common&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_PIC&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_THREADS&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-D_REENTRANT&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DDSO_DLFCN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DHAVE_DLFCN_H&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-arch&lt;/span&gt; x86_64 &lt;span class=&quot;nt&quot;&gt;-O3&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DL_ENDIAN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-Wall&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_IA32_SSE2&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_BN_ASM_MONT&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_BN_ASM_MONT5&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DOPENSSL_BN_ASM_GF2m&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DSHA1_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DSHA256_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DSHA512_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DMD5_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DAES_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DVPAES_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DBSAES_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DWHIRLPOOL_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DGHASH_ASM&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-DECP_NISTZ256_ASM&lt;/span&gt;
-OPENSSLDIR: &lt;span class=&quot;s2&quot;&gt;&quot;/usr/local/etc/openssl&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;As you can see, the default SSL from OSX is in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/bin&lt;/code&gt; while the newly installed OpenSSL is in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/opt/openssl&lt;/code&gt;. In my testing, this is enough to proceed with pgBackRest but I prefer to have the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;openssl&lt;/code&gt; binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo mv&lt;/span&gt; /usr/bin/openssl /usr/bin/openssl.old
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; /usr/local/opt/openssl/bin/openssl /usr/bin
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt; /usr/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
-lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&amp;amp;gt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; /usr/local/opt/openssl/bin/openssl&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;-rwxr-xr-x&lt;/span&gt; 1 root wheel 1.2M Sep 21 00:16 /usr/bin/openssl.old&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;OK, so now we have an SSL that pgBackRest knows how to speak to. We need to install some Perl modules that it needs. If you haven’t run CPAN before, just accept the defaults when it asks you things:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;perl &lt;span class=&quot;nt&quot;&gt;-MCPAN&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; shell
-cpan[1]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBI
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[2]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;DBD::Pg
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[3]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;IO::Socket::SSL
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[4]&amp;gt; &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;XML::LibXML
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-cpan[5]&amp;gt; q
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Now we’ve got our Perl modules installed, we have to tell our shell where to find them:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL5LIB&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5/lib/perl5
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_LOCAL_LIB_ROOT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MB_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;--install_base&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/Users/doug/perl5&quot;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PERL_MM_OPT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;INSTALL_BASE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/Users/doug/perl5
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.profile&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.bash_profile&lt;/code&gt;, etc) to make them permanent.&lt;/p&gt;
-
-&lt;p&gt;Now, we can actually get down to the business of compiling and installing pgBackRest. Download the 2.07 tarball from the releases tab on GitHub, and let’s get busy:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;tar &lt;/span&gt;xvf Downloads/pgbackrest-release-2.07.tar.gz
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;output snipped]
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pgbackrest-release-2.07
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Now, we need to make some edits to the included Makefile. So &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vi src/Makefile&lt;/code&gt; and jump to line 42. Edit this line to be:&lt;/p&gt;
-
-&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;LDEXTRA&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-L&lt;/span&gt; /usr/local/opt/openssl/lib
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;This tells the build process where to find the OpenSSL that we installed. Then, jump to line 149 and change it to:&lt;/p&gt;
-
-&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   &lt;span class=&quot;err&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;755&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;pgbackrest&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$(DESTDIR)/usr/local/bin&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;This makes it install into &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/usr/local/bin&lt;/code&gt; which is where Homebrew puts everything else and you shouldn’t need to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt; to write to it.&lt;/p&gt;
-
-&lt;p&gt;Now, compile and install it:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;make &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; ./src &amp;amp;amp&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&amp;amp;amp&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; make &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; ./src/install
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Assuming that goes well, you can now run pgBackRest to verify it’s installed and functional:&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;/usr/local/bin/pgbackrest
-pgBackRest 2.07 - General &lt;span class=&quot;nb&quot;&gt;help
-
-&lt;/span&gt;Usage:
-    pgbackrest &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;options] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-
-Commands:
-    archive-get     Get a WAL segment from the archive.
-    archive-push    Push a WAL segment to the archive.
-    backup          Backup a database cluster.
-    check           Check the configuration.
-    expire          Expire backups that exceed retention.
-    &lt;span class=&quot;nb&quot;&gt;help            &lt;/span&gt;Get help.
-    info            Retrieve information about backups.
-    restore         Restore a database cluster.
-    stanza-create   Create the required stanza data.
-    stanza-delete   Delete a stanza.
-    stanza-upgrade  Upgrade a stanza.
-    start           Allow pgBackRest processes to run.
-    stop            Stop pgBackRest processes from running.
-    version         Get version.
-
-Use &lt;span class=&quot;s1&quot;&gt;&apos;pgbackrest help [command]&apos;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more information.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;You should now be able to follow the online docs and setup pgBackRest.&lt;/p&gt;
-
-&lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">pgBackRest 2.07 was announced today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a Linux system, so I figured I’d write this up for anyone else attempting the same.</summary></entry></feed>
+&lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving -D_POSIX_C_SOURCE up to the Makefile that caused the problem. The solution below is still the same though.</summary></entry></feed>
