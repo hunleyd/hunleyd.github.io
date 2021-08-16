@@ -469,14 +469,17 @@ automation like this:</p>
        <span class="na">data</span><span class="pi">:</span>
          <span class="na">duration</span><span class="pi">:</span> <span class="s1">'</span><span class="s">0:10:00'</span>
        <span class="na">target</span><span class="pi">:</span>
-         <span class="na">entity_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">timer."</span>
+         <span class="na">entity_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">timer.</span><span class="err">\</span><span class="s">{</span><span class="err">\</span><span class="s">{</span><span class="nv"> </span><span class="s">trigger.entity_id.split('.')|join('_')</span><span class="nv"> </span><span class="err">\</span><span class="s">}</span><span class="err">\</span><span class="s">}"</span>
 </code></pre></div></div>
+
+<p>(note that the { are only escaped here because Jekyll is stupid; they are
+<strong>not</strong> escaped in the actual code)</p>
 
 <p>What this does is exactly what it says in the description. Whenever one of the
 lights in the <code class="language-plaintext highlighter-rouge">trigger</code> section turns on, it starts the corresponding timer.
 The magic is in the very last line of the automation:</p>
 
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">entity_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">timer."</span>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">entity_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">timer.</span><span class="err">\</span><span class="s">{</span><span class="err">\</span><span class="s">{</span><span class="nv"> </span><span class="s">trigger.entity_id.split('.')|join('_')</span><span class="nv"> </span><span class="err">\</span><span class="s">}</span><span class="err">\</span><span class="s">}"</span>
 </code></pre></div></div>
 
 <p>What we’re doing here it taking the entity id that fired the automation (e.g.
@@ -516,7 +519,7 @@ the timer runs out? Well, we have an automation that is triggered by that:</p>
   <span class="na">action</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="na">service</span><span class="pi">:</span> <span class="s">homeassistant.turn_off</span>
     <span class="na">target</span><span class="pi">:</span>
-      <span class="na">entity_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">switch."</span>
+      <span class="na">entity_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">switch.</span><span class="err">\</span><span class="s">{</span><span class="err">\</span><span class="s">{</span><span class="nv"> </span><span class="s">trigger.event.data.entity_id.split('_')[1:4]|join('_')</span><span class="nv"> </span><span class="err">\</span><span class="s">}</span><span class="err">\</span><span class="s">}"</span>
 </code></pre></div></div>
 
 <p>As you can see, it’s basically the opposite of the previous automation. We
