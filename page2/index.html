@@ -476,11 +476,8 @@ automation like this:</p>
        <span class="na">data</span><span class="pi">:</span>
          <span class="na">duration</span><span class="pi">:</span> <span class="s1">'</span><span class="s">0:10:00'</span>
        <span class="na">target</span><span class="pi">:</span>
-         <span class="na">entity_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">timer.</span><span class="err">\</span><span class="s">{</span><span class="err">\</span><span class="s">{</span><span class="nv"> </span><span class="s">trigger.entity_id.split('.')|join('_')</span><span class="nv"> </span><span class="err">\</span><span class="s">}</span><span class="err">\</span><span class="s">}"</span>
+         <span class="na">entity_id</span><span class="pi">:</span> <span class="s2">"</span><span class="s">timer.{{</span><span class="nv"> </span><span class="s">trigger.entity_id.split('.')|join('_')</span><span class="nv"> </span><span class="s">}}"</span>
 </code></pre></div></div>
-
-<p>(note that the { are only escaped here because Jekyll is stupid; they are
-<strong>not</strong> escaped in the actual code)</p>
 
 <p>What this does is exactly what it says in the description. Whenever one of the
 lights in the <code class="language-plaintext highlighter-rouge">trigger</code> section turns on, it starts the corresponding timer.
