@@ -454,8 +454,13 @@ sensor:</p>
       <span class="na">target</span><span class="pi">:</span>
         <span class="na">entity_id</span><span class="pi">:</span> <span class="s">climate.living_room</span>
       <span class="na">data_template</span><span class="pi">:</span>
-        <span class="na">temperature</span><span class="pi">:</span> <span class="pi">&gt;-</span><span class="err">68mode:</span> <span class="err">single</span>
+        <span class="na">temperature</span><span class="pi">:</span> <span class="pi">&gt;-</span>
+          <span class="s">\68</span>
+          <span class="s">\mode: single</span>
 </code></pre></div></div>
+
+<p>(note that the { are only escaped here because Jekyll is stupid; they are
+<strong>not</strong> escaped in the actual code)</p>
 
 <p>Essentially, every time the temperature (as reported by Weatherbit) changes,
 this automation kicks off. It checks if the Nest is set to ‘cool’ mode

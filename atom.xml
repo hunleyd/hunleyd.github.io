@@ -4,7 +4,7 @@
  <title>Doug's Dabblings</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2021-08-25T16:17:42-04:00</updated>
+ <updated>2021-08-25T16:20:30-04:00</updated>
  <id></id>
  <author>
    <name>Douglas J Hunley</name>
@@ -70,8 +70,13 @@ sensor:&lt;/p&gt;
       &lt;span class=&quot;na&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
         &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;climate.living_room&lt;/span&gt;
       &lt;span class=&quot;na&quot;&gt;data_template&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;temperature&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;&amp;gt;-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;68mode:&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;single&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;temperature&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;&amp;gt;-&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;\68&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;\mode: single&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;(note that the { are only escaped here because Jekyll is stupid; they are
+&lt;strong&gt;not&lt;/strong&gt; escaped in the actual code)&lt;/p&gt;
 
 &lt;p&gt;Essentially, every time the temperature (as reported by Weatherbit) changes,
 this automation kicks off. It checks if the Nest is set to ‘cool’ mode
