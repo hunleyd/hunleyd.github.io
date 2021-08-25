@@ -455,7 +455,6 @@ sensor:</p>
         <span class="na">entity_id</span><span class="pi">:</span> <span class="s">climate.living_room</span>
       <span class="na">data_template</span><span class="pi">:</span>
         <span class="na">temperature</span><span class="pi">:</span> <span class="pi">&gt;-</span>
-        
           <span class="s">{%- if states('binary_sensor.daytime') == 'on' -%}</span>
             <span class="s">{%- if states('sensor.weatherbit_temperature')|int - 10 &gt; 71 -%}</span>
               <span class="s">{{ states('sensor.weatherbit_temperature')|int - 10 }}</span>
@@ -465,7 +464,6 @@ sensor:</p>
           <span class="s">{%- else -%}</span>
             <span class="s">68</span>
           <span class="s">{%- endif -%}</span>
-        
   <span class="na">mode</span><span class="pi">:</span> <span class="s">single</span>
 </code></pre></div></div>
 

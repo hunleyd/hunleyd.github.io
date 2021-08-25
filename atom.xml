@@ -4,7 +4,7 @@
  <title>Doug's Dabblings</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2021-08-25T16:26:58-04:00</updated>
+ <updated>2021-08-25T16:27:39-04:00</updated>
  <id></id>
  <author>
    <name>Douglas J Hunley</name>
@@ -71,7 +71,6 @@ sensor:&lt;/p&gt;
         &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;climate.living_room&lt;/span&gt;
       &lt;span class=&quot;na&quot;&gt;data_template&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
         &lt;span class=&quot;na&quot;&gt;temperature&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;&amp;gt;-&lt;/span&gt;
-        
           &lt;span class=&quot;s&quot;&gt;{%- if states(&apos;binary_sensor.daytime&apos;) == &apos;on&apos; -%}&lt;/span&gt;
             &lt;span class=&quot;s&quot;&gt;{%- if states(&apos;sensor.weatherbit_temperature&apos;)|int - 10 &amp;gt; 71 -%}&lt;/span&gt;
               &lt;span class=&quot;s&quot;&gt;{{ states(&apos;sensor.weatherbit_temperature&apos;)|int - 10 }}&lt;/span&gt;
@@ -81,7 +80,6 @@ sensor:&lt;/p&gt;
           &lt;span class=&quot;s&quot;&gt;{%- else -%}&lt;/span&gt;
             &lt;span class=&quot;s&quot;&gt;68&lt;/span&gt;
           &lt;span class=&quot;s&quot;&gt;{%- endif -%}&lt;/span&gt;
-        
   &lt;span class=&quot;na&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;single&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
