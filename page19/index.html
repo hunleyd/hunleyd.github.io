@@ -344,6 +344,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -390,78 +394,124 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2017/07/25/When-you-cannot-get-there-from-here/">
-        When you cannot get there from here
+      <a href="/2017/10/16/updated-PostgreSQL-homebrew-script/">
+        updated PostgreSQL homebrew script
       </a>
     </h1>
 
-    <span class="post-date">25 Jul 2017</span>
+    <span class="post-date">16 Oct 2017</span>
 
-    <p>Connecting to a PostgreSQL instance isn’t hard generally, but sometimes you can run into issues. Sometimes a port isn’t open on a firewall, or the server is in a VLAN that you can’t get to, or perhaps the server isn’t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you’re connection isn’t authorized (which is not the same as being unable to <em>authenticate</em>). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you’re facing. Let’s dive into each scenario and see what the error looks like, shall we?</p>
+    <p>With the release of PostgreSQL 10, I’ve updated my <code class="language-plaintext highlighter-rouge">pg</code> script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter’s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I’m pretty pleased with the new version actually.</p>
 
-<h4 id="scenario-1---bad-password">Scenario 1 - Bad password</h4>
+<p>As always, it’s been added as a gist:</p>
 
-<p>Let’s first assume that everything is working and you <em>can</em> actually connect to the PostgreSQL instance, but you can’t authenticate. The error will look like this:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/zsh</span>
 
-<p><img src="/images/posts/authentication.png" alt="auth failed" /></p>
+<span class="nv">wanted_ver</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">no_restart</span><span class="o">=</span>
 
-<p>As you can see, the message makes it pretty clear that you were able to connect, but your credentials were wrong (you were <em>authorized</em> to connect, but failed to <em>authenticate</em>). Did you type the password incorrectly? Is there a <code class="language-plaintext highlighter-rouge">~/.pgpass</code> <a href="https://www.postgresql.org/docs/current/static/libpq-pgpass.html">file</a> that is providing the password for you? Do you have <code class="language-plaintext highlighter-rouge">$PGPASSWORD</code> defined in your <a href="https://www.postgresql.org/docs/current/static/libpq-envars.html">environment</a>? Fix the password being passed to PostgreSQL, and you won’t have further issues in this scenario.</p>
+<span class="c"># is the version requested installed?</span>
+brew <span class="nb">ls</span> <span class="nt">--version</span> postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> &amp;&gt;/dev/null
+<span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> <span class="nt">-eq</span> 0 <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="c"># yes, carry on</span>
+  :
+<span class="k">else</span>
+  <span class="c"># nope, so install it</span>
+  <span class="nb">echo</span> <span class="s2">"Installing PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
+  brew <span class="nb">install </span>petere/postgresql/postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span>
+<span class="k">fi</span>
 
-<h4 id="scenario-2---pg_hbaconf-rejects-you">Scenario 2 - pg_hba.conf rejects you</h4>
+<span class="c"># is postgresql is running?</span>
+<span class="k">for </span>i <span class="k">in</span> /usr/local/var/postgres/<span class="k">*</span>
+<span class="k">do
+  </span><span class="nv">check_ver</span><span class="o">=</span><span class="si">$(</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="si">)</span>
+  <span class="nv">is_running</span><span class="o">=</span><span class="si">$(</span>ps <span class="nt">-few</span>|egrep <span class="nt">--</span> <span class="s2">"[p]ostgres.*-D.*</span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">"</span><span class="si">)</span>
 
-<p>For our second scenario, we’re going to assume that you <em>can</em> actually connect to the PostgreSQL instance, but there is an entry in <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> denying you access. First, we’ll try connecting via a local Unix socket:</p>
+  <span class="k">if</span> <span class="o">[[</span> <span class="nt">-z</span> <span class="k">${</span><span class="nv">is_running</span><span class="k">}</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+    <span class="c"># nope, carry on</span>
+    :
+  <span class="k">else</span>
+    <span class="c"># it is. is it the requested version?</span>
+    <span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+      <span class="c"># yup, carry on</span>
+      <span class="nv">no_restart</span><span class="o">=</span>t
+    <span class="k">else</span>
+      <span class="c"># nope, so kill it</span>
+      <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Stopping PostgreSQL </span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">... "</span>
+      /usr/local/opt/postgresql@<span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span>/bin/pg_ctl <span class="se">\</span>
+          <span class="nt">-D</span> /usr/local/var/postgres/<span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span> <span class="se">\</span>
+          stop <span class="nt">-w</span> <span class="nt">-mf</span> | <span class="nb">grep</span> <span class="s1">'stopped'</span>
+    <span class="k">fi
+  fi
+done</span>
 
-<p><img src="/images/posts/reject_socket.png" alt="reject socket" /></p>
+<span class="c"># what version is active?</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="nt">-e</span> /usr/local/bin/psql <span class="o">]]</span> <span class="p">;</span> <span class="k">then
+    </span><span class="nv">active_ver</span><span class="o">=</span><span class="si">$(</span>/usr/bin/stat <span class="nt">-f</span> %Y /usr/local/bin/psql | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\/</span> <span class="nt">-f3</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\-</span> <span class="nt">-f2</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\@</span> <span class="nt">-f2</span><span class="si">)</span>
+<span class="k">else
+    </span><span class="nv">active_ver</span><span class="o">=</span>0
+<span class="k">fi</span>
 
-<p>As you can see, it straight up tells you that you have been <em>explicitly denied access</em>. It may be rejecting connections via Unix sockets completely, or it may be rejecting connection as the specified user via Unix socket, or it may be rejecting connections to the specified database via Unix sock. You could determine which of these scenarios is true by trying a different user on the same database and then trying the same user on a different database. In any case, the problem <em>is not</em> networking or firewall related. The DBA needs to adjust <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> to allow connections of this type, or you need to connect via a TCP port instead of a Unix socket. Discuss with your DBA.</p>
+<span class="c"># is the active version the requested version?</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="c"># yup, carry on</span>
+  :
+<span class="k">else</span>
+  <span class="c"># nope, so deactivate it</span>
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Deactivating PostgreSQL </span><span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span><span class="s2">... "</span>
+  brew <span class="nb">unlink</span> <span class="nt">--force</span> <span class="nt">--overwrite</span> postgresql@<span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\ </span> <span class="nt">-f3-</span>
+  <span class="c"># and activate the correct version</span>
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Activating PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
+  brew <span class="nb">link</span> <span class="nt">--force</span> <span class="nt">--overwrite</span> postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> | <span class="nb">grep</span> <span class="s1">'created'</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\ </span> <span class="nt">-f3-</span>
+<span class="k">fi</span>
 
-<p>Now, let’s try via a TCP port:</p>
+<span class="c"># point to the correct data dir and port</span>
+<span class="nv">PGDATA</span><span class="o">=</span>/usr/local/var/postgres/<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span>
+<span class="nv">PGPORT</span><span class="o">=</span><span class="s2">"54</span><span class="si">$(</span><span class="nb">echo</span> <span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> | <span class="nb">tr</span> <span class="nt">-d</span> .<span class="si">)</span><span class="s2">"</span>
 
-<p><img src="/images/posts/reject_port.png" alt="reject port" /></p>
+<span class="c"># should we be starting a cluster?</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">no_restart</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"t"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+  <span class="c"># nope, carry on</span>
+  :
+<span class="k">else</span>
+  <span class="c"># yup. has the cluster been initialized?</span>
+  <span class="k">if</span> <span class="o">[[</span> <span class="o">!</span> <span class="nt">-d</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
+    <span class="c"># nope, so let's do that</span>
+    <span class="nb">echo</span> <span class="s2">"Initializing PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2"> cluster... "</span>
+    initdb <span class="nt">-k</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> <span class="o">||</span> initdb <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>
+    <span class="nb">echo</span> <span class="s2">"port = </span><span class="k">${</span><span class="nv">PGPORT</span><span class="k">}</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_destination = 'stderr'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"logging_collector = on"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_filename = 'postgresql-%a.log'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_truncate_on_rotation = on"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_rotation_age = 1d"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_rotation_size = 0"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_timezone = 'US/Michigan'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+    <span class="nb">echo</span> <span class="s2">"log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
+  <span class="k">else</span>
+    <span class="c"># yup, carry on</span>
+    :
+  <span class="k">fi</span>
+  <span class="c"># start the cluster</span>
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Starting PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
+  pg_ctl <span class="nt">-D</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> start  <span class="o">&gt;</span> /tmp/pg.start 2&gt;&amp;1
+  <span class="nb">grep</span> <span class="s1">'server start'</span> /tmp/pg.start
+  <span class="k">if</span> <span class="o">[[</span> <span class="nt">-x</span> /usr/local/bin/pg_isready <span class="o">]]</span> <span class="p">;</span> <span class="k">then
+      </span><span class="nv">ret</span><span class="o">=</span>1
+      <span class="k">while</span> <span class="o">[[</span> <span class="k">${</span><span class="nv">ret</span><span class="k">}</span> <span class="nt">-eq</span> 1 <span class="o">]]</span>
+      <span class="k">do</span>
+        <span class="c"># wait for the cluster to be available before exiting</span>
+        pg_isready <span class="nt">-q</span>
+        <span class="nv">ret</span><span class="o">=</span><span class="nv">$?</span>
+      <span class="k">done
+    fi
+fi
 
-<p>Again, you can see that it pretty plainly tells you that you have been <em>explicitly denied</em>. In this case though, it may be rejecting your IP address specifically, your entire network segment, your id, that database, or the fact that you didn’t make an SSL connection. You can whittle this down by trying a different user on the same db, trying the same user on a different db, or switching to an SSL connection and repeating these tests. (I assume that you can’t change your IP address. But perhaps you could make the same test cases from another computer). Again, you’ll probably need the DBA to resolve this with you.</p>
+</span><span class="nb">echo</span> <span class="s2">"export PGDATA=</span><span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"export PGPORT=</span><span class="k">${</span><span class="nv">PGPORT</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div>
 
-<h4 id="scenario-3---pg_hbaconf-doesnt-allow-you">Scenario 3 - pg_hba.conf doesn’t allow you</h4>
-
-<p>I know what you’re thinking. “Isn’t this the same as above?”. And the answer is “no it is not”. Above, the <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> file had an entry that matched your incoming connection and said to <strong>explicitly</strong> reject it. In this scenario, there is <em>no entry that matches your connection</em> and you end up <strong>implicitly</strong> denied.</p>
-
-<p>Again, we’ll start by using a Unix socket:</p>
-
-<p><img src="/images/posts/noentry_socket.png" alt="no entry socket" /></p>
-
-<p>Once more, the message pretty clearly tells you what is wrong. As it says, <em>there is no entry in <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> that matches your incoming connection</em>. And since PostgreSQL tries to err on the side of caution, when it can’t find an entry stating definitively what to do, it rejects you. The same troubleshooting steps as above apply (change the user/db, etc). And also like above, the DBA is going to need to edit <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> to add an entry for your connection.</p>
-
-<p>Now, what does it look like over a TCP port:</p>
-
-<p><img src="/images/posts/noentry_port.png" alt="no entry port" /></p>
-
-<p>It’s the same error message as above but showing your IP address instead of <code class="language-plaintext highlighter-rouge">[local]</code>. And the same debugging applies. Once again, the DBA will need to add an entry to <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> to resolve this.</p>
-
-<h4 id="scenario-4---everything-else-no-really">Scenario 4 - everything else (no, really)</h4>
-
-<p>By default, PostgreSQL listens for connections on port 5432. Sometimes, your DBA (or your vendor) has chosen to run PostgreSQL on a different port for some reason. If you are not trying to connect to the correct port, you’ll get an error from <code class="language-plaintext highlighter-rouge">psql</code>.</p>
-
-<p>If you were trying to connect via a Unix socket, you’ll see:</p>
-
-<p><img src="/images/posts/socket_nope.png" alt="socket nope" /></p>
-
-<p>If you were trying a TCP port connection, you’d see:</p>
-
-<p><img src="/images/posts/port_nope.png" alt="port nope" /></p>
-
-<p>This error indicates that it cannot establish a network connection with PostgreSQL at the IP address (or UNix socket) you specified on the default port. Check to make sure you don’t have <code class="language-plaintext highlighter-rouge">$PGPORT</code> set incorrectly in your environment.</p>
-
-<p>If you <em>are</em> using the correct port, and you still see one of two errors above, then the issue will be one of the following:</p>
-
-<ul>
-  <li>PostgreSQL isn’t running</li>
-  <li>PostgreSQL is running, but on a different IP address than you’re trying to connect to</li>
-  <li>PostgreSQL is running, but you cannot establish a network connection from here to there</li>
-</ul>
-
-<p>If PostgreSQL isn’t running, talk to your DBA about why (maybe it died, maybe it’s a maintenance window). If you are affected by the 2<sup>nd</sup> bullet item, you’ll have to talk with your DBA about the proper IP address to use when connecting. Note that, by default, PostgreSQL only listens on <code class="language-plaintext highlighter-rouge">localhost</code> and none of your other interfaces. If this hasn’t been changed (<code class="language-plaintext highlighter-rouge">listen_addresses</code> in <code class="language-plaintext highlighter-rouge">postgresql.conf</code>) then you’ll fall into this failure category. And if you’re plagued by the 3<sup>rd</sup> bullet item, you’ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can’t connect to the other VLAN, or some other layer 3/4 tomfoolery.</p>
-
-<p>So now you know all the (common) ways that connecting to PostgreSQL can fail and how to distinguish between them. With just a little bit of knowledge, you can communicate exactly what is happening to your DBA and make it easier for him/her to rectify the issue. Go forth, and happy PostgreSQL-ing.</p>
+<p>Enjoy.</p>
 
   </div>
   

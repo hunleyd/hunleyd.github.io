@@ -1,4 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed/by_tag/howto.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-08-16T14:59:18-04:00</updated><id>/feed/by_tag/howto.xml</id><title type="html">Doug’s Dabblings</title><subtitle>A collection of thoughts on things in my life that I&apos;m experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</subtitle><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><entry><title type="html">Automations, timers, and you</title><link href="/2021/08/16/Automations-timers-and-you/" rel="alternate" type="text/html" title="Automations, timers, and you" /><published>2021-08-16T09:48:35-04:00</published><updated>2021-08-16T09:48:35-04:00</updated><id>/2021/08/16/Automations--timers--and-you</id><content type="html" xml:base="/2021/08/16/Automations-timers-and-you/">&lt;p&gt;For a while now, I’ve been automating my apartment using the
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed/by_tag/howto.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-08-25T16:16:01-04:00</updated><id>/feed/by_tag/howto.xml</id><title type="html">Doug’s Dabblings</title><subtitle>A collection of thoughts on things in my life that I&apos;m experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</subtitle><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><entry><title type="html">I said brr it’s cold in here</title><link href="/2021/08/25/I-said-brr-it-s-cold-in-here/" rel="alternate" type="text/html" title="I said brr it’s cold in here" /><published>2021-08-25T11:33:18-04:00</published><updated>2021-08-25T11:33:18-04:00</updated><id>/2021/08/25/I-said-brr-it-s-cold-in-here</id><content type="html" xml:base="/2021/08/25/I-said-brr-it-s-cold-in-here/">&lt;p&gt;I don’t like the heat. I hate being hot. Always have. I’m the guy who will
+leave the windows open when others have already turned on the furnace. And
+I used to be guy who ran the AC all the time and ran it at a very low temp.
+Recently though, I’ve come to realize that as long as it’s colder in here than
+it is out there, it’s all good. However, the delta has be more than just a few
+degrees. And I need the fan on.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;https://c.tenor.com/_WTiGlJeiUQAAAAC/brrr-cold.gif&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;So, with this realization, I set about configuring my Home Assistant to
+constantly tweak the AC so that it’s 10 degrees cooler inside than outside (if
+I’m home). To accomplish this, I use the temperature as reported by
+&lt;a href=&quot;https://www.weatherbit.io/&quot;&gt;Weatherbit.io&lt;/a&gt; which I integrated via
+&lt;a href=&quot;https://hacs.xyz/&quot;&gt;HACS&lt;/a&gt;’s
+&lt;a href=&quot;https://github.com/briis/weatherbit&quot;&gt;integration&lt;/a&gt;. I already had my
+&lt;a href=&quot;https://www.home-assistant.io/integrations/nest/&quot;&gt;Nest&lt;/a&gt; integrated, and could
+have used its outdoor temperature sensor, but I found it slower to update than
+Weatherbit.&lt;/p&gt;
+
+&lt;p&gt;The automation is actually really simple. In fact, it’s a little too simple in
+that I completely forgot to account for when I’m sleeping. You see, as much as
+I don’t like the heat, I literally cannot sleep if I’m hot. And for whatever
+reason, I put off heat while I sleep, so the room has to be straight up &lt;em&gt;cold&lt;/em&gt;
+for me to even have a chance of resting well. So I &lt;em&gt;quickly&lt;/em&gt; realized that
+I need to check what time it is and if its late set the temp low and stop
+adjusting it until I get up in the morning. Which brings me to my binary
+sensor:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tod&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Daytime&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;after&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;08:00&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;23:00&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, I’ve defined ‘daytime’ as between 0800 and 2300.&lt;/p&gt;
+
+&lt;p&gt;So my automation looks like:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Adjust the AC&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;1625265017&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Keep&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;degrees&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;cooler&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;inside&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;(but&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;at&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;least&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;72);&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;keep&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;68&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;at&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;night&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;trigger&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;sensor.weatherbit_temperature&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;climate.living_room&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;cool&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;climate.set_temperature&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;climate.living_room&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;data_template&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;temperature&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;&amp;gt;-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;68mode:&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;single&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Essentially, every time the temperature (as reported by Weatherbit) changes,
+this automation kicks off. It checks if the Nest is set to ‘cool’ mode
+(which means the AC is on and also means I’m home as another automation sets
+the Nest to ‘off’ when I leave) and then it checks if its ‘daytime’ or not. If
+it is, it subtracts 10 from the reported outside temp, checks if that value is
+greater than 71 degrees and if so, sets the AC to that target temp. If the
+result is less than or equal to 72, it sets the target temp to 72. Unless it’s
+not ‘daytime’ in which case it sets it to 68 (my preferred sleeping temp).&lt;/p&gt;
+
+&lt;p&gt;It’s trivial, but it’s very powerful. And its saved me some money already,
+which is always nice.&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="smarthome" /><category term="computers" /><category term="howto" /><summary type="html">I don’t like the heat. I hate being hot. Always have. I’m the guy who will leave the windows open when others have already turned on the furnace. And I used to be guy who ran the AC all the time and ran it at a very low temp. Recently though, I’ve come to realize that as long as it’s colder in here than it is out there, it’s all good. However, the delta has be more than just a few degrees. And I need the fan on.</summary></entry><entry><title type="html">Automations, timers, and you</title><link href="/2021/08/16/Automations-timers-and-you/" rel="alternate" type="text/html" title="Automations, timers, and you" /><published>2021-08-16T09:48:35-04:00</published><updated>2021-08-16T09:48:35-04:00</updated><id>/2021/08/16/Automations--timers--and-you</id><content type="html" xml:base="/2021/08/16/Automations-timers-and-you/">&lt;p&gt;For a while now, I’ve been automating my apartment using the
 &lt;a href=&quot;https://www.home-assistant.io/docs/automation/basics/&quot;&gt;automations&lt;/a&gt; component
 of &lt;a href=&quot;https://www.home-assistant.io&quot;&gt;Home Assistant&lt;/a&gt;. In fact, I had amassed
 quite the collection of automations and was starting to have a problem keeping

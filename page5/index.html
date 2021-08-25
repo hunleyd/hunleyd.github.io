@@ -344,6 +344,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -390,26 +394,34 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2021/07/24/Hello-again-old-friend/">
-        Hello again old friend
+      <a href="/2021/07/26/I-m-blue-da-ba-dee-da-ba-di/">
+        I'm blue da ba dee da ba di
       </a>
     </h1>
 
-    <span class="post-date">24 Jul 2021</span>
+    <span class="post-date">26 Jul 2021</span>
 
-    <p>I <a href="/posts/Bye-Pi-Hello-NUC">posted</a> a year ago about dropping ClearLinux and
-switching to Ubuntu Server on my NUC. While that little experiment was fun, it
-didn’t last long. I’m not entirely sure what it is about my brain/personality, but
-I just do not like any of the binary Linux distros out there for my own long-term use so I went back to my old friend, Gentoo.</p>
+    <p>An update on my use <a href="https://www.home-assistant.io/">Home Assistant</a>, I’m no
+longer running it inside Podman as detailed <a href="/posts/It-s-Podman-man/">here</a>.
+In fact, I’m no longer running it on the NUC at all. Instead, I bought myself
+a <a href="https://www.home-assistant.io/blue">Home Assistant Blue</a>. I bought the ‘dev mode’
+version just in case I want to tinker with things further, but I could have
+gone with the ‘Zen mode’ version just as easily.</p>
 
-<p>It’s been a few months now, and I must say that running Gentoo on the NUC has
-been a pleasant experience. It took a little work to get up to speed on recent
-changes in Gentoo, and I had to dig into things to get an optimized install
-going on the NUC, but I’m pretty happy with the results.</p>
+<p>The ODROID-N2+ is remarkably capable and having the entire stack being
+HA-managed (Home Assistant OS, running Home Assistant Supervisor, running Home
+Assistant Core) is a dream. It really Just Works™ and I’ve not had any
+issues over the few months it’s been running. I used the add-on store to have
+it launch a MariaDB container and moved the ‘recorder’ component it with
+a simple config tweak (and sped up startup time almost 4x in the process).
+I’ve since added the community store (HACS) and a bunch of automations and it
+still just keeps chugging along. At the moment, I’ve got 22 integrations, 49
+devices, 10 areas, and ~372 entities and my system dashboard looks like:</p>
 
-<p>Maybe I’ll actually blog more this time about what I’m doing with this
-install. Or maybe I’ll lapse back into old habits and forget to. Only time
-will tell.</p>
+<p><img src="/images/posts/ha_blue.png" /></p>
+
+<p>If you’re considering taking the plunge into home automation, I can very
+easily recommend getting a Blue.</p>
 
   </div>
   

@@ -1,4 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-08-16T14:59:18-04:00</updated><id>/feed.xml</id><title type="html">Doug’s Dabblings</title><subtitle>A collection of thoughts on things in my life that I&apos;m experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</subtitle><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><entry><title type="html">Automations, timers, and you</title><link href="/2021/08/16/Automations-timers-and-you/" rel="alternate" type="text/html" title="Automations, timers, and you" /><published>2021-08-16T09:48:35-04:00</published><updated>2021-08-16T09:48:35-04:00</updated><id>/2021/08/16/Automations--timers--and-you</id><content type="html" xml:base="/2021/08/16/Automations-timers-and-you/">&lt;p&gt;For a while now, I’ve been automating my apartment using the
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-08-25T16:16:01-04:00</updated><id>/feed.xml</id><title type="html">Doug’s Dabblings</title><subtitle>A collection of thoughts on things in my life that I&apos;m experiencing, playing with, or suffering through. Mostly tech related, but sometimes not.</subtitle><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><entry><title type="html">I said brr it’s cold in here</title><link href="/2021/08/25/I-said-brr-it-s-cold-in-here/" rel="alternate" type="text/html" title="I said brr it’s cold in here" /><published>2021-08-25T11:33:18-04:00</published><updated>2021-08-25T11:33:18-04:00</updated><id>/2021/08/25/I-said-brr-it-s-cold-in-here</id><content type="html" xml:base="/2021/08/25/I-said-brr-it-s-cold-in-here/">&lt;p&gt;I don’t like the heat. I hate being hot. Always have. I’m the guy who will
+leave the windows open when others have already turned on the furnace. And
+I used to be guy who ran the AC all the time and ran it at a very low temp.
+Recently though, I’ve come to realize that as long as it’s colder in here than
+it is out there, it’s all good. However, the delta has be more than just a few
+degrees. And I need the fan on.&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;https://c.tenor.com/_WTiGlJeiUQAAAAC/brrr-cold.gif&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;So, with this realization, I set about configuring my Home Assistant to
+constantly tweak the AC so that it’s 10 degrees cooler inside than outside (if
+I’m home). To accomplish this, I use the temperature as reported by
+&lt;a href=&quot;https://www.weatherbit.io/&quot;&gt;Weatherbit.io&lt;/a&gt; which I integrated via
+&lt;a href=&quot;https://hacs.xyz/&quot;&gt;HACS&lt;/a&gt;’s
+&lt;a href=&quot;https://github.com/briis/weatherbit&quot;&gt;integration&lt;/a&gt;. I already had my
+&lt;a href=&quot;https://www.home-assistant.io/integrations/nest/&quot;&gt;Nest&lt;/a&gt; integrated, and could
+have used its outdoor temperature sensor, but I found it slower to update than
+Weatherbit.&lt;/p&gt;
+
+&lt;p&gt;The automation is actually really simple. In fact, it’s a little too simple in
+that I completely forgot to account for when I’m sleeping. You see, as much as
+I don’t like the heat, I literally cannot sleep if I’m hot. And for whatever
+reason, I put off heat while I sleep, so the room has to be straight up &lt;em&gt;cold&lt;/em&gt;
+for me to even have a chance of resting well. So I &lt;em&gt;quickly&lt;/em&gt; realized that
+I need to check what time it is and if its late set the temp low and stop
+adjusting it until I get up in the morning. Which brings me to my binary
+sensor:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tod&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Daytime&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;after&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;08:00&quot;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;before&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;23:00&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see, I’ve defined ‘daytime’ as between 0800 and 2300.&lt;/p&gt;
+
+&lt;p&gt;So my automation looks like:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Adjust the AC&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;1625265017&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Keep&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;degrees&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;cooler&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;inside&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;(but&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;at&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;least&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;72);&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;keep&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;it&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;68&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;at&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;night&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;trigger&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;sensor.weatherbit_temperature&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;condition&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;state&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;climate.living_room&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;cool&apos;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;climate.set_temperature&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;entity_id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;climate.living_room&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;data_template&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;temperature&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;&amp;gt;-&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;68mode:&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;single&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Essentially, every time the temperature (as reported by Weatherbit) changes,
+this automation kicks off. It checks if the Nest is set to ‘cool’ mode
+(which means the AC is on and also means I’m home as another automation sets
+the Nest to ‘off’ when I leave) and then it checks if its ‘daytime’ or not. If
+it is, it subtracts 10 from the reported outside temp, checks if that value is
+greater than 71 degrees and if so, sets the AC to that target temp. If the
+result is less than or equal to 72, it sets the target temp to 72. Unless it’s
+not ‘daytime’ in which case it sets it to 68 (my preferred sleeping temp).&lt;/p&gt;
+
+&lt;p&gt;It’s trivial, but it’s very powerful. And its saved me some money already,
+which is always nice.&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="smarthome" /><category term="computers" /><category term="howto" /><summary type="html">I don’t like the heat. I hate being hot. Always have. I’m the guy who will leave the windows open when others have already turned on the furnace. And I used to be guy who ran the AC all the time and ran it at a very low temp. Recently though, I’ve come to realize that as long as it’s colder in here than it is out there, it’s all good. However, the delta has be more than just a few degrees. And I need the fan on.</summary></entry><entry><title type="html">Automations, timers, and you</title><link href="/2021/08/16/Automations-timers-and-you/" rel="alternate" type="text/html" title="Automations, timers, and you" /><published>2021-08-16T09:48:35-04:00</published><updated>2021-08-16T09:48:35-04:00</updated><id>/2021/08/16/Automations--timers--and-you</id><content type="html" xml:base="/2021/08/16/Automations-timers-and-you/">&lt;p&gt;For a while now, I’ve been automating my apartment using the
 &lt;a href=&quot;https://www.home-assistant.io/docs/automation/basics/&quot;&gt;automations&lt;/a&gt; component
 of &lt;a href=&quot;https://www.home-assistant.io&quot;&gt;Home Assistant&lt;/a&gt;. In fact, I had amassed
 quite the collection of automations and was starting to have a problem keeping
@@ -547,35 +613,4 @@ vm.zone_reclaim_mode = 0
 
 &lt;p&gt;The kicker here? &lt;strong&gt;It’s only $16/mo.&lt;/strong&gt; Yeah, you read that right. She went from $100/mo w/ DTV to $45/mo with DTVN (at the end) to $16/mo. &lt;strong&gt;Unreal.&lt;/strong&gt; And on top of that, Philo recently added an extra MTV channel for the hell of it.&lt;/p&gt;
 
-&lt;p&gt;All around a WIN WIN.&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="general" /><category term="ott" /><summary type="html">As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving life.</summary></entry><entry><title type="html">pgBackRest 2.08 and macOS Mojave</title><link href="/2019/01/04/pgBackRest-2.08-and-macOS-Mojave/" rel="alternate" type="text/html" title="pgBackRest 2.08 and macOS Mojave" /><published>2019-01-04T03:30:44-05:00</published><updated>2019-01-04T03:30:44-05:00</updated><id>/2019/01/04/pgBackRest-2.08-and-macOS-Mojave</id><content type="html" xml:base="/2019/01/04/pgBackRest-2.08-and-macOS-Mojave/">&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;
-
-&lt;p&gt;The team has released pgBackRest 2.08 today. As part of a continuing effort, more bits have been moved from Perl to C. Sadly, this adds a new wrinkle for those of us on OSX, as when compiling, you now get:&lt;/p&gt;
-
-&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nl&quot;&gt;gcc -I. -I../libc -std=c99 -D_POSIX_C_SOURCE=200112L -O2 -Wfatal-errors -Wall -Wextra -Wwrite-strings -Wswitch-enum -Wconversion -Wformat=2 -Wformat-nonliteral -Wno-clobbered -Wno-missing-field-initializers -Wstrict-prototypes -Wpointer-arith -Wvla `xml2-config --cflags` `perl -MExtUtils&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Embed -e ccopts` -DWITH_PERL -DNDEBUG  -c common/lock.c -o common/lock.o&lt;/span&gt;
-&lt;span class=&quot;nl&quot;&gt;warning&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;unknown warning option &apos;-Wno-clobbered&apos;; did you mean &apos;-Wno-consumed&apos;?&lt;/span&gt;
-      &lt;span class=&quot;err&quot;&gt;[-Wunknown-warning-option]&lt;/span&gt;
-&lt;span class=&quot;nl&quot;&gt;common/lock.c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;76:21: warning: implicit declaration of function &apos;flock&apos; is invalid in C99&lt;/span&gt;
-      &lt;span class=&quot;err&quot;&gt;[-Wimplicit-function-declaration]&lt;/span&gt;
-                &lt;span class=&quot;err&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;(flock(result,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;LOCK_EX&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;LOCK_NB)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                    &lt;span class=&quot;err&quot;&gt;^&lt;/span&gt;
-&lt;span class=&quot;nl&quot;&gt;common/lock.c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;76:21: warning: this function declaration is not a prototype [-Wstrict-prototypes]&lt;/span&gt;
-&lt;span class=&quot;nl&quot;&gt;common/lock.c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;76:35: fatal error: use of undeclared identifier &apos;LOCK_EX&apos;&lt;/span&gt;
-                &lt;span class=&quot;err&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;(flock(result,&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;LOCK_EX&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;LOCK_NB)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                                  &lt;span class=&quot;err&quot;&gt;^&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;warnings&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;error&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;generated.&lt;/span&gt;
-&lt;span class=&quot;nl&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;*** [common/lock.o] Error 1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;To fix this, you will need to edit &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/Makefile&lt;/code&gt; and change line 12 from:&lt;/p&gt;
-
-&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CSTD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;c99 &lt;span class=&quot;nt&quot;&gt;-D_POSIX_C_SOURCE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;200112L
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;to:&lt;/p&gt;
-
-&lt;div class=&quot;language-make highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;CSTD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;c99 &lt;span class=&quot;nt&quot;&gt;-D_DARWIN_C_SOURCE&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Then, you can follow the other steps on my &lt;a href=&quot;https://hunleyd.github.io/posts/pgBackRest-2.07-and-macOS-Mojave/&quot;&gt;previous post&lt;/a&gt; and everything should compile and function properly.&lt;/p&gt;
-
-&lt;p&gt;Enjoy!&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="postgresql" /><category term="pgbackrest" /><category term="osx" /><summary type="html">UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving -D_POSIX_C_SOURCE up to the Makefile that caused the problem. The solution below is still the same though.</summary></entry></feed>
+&lt;p&gt;All around a WIN WIN.&lt;/p&gt;</content><author><name>Douglas J Hunley</name><email>doug.hunley@gmail.com</email></author><category term="general" /><category term="ott" /><summary type="html">As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving life.</summary></entry></feed>

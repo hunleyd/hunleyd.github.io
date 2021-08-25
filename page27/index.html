@@ -344,6 +344,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -390,141 +394,104 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/11/16/Managing-multiple-PostgreSQL-installs-via-Homebrew/">
-        Managing multiple PostgreSQL installs via Homebrew
+      <a href="/2016/11/18/Upgrading-PostgreSQL-5x-faster/">
+        Upgrading PostgreSQL 5x faster
       </a>
     </h1>
 
-    <span class="post-date">16 Nov 2016</span>
+    <span class="post-date">18 Nov 2016</span>
 
-    <p><img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png" class="rleader" />Following on from <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">this</a> post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I’m back with a full-fledged shell script to help manage all this. Without further ado, the script:</p>
+    <p><img src="https://cdn.shopify.com/s/files/1/0946/8552/files/5xFaster.png" class="lleader" />Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/zsh</span>
+<p>Thankfully, the PostgreSQL team introduced <code class="language-plaintext highlighter-rouge">pg_upgrade</code> back in version 9.0. Because the way data is stored internally in its datafiles in PostgreSQL rarely changes, <code class="language-plaintext highlighter-rouge">pg_upgrade</code> is able to re-use the existing datafiles (while manipulating some catalog entries) to “short circuit” the upgrade process. While this isn’t (yet) a true “in place upgrade” as done by some other databases, it’s pretty close. And it’s stupid fast. In my testing on my overworked Macbook Pro, it took <em>1/5</em> as long to upgrade as a traditional dump and reload. So, let’s look at this process shall we?</p>
 
-<span class="nv">wanted_ver</span><span class="o">=</span><span class="nv">$1</span>
-<span class="nv">no_restart</span><span class="o">=</span>
+<p>First, we assume that we have both PostgreSQL 9.5 and 9.6 installed and both have initialized (empty) clusters (see <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a> if you need to do this). We’re going to use <code class="language-plaintext highlighter-rouge">pgbench</code> to create some data in our PostgreSQL 9.5 instance:</p>
 
-<span class="c"># is the version requested installed?</span>
-brew <span class="nb">ls</span> <span class="nt">--version</span> postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> &amp;&gt;/dev/null
-<span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> <span class="nt">-eq</span> 0 <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
-  <span class="c"># yes, carry on</span>
-  :
-<span class="k">else</span>
-  <span class="c"># nope, so install it</span>
-  <span class="nb">echo</span> <span class="s2">"Installing PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
-  brew <span class="nb">install </span>petere/postgresql/postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span>
-<span class="k">fi</span>
-
-<span class="c"># is postgresql is running?</span>
-<span class="k">for </span>i <span class="k">in</span> /usr/local/var/postgres/<span class="k">*</span>
-<span class="k">do
-  </span><span class="nv">check_ver</span><span class="o">=</span><span class="si">$(</span><span class="nb">basename</span> <span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="si">)</span>
-  <span class="nv">is_running</span><span class="o">=</span><span class="si">$(</span>ps <span class="nt">-few</span>|egrep <span class="nt">--</span> <span class="s2">"[p]ostgres.*-D.*</span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">"</span><span class="si">)</span>
-
-  <span class="k">if</span> <span class="o">[[</span> <span class="nt">-z</span> <span class="k">${</span><span class="nv">is_running</span><span class="k">}</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
-    <span class="c"># nope, carry on</span>
-    :
-  <span class="k">else</span>
-    <span class="c"># it is. is it the requested version?</span>
-    <span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
-      <span class="c"># yup, carry on</span>
-      <span class="nv">no_restart</span><span class="o">=</span>t
-    <span class="k">else</span>
-      <span class="c"># nope, so kill it</span>
-      <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Stopping PostgreSQL </span><span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span><span class="s2">... "</span>
-      /usr/local/opt/postgresql@<span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span>/bin/pg_ctl <span class="se">\</span>
-          <span class="nt">-D</span> /usr/local/var/postgres/<span class="k">${</span><span class="nv">check_ver</span><span class="k">}</span> <span class="se">\</span>
-          stop <span class="nt">-w</span> <span class="nt">-mf</span> | <span class="nb">grep</span> <span class="s1">'stopped'</span>
-    <span class="k">fi
-  fi
-done</span>
-
-<span class="c"># what version is active?</span>
-<span class="k">if</span> <span class="o">[[</span> <span class="nt">-e</span> /usr/local/bin/psql <span class="o">]]</span> <span class="p">;</span> <span class="k">then
-    </span><span class="nv">active_ver</span><span class="o">=</span><span class="si">$(</span>/usr/bin/stat <span class="nt">-f</span> %Y /usr/local/bin/psql | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\/</span> <span class="nt">-f3</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\-</span> <span class="nt">-f2</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\@</span> <span class="nt">-f2</span><span class="si">)</span>
-<span class="k">else
-    </span><span class="nv">active_ver</span><span class="o">=</span>0
-<span class="k">fi</span>
-
-<span class="c"># is the active version the requested version?</span>
-<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
-  <span class="c"># yup, carry on</span>
-  :
-<span class="k">else</span>
-  <span class="c"># nope, so deactivate it</span>
-  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Deactivating PostgreSQL </span><span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span><span class="s2">... "</span>
-  brew <span class="nb">unlink</span> <span class="nt">--force</span> <span class="nt">--overwrite</span> postgresql@<span class="k">${</span><span class="nv">active_ver</span><span class="k">}</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\ </span> <span class="nt">-f3-</span>
-  <span class="c"># and activate the correct version</span>
-  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Activating PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
-  brew <span class="nb">link</span> <span class="nt">--force</span> <span class="nt">--overwrite</span> postgresql@<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> | <span class="nb">grep</span> <span class="s1">'created'</span> | <span class="nb">cut</span> <span class="nt">-d</span><span class="se">\ </span> <span class="nt">-f3-</span>
-<span class="k">fi</span>
-
-<span class="c"># point to the correct data dir and port</span>
-<span class="nv">PGDATA</span><span class="o">=</span>/usr/local/var/postgres/<span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span>
-<span class="nv">PGPORT</span><span class="o">=</span><span class="s2">"54</span><span class="si">$(</span><span class="nb">echo</span> <span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span> | <span class="nb">tr</span> <span class="nt">-d</span> .<span class="si">)</span><span class="s2">"</span>
-
-<span class="c"># should we be starting a cluster?</span>
-<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">no_restart</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"t"</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
-  <span class="c"># nope, carry on</span>
-  :
-<span class="k">else</span>
-  <span class="c"># yup. has the cluster been initialized?</span>
-  <span class="k">if</span> <span class="o">[[</span> <span class="o">!</span> <span class="nt">-d</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> <span class="o">]]</span> <span class="p">;</span> <span class="k">then</span>
-    <span class="c"># nope, so let's do that</span>
-    <span class="nb">echo</span> <span class="s2">"Initializing PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2"> cluster... "</span>
-    initdb <span class="nt">-k</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> <span class="o">||</span> initdb <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>
-    <span class="nb">echo</span> <span class="s2">"port = </span><span class="k">${</span><span class="nv">PGPORT</span><span class="k">}</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
-    <span class="nb">echo</span> <span class="s2">"log_destination = 'stderr'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
-    <span class="nb">echo</span> <span class="s2">"logging_collector = on"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
-    <span class="nb">echo</span> <span class="s2">"log_filename = 'postgresql-%a.log'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
-    <span class="nb">echo</span> <span class="s2">"log_truncate_on_rotation = on"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
-    <span class="nb">echo</span> <span class="s2">"log_rotation_age = 1d"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
-    <span class="nb">echo</span> <span class="s2">"log_rotation_size = 0"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
-    <span class="nb">echo</span> <span class="s2">"log_timezone = 'US/Michigan'"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
-    <span class="nb">echo</span> <span class="s2">"log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h '"</span> <span class="o">&gt;&gt;</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span>/postgresql.conf
-  <span class="k">else</span>
-    <span class="c"># yup, carry on</span>
-    :
-  <span class="k">fi</span>
-  <span class="c"># start the cluster</span>
-  <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"Starting PostgreSQL </span><span class="k">${</span><span class="nv">wanted_ver</span><span class="k">}</span><span class="s2">... "</span>
-  pg_ctl <span class="nt">-D</span> <span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span> start  <span class="o">&gt;</span> /tmp/pg.start 2&gt;&amp;1
-  <span class="nb">grep</span> <span class="s1">'server start'</span> /tmp/pg.start
-  <span class="k">if</span> <span class="o">[[</span> <span class="nt">-x</span> /usr/local/bin/pg_isready <span class="o">]]</span> <span class="p">;</span> <span class="k">then
-      </span><span class="nv">ret</span><span class="o">=</span>1
-      <span class="k">while</span> <span class="o">[[</span> <span class="k">${</span><span class="nv">ret</span><span class="k">}</span> <span class="nt">-eq</span> 1 <span class="o">]]</span>
-      <span class="k">do</span>
-        <span class="c"># wait for the cluster to be available before exiting</span>
-        pg_isready <span class="nt">-q</span>
-        <span class="nv">ret</span><span class="o">=</span><span class="nv">$?</span>
-      <span class="k">done
-    fi
-fi
-
-</span><span class="nb">echo</span> <span class="s2">"export PGDATA=</span><span class="k">${</span><span class="nv">PGDATA</span><span class="k">}</span><span class="s2">"</span>
-<span class="nb">echo</span> <span class="s2">"export PGPORT=</span><span class="k">${</span><span class="nv">PGPORT</span><span class="k">}</span><span class="s2">"</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg 9.5
+<span class="nv">$ </span>createdb bench1<span class="p">;</span> createdb bench2<span class="p">;</span> createdb bench3
+<span class="nv">$ </span>pgbench <span class="nt">-i</span> <span class="nt">-s</span> 15 bench1 <span class="p">;</span> pgbench <span class="nt">-i</span> <span class="nt">-s</span> 70 bench2 <span class="p">;</span> pgbench <span class="nt">-i</span> <span class="nt">-s</span> 600 bench3
+<span class="nv">$ </span>pgbench <span class="nt">-c</span> 4 <span class="nt">-j</span> 2 <span class="nt">-T</span> 600 bench1 <span class="p">;</span> pgbench <span class="nt">-c</span> 4 <span class="nt">-j</span> 2 <span class="nt">-T</span> 600 bench2 <span class="p">;</span> pgbench <span class="nt">-c</span> 4 <span class="nt">-j</span> 2 <span class="nt">-T</span> 600 bench3
 </code></pre></div></div>
 
-<p>But what does it do? It’s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:</p>
+<p>Now that we’ve got data in our cluster, we can do the dump. If this were a production instance, <em>this is where you’d have to stop your application(s)</em>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">time </span>pg_dumpall <span class="o">&gt;</span> data.sql
+pg_dumpall <span class="o">&gt;</span> data.sql  20.57s user 30.63s system 4% cpu 18:43.70 total
+</code></pre></div></div>
+
+<p>We’ve now dumped out all our data, and spent 18 minutes with the application(s) down. Let’s restore our data to the PostgreSQL 9.6 cluster now:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg 9.6
+<span class="nv">$ </span><span class="nb">time </span>psql <span class="nt">-f</span> data.sql
+psql <span class="nt">-f</span> data.sql  14.53s user 18.30s system 1% cpu 37:48.49 total
 </code></pre></div></div>
 
-<p>and then the script does the following:</p>
+<p>After 37 minutes, our data is back and we can start our applications back up. <em>An outage of approximately 56.5 minutes</em>.</p>
 
-<ul>
-  <li>checks if the requested version is installed, and installs it if not</li>
-  <li>checks if another version of PostgreSQL is running, and stops it</li>
-  <li>checks if another version is linked as the active version, and unlinks it</li>
-  <li>links the requested version as the active version</li>
-  <li>sets PGDATA to point to the requested version’s data cluster</li>
-  <li>does an <code class="language-plaintext highlighter-rouge">initdb</code> for the requested version if needed</li>
-  <li>starts the requested version’s cluster</li>
-</ul>
+<p>Now, let’s blow away our PostgreSQL 9.6 cluster and use <code class="language-plaintext highlighter-rouge">pg_upgrade</code> to complete the same task. You would do this with the application(s) down as well!</p>
 
-<p>I’ll be the first to admit that the script could use additional work, but it’s functional enough to start using today. As I continue to improve the script, I’ll update the post with those changes, so check back every so often.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">rm</span> <span class="nt">-fr</span> <span class="nv">$PGDATA</span>/<span class="k">*</span>
+<span class="nv">$ </span>initdb <span class="nv">$PGDATA</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">OPGDATA</span><span class="o">=</span><span class="nv">$PGDATA</span>/../9.5
+<span class="nv">$ </span><span class="nb">time </span>pg_upgrade <span class="nt">-d</span> <span class="nv">$OPGDATA</span> <span class="nt">-D</span> <span class="nv">$PGDATA</span> <span class="nt">-b</span> /usr/local/opt/postgresql-9.5/bin <span class="nt">-B</span> /usr/local/opt/postgresql-9.6/bin
+pg_upgrade <span class="nt">-d</span> <span class="nv">$OPGDATA</span> <span class="nt">-D</span> <span class="nv">$PGDATA</span> <span class="nt">-b</span> /usr/local/opt/postgresql-9.5/bin <span class="nt">-B</span>   0.40s user 12.12s system 1% cpu 10:26.64 total
+</code></pre></div></div>
 
-<p>Enjoy.</p>
+<p>And we’re done <em>in 10.5 minutes</em>. It took 1/5 the outage of the dump / load method. And that’s on my puny dataset with my overworked laptop! Pretty impressive, no?</p>
+
+<p>For the curious, the <code class="language-plaintext highlighter-rouge">pg_upgrade</code> output that I omitted above for readability’s sake is:</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Performing Consistency Checks
+<span class="nt">-----------------------------</span>
+Checking cluster versions                                   ok
+Checking database user is the <span class="nb">install </span>user                  ok
+Checking database connection settings                       ok
+Checking <span class="k">for </span>prepared transactions                          ok
+Checking <span class="k">for </span>reg<span class="k">*</span> system OID user data types                ok
+Checking <span class="k">for </span>contrib/isn with bigint-passing mismatch       ok
+Checking <span class="k">for </span>roles starting with <span class="s1">'pg_'</span>                      ok
+Creating dump of global objects                             ok
+Creating dump of database schemas
+                                                            ok
+Checking <span class="k">for </span>presence of required libraries                 ok
+Checking database user is the <span class="nb">install </span>user                  ok
+Checking <span class="k">for </span>prepared transactions                          ok
+
+If pg_upgrade fails after this point, you must re-initdb the
+new cluster before continuing.
+
+Performing Upgrade
+<span class="nt">------------------</span>
+Analyzing all rows <span class="k">in </span>the new cluster                       ok
+Freezing all rows on the new cluster                        ok
+Deleting files from new pg_clog                             ok
+Copying old pg_clog to new server                           ok
+Setting next transaction ID and epoch <span class="k">for </span>new cluster       ok
+Deleting files from new pg_multixact/offsets                ok
+Copying old pg_multixact/offsets to new server              ok
+Deleting files from new pg_multixact/members                ok
+Copying old pg_multixact/members to new server              ok
+Setting next multixact ID and offset <span class="k">for </span>new cluster        ok
+Resetting WAL archives                                      ok
+Setting frozenxid and minmxid counters <span class="k">in </span>new cluster       ok
+Restoring global objects <span class="k">in </span>the new cluster                 ok
+Restoring database schemas <span class="k">in </span>the new cluster
+                                                            ok
+Copying user relation files                                 ok
+Setting next OID <span class="k">for </span>new cluster                            ok
+Sync data directory to disk                                 ok
+Creating script to analyze new cluster                      ok
+Creating script to delete old cluster                       ok
+
+Upgrade Complete
+<span class="nt">----------------</span>
+Optimizer statistics are not transferred by pg_upgrade so,
+once you start the new server, consider running:
+    ./analyze_new_cluster.sh
+
+Running this script will delete the old cluster<span class="s1">'s data files:
+    ./delete_old_cluster.sh
+</span></code></pre></div></div>
 
   </div>
   

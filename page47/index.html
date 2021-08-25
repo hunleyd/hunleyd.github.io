@@ -344,6 +344,10 @@
         
       
     
+      
+        
+      
+    
 
     <a class="sidebar-nav-item " href="/posts/">All Posts</a>
     <a class="sidebar-nav-item " href="/tags/">All Tags</a>
@@ -390,47 +394,87 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/03/30/Hello_eero/">
-        Hello, eero
+      <a href="/2016/04/18/PostgreSQL-Streaming-Replication-In-10-Minutes/">
+        PostgreSQL Streaming Replication in 10 Minutes
       </a>
     </h1>
 
-    <span class="post-date">30 Mar 2016</span>
+    <span class="post-date">18 Apr 2016</span>
 
-    <p><a href="https://www.eero.com"><img src="https://d2vw57jh8139vw.cloudfront.net/abb56b35841139f06625b173a8bb8936.jpg" class="lleader" /></a>I don’t normally back things on Indiegogo (I’m a Kickstarter snob), but I jumped <em>all over</em> the eero. I have always had issues with the wifi coverage in my home. I’ve tried everything I can think of to alleviate the issues; differernt brands of routers, flashing different OSS firmwares, ‘upgrading’ to SOHO equipment instead of consumer equipment, moving them all over the damn house, etc. Nothing solved all the issues. Until now.</p>
+    <p><img src="/images/posts/database-replication.png" class="rleader" />While there’s absolutely nothing new in this blog post that isn’t covered by the wonderful <a href="http://www.postgresql.org/docs/current/static/index.html">docs</a> I’ve been asked multiple times now by customers if we had some kind of ‘crib notes’ format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well post it so that I can simply point people to it in the future. So here we are.</p>
 
-<p>I’ve actully had the eero up and running for a while now (almost two months already) but I held off saying anything because I wanted to see if issues would crop back up or not and I wanted to get past the initial ‘cool, it works!’ feeling. So here I am ~60 days later, and I’m <em>still</em> feeling the ‘this is cool’ feeling towards the eero.</p>
+<p>Now, let’s get started. I assume you already have two PostgreSQL servers up with the binaries installed. For simplicity’s sake, we will call these machines ‘master’ and ‘standby’. Note too that I’m using <code class="language-plaintext highlighter-rouge">replication slots</code> which needs PostgreSQL 9.4.0 or later; if you’re using something earlier, simply ignore the slot stuff.</p>
 
-<p>I bought the triple set, put the ‘main’ one in the basement by the cable modem, the next one on the other end of the house on the first floor, and the final one in the middle of the house on the second floor. Setup was stupid simple and hassle free. Like, Tina or Emily could have done this, simple. Once up and talking to each other, they then scanned all the wifi leakage from the neighbors and picked a channel with the least amount of interference and started handing out DHCP leases to my devices. Easy peasy.</p>
+<p>Let’s get started!</p>
 
-<p>Speaking of ‘my devices’.. here’s everything I’ve got hooked up to the eero-powered wifi:</p>
+<p>On the master, do the following:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; postgresql.conf
+    wal_level = hot_standby
+    full_page_writes = on
+    wal_log_hints = on
+    max_wal_senders = 6
+    max_replication_slots = 6
+    hot_standby = on
+    hot_standby_feedback = on
+</span><span class="no">EOF
+</span></code></pre></div></div>
 
-<ul>
-  <li>1 x Nest thermostat</li>
-  <li>2 x “smart” tv</li>
-  <li>1 x “smart” bluray player</li>
-  <li>1 x Nexus Player /  Android TV</li>
-  <li>1 x PS3</li>
-  <li>2 x PS4</li>
-  <li>1 x Sonos speaker</li>
-  <li>2 x Macbook Pro</li>
-  <li>2 x Android phones</li>
-  <li>3 x Android tablets</li>
-  <li>2 x iPhone</li>
-  <li>1 x iPad mini</li>
-  <li>1 x Chromebook</li>
-  <li>1 x Lenovo laptop</li>
-</ul>
+<p>On the master, add the external IP addresses of the servers to <code class="language-plaintext highlighter-rouge">pg_hba.conf</code>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; pg_hba.conf
+    host replication repl_user IP_of_master/32 md5
+    host replication repl_user IP_of_standby/32 md5
+</span><span class="no">EOF
+</span></code></pre></div></div>
 
-<p>Now, I didn’t make that list to impress you, or to depress myself at how much money I’ve spent over the years. That list is to show what’s connected to the eero and to show that there is a big variety of devices. Some are 2.4GHz, some 5GHz, some both. Some do jumbo frames. Some support wifi media extensions. And they all work <em>flawlessly</em> while connected to the eero. <em>No matter how many are connected simultaneoussly.</em> Which is the first time ever. Seriously. It works so well, I went around and <em>unplugged</em> Ethernet from devices that had it and put them on the wifi!</p>
+<p>Restart PostgreSQL on the master for the changes to take affect</p>
 
-<p>We can have multiple Netflix streams going while playing online in an FPS while streaming music to another room while someone else is on the laptop working. And no one even notices the other users. It’s epic. I now actually have a valid reason for buying the most expensive upload speed my ISP offers :)</p>
+<p>On the master, create the replication user:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>psql <span class="se">\</span>
+  <span class="nt">-d</span> postgres <span class="se">\</span>
+  <span class="nt">-U</span> postgres <span class="se">\</span>
+  <span class="nt">-c</span> <span class="s2">"CREATE ROLE repl_user LOGIN REPLICATION ENCRYPTED PASSWORD 'secretpasswordhere';"</span>
+</code></pre></div></div>
 
-<p>As for gripes? Well, of course no system is perfect. In its quest to make things stupid simple, there’s a lot the eero mgmt the app doesn’t let you do. You can’t, for example, blacklist a MAC. Or turn off uplink for certain MACs between certain hours of the day. You can’t throttle certain devices. Basically, all the things nerds love to mess with that just confuse the normal consumer. And I’m (mostly) OK with that. I’m sure some of the functionality is coming in future updates, but even if it doesn’t, I don’t care. It just works. And it works well and easy enough that I can talk the wife through an issue over the phone while I’m on the other side of the planet.</p>
+<p>On the master, create the replication slot for the standby:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>psql <span class="se">\</span>
+  <span class="nt">-d</span> postgres <span class="se">\</span>
+  <span class="nt">-U</span> postgres <span class="se">\</span>
+  <span class="nt">-c</span> <span class="s2">"SELECT * FROM pg_create_physical_replication_slot('standby1', true);"</span>
+</code></pre></div></div>
 
-<p>I &lt;3 my eero.</p>
+<p>On the standby, wipe the existing cluster:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /var/lib/pgsql/9.4/data
+<span class="nv">$ </span>pg_ctl <span class="nt">-D</span> <span class="nv">$PWD</span> <span class="nt">-mf</span> stop
+<span class="nv">$ </span><span class="nb">cd</span> ..
+<span class="nv">$ </span><span class="nb">rm</span> <span class="nt">-rfv</span> data
+</code></pre></div></div>
 
-<p>★★★★★</p>
+<p>On the standby, use the <code class="language-plaintext highlighter-rouge">pg_basebackup</code> command to clone the master (enter the <code class="language-plaintext highlighter-rouge">repl_user</code>’s password from above when prompted):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pg_basebackup <span class="se">\</span>
+  <span class="nt">-D</span> data <span class="se">\</span>
+  <span class="nt">-Fp</span> <span class="se">\</span>
+  <span class="nt">-R</span> <span class="se">\</span>
+  <span class="nt">-Xs</span> <span class="se">\</span>
+  <span class="nt">-c</span> fast <span class="se">\</span>
+  <span class="nt">-l</span> <span class="s1">'initial clone'</span> <span class="se">\</span>
+  <span class="nt">-P</span> <span class="se">\</span>
+  <span class="nt">-v</span> <span class="se">\</span>
+  <span class="nt">-h</span> IP_of_master <span class="se">\</span>
+  <span class="nt">-U</span> repl_user
+</code></pre></div></div>
+
+<p>On the standby, tweak the <code class="language-plaintext highlighter-rouge">recovery.conf</code> that was created for you and add the replication slot name:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>data
+<span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="no">EOF</span><span class="sh"> &gt;&gt; recovery.conf
+primary_slot_name = 'standby1'
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<p>Start the standby up</p>
+
+<p>And that’s it. You should be all done. Easy, right?</p>
 
   </div>
   
