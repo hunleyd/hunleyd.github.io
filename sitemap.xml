@@ -77,6 +77,12 @@
     <loc>https://hunleyd.github.io/posts/pgbouncer-and-auth-pass-thru/</loc>
     <lastmod>2018-08-07T12:53:28+00:00</lastmod>
   </url><url>
+    <loc>https://hunleyd.github.io/tags/postgresql/</loc>
+    <lastmod>2018-08-07T12:53:28+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/</loc>
+    <lastmod>2018-08-07T12:53:28+00:00</lastmod>
+  </url><url>
     <loc>https://hunleyd.github.io/posts/locking-it-down/</loc>
     <lastmod>2018-06-18T12:45:02+00:00</lastmod>
   </url><url>
@@ -255,8 +261,6 @@
     <loc>https://hunleyd.github.io/author/hunleyd/</loc>
   </url><url>
     <loc>https://hunleyd.github.io/search/</loc>
-  </url><url>
-    <loc>https://hunleyd.github.io/tags/</loc>
   </url><url>
     <loc>https://hunleyd.github.io/tools/</loc>
   </url>
