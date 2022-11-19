@@ -11,19 +11,19 @@
       <title>Logical Replication with Skytools3</title>
       <link>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</link>
       <pubDate>Tue, 19 Apr 2016 13:55:11 +0000</pubDate>
-
+      
       <guid>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</guid>
       <description>UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script.</description>
     </item>
-
+    
     <item>
       <title>PostgreSQL Streaming Replication in 10 Minutes</title>
       <link>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</link>
       <pubDate>Mon, 18 Apr 2016 14:47:10 +0000</pubDate>
-
+      
       <guid>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</guid>
       <description>While there&amp;rsquo;s absolutely nothing new in this blog&amp;quot;post&amp;quot;that isn&amp;rsquo;t covered by the wonderful docs I&amp;rsquo;ve been asked multiple times now by customers if we had some kind of &amp;lsquo;crib notes&amp;rsquo; format for how to get replication up and running.</description>
     </item>
-
+    
   </channel>
 </rss>

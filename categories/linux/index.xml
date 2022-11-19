@@ -11,55 +11,55 @@
       <title>Ricing it up</title>
       <link>https://hunleyd.github.io/posts/ricing-it-up/</link>
       <pubDate>Sat, 31 Jul 2021 09:12:54 +0000</pubDate>
-
+      
       <guid>https://hunleyd.github.io/posts/ricing-it-up/</guid>
       <description>One of the reasons that I find myself going back to Gentoo is that you compile the entire system for your hardware which, in theory, leads to the best performance possible.</description>
     </item>
-
+    
     <item>
       <title>Hello again old friend</title>
       <link>https://hunleyd.github.io/posts/hello-again-old-friend/</link>
       <pubDate>Sat, 24 Jul 2021 10:04:49 +0000</pubDate>
-
+      
       <guid>https://hunleyd.github.io/posts/hello-again-old-friend/</guid>
       <description>I posted a year ago about dropping ClearLinux and switching to Ubuntu Server on my NUC.</description>
     </item>
-
+    
     <item>
       <title>It&#39;s Podman, man</title>
       <link>https://hunleyd.github.io/posts/it-s-podman-man/</link>
       <pubDate>Thu, 30 Jul 2020 12:44:51 +0000</pubDate>
-
+      
       <guid>https://hunleyd.github.io/posts/it-s-podman-man/</guid>
       <description>As mentioned (very) briefly in other posts, I run Home Assistant as the &amp;lsquo;control hub&amp;rsquo; for all my &amp;ldquo;smart&amp;rdquo; devices in my home.</description>
     </item>
-
+    
     <item>
       <title>Bye Pi, Hello NUC</title>
       <link>https://hunleyd.github.io/posts/bye-pi-hello-nuc/</link>
       <pubDate>Sun, 19 Jul 2020 12:14:03 +0000</pubDate>
-
+      
       <guid>https://hunleyd.github.io/posts/bye-pi-hello-nuc/</guid>
       <description>About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin a new experiment with an Intel NUC.</description>
     </item>
-
+    
     <item>
       <title>tuned, PG, and you</title>
       <link>https://hunleyd.github.io/posts/tuned-pg-and-you/</link>
       <pubDate>Tue, 23 Jun 2020 18:22:44 +0000</pubDate>
-
+      
       <guid>https://hunleyd.github.io/posts/tuned-pg-and-you/</guid>
       <description>We&amp;rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance.</description>
     </item>
-
+    
     <item>
       <title>Glutton for Punishment</title>
       <link>https://hunleyd.github.io/posts/glutton-for-punishment/</link>
       <pubDate>Mon, 29 Feb 2016 10:14:50 +0000</pubDate>
-
+      
       <guid>https://hunleyd.github.io/posts/glutton-for-punishment/</guid>
       <description>I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing.</description>
     </item>
-
+    
   </channel>
 </rss>

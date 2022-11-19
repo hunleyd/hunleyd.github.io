@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>replication on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <link>https://hunleyd.github.io/tags/replication/</link>
+    <description>Recent content in replication on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 18 Apr 2016 14:47:10 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/tags/replication/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PostgreSQL Streaming Replication in 10 Minutes</title>
+      <link>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</link>
+      <pubDate>Mon, 18 Apr 2016 14:47:10 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</guid>
+      <description>While there&amp;rsquo;s absolutely nothing new in this blog&amp;quot;post&amp;quot;that isn&amp;rsquo;t covered by the wonderful docs I&amp;rsquo;ve been asked multiple times now by customers if we had some kind of &amp;lsquo;crib notes&amp;rsquo; format for how to get replication up and running.</description>
+    </item>
+    
+  </channel>
+</rss>
