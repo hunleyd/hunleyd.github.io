@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>smarthome on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <link>https://hunleyd.github.io/tags/smarthome/</link>
+    <description>Recent content in smarthome on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 25 Aug 2021 15:33:18 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/tags/smarthome/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>I said brr it&#39;s cold in here</title>
+      <link>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</link>
+      <pubDate>Wed, 25 Aug 2021 15:33:18 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</guid>
+      <description>I don&amp;rsquo;t like the heat. I hate being hot. Always have.</description>
+    </item>
+    
+    <item>
+      <title>Automations, timers, and you</title>
+      <link>https://hunleyd.github.io/posts/automations--timers--and-you/</link>
+      <pubDate>Mon, 16 Aug 2021 13:48:35 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/automations--timers--and-you/</guid>
+      <description>For a while now, I&amp;rsquo;ve been automating my apartment using the automations component of Home Assistant.</description>
+    </item>
+    
+    <item>
+      <title>I&#39;m blue da ba dee da ba di</title>
+      <link>https://hunleyd.github.io/posts/i-m-blue-da-ba-dee-da-ba-di/</link>
+      <pubDate>Mon, 26 Jul 2021 12:47:03 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/i-m-blue-da-ba-dee-da-ba-di/</guid>
+      <description>An update on my use Home Assistant, I&amp;rsquo;m no longer running it inside Podman as detailed here.</description>
+    </item>
+    
+    <item>
+      <title>Locking it down</title>
+      <link>https://hunleyd.github.io/posts/locking-it-down/</link>
+      <pubDate>Mon, 18 Jun 2018 12:45:02 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/locking-it-down/</guid>
+      <description>I finally saved up and bought myself a smart lock at the end of April.</description>
+    </item>
+    
+  </channel>
+</rss>

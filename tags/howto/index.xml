@@ -6,7 +6,169 @@
     <description>Recent content in howto on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 18 Apr 2016 14:47:10 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/tags/howto/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 25 Aug 2021 15:33:18 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/tags/howto/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>I said brr it&#39;s cold in here</title>
+      <link>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</link>
+      <pubDate>Wed, 25 Aug 2021 15:33:18 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</guid>
+      <description>I don&amp;rsquo;t like the heat. I hate being hot. Always have.</description>
+    </item>
+    
+    <item>
+      <title>Automations, timers, and you</title>
+      <link>https://hunleyd.github.io/posts/automations--timers--and-you/</link>
+      <pubDate>Mon, 16 Aug 2021 13:48:35 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/automations--timers--and-you/</guid>
+      <description>For a while now, I&amp;rsquo;ve been automating my apartment using the automations component of Home Assistant.</description>
+    </item>
+    
+    <item>
+      <title>Generating DNS noise</title>
+      <link>https://hunleyd.github.io/posts/generating-dns-noise/</link>
+      <pubDate>Sat, 14 Aug 2021 16:27:09 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/generating-dns-noise/</guid>
+      <description>DNS is one of those thing most people never think about.</description>
+    </item>
+    
+    <item>
+      <title>Ricing it up</title>
+      <link>https://hunleyd.github.io/posts/ricing-it-up/</link>
+      <pubDate>Sat, 31 Jul 2021 09:12:54 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/ricing-it-up/</guid>
+      <description>One of the reasons that I find myself going back to Gentoo is that you compile the entire system for your hardware which, in theory, leads to the best performance possible.</description>
+    </item>
+    
+    <item>
+      <title>tuned, PG, and you</title>
+      <link>https://hunleyd.github.io/posts/tuned-pg-and-you/</link>
+      <pubDate>Tue, 23 Jun 2020 18:22:44 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/tuned-pg-and-you/</guid>
+      <description>We&amp;rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance.</description>
+    </item>
+    
+    <item>
+      <title>pgBackRest 2.08 and macOS Mojave</title>
+      <link>https://hunleyd.github.io/posts/pgbackrest-2.08-and-macos-mojave/</link>
+      <pubDate>Fri, 04 Jan 2019 08:30:44 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/pgbackrest-2.08-and-macos-mojave/</guid>
+      <description>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue.</description>
+    </item>
+    
+    <item>
+      <title>pgBackRest 2.07 and macOS Mojave</title>
+      <link>https://hunleyd.github.io/posts/pgbackrest-2.07-and-macos-mojave/</link>
+      <pubDate>Fri, 16 Nov 2018 06:12:31 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/pgbackrest-2.07-and-macos-mojave/</guid>
+      <description>pgBackRest 2.07 was announced today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave).</description>
+    </item>
+    
+    <item>
+      <title>Monitoring pgBackRest with tail_n_mail</title>
+      <link>https://hunleyd.github.io/posts/monitoring-pgbackrest-with-tail_n_mail/</link>
+      <pubDate>Mon, 24 Sep 2018 10:58:22 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/monitoring-pgbackrest-with-tail_n_mail/</guid>
+      <description>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use tail_n_mail, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs.</description>
+    </item>
+    
+    <item>
+      <title>Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title>
+      <link>https://hunleyd.github.io/posts/upgrading-postgresql-from-9.4-to-10.3-with-pglogical/</link>
+      <pubDate>Thu, 05 Apr 2018 13:15:46 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/upgrading-postgresql-from-9.4-to-10.3-with-pglogical/</guid>
+      <description>I recently helped a customer upgrade their PostgreSQL instance from 9.</description>
+    </item>
+    
+    <item>
+      <title>updated PostgreSQL homebrew script</title>
+      <link>https://hunleyd.github.io/posts/updated-postgresql-homebrew-script/</link>
+      <pubDate>Mon, 16 Oct 2017 13:09:23 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/updated-postgresql-homebrew-script/</guid>
+      <description>With the release of PostgreSQL 10, I&amp;rsquo;ve updated my pg script.</description>
+    </item>
+    
+    <item>
+      <title>Installing pgBackRest on OSX</title>
+      <link>https://hunleyd.github.io/posts/installing-pgbackrest-on-osx/</link>
+      <pubDate>Wed, 14 Jun 2017 12:40:30 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/installing-pgbackrest-on-osx/</guid>
+      <description>If you&amp;rsquo;ve followed my previous posts (here and here), then you already have one or more versions of PostgreSQL installed on your Mac.</description>
+    </item>
+    
+    <item>
+      <title>Managing multiple PostgreSQL installs via Homebrew</title>
+      <link>https://hunleyd.github.io/posts/managing-multiple-postgresql-installs-via-homebrew/</link>
+      <pubDate>Wed, 16 Nov 2016 13:45:27 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/managing-multiple-postgresql-installs-via-homebrew/</guid>
+      <description>Following on from this post, you probably have multiple versions of PostgreSQL installed on your Mac.</description>
+    </item>
+    
+    <item>
+      <title>Routing email through GMail on OSX</title>
+      <link>https://hunleyd.github.io/posts/routing-email-through-gmail-on-osx/</link>
+      <pubDate>Tue, 15 Nov 2016 10:51:00 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/routing-email-through-gmail-on-osx/</guid>
+      <description>Like most geeks, I have scripts that I&amp;rsquo;ve written that I like to have run from cron on a regular basis.</description>
+    </item>
+    
+    <item>
+      <title>Getting fancy with PostgreSQL and Homebrew</title>
+      <link>https://hunleyd.github.io/posts/getting-fancy-with-postgresql-and-homebrew/</link>
+      <pubDate>Thu, 10 Nov 2016 14:58:15 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/getting-fancy-with-postgresql-and-homebrew/</guid>
+      <description>In our previous post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid.</description>
+    </item>
+    
+    <item>
+      <title>PostgreSQL, Homebrew, and You</title>
+      <link>https://hunleyd.github.io/posts/postgresql-homebrew-and-you/</link>
+      <pubDate>Fri, 04 Nov 2016 13:30:09 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/postgresql-homebrew-and-you/</guid>
+      <description>If you need to install PostgreSQL onto your Macbook, you have several options available to you nowadays.</description>
+    </item>
+    
+    <item>
+      <title>Incremental pgBadger</title>
+      <link>https://hunleyd.github.io/posts/incremental-pgbadger/</link>
+      <pubDate>Wed, 26 Oct 2016 14:46:09 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/incremental-pgbadger/</guid>
+      <description>You&amp;rsquo;re probably already running pgBadger to monitor your PostgreSQL logs.</description>
+    </item>
+    
+    <item>
+      <title>PostgreSQL Partitioning Quick Tip</title>
+      <link>https://hunleyd.github.io/posts/postgresql-partitioning-quick-tip/</link>
+      <pubDate>Thu, 21 Apr 2016 09:25:32 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/postgresql-partitioning-quick-tip/</guid>
+      <description>Partitioning in PostgreSQL can be a little daunting at times.</description>
+    </item>
+    
+    <item>
+      <title>Logical Replication with Skytools3</title>
+      <link>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</link>
+      <pubDate>Tue, 19 Apr 2016 13:55:11 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</guid>
+      <description>UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script.</description>
+    </item>
+    
     <item>
       <title>PostgreSQL Streaming Replication in 10 Minutes</title>
       <link>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</link>
