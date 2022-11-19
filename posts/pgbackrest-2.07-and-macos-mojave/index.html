@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>pgBackRest 2.07 and macOS Mojave</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>pgBackRest 2.07 and macOS Mojave</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Nov 16, 2018,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+          <a href="/categories/osx/">Osx</a>
+
+          <a href="/categories/howto/">Howto</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <p>pgBackRest 2.07 was <a href="https://twitter.com/pgBackRest/status/1063458495700320258">announced</a> today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a <em>Linux</em> system, so I figured I’d write this up for anyone else attempting the same.</p>
+<p>Since this is OSX, we have to do some work to make things right before we even start with the pgBackRest code. First up, get a real OpenSSL install. We’ll use <a href="https://brew.sh">Homebrew</a> for this:</p>
+<pre tabindex="0"><code>$ brew install openssl
+[output snipped]
+$ openssl version -a
+LibreSSL 2.6.4
+built on: date not available
+platform: information not available
+options:  bn(64,64) rc4(ptr,int) des(idx,cisc,16,int) blowfish(idx)
+compiler: information not available
+OPENSSLDIR: &#34;/private/etc/ssl&#34;
+$ /usr/local/opt/openssl/bin/openssl version -a
+OpenSSL 1.0.2p  14 Aug 2018
+built on: reproducible build, date unspecified
+platform: darwin64-x86_64-cc
+options:  bn(64,64) rc4(ptr,int) des(idx,cisc,16,int) idea(int) blowfish(idx)
+compiler: clang -I. -I.. -I../include  -fPIC -fno-common -DOPENSSL_PIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -arch x86_64 -O3 -DL_ENDIAN -Wall -DOPENSSL_IA32_SSE2 -DOPENSSL_BN_ASM_MONT -DOPENSSL_BN_ASM_MONT5 -DOPENSSL_BN_ASM_GF2m -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DMD5_ASM -DAES_ASM -DVPAES_ASM -DBSAES_ASM -DWHIRLPOOL_ASM -DGHASH_ASM -DECP_NISTZ256_ASM
+OPENSSLDIR: &#34;/usr/local/etc/openssl&#34;
+</code></pre><p>As you can see, the default SSL from OSX is in <code>/usr/bin</code> while the newly installed OpenSSL is in <code>/usr/local/opt/openssl</code>. In my testing, this is enough to proceed with pgBackRest but I prefer to have the <code>openssl</code> binary match the libs and I’m a glutton for punishment, so I replace the OSX binary with the Homebrew one:</p>
+<pre tabindex="0"><code>$ sudo mv /usr/bin/openssl /usr/bin/openssl.old
+$ sudo ln -s /usr/local/opt/openssl/bin/openssl /usr/bin
+$ ls -ld /usr/bin/openssl*
+lrwxr-xr-x 1 root wheel   34 Nov 16 11:39 /usr/bin/openssl -&amp;gt; /usr/local/opt/openssl/bin/openssl*
+-rwxr-xr-x 1 root wheel 1.2M Sep 21 00:16 /usr/bin/openssl.old*
+</code></pre><p>OK, so now we have an SSL that pgBackRest knows how to speak to. We need to install some Perl modules that it needs. If you haven’t run CPAN before, just accept the defaults when it asks you things:</p>
+<pre tabindex="0"><code>$ perl -MCPAN -e shell
+cpan[1]&gt; install DBI
+[output snipped]
+cpan[2]&gt; install DBD::Pg
+[output snipped]
+cpan[3]&gt; install IO::Socket::SSL
+[output snipped]
+cpan[4]&gt; install XML::LibXML
+[output snipped]
+cpan[5]&gt; q
+</code></pre><p>Now we’ve got our Perl modules installed, we have to tell our shell where to find them:</p>
+<pre tabindex="0"><code>$ export PERL5LIB=/Users/doug/perl5/lib/perl5
+$ export PERL_LOCAL_LIB_ROOT=/Users/doug/perl5
+$ export PERL_MB_OPT=--install_base &#34;/Users/doug/perl5&#34;
+$ export PERL_MM_OPT=INSTALL_BASE=/Users/doug/perl5
+</code></pre><p>Obviously, you will change ‘doug’ to your OSX username. You will also need to add these to your shell’s startup file (<code>.profile</code>, <code>.bash_profile</code>, etc) to make them permanent.</p>
+<p>Now, we can actually get down to the business of compiling and installing pgBackRest. Download the 2.07 tarball from the releases tab on GitHub, and let’s get busy:</p>
+<pre tabindex="0"><code>$ tar xvf Downloads/pgbackrest-release-2.07.tar.gz
+[output snipped]
+$ cd pgbackrest-release-2.07
+</code></pre><p>Now, we need to make some edits to the included Makefile. So <code>vi src/Makefile</code> and jump to line 42. Edit this line to be:</p>
+<pre tabindex="0"><code>LDEXTRA = -L /usr/local/opt/openssl/lib
+</code></pre><p>This tells the build process where to find the OpenSSL that we installed. Then, jump to line 149 and change it to:</p>
+<pre tabindex="0"><code>   install -m 755 pgbackrest $(DESTDIR)/usr/local/bin
+</code></pre><p>This makes it install into <code>/usr/local/bin</code> which is where Homebrew puts everything else and you shouldn’t need to use <code>sudo</code> to write to it.</p>
+<p>Now, compile and install it:</p>
+<pre tabindex="0"><code>$ make -s -C ./src &amp;amp;&amp;amp; make -s -C ./src/install
+</code></pre><p>Assuming that goes well, you can now run pgBackRest to verify it’s installed and functional:</p>
+<pre tabindex="0"><code>$ /usr/local/bin/pgbackrest
+pgBackRest 2.07 - General help
+
+Usage:
+    pgbackrest [options] [command]
+
+Commands:
+    archive-get     Get a WAL segment from the archive.
+    archive-push    Push a WAL segment to the archive.
+    backup          Backup a database cluster.
+    check           Check the configuration.
+    expire          Expire backups that exceed retention.
+    help            Get help.
+    info            Retrieve information about backups.
+    restore         Restore a database cluster.
+    stanza-create   Create the required stanza data.
+    stanza-delete   Delete a stanza.
+    stanza-upgrade  Upgrade a stanza.
+    start           Allow pgBackRest processes to run.
+    stop            Stop pgBackRest processes from running.
+    version         Get version.
+
+Use &#39;pgbackrest help [command]&#39; for more information.
+</code></pre><p>You should now be able to follow the online docs and setup pgBackRest.</p>
+<p>Enjoy!</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

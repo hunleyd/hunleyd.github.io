@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>blog on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <link>https://hunleyd.github.io/categories/blog/</link>
+    <description>Recent content in blog on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 17 Jan 2017 14:26:51 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/categories/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>New look, same content</title>
+      <link>https://hunleyd.github.io/posts/new-look-same-content/</link>
+      <pubDate>Tue, 17 Jan 2017 14:26:51 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/new-look-same-content/</guid>
+      <description>UPDATE: I&amp;rsquo;ve switched out the theme entirely (again) so the CSS issues should no longer be present.</description>
+    </item>
+
+    <item>
+      <title>Changes to the blog</title>
+      <link>https://hunleyd.github.io/posts/changes-to-the-blog/</link>
+      <pubDate>Fri, 02 Dec 2016 13:48:42 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/changes-to-the-blog/</guid>
+      <description>In case you haven&amp;rsquo;t already noticed, I&amp;rsquo;ve made some changes to my blog recently.</description>
+    </item>
+
+    <item>
+      <title>Making use of gists</title>
+      <link>https://hunleyd.github.io/posts/making-use-of-gists/</link>
+      <pubDate>Sun, 19 Jun 2016 15:42:19 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/making-use-of-gists/</guid>
+      <description>After stumbling upon an example of how to do so, I&amp;rsquo;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks.</description>
+    </item>
+
+    <item>
+      <title>More Bloggy Goodness</title>
+      <link>https://hunleyd.github.io/posts/more-bloggy-goodness/</link>
+      <pubDate>Sat, 16 Jan 2016 01:00:00 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/more-bloggy-goodness/</guid>
+      <description>It&amp;rsquo;s been a bit of a busy day for me and my blog.</description>
+    </item>
+
+    <item>
+      <title>Once More, With Feeling</title>
+      <link>https://hunleyd.github.io/posts/once-more-with-feeling/</link>
+      <pubDate>Sat, 16 Jan 2016 00:00:00 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/once-more-with-feeling/</guid>
+      <description>Welcome to the new blog.
+That&amp;rsquo;s right, I&amp;rsquo;m running my own blog once again.</description>
+    </item>
+
+  </channel>
+</rss>

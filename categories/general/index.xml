@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>general on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <link>https://hunleyd.github.io/categories/general/</link>
+    <description>Recent content in general on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 07 Feb 2019 07:24:43 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/categories/general/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The continuing adventures of Mom cutting the cord</title>
+      <link>https://hunleyd.github.io/posts/the-continuing-adventures-of-mom-cutting-the-cord/</link>
+      <pubDate>Thu, 07 Feb 2019 07:24:43 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/the-continuing-adventures-of-mom-cutting-the-cord/</guid>
+      <description>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving life.</description>
+    </item>
+
+    <item>
+      <title>Mom cuts the cord</title>
+      <link>https://hunleyd.github.io/posts/mom-cuts-the-cord/</link>
+      <pubDate>Thu, 31 May 2018 11:12:06 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/mom-cuts-the-cord/</guid>
+      <description>OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT.</description>
+    </item>
+
+    <item>
+      <title>Car(e) free in Columbus</title>
+      <link>https://hunleyd.github.io/posts/car-free-in-columbus/</link>
+      <pubDate>Mon, 05 Mar 2018 15:55:32 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/car-free-in-columbus/</guid>
+      <description>Last year, at the beginning of March, I turned in my 2014 Kia Optima LX at the end of its lease and decided to go &amp;lsquo;car free&amp;rsquo;.</description>
+    </item>
+
+    <item>
+      <title>Goodbye, Loui boy</title>
+      <link>https://hunleyd.github.io/posts/goodbye-loui-boy/</link>
+      <pubDate>Thu, 16 Feb 2017 08:35:19 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/goodbye-loui-boy/</guid>
+      <description>Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years.</description>
+    </item>
+
+    <item>
+      <title>Welcome to Cypheri</title>
+      <link>https://hunleyd.github.io/posts/welcome-to-cypheri/</link>
+      <pubDate>Sat, 01 Oct 2016 11:23:56 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/welcome-to-cypheri/</guid>
+      <description>I recently discovered the online game NationStates thanks to a Reddit thread and was intrigued.</description>
+    </item>
+
+    <item>
+      <title>Functional Blog Archives</title>
+      <link>https://hunleyd.github.io/posts/functional-blog-archives/</link>
+      <pubDate>Fri, 30 Sep 2016 23:30:19 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/functional-blog-archives/</guid>
+      <description>After an afternoon dicking around with Jekyll templates and Google searching, I&amp;rsquo;ve fixed up this site&amp;rsquo;s archive pages and tag cloud pages.</description>
+    </item>
+
+    <item>
+      <title>Making use of gists</title>
+      <link>https://hunleyd.github.io/posts/making-use-of-gists/</link>
+      <pubDate>Sun, 19 Jun 2016 15:42:19 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/making-use-of-gists/</guid>
+      <description>After stumbling upon an example of how to do so, I&amp;rsquo;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks.</description>
+    </item>
+
+    <item>
+      <title>Hello, eero</title>
+      <link>https://hunleyd.github.io/posts/hello_eero/</link>
+      <pubDate>Wed, 30 Mar 2016 14:00:25 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/hello_eero/</guid>
+      <description>I don&amp;rsquo;t normally back things on Indiegogo (I&amp;rsquo;m a Kickstarter snob), but I jumped all over the eero.</description>
+    </item>
+
+    <item>
+      <title>Flyover State</title>
+      <link>https://hunleyd.github.io/posts/flyover-state/</link>
+      <pubDate>Tue, 09 Feb 2016 16:59:24 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/flyover-state/</guid>
+      <description>Being a native of Ohio, I can assure you that I&amp;rsquo;ve heard every form of &amp;lsquo;flyover state&amp;rsquo; insult you could care to level at me.</description>
+    </item>
+
+    <item>
+      <title>Efficient, yet Creepy</title>
+      <link>https://hunleyd.github.io/posts/efficient-yet-creepy/</link>
+      <pubDate>Thu, 21 Jan 2016 18:30:00 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/efficient-yet-creepy/</guid>
+      <description>So I&amp;rsquo;m sitting here seting up a new Internet connected device I bought recently (more on it later) and I can&amp;rsquo;t seem to get it to setup properly.</description>
+    </item>
+
+  </channel>
+</rss>

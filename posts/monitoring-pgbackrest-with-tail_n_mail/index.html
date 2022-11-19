@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Monitoring pgBackRest with tail_n_mail</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Monitoring pgBackRest with tail_n_mail</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Sep 24, 2018,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+          <a href="/categories/howto/">Howto</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <p>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use <a href="https://bucardo.org/tail_n_mail/">tail_n_mail</a>, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.</p>
+<p>For reference, our <code>.tail_n_mail.conf</code> looks like this:</p>
+<pre tabindex="0"><code>## This file is automatically updated
+LOG_LINE_PREFIX: %t P%p
+EMAIL: you@gme.com
+MAILSUBJECT: HOST pgBackRest errors NUMBER
+
+INCLUDE: WARN:
+INCLUDE: ERROR:
+INCLUDE: FATAL:
+INCLUDE: PANIC:
+
+
+FILE1: /var/log/pgbackrest/pgbackrest.log
+</code></pre><p>You would need to change the <code>EMAIL</code> and <code>FILE1</code> and the rest should just work.</p>
+<p>To actually invoke the monitoring, simply add a <code>cron</code> entry that looks like:</p>
+<pre tabindex="0"><code>* * * * * /path/to/tail_n_mail ~/.tailnmail.conf --pgmode=0
+</code></pre><p>(Obviously, you should adjust the periodicity. I <strong>highly</strong> doubt you need to check every minute.)</p>
+<p>Once you’ve saved the <code>crontab</code>, you should be all good. If you doubt the setup, you can add <code>--mailzero</code> to the invocation to get an email even if everything is OK.</p>
+<p>See? Easy.</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

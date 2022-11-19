@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Installing pgBackRest on OSX</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Installing pgBackRest on OSX</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Jun 14, 2017,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+          <a href="/categories/osx/">Osx</a>
+
+          <a href="/categories/howto/">Howto</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <p>If you&rsquo;ve followed my previous posts (<a href="https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/">here</a> and <a href="https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a>), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don&rsquo;t really care about any of the data therein, but if you do, let me guide you to <a href="http://www.pgbackrest.org/">pgBackRest</a>.</p>
+<blockquote>
+<p>pgBackRest aims to be a simple, reliable backup and restore system that can seamlessly scale up to the largest databases and workloads.</p>
+</blockquote>
+<blockquote>
+<p>Instead of relying on traditional backup tools like tar and rsync, pgBackRest implements all backup features internally and uses a custom protocol for communicating with remote systems. Removing reliance on tar and rsync allows for better solutions to database-specific backup challenges. The custom remote protocol allows for more flexibility and limits the types of connections that are required to perform a backup which increases security.</p>
+</blockquote>
+<p>pgBackRest is written in Perl, but don&rsquo;t hold that against it. As of the 1.19 release, pgBackRest can now use S3 buckets as the storage backend. I <em>really</em> like pgBackRest and tend to use it for myself and customers over any of the other tools in the PostgreSQL ecosphere. So, let&rsquo;s get started by downloading the latest release from their site, and then installing it. For some reason, no one has added pgBackRest to Homebrew yet (someone, pls!) so let&rsquo;s do it the manual way:</p>
+<pre tabindex="0"><code>$ wget -o Downloads/pgbackrest-release-1.19.tar.gz https://github.com/pgbackrest/pgbackrest/archive/release/1.19.tar.gz
+$ tar xvf Downloads/pgbackrest-release-1.19.tar.gz
+$ cd pgbackrest-release-1.19
+$ sudo cp -r lib/pgBackRest /Library/Perl/5.18
+$ sudo find /Library/Perl/5.18/pgBackRest -type f -exec chmod 644 {} +
+$ sudo find /Library/Perl/5.18/pgBackRest -type d -exec chmod 755 {} +
+$ sudo mv bin/pgbackrest /usr/local/bin
+$ sudo chmod 755 /usr/local/bin/pgbackrest
+$ sudo mkdir -m 770 /var/log/pgbackrest
+$ sudo mkdir -m 770 /var/spool/pgbackrest
+$ sudo chown doug /var/{log,spool}/pgbackrest
+</code></pre><p>(Keep in mind that I already had Perl setup to connect to PostgreSQL for other uses. You might need to install <code>DBD::Pg</code>.)</p>
+<p>Now that pgBackRest is installed, let&rsquo;s configure it. First, we&rsquo;ll want to set some of the global properties that affect all pgBackRest operations:</p>
+<pre tabindex="0"><code>[global]
+log-level-console=info
+repo-s3-bucket=hunleyd-pgbackrest
+repo-s3-endpoint=s3.amazonaws.com
+repo-s3-key=XX
+repo-s3-key-secret=XXX
+repo-s3-region=us-east-2
+repo-type=s3
+retention-full=2
+start-fast=y
+</code></pre><p>As you can see, we set the following:</p>
+<ul>
+<li>force the log level for all console output to &lsquo;info&rsquo;</li>
+<li>define the S3 bucket we want to use</li>
+<li>define the S3 endpoint to connect to</li>
+<li>define our S3 key</li>
+<li>define our S3 secret key</li>
+<li>set which region our bucket is in</li>
+<li>tell pgBackRest that we&rsquo;re using S3 as the backend</li>
+<li>configure retention of full backups</li>
+<li>tell pgBackRest to issue a CHECKPOINT so backups can start right away instead of waiting for the next regular checkpoint</li>
+</ul>
+<p>Now, we need to tell pgBackRest which instance of PostgreSQL we want to backup and where to find it. Again, if you used my previous posts to install multiple versions via Homebrew, this should look familiar:</p>
+<pre tabindex="0"><code>[96]
+db-path=/usr/local/var/postgres/9.6
+db-port=5496
+repo-path=/96
+
+[95]
+db-path=/usr/local/var/postgres/9.5
+db-port=5495
+repo-path=/95
+
+[94]
+db-path=/usr/local/var/postgres/9.4
+db-port=5494
+repo-path=/94
+
+[93]
+db-path=/usr/local/var/postgres/9.3
+db-port=5493
+repo-path=/93
+
+[92]
+db-path=/usr/local/var/postgres/9.2
+db-port=5492
+repo-path=/92
+
+[91]
+db-path=/usr/local/var/postgres/9.1
+db-port=5491
+repo-path=/91
+
+[90]
+db-path=/usr/local/var/postgres/9.0
+db-port=5490
+repo-path=/90
+</code></pre><p>You can see for each pg cluster, we define:</p>
+<ul>
+<li>the path to the <code>$PGDATA</code> directory</li>
+<li>the port the cluster listens on</li>
+<li>and the path we want to store the backups in on our backend</li>
+</ul>
+<p>When you put this all together, we&rsquo;ll be connecting to an S3 bucket called, creatively enough, <code>hunleyd-pgbackrest</code> and then we will create a top-level directory (&lsquo;96&rsquo;, &lsquo;95&rsquo;, etc) to store each cluster&rsquo;s backups in.</p>
+<p>Now that we&rsquo;ve got our configuration complete, let&rsquo;s do an initial backup of one of the clusters. First, we have to create the appropriate directories and metadata on the backend:</p>
+<pre tabindex="0"><code>$ pgbackrest --stanza=92 --config $HOME/.config/pgbackrest/pgbackrest.conf stanza-create
+2017-06-14 14:03:46.643 P00   INFO: stanza-create command begin 1.19: --config=/Users/doug/.config/pgbackrest/pgbackrest.conf --db-path=/usr/local/var/postgres/9.2 --db-port=5492 --log-level-console=info --repo-path=/92 --repo-s3-bucket=hunleyd-pgbackrest --repo-s3-endpoint=s3.amazonaws.com --repo-s3-region=us-east-2 --repo-type=s3 --stanza=92
+2017-06-14 14:03:57.971 P00   INFO: stanza-create command end: completed successfully
+</code></pre><p>Then, we have pgBackRest verify that everything is properly setup. Note that this includes checking to ensure you tweaked <code>postgresql.conf</code> according to the directions on their site (I&rsquo;m not going to repeat them here):</p>
+<pre tabindex="0"><code>$ pgbackrest --stanza=92 --config $HOME/.config/pgbackrest/pgbackrest.conf check
+2017-06-14 14:04:17.991 P00   INFO: check command begin 1.19: --config=/Users/doug/.config/pgbackrest/pgbackrest.conf --db-path=/usr/local/var/postgres/9.2 --db-port=5492 --log-level-console=info --repo-path=/92 --repo-s3-bucket=hunleyd-pgbackrest --repo-s3-endpoint=s3.amazonaws.com --repo-s3-region=us-east-2 --repo-type=s3 --stanza=92
+2017-06-14 14:04:32.576 P00   INFO: WAL segment 000000010000000000000067 successfully stored in the archive at &#39;/92/archive/92/9.2-1/0000000100000000/000000010000000000000067-24adde40a35b1f3ed17f545153f0e01c44b0ada5.gz&#39;
+2017-06-14 14:04:32.576 P00   INFO: check command end: completed successfully
+</code></pre><p>And since that all worked, we can take our first actual backup:</p>
+<pre tabindex="0"><code>$ pgbackrest --stanza=92 --config $HOME/.config/pgbackrest/pgbackrest.conf backup
+2017-06-14 14:10:44.378 P00   INFO: backup command begin 1.19: --config=/Users/doug/.config/pgbackrest/pgbackrest.conf --db-path=/usr/local/var/postgres/9.2 --db-port=5492 --log-level-console=info --repo-path=/92 --repo-s3-bucket=hunleyd-pgbackrest --repo-s3-endpoint=s3.amazonaws.com --repo-s3-region=us-east-2 --repo-type=s3 --retention-full=2 --stanza=92 --start-fast
+WARN: no prior backup exists, incr backup has been changed to full
+2017-06-14 14:10:49.435 P00   INFO: execute exclusive pg_start_backup() with label &#34;pgBackRest backup started at 2017-06-14 14:10:45&#34;: backup begins after the requested immediate checkpoint completes
+2017-06-14 14:10:49.846 P00   INFO: backup start archive = 000000010000000000000068, lsn = 0/68000020
+2017-06-14 14:10:57.090 P01   INFO: backup file /usr/local/var/postgres/9.2/pg_log/2017/week-16/index.html (1.3MB, 3%) checksum dcc73afe15f48863eb019b9cfbb1e24cbd2a4d7f
+&lt;snip&gt;
+2017-06-14 14:24:23.277 P01   INFO: backup file /usr/local/var/postgres/9.2/base/1/12040 (0B, 100%)
+2017-06-14 14:24:23.964 P01   INFO: backup file /usr/local/var/postgres/9.2/base/1/12031 (0B, 100%)
+2017-06-14 14:24:24.747 P01   INFO: backup file /usr/local/var/postgres/9.2/base/1/12021 (0B, 100%)
+2017-06-14 14:24:24.778 P00   INFO: full backup size = 38.1MB
+2017-06-14 14:24:24.778 P00   INFO: execute exclusive pg_stop_backup() and wait for all WAL segments to archive
+2017-06-14 14:24:41.428 P00   INFO: backup stop archive = 000000010000000000000068, lsn = 0/68000178
+2017-06-14 14:24:45.320 P00   INFO: new backup label = 20170614-141045F
+2017-06-14 14:24:47.844 P00   INFO: backup command end: completed successfully
+2017-06-14 14:24:47.920 P00   INFO: expire command begin 1.19: --config=/Users/doug/.config/pgbackrest/pgbackrest.conf --log-level-console=info --repo-path=/92 --repo-s3-bucket=hunleyd-pgbackrest --repo-s3-endpoint=s3.amazonaws.com --repo-s3-region=us-east-2 --repo-type=s3 --retention-archive=2 --retention-full=2 --stanza=92
+2017-06-14 14:24:50.496 P00   INFO: full backup total &lt; 2 - using oldest full backup for 9.2-1 archive retention
+2017-06-14 14:24:51.796 P00   INFO: expire command end: completed successfully
+</code></pre><p>Neat!</p>
+<p>Now, let&rsquo;s check our S3 bucket, shall we?</p>
+<p><img src="/images/posts/s3_1.png" alt="s3_1"></p>
+<p>You can see here the top-level contents of my <code>hunleyd-pgbackrest</code> bucket. As stated before, each cluster gets its own sub-dir. Since we just backed up the &lsquo;92&rsquo; cluster, let&rsquo;s look inside it&rsquo;s dir.</p>
+<p><img src="/images/posts/s3_2.png" alt="s3_2"></p>
+<p>You can see that pgBackRest has created as directory for the WALs to be stored in whenever <code>archive_command</code> fires and another directory for the actual cluster backups. Peeking into the <code>archive</code> dir, we see:</p>
+<p><img src="/images/posts/s3_3.png" alt="s3_3"></p>
+<p>This shows us some metadata, and shows that pgBackRest creates a directory for each timeline of the cluster. Since we are on timeline 1 in our 92 cluster, we have a <code>9.2-1</code> directory inside of which, we find:</p>
+<p><img src="/images/posts/s3_4.png" alt="s3_4"></p>
+<p>Our archived WALs have been compressed and uploaded. Hurray!</p>
+<p>Now, let&rsquo;s check inside the <code>backup</code> directory:</p>
+<p><img src="/images/posts/s3_5.png" alt="s3_5"></p>
+<p>We can see some metadata, and we can see a folder named the same as the backup label that was used when we ran our full backup. Inside that folder, we can see:</p>
+<p><img src="/images/posts/s3_6.png" alt="s3_6"></p>
+<p>Hey look, more metadata! And another folder! :) So, let&rsquo;s dive into the <code>pg_data</code> folder where we see:</p>
+<p><img src="/images/posts/s3_7.png" alt="s3_7"></p>
+<p>Holy crap! It&rsquo;s a basebackup of our <code>$PGDATA</code> data directory. And all the files have been nicely compressed for us. Rock on, pgBackRest!</p>
+<p>And just in case you wanted to see the current backup catalog:</p>
+<pre tabindex="0"><code>$ pgbackrest --stanza=92 --config $HOME/.config/pgbackrest/pgbackrest.conf info
+stanza: 92
+    status: ok
+    wal archive min/max: 000000010000000000000068 / 000000010000000000000068
+
+    full backup: 20170614-141045F
+        timestamp start/stop: 2017-06-14 14:10:45 / 2017-06-14 14:24:43
+        wal start/stop: 000000010000000000000068 / 000000010000000000000068
+        database size: 38.1MB, backup size: 38.1MB
+        repository size: 5.6MB, repository backup size: 5.6MB
+</code></pre><p>(look at that compression!)</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

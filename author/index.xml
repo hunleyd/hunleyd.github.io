@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Authors on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <link>https://hunleyd.github.io/author/</link>
+    <description>Recent content in Authors on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://hunleyd.github.io/author/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Doug Hunley</title>
+      <link>https://hunleyd.github.io/author/hunleyd/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/author/hunleyd/</guid>
+      <description>Born at the ass end of 1973, Douglas lived a (mostly) quiet life in and around the village of Weston, OH until moving to Columbus, OH to attend college in 1993.</description>
+    </item>
+
+  </channel>
+</rss>

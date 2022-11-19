@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>pgBouncer and auth pass-thru</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>pgBouncer and auth pass-thru</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Aug 7, 2018,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <p>I&rsquo;ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it&rsquo;s <code>auth_file</code>. After the most recent such inquiry (hi Richard!) I decided I&rsquo;d write this&quot;post&quot;to
+hopefully make it clearer how to use &lsquo;pass-thru auth&rsquo; and avoid maintaining your users and their passwords in an external file. So let&rsquo;s see what this takes, shall we?</p>
+<p>First, install pgBouncer as per your OS (<code>yum</code>, <code>apt</code>, <code>brew</code>, etc):</p>
+<pre tabindex="0"><code>$ brew install pgbouncer
+Updating Homebrew...
+==&gt; Auto-updated Homebrew!
+Updated 1 tap (homebrew/core).
+==&gt; Updated Formulae
+&lt;snip&gt;
+==&gt; Downloading https://homebrew.bintray.com/bottles/pgbouncer-1.8.1.high_sierra
+######################################################################## 100.0%
+==&gt; Pouring pgbouncer-1.8.1.high_sierra.bottle.tar.gz
+==&gt; Caveats
+The config file: /usr/local/etc/pgbouncer.ini is in the &#34;ini&#34; format and you
+will need to edit it for your particular setup. See:
+https://pgbouncer.github.io/config.html
+
+The auth_file option should point to the /usr/local/etc/userlist.txt file which
+can be populated by the /usr/local/opt/pgbouncer/bin/mkauth.py script.
+
+To have launchd start pgbouncer now and restart at login:
+  brew services start pgbouncer
+Or, if you do not want/need a background service you can just run:
+  pgbouncer -q /usr/local/etc/pgbouncer.ini
+==&gt; Summary
+🍺  /usr/local/Cellar/pgbouncer/1.8.1: 17 files, 399.9KB
+</code></pre><p>Great, so now we have pgBouncer installed.</p>
+<p>To make life easier on ourselves, we&rsquo;re going to <strong>temporarily</strong> enable trusted local socket connections in our <code>pg_hba.conf</code>:</p>
+<pre tabindex="0"><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# &#34;local&#34; is for Unix domain socket connections only
+local   all             all trust
+</code></pre><p>Right now, this is the only line in my <code>pg_hba.conf</code>. Let&rsquo;s SIGHUP the postmaster so it takes affect:</p>
+<pre tabindex="0"><code>$ pg_ctl -D $PGDATA reload
+server signaled
+</code></pre><p>And test it:</p>
+<pre tabindex="0"><code>$ unset PGPASSWORD ; psql -U doug -d doug -c &#34;select now();&#34;
+┌───────────────────────────────┐
+│              now              │
+├───────────────────────────────┤
+│ 2018-08-07 13:19:06.343245-04 │
+└───────────────────────────────┘
+(1 row)
+
+Time: 1.959 ms
+</code></pre><p>OK, we can connect without issue.</p>
+<p>Let&rsquo;s configure pgBouncer now. As per the output above, I need to edit <code>/usr/local/etc/pgbouncer.ini</code> but yours is probably in plain old <code>/etc</code>:</p>
+<pre tabindex="0"><code>[databases]
+
+; any db over Unix socket
+* =
+
+[pgbouncer]
+
+logfile = /Users/doug/pgbouncer.log
+pidfile = /Users/doug/pgbouncer.pid
+
+; IP address or * which means all IPs
+listen_addr = 127.0.0.1
+listen_port = 6432
+
+unix_socket_dir = /tmp
+
+; any, trust, plain, crypt, md5, cert, hba, pam
+auth_type = trust
+auth_file = /Users/doug/userlist.txt
+
+admin_users = doug
+
+stats_users = doug
+
+pool_mode = transaction
+
+server_reset_query = DISCARD ALL
+
+
+max_client_conn = 100
+
+default_pool_size = 20
+</code></pre><p>As you can see, we&rsquo;re gonna pass connections to any db back to the postmaster via a local socket. I put the logs in my <code>$HOME</code> for ease of use. I put the <code>auth_file</code> in my <code>$HOME</code> as well. Then I set myself up as both an admin and stats
+user. I changed the mode into <strong>transaction</strong> which is <em>usually</em> the mode you want. Now, I add myself to the auth_file:</p>
+<pre tabindex="0"><code>$ echo &#39;&#34;doug&#34; &#34;md5540094bd8172cd963fdfa773fe44b488&#34;&#39; &gt; userlist.txt
+</code></pre><p>(NOTE: I did a select on pg_shadow as a SUPERUSER to get these values.)</p>
+<p>And start pgBouncer:</p>
+<pre tabindex="0"><code>$ pgbouncer /usr/local/etc/pgbouncer.ini
+2018-08-07 13:43:46.453 92057 LOG File descriptor limit: 7168 (H:-1), max_client_conn: 90, max fds possible: 100
+2018-08-07 13:43:46.455 92057 LOG listening on 127.0.0.1:6432
+2018-08-07 13:43:46.455 92057 LOG listening on unix:/tmp/.s.PGSQL.6432
+2018-08-07 13:43:46.455 92057 LOG process up: pgbouncer 1.8.1, libevent 2.1.8-stable (kqueue), adns: evdns2, tls: OpenSSL 1.0.2o  27 Mar 2018
+</code></pre><p>Now, we see if we can connect to pgBouncer&rsquo;s internal db:</p>
+<pre tabindex="0"><code>$ psql -h 127.0.0.1 -p 6432 -d pgbouncer -X
+psql (10.4, server 1.8.1/bouncer)
+Type &#34;help&#34; for help.
+</code></pre><pre tabindex="0"><code>pgbouncer=# show pools;
+ database  |   user    | cl_active | cl_waiting | sv_active | sv_idle | sv_used | sv_tested | sv_login | maxwait | maxwait_us | pool_mode
++++++++++--++++++++++--++++++++++--+++++++++++++++++++++++--++++++++++++++++++++++++++++++--++++++++++-+++++++++++++++++++++++++++++++++--
+ pgbouncer | pgbouncer |         1 |          0 |         0 |       0 |       0 |         0 |        0 |       0 |          0 | statement
+(1 row)
+</code></pre><p>Success!</p>
+<p>Now, can we connect to one of our PostgreSQL dbs through pgBouncer:</p>
+<pre tabindex="0"><code>$ psql -h 127.0.0.1 -p 6432 -d doug
+psql (10.4)
+Type &#34;help&#34; for help.
+
+(doug@127.0.0.1:6432/doug[92825]) #
+</code></pre><p>Huzzah!</p>
+<p>We will now alter <code>pgbouncer.ini</code> and set <code>auth_type = md5</code> and edit <code>pg_hba.conf</code> to use md5 as well to make sure we&rsquo;re not passing around plaintext passwords. Our retest looks like:</p>
+<pre tabindex="0"><code>$ grep ^local $PGDATA/pg_hba.conf
+local   all             all md5
+
+$ pg_ctl -D $PGDATA reload
+server signaled
+doug@ReturnOfTheMac ~&gt; psql -h 127.0.0.1 -p 6432 -d doug
+Password:
+</code></pre><pre tabindex="0"><code>psql (10.4)
+Type &#34;help&#34; for help.
+
+(doug@127.0.0.1:6432/doug[97966]) \q
+</code></pre><pre tabindex="0"><code>$ psql -h 127.0.0.1 -p 6432 -d pgbouncer -X
+Password:
+</code></pre><pre tabindex="0"><code>psql (10.4, server 1.8.1/bouncer)
+Type &#34;help&#34; for help.
+pgbouncer= \q
+</code></pre><p>Which, as you can see, we were now password prompted both times!</p>
+<p>Now, that we know it all works, we can go about changing things to not expose users through
+the <code>auth_file</code>. First, we&rsquo;ll create a <code>pgbouncer</code> user on our db, then we will
+create a SECURITY DEFINER function will allow the <code>pgbouncer</code> user to
+(essentially) &lsquo;sudo&rsquo; as a superuser to look at the <code>pg_shadow</code> table, and finally
+we will ensure only our <code>pgbouncer</code> user can execute that function:</p>
+<pre tabindex="0"><code>(doug@127.0.0.1:6432/doug[92825]) # CREATE ROLE pgbouncer ENCRYPTED PASSWORD &#39;secret&#39;;
+CREATE ROLE
+Time: 4.102 ms
+(doug@127.0.0.1:6432/doug[92825]) # GRANT CONNECT ON DATABASE doug TO pgbouncer;
+GRANT
+Time: 13.531 ms
+(doug@[local]:5432/doug[92825]) # ALTER ROLE pgbouncer LOGIN;
+ALTER ROLE
+Time: 6.457 ms
+(doug@127.0.0.1:6432/doug[92825]) # CREATE OR REPLACE FUNCTION public.user_lookup(in i_username text, out uname text, out phash text)
+[more] - &gt; RETURNS record AS $$
+[more] $ &gt; BEGIN
+[more] $ &gt;     SELECT usename, passwd FROM pg_catalog.pg_shadow
+[more] $ &gt;     WHERE usename = i_username INTO uname, phash;
+[more] $ &gt;     RETURN;
+[more] $ &gt; END;
+[more] $ &gt; $$ LANGUAGE plpgsql SECURITY DEFINER;
+CREATE FUNCTION
+Time: 21.219 ms
+(doug@127.0.0.1:6432/doug[92825]) # REVOKE ALL ON FUNCTION public.user_lookup(text) FROM public, pgbouncer;
+REVOKE
+Time: 7.330 ms
+(doug@127.0.0.1:6432/doug[92825]) # GRANT EXECUTE ON FUNCTION public.user_lookup(text) TO pgbouncer;
+GRANT
+Time: 7.572 ms
+</code></pre><p>(NOTE: Astute readers will note I&rsquo;m connected as &lsquo;doug&rsquo; to the db. This works cause in my setup that is a SUPERUSER. You should probably use the &lsquo;postgres&rsquo; account.)</p>
+<p>And, let&rsquo;s tell PgBouncer to use this function:</p>
+<pre tabindex="0"><code>$ grep ^auth /usr/local/etc/pgbouncer.ini
+auth_type = md5
+auth_file = /Users/doug/userlist.txt
+auth_user = pgbouncer
+auth_query = SELECT * FROM public.user_lookup($1);
+</code></pre><p>And let&rsquo;s edit our <code>auth_file</code> to only contain the <code>pgbouncer</code> user&rsquo;s info:</p>
+<pre tabindex="0"><code>doug@ReturnOfTheMac ~&gt; cat userlist.txt
+&#34;pgbouncer&#34; &#34;md509d12ff67352814e4c467c7f55a3a1d7&#34;
+</code></pre><p>Restart pgBouncer, and let&rsquo;s recheck:</p>
+<pre tabindex="0"><code>doug@ReturnOfTheMac ~&gt; psql -h 127.0.0.1 -p 6432 -d doug                      2
+Password:
+</code></pre><pre tabindex="0"><code>psql (10.4)
+Type &#34;help&#34; for help.
+
+(doug@127.0.0.1:6432/doug[7076]) # select now();
+┌───────────────────────────────┐
+│              now              │
+├───────────────────────────────┤
+│ 2018-08-07 14:43:45.938919-04 │
+└───────────────────────────────┘
+(1 row)
+
+Time: 0.438 ms
+</code></pre><p>It works! But what about the pgBouncer internal db?</p>
+<pre tabindex="0"><code>$ psql -h 127.0.0.1 -p 6432 -d pgbouncer
+psql: ERROR:  No such user: doug
+</code></pre><p>Well, that makes sense. The <code>auth_file</code> only has a <code>pgbouncer</code> user. So, let&rsquo;s edit the <code>pgbouncer.ini</code>:</p>
+<pre tabindex="0"><code>$ grep &#39;_users&#39; /usr/local/etc/pgbouncer.ini
+admin_users = pgbouncer
+stats_users = pgbouncer
+</code></pre><p>Retart pgBouncer once more and check:</p>
+<pre tabindex="0"><code>doug@ReturnOfTheMac ~&gt; psql -h 127.0.0.1 -p 6432 -d pgbouncer -U pgbouncer -X
+Password for user pgbouncer:
+</code></pre><pre tabindex="0"><code>psql (10.4, server 1.8.1/bouncer)
+Type &#34;help&#34; for help.
+
+pgbouncer=# show clients;
+ type |   user    | database  | state  |   addr    | port  | local_addr | local_port |    connect_time     |    request_time     | wait | wait_us |      ptr       | link | remote_pid | tls
+++++++++++++++++--++++++++++--+++++++--++++++++++--+++++++-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-++++++++++++++++++++++++--
+ C    | pgbouncer | pgbouncer | active | 127.0.0.1 | 54191 | 127.0.0.1  |       6432 | 2018-08-07 14:48:03 | 2018-08-07 14:48:06 |    0 |       0 | 0x7fa082005010 |      |          0 |
+(1 row)
+</code></pre><p>And we&rsquo;re golden!</p>
+<p>You can connect to pgBouncer internally using the <code>pgbouncer</code> user, and you can connect to our normal PostgreSQL db as any valid user and it uses our function to do the auth!</p>
+<p>To complete this setup, we&rsquo;re gonna move PostgreSQL to port <code>5433</code> and pgBouncer to port <code>5432</code>:</p>
+<pre tabindex="0"><code>$ grep port /usr/local/etc/pgbouncer.ini
+listen_port = 5432
+doug@ReturnOfTheMac ~&gt; grep port $PGDATA/postgresql.conf
+port = 5433				# (change requires restart)
+</code></pre><p>So now, if someone tries to connect to our PostgreSQL on the default TCP/IP port, it goes through PgBouncer transparently (and then pgBouncer connects locally via a socket). Our users/apps are none the wiser, and us DBAs can always <code>ssh</code> into the box and connect directly to PostgreSQL via socket if needed. And we&rsquo;re not exposing any user/app passwords in a text file on the OS.</p>
+<p>WIN WIN</p>
+<p>One final note: this is only working for the &lsquo;doug&rsquo; database currently. If I wanted this to also work for another database, say &lsquo;postgres&rsquo; or &lsquo;prod_app&rsquo; then I would need to GRANT CONNECT on those dbs to &lsquo;pgbouncer&rsquo; <strong>and</strong> would need to create my function in them as well.</p>
+<p>☮️</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

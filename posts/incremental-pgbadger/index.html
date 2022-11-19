@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Incremental pgBadger</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Incremental pgBadger</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Oct 26, 2016,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+          <a href="/categories/howto/">Howto</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <img src="http://www.darold.net/img/pgbadger_logo.png" class="lleader" />
+<p>You&rsquo;re probably already running <a href="https://dalibo.github.io/pgbadger/index.html">pgBadger</a> to monitor your PostgreSQL logs. However, you&rsquo;re probably <em>not</em> running it incrementally throughout the day. Most likely, you&rsquo;ve setup a <code>cron.daily</code> job that runs pgBadger against yesterday&rsquo;s log(s). And that&rsquo;s great. Except when you get the dreaded &ldquo;what just happened on the db?&rdquo; email. Are you going to wait until tonight&rsquo;s normal run of pgBadger to see what happened? Are you going to run a &lsquo;one off&rsquo; pgBadger against today&rsquo;s logfile and wait for it to process the <em>entire</em> log? Or are you going to copy the log off somewhere, edit it to cut it down, and <em>then</em> run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?</p>
+<p>No, most likely you&rsquo;re going to look at your actual monitoring tool that does real-time monitoring of your db and try to figure things out from there. You <em>are</em> running some kind of db monitoring tool, right?</p>
+<p>However, let&rsquo;s say that for, uh, reasons, you only have pgBadger at your disposal <em>right this instant</em>. Well, if you were making use of pgBadger&rsquo;s <em>incremental mode</em> you could simply fire off the next scheduled run and it would only process those log entries that were new since the last run. So, for example, if you had a <code>cron.hourly</code> run of pgBadger it would only process the last hour&rsquo;s worth of entries to update today&rsquo;s report. No waiting to process multiple hours of info that you don&rsquo;t need, no editing of the logfile to remove things outside the window you care about, just run it and done.</p>
+<p>Sounds nice, right? So let&rsquo;s set this up shall we? I&rsquo;m assuming you&rsquo;ve already setup <code>postgresql.conf</code> appropriately, but if you haven&rsquo;t please go that first. The pgBadger website has good documentation on how to do so. According to the docs:</p>
+<pre tabindex="0"><code>-I | --incremental     : use incremental mode, reports will be generated by days in a separate directory, --outdir must be set.
+</code></pre><p>is how we turn on incremental mode. You&rsquo;ll note that we also need to specify an output dir:</p>
+<pre tabindex="0"><code>-O | --outdir path     : directory where out file must be saved
+</code></pre><p>I usually stick the pgBadger output into the <code>pg_log</code> directory. In my mind, having the logs and the report on the logs next to each makes sense, but feel free to stick yours wherever.</p>
+<p>Finally, we probably don&rsquo;t need pgBadger reports that are too old, and the docs say we can cull the cruft automatically:</p>
+<pre tabindex="0"><code>-R | --retention N     : number of week to keep in incremental mode. Default to 0, disabled. Used to set the number of weel to keep in output directory. Older weeks and days directory are automatically removed.
+</code></pre><p>(Ignore the typo, it&rsquo;s that way in the code)</p>
+<p>On my servers, I have PostgreSQL setup to log into a different file for each day of the week, with automatic rotation and truncation:</p>
+<pre tabindex="0"><code>log_filename = &#39;postgresql-%a.log&#39;
+log_truncate_on_rotation = on
+log_rotation_age = 1d
+</code></pre><p>so my <code>cron.hourly</code> pgBadger looks like:</p>
+<pre tabindex="0"><code>pgbadger \
+    -I \
+    -O $PGDATA/pg_log \
+    -R 12 \
+    -q \
+    $PGDATA/pg_log/postgresql-$(date --date yesterday +%a) \
+    $PGDATA/pg_log/postgresql-$(date +%a)
+</code></pre><p>which as you can see always feeds both yesterday&rsquo;s and today&rsquo;s log into pgBadger (since the cron runs at 2300 and then again at 0000, we need yesterday&rsquo;s log to catch that last hour). Since we&rsquo;re running in incremental mode, it knows <em>at every run</em> where it left off in the files the last time and does a <code>seek</code> to skip over that data. This cuts the run time down <em>significantly</em> even with the PostgreSQL logging <em>cranked up</em>. You can see it here:</p>
+<pre tabindex="0"><code>...
+DEBUG: Starting reading file postgresql-Wed.log...
+DEBUG: Start parsing at offset 412677131 of file postgresql-Wed.log to 433543395
+[======================&gt;  ] Parsed 413815537 bytes of 433543395 (95.45%), queries
+...
+</code></pre><p>As you can see, it jumps right in at 95% of the file and only processes the newest 5%. In fact, this takes a mere 20 seconds:</p>
+<pre tabindex="0"><code>statistics gathering took:20 wallclock secs (19.44 usr +  0.17 sys = 19.61 CPU)
+</code></pre><p>on my overloaded Macbook!</p>
+<p>So there you have it. Not counting the time it takes you to <code>ssh</code> to your server, it would have taken all of <em>20 seconds</em> to have an updated report of what just happened on your database!</p>
+<p>Keep in mind, this is also with a <em>single thread</em>. pgBadger has the ability to run multi-threaded. See the <code>--help</code> for details.</p>
+<p>Enjoy!</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

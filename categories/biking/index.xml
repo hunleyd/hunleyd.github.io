@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>biking on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <link>https://hunleyd.github.io/categories/biking/</link>
+    <description>Recent content in biking on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 03 Oct 2016 13:30:58 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/categories/biking/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linka</title>
+      <link>https://hunleyd.github.io/posts/linka/</link>
+      <pubDate>Mon, 03 Oct 2016 13:30:58 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/linka/</guid>
+      <description>My Linka smart bike lock from Kickstarter showed up today. Holy Hell is this thing solid and hefty!</description>
+    </item>
+
+  </channel>
+</rss>

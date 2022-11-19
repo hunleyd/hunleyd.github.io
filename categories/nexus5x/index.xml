@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>nexus5x on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <link>https://hunleyd.github.io/categories/nexus5x/</link>
+    <description>Recent content in nexus5x on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 24 Apr 2016 22:18:56 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/categories/nexus5x/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Smart Lock on Android N DP2</title>
+      <link>https://hunleyd.github.io/posts/smart-lock-on-android-n-dp2/</link>
+      <pubDate>Sun, 24 Apr 2016 22:18:56 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/smart-lock-on-android-n-dp2/</guid>
+      <description>As mentioned in my previous post I&amp;rsquo;ve stumbled across two issues with the 2nd Developer Preview of Android N.</description>
+    </item>
+
+    <item>
+      <title>Now on Tap on Android N DP2</title>
+      <link>https://hunleyd.github.io/posts/now-on-tap-android-n-dp2/</link>
+      <pubDate>Sun, 24 Apr 2016 21:53:06 +0000</pubDate>
+
+      <guid>https://hunleyd.github.io/posts/now-on-tap-android-n-dp2/</guid>
+      <description>Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program.</description>
+    </item>
+
+  </channel>
+</rss>

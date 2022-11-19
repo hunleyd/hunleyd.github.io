@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Apr 5, 2018,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+          <a href="/categories/howto/">Howto</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <p>I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of <code>pglogical</code> and some planning actually made it rather straightforward. While there&rsquo;s nothing new or original in this post, I still felt compelled to write it up both for posterity&rsquo;s sake and for anyone else that might find the info useful as an example in their own endeavors.</p>
+<p><code>pglogical</code> is a logical replication system implemented entirely as a PostgreSQL extension. Fully integrated, it requires no triggers or external programs. This makes it faster than Slony, Londiste, et al. It is also (roughly) the basis upon which logical replication in Pg 10 core is built.</p>
+<h3 id="installing-pglogical">Installing pglogical</h3>
+<p><code>pglogical</code> is available from 2ndQuadrant in both a YUM repository for RedHat-based distros and in an APT repository for Debian-based distros. It will need to be installed on both the source (old Pg version) and destination servers (new Pg version).</p>
+<p>The instructions for installing their repo and the needed packages can be found <a href="https://www.2ndquadrant.com/en/resources/pglogical/pglogical-installation-instructions/">here</a>.</p>
+<h3 id="configuring-pglogical">Configuring pglogical</h3>
+<h4 id="tweaking-the-cluster-config">Tweaking the cluster config</h4>
+<p>You will need to adjust the <code>postgresql.conf</code> file to accommodate <code>pglogical</code>. On both the source <em>and</em> destination servers, do the following:</p>
+<pre tabindex="0"><code>$ echo &#34;include &#39;pglogical.conf&#39;&#34; &gt;&gt; $PGDATA/postgresql.conf
+$ echo &#34;wal_level = &#39;logical&#39;&#34; &gt;&gt; $PGDATA/pglogical.conf
+$ echo &#34;max_worker_processes = 10&#34; &gt;&gt; $PGDATA/pglogical.conf
+$ echo &#34;max_replication_slots = 10&#34; &gt;&gt; $PGDATA/pglogical.conf
+$ echo &#34;max_wal_senders = 10&#34; &gt;&gt; $PGDATA/pglogical.conf
+$ echo &#34;shared_preload_libraries = &#39;pglogical&#39;&#34; &gt;&gt; $PGDATA/pglogical.conf
+</code></pre><p>NOTE: If you already have one or more values in <code>shared_preload_libraries</code>, simply append <code>pglogical</code> to the list of values already there.</p>
+<h4 id="ensure-the-presence-of-pks">Ensure the presence of PKs</h4>
+<p>Logical replication doesn&rsquo;t work without primary keys. Identify all tables that do not have one:</p>
+<pre tabindex="0"><code>SELECT
+  n.nspname as schema,
+  c.relname as table
+FROM
+  pg_class c
+JOIN
+  pg_namespace n
+ON n.oid = c.relnamespace
+WHERE
+  c.relkind = &#39;r&#39;
+AND NOT EXISTS (
+  SELECT 1
+  FROM pg_constraint con
+  WHERE con.conrelid = c.oid
+  AND con.contype = &#39;p&#39;
+)
+AND n.nspname &lt;&gt; ALL (
+  ARRAY [
+    &#39;pg_catalog&#39;,
+    &#39;sys&#39;,
+    &#39;dbo&#39;,
+    &#39;information_schema&#39;
+  ]
+);
+</code></pre><h4 id="create-the-pglogical-extension">Create the pglogical extension</h4>
+<p>On both the source <em>and</em> destination Pg instances, create the <code>pglogical</code> extension <em>in every database you wish to replicate</em>:</p>
+<pre tabindex="0"><code>CREATE EXTENSION pglogical;
+</code></pre><p>NOTE: On Pg 9.4 <strong>only</strong> you will need to <code>CREATE EXTENSION pglogical_origin;</code> FIRST.</p>
+<h3 id="running-pglogical">Running pglogical</h3>
+<h4 id="ensure-global-objects-are-copied">Ensure global objects are copied</h4>
+<p>The <code>pglogical</code> tool runs at the database level which means that global objects like roles are <strong>not</strong> copied. Therefore, you need to ensure these objects are created yourself.</p>
+<p>On the source Pg server:</p>
+<pre tabindex="0"><code>$ pg_dumpall -g -f globals.sql
+</code></pre><p>Then copy <code>globals.sql</code> to the destination server and run:</p>
+<pre tabindex="0"><code>$ psql -f globals.sql
+</code></pre><h4 id="prep-the-destination-schema">Prep the destination schema</h4>
+<p>At this time, <code>pglogical</code> doesn&rsquo;t replicate DDL, so it is necessary to ensure that both the source and destination have matching schema object definitions before attempting to replicate.</p>
+<p>As such, for each source database that you want to replicate, you need to run a &lsquo;schema only&rsquo; dump:</p>
+<pre tabindex="0"><code>$ pg_dump -Fc -s -f dbname_schema.dmp dbname
+</code></pre><p>Now copy the <code>dbname_schema.dmp</code> file(s) to the destination server, and run for each database:</p>
+<pre tabindex="0"><code>$ pg_restore -d dbname dbname_schema.dmp
+</code></pre><h4 id="create-a-replication-user">Create a replication user</h4>
+<p>We&rsquo;ll need a user that has the <code>replication</code> permission for this all to work, so let&rsquo;s create one:</p>
+<pre tabindex="0"><code>CREATE ROLE pglogical LOGIN REPLICATION SUPERUSER ENCRYPTED PASSWORD &#39;secret&#39;;
+</code></pre><p>Do this on <strong>both</strong> the source and destination Pg instances.</p>
+<p>Tweak the <code>pg_hba.conf</code> on <strong>both</strong> the source and destination Pg instances to allow the replication user to connect:</p>
+<pre tabindex="0"><code>local  replication  pglogical  trust
+host   replication  pglogical  0.0.0.0/0  md5
+local  dbname       pglogical  trust
+host   dbname       pglogical  0.0.0.0/0  md5
+</code></pre><p>NOTE: Make sure to edit <code>0.0.0.0/0</code> to match your actual CIDR or IP address and <code>dbname</code> to match the db you wish to replicate.</p>
+<h4 id="create-your-publication">Create your publication</h4>
+<p>Now, we&rsquo;re ready to actually setup and start the replication. First, we need to SIGHUP the postmaster so it sees all the config changes we made on <strong>both</strong> the source and target Pg instances:</p>
+<pre tabindex="0"><code>$ pg_ctl -D $(ps -efw|grep -- &#34;[p]ost.*-D&#34;|cut -d\- -f2|cut -d&#34; &#34; -f2) reload
+</code></pre><p>On the <strong>source</strong> Pg instance, we need to create a publication to &lsquo;push&rsquo; the data to the new instance:</p>
+<pre tabindex="0"><code>SELECT pglogical.create_node(node_name := &#39;dbname_provider&#39;, dsn := &#39;host=127.0.0.1 port=5432 dbname=test user=pglogical&#39;);
+</code></pre><p>Adjust the <code>port=</code> and <code>dbname=</code> parameters to match your <strong>source</strong> Pg instance. If replicating more than one database, repeat this command for each database, changing <code>dbname</code> and <code>dbname_provider</code> accordingly.</p>
+<h4 id="add-your-tables-to-the-publication">Add your tables to the publication</h4>
+<p>Now that we have a publication channel, we need content to publish. Let&rsquo;s add that now:</p>
+<p>1: Add all your tables:</p>
+<pre tabindex="0"><code>SELECT pglogical.replication_set_add_all_tables(&#39;default&#39;, &#39;{public}&#39;::text[]);
+</code></pre><p>2: Add all your sequences:</p>
+<pre tabindex="0"><code>SELECT pglogical.replication_set_add_all_sequences(set_name := &#39;default&#39;, schema_names := &#39;{public}&#39;::text[], synchronize_data := true );
+</code></pre><p>Obviously, you should change <code>public</code> in both the above if you are using a different schema for your objects. If you are using multiple schemas, simply repeat the above and change <code>public</code> appropriately.</p>
+<p>NOTE: The <code>nextval</code> of sequences will be synced every 60-70s roughly.</p>
+<h4 id="create-your-subscription">Create your subscription</h4>
+<p>Now that we have a publication channel and its content defined, we need to setup a subscriber on the <strong>target</strong> Pg instance to consume the channel:</p>
+<pre tabindex="0"><code>SELECT pglogical.create_node(node_name := &#39;subscriber&#39;, dsn := &#39;host=127.0.0.1 port=5432 dbname=test user=pglogical&#39;);
+</code></pre><p>Adjust the <code>dbname=</code> parameter to match your <strong>target</strong> Pg instance. If replicating more than one database, repeat this command for each database.</p>
+<p>Now, tell the subscriber what to subscribe to:</p>
+<pre tabindex="0"><code>SELECT pglogical.create_subscription(subscription_name := &#39;subscription&#39;, provider_dsn := &#39;host=172.28.173.18 port=5432 dbname=test user=pglogical&#39;, replication_sets := &#39;{default}&#39;::text[] );
+</code></pre><p>Adjust <code>host=</code>, <code>port=</code>, and <code>dbname=</code> parameters to match your <strong>source</strong> Pg instance. If replicating more than one database, repeat this command for each database, changing <code>dbname</code> and <code>subscription_name</code> accordingly.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>At this point, data should be replicating and (if not already) it will catch up to &lsquo;current&rsquo; quickly. Once caught up, replication will maintain sync between the source and target instances in almost real time. You can easily determine the current state of <code>pglogical</code> by issuing this SQL on the subscriber:</p>
+<pre tabindex="0"><code>SELECT subscription_name, status FROM pglogical.show_subscription_status();
+</code></pre><p>If the query returns <code>initializing</code> then it is copying the original source data to the destination. If the query returns <code>replicating</code> then the initial synchronization has completed and replicating is now happening in real time as data changes.</p>
+<p>When ready, you can simply stop any applications pointing at the <em>source</em> Pg instance, wait a few minutes to ensure replication drains any outstanding items, force an update of your sequences:</p>
+<pre tabindex="0"><code>SELECT pglogical.synchronize_sequence( seqoid ) FROM pglogical.sequence_state;
+</code></pre><p>and then re-point your applications at the <em>target</em> instance.</p>
+<p>Post-upgrade, if you wish to clean everything up, simply:</p>
+<p>1: Remove the subscription:</p>
+<pre tabindex="0"><code>SELECT pglogical.drop_subscription(&#39;subscription&#39;, true);
+</code></pre><p>2: Remove the subscriber:</p>
+<pre tabindex="0"><code>SELECT pglogical.drop_node(&#39;subscriber&#39;, true);
+</code></pre><p>3: Remove the extension:</p>
+<pre tabindex="0"><code>DROP EXTENSION pglogical CASCADE;
+</code></pre><p>4: Remove the user:</p>
+<pre tabindex="0"><code>DROP ROLE pglogical;
+</code></pre><p>5: Remove any <code>pglogical</code> lines in <code>pg_hba.conf</code></p>
+<p>6: Remove <code>$PGDATA/pglogical.conf</code></p>
+<p>7: Reload PostgreSQL</p>
+<p>8: Remove the OS packages using <code>yum</code> or <code>apt</code></p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

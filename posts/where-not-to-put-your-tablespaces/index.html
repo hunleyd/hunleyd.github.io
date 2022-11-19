@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Where Not To Put Your Tablespaces</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Where Not To Put Your Tablespaces</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Aug 24, 2016,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <p>From the PostgreSQL <a href="https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html">docs</a>:</p>
+<blockquote>
+<p>Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.</p>
+</blockquote>
+<blockquote>
+<p>By using tablespaces, an administrator can control the disk layout of a PostgreSQL installation. This is useful in at least two ways. First, if the partition or volume on which the cluster was initialized runs out of space and cannot be extended, a tablespace can be created on a different partition and used until the system can be reconfigured.</p>
+</blockquote>
+<blockquote>
+<p>Second, tablespaces allow an administrator to use knowledge of the usage pattern of database objects to optimize performance. For example, an index which is very heavily used can be placed on a very fast, highly available disk, such as an expensive solid state device. At the same time a table storing archived data which is rarely used or not performance critical could be stored on a less expensive, slower disk system.</p>
+</blockquote>
+<p>As you can see, while not as powerful as tablespaces in, say, Oracle, they do still have their uses in PostgreSQL. You can use them to make use of different filesystems, or different mount options, or different disk types and, in doing so, intelligently apply performance characteristics to subsets of your data. For example, you could put your highest volume tables in a tablespace that is mounted from SSDs while the rest of your db is mounted from spinning rust.</p>
+<p>Sounds decent, right? Now you before you go off and be &ldquo;clever&rdquo; and create an SSD-backed mountpoint for your new tablespace, understand that there are places you <em>should not</em> create the tablespace. You shouldn&rsquo;t create tablespaces on any kind of ephemeral storage, for example on a <code>tmpfs</code> or a <code>ramfs</code> or similar. <em>You also should not create your new tablespaces under $PGDATA</em>. Yes, I&rsquo;m aware there is <code>$PGDATA/pg_tblspc</code> but that directory is <em>not for you</em>. The system will auto-populate that directory with pointers to the real location of your tablespaces!</p>
+<p>So what happens when you create a tablespace inside $PGDATA? Let&rsquo;s find out. First, we&rsquo;ll create the directory for the tablespace:</p>
+<pre tabindex="0"><code>$ mkdir $PGDATA/tablespaces
+$ cd $PGDATA/tablespaces
+$ pwd
+/Users/doug.hunley/pgdata/tablespaces
+</code></pre><p>And we see that nothing bad has happened yet. So, let&rsquo;s pop over into <code>psql</code> and actually create the tablespace:</p>
+<pre tabindex="0"><code>&gt; CREATE TABLESPACE ts1 LOCATION &#39;/Users/doug.hunley/pgdata/tablespaces&#39;;
+WARNING:  42P17: tablespace location should not be inside the data directory
+LOCATION:  CreateTableSpace, tablespace.c:295
+CREATE TABLESPACE
+Time: 7.797 ms
+</code></pre><p>We get a warning (not an error, for some reason) but it works and all appears fine. Now you can spend minutes/days/months/years using your new tablespace and never notice that you&rsquo;ve got a problem. So where does the problem come in?</p>
+<p>Let&rsquo;s try to make a backup of our cluster:</p>
+<pre tabindex="0"><code>$ pg_basebackup -D pgdata2 -Fp -R -Xs -c fast -l &#39;clone for slave&#39; -P -v
+transaction log start point: 2/17000028 on timeline 1
+pg_basebackup: directory &#34;/Users/doug.hunley/pgdata/tablespaces&#34; exists but is not empty
+</code></pre><p>There it is.</p>
+<p>When creating the backup, it tries to ensure the tablespace location is the same, but then it won&rsquo;t write to a non-empty directory. My example is two different $PGDATA locations on the same box, but the issue is the same when using different machines because <code>pg_basebackup</code> backs up <em>everything</em> in $PGDATA which means your tablespace directory gets cloned before it gets to the actual cloning of the data in the tablespace so you end up with &ldquo;stuff&rdquo; in the dir, making it non-empty. Which gives you the same error and output.</p>
+<p>OK, so it breaks backups. I can work around that by using another backup method. What else?</p>
+<p>How about using <code>pg_upgrade</code> to do an upgrade? No matter if you run in <code>link</code> mode or not, <code>pg_upgrade</code> <em>will not move</em> your tablespace location. So you may have <code>~/pgdata95</code> and <code>~/pgdata96</code> after the upgrade, but your tablespaces <em>are still in</em> <code>~/pgdata95/tablespaces</code>. So, as per the <a href="https://www.postgresql.org/docs/current/static/pgupgrade.html">docs</a>:</p>
+<blockquote>
+<p>Once you are satisfied with the upgrade, you can delete the old cluster&rsquo;s data directories by running the script mentioned when pg_upgrade completes.</p>
+</blockquote>
+<p>And <em>boom</em> you&rsquo;ve just deleted your tablespaces off disk. Congratulations!</p>
+<p>So there you have it. Two very good reasons to not create tablespaces inside $PGDATA. Please, don&rsquo;t do this. Everyone who admins that cluster going forward will thank you.</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

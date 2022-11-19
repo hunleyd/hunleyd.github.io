@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>When you cannot get there from here</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>When you cannot get there from here</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Jul 25, 2017,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <p>Connecting to a PostgreSQL instance isn&rsquo;t hard generally, but sometimes you can run into issues. Sometimes a port isn&rsquo;t open on a firewall, or the server is in a VLAN that you can&rsquo;t get to, or perhaps the server isn&rsquo;t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you&rsquo;re connection isn&rsquo;t authorized (which is not the same as being unable to <em>authenticate</em>). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you&rsquo;re facing. Let&rsquo;s dive into each scenario and see what the error looks like, shall we?</p>
+<h4 id="scenario-1---bad-password">Scenario 1 - Bad password</h4>
+<p>Let&rsquo;s first assume that everything is working and you <em>can</em> actually connect to the PostgreSQL instance, but you can&rsquo;t authenticate. The error will look like this:</p>
+<p><img src="/images/posts/authentication.png" alt="auth failed"></p>
+<p>As you can see, the message makes it pretty clear that you were able to connect, but your credentials were wrong (you were <em>authorized</em> to connect, but failed to <em>authenticate</em>). Did you type the password incorrectly? Is there a <code>~/.pgpass</code> <a href="https://www.postgresql.org/docs/current/static/libpq-pgpass.html">file</a> that is providing the password for you? Do you have <code>$PGPASSWORD</code> defined in your <a href="https://www.postgresql.org/docs/current/static/libpq-envars.html">environment</a>? Fix the password being passed to PostgreSQL, and you won&rsquo;t have further issues in this scenario.</p>
+<h4 id="scenario-2---pg_hbaconf-rejects-you">Scenario 2 - pg_hba.conf rejects you</h4>
+<p>For our second scenario, we&rsquo;re going to assume that you <em>can</em> actually connect to the PostgreSQL instance, but there is an entry in <code>pg_hba.conf</code> denying you access. First, we&rsquo;ll try connecting via a local Unix socket:</p>
+<p><img src="/images/posts/reject_socket.png" alt="reject socket"></p>
+<p>As you can see, it straight up tells you that you have been <em>explicitly denied access</em>. It may be rejecting connections via Unix sockets completely, or it may be rejecting connection as the specified user via Unix socket, or it may be rejecting connections to the specified database via Unix sock. You could determine which of these scenarios is true by trying a different user on the same database and then trying the same user on a different database. In any case, the problem <em>is not</em> networking or firewall related. The DBA needs to adjust <code>pg_hba.conf</code> to allow connections of this type, or you need to connect via a TCP port instead of a Unix socket. Discuss with your DBA.</p>
+<p>Now, let&rsquo;s try via a TCP port:</p>
+<p><img src="/images/posts/reject_port.png" alt="reject port"></p>
+<p>Again, you can see that it pretty plainly tells you that you have been <em>explicitly denied</em>. In this case though, it may be rejecting your IP address specifically, your entire network segment, your id, that database, or the fact that you didn&rsquo;t make an SSL connection. You can whittle this down by trying a different user on the same db, trying the same user on a different db, or switching to an SSL connection and repeating these tests. (I assume that you can&rsquo;t change your IP address. But perhaps you could make the same test cases from another computer). Again, you&rsquo;ll probably need the DBA to resolve this with you.</p>
+<h4 id="scenario-3---pg_hbaconf-doesnt-allow-you">Scenario 3 - pg_hba.conf doesn&rsquo;t allow you</h4>
+<p>I know what you&rsquo;re thinking. &ldquo;Isn&rsquo;t this the same as above?&rdquo;. And the answer is &ldquo;no it is not&rdquo;. Above, the <code>pg_hba.conf</code> file had an entry that matched your incoming connection and said to <strong>explicitly</strong> reject it. In this scenario, there is <em>no entry that matches your connection</em> and you end up <strong>implicitly</strong> denied.</p>
+<p>Again, we&rsquo;ll start by using a Unix socket:</p>
+<p><img src="/images/posts/noentry_socket.png" alt="no entry socket"></p>
+<p>Once more, the message pretty clearly tells you what is wrong. As it says, <em>there is no entry in <code>pg_hba.conf</code> that matches your incoming connection</em>. And since PostgreSQL tries to err on the side of caution, when it can&rsquo;t find an entry stating definitively what to do, it rejects you. The same troubleshooting steps as above apply (change the user/db, etc). And also like above, the DBA is going to need to edit <code>pg_hba.conf</code> to add an entry for your connection.</p>
+<p>Now, what does it look like over a TCP port:</p>
+<p><img src="/images/posts/noentry_port.png" alt="no entry port"></p>
+<p>It&rsquo;s the same error message as above but showing your IP address instead of <code>[local]</code>. And the same debugging applies. Once again, the DBA will need to add an entry to <code>pg_hba.conf</code> to resolve this.</p>
+<h4 id="scenario-4---everything-else-no-really">Scenario 4 - everything else (no, really)</h4>
+<p>By default, PostgreSQL listens for connections on port 5432. Sometimes, your DBA (or your vendor) has chosen to run PostgreSQL on a different port for some reason. If you are not trying to connect to the correct port, you&rsquo;ll get an error from <code>psql</code>.</p>
+<p>If you were trying to connect via a Unix socket, you&rsquo;ll see:</p>
+<p><img src="/images/posts/socket_nope.png" alt="socket nope"></p>
+<p>If you were trying a TCP port connection, you&rsquo;d see:</p>
+<p><img src="/images/posts/port_nope.png" alt="port nope"></p>
+<p>This error indicates that it cannot establish a network connection with PostgreSQL at the IP address (or UNix socket) you specified on the default port. Check to make sure you don&rsquo;t have <code>$PGPORT</code> set incorrectly in your environment.</p>
+<p>If you <em>are</em> using the correct port, and you still see one of two errors above, then the issue will be one of the following:</p>
+<ul>
+<li>PostgreSQL isn&rsquo;t running</li>
+<li>PostgreSQL is running, but on a different IP address than you&rsquo;re trying to connect to</li>
+<li>PostgreSQL is running, but you cannot establish a network connection from here to there</li>
+</ul>
+<p>If PostgreSQL isn&rsquo;t running, talk to your DBA about why (maybe it died, maybe it&rsquo;s a maintenance window). If you are affected by the 2<sup>nd</sup> bullet item, you&rsquo;ll have to talk with your DBA about the proper IP address to use when connecting. Note that, by default, PostgreSQL only listens on <code>localhost</code> and none of your other interfaces. If this hasn&rsquo;t been changed (<code>listen_addresses</code> in <code>postgresql.conf</code>) then you&rsquo;ll fall into this failure category. And if you&rsquo;re plagued by the 3<sup>rd</sup> bullet item, you&rsquo;ll have to talk to your network admin (and probably your DBA) as there may be a firewall blocking you, or your VLAN can&rsquo;t connect to the other VLAN, or some other layer 3/4 tomfoolery.</p>
+<p>So now you know all the (common) ways that connecting to PostgreSQL can fail and how to distinguish between them. With just a little bit of knowledge, you can communicate exactly what is happening to your DBA and make it easier for him/her to rectify the issue. Go forth, and happy PostgreSQL-ing.</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

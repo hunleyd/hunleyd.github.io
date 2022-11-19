@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>PostgreSQL logging, strftime, and you</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>PostgreSQL logging, strftime, and you</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Nov 21, 2016,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <p>PostgreSQL has a pretty extensive logging facility. I&rsquo;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&rsquo;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&rsquo;t have to be static. You can, in fact, have the name dynamically created by using <code>strftime()</code> escapes. But what exactly are those?</p>
+<pre tabindex="0"><code>    The strftime() function formats the information from timeptr into the buffer s,
+    according to the string pointed to by format.
+
+    The format string consists of zero or more conversion specifications and ordi-
+    nary characters.  All ordinary characters are copied directly into the buffer.
+    A conversion specification consists of a percent sign ```%&#39;&#39;&#39; and one other
+    character.
+</code></pre><p>Say what? Essentially, given a timestamp and a format specification, you&rsquo;ll get the timestamp back in a different formatted output. So what are these format specifications? Well, they are defined by your systems <code>libc</code> implementation. On Linux, this is (typically) glibc, whereas on OSX and the BSDs, it&rsquo;s BSD libc. You really shouldn&rsquo;t see a difference between these two, but it could happen. On macOS Sierra, they are (for the examples below, we&rsquo;ll use today&rsquo;s date of Monday, November 21, 2016 with a timestamp of 1pm EST):</p>
+<pre tabindex="0"><code>    %A    is replaced by national representation of the full weekday name (&#34;Monday&#34;)
+    %a    is replaced by national representation of the abbreviated weekday name (&#34;Mon&#34;)
+    %B    is replaced by national representation of the full month name (&#34;November&#34;)
+    %b    is replaced by national representation of the abbreviated month name (&#34;Nov&#34;)
+    %C    is replaced by (year / 100) as decimal number; single digits are preceded by a zero (&#34;20&#34;)
+    %c    is replaced by national representation of time and date (&#34;Mon Nov 21 13:00:00 2016&#34;)
+    %D    is equivalent to ``%m/%d/%y&#39;&#39; (&#34;11/21/16&#34;)
+    %d    is replaced by the day of the month as a decimal number (01-31) (&#34;21&#34;)
+    %e    is replaced by the day of the month as a decimal number (1-31); single digits are preceded by a blank (&#34;21&#34;)
+    %F    is equivalent to ``%Y-%m-%d&#39;&#39; (&#34;2016-11-21&#34;)
+    %G    is replaced by a year as a decimal number with century.  This year is the one that contains the greater part of the week (Monday as the first day of the week) (&#34;2016&#34;)
+    %g    is replaced by the same year as in ``%G&#39;&#39;, but as a decimal number without century (00-99) (&#34;16&#34;)
+    %H    is replaced by the hour (24-hour clock) as a decimal number (00-23) (&#34;12&#34;)
+    %h    the same as %b (&#34;Nov&#34;)
+    %I    is replaced by the hour (12-hour clock) as a decimal number (01-12) (&#34;12&#34;)
+    %j    is replaced by the day of the year as a decimal number (001-366) (&#34;326&#34;)
+    %k    is replaced by the hour (24-hour clock) as a decimal number (0-23); single digits are preceded by a blank (&#34;13&#34;)
+    %l    is replaced by the hour (12-hour clock) as a decimal number (1-12); single digits are preceded by a blank (&#34; 1&#34;)
+    %M    is replaced by the minute as a decimal number (00-59) (&#34;00&#34;)
+    %m    is replaced by the month as a decimal number (01-12) (&#34;11&#34;)
+    %n    is replaced by a newline
+    %p    is replaced by national representation of either &#34;ante meridiem&#34; (a.m.) or &#34;post meridiem&#34; (p.m.)  as appropriate (&#34;PM&#34;)
+    %R    is equivalent to ``%H:%M&#39;&#39; (&#34;13:00&#34;)
+    %r    is equivalent to ``%I:%M:%S %p&#39;&#39; (&#34;01:00:00 PM&#34;)
+    %S    is replaced by the second as a decimal number (00-60) (&#34;00&#34;)
+    %s    is replaced by the number of seconds since the Epoch, UTC (&#34;1479751200&#34;)
+    %T    is equivalent to ``%H:%M:%S&#39;&#39; (&#34;13:00:00&#34;)
+    %t    is replaced by a tab
+    %U    is replaced by the week number of the year (Sunday as the first day of the week) as a decimal number (00-53) (&#34;47&#34;)
+    %u    is replaced by the weekday (Monday as the first day of the week) as a decimal number (1-7) (&#34;1&#34;)
+    %V    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (01-53).  If the week containing January 1 has four or more days in the new year, then it is week 1; otherwise it is the last week of the previous year, and the next week is week 1 (&#34;47&#34;)
+    %v    is equivalent to ``%e-%b-%Y&#39;&#39; (&#34;21-Nov-2016&#34;)
+    %W    is replaced by the week number of the year (Monday as the first day of the week) as a decimal number (00-53) (&#34;47&#34;)
+    %w    is replaced by the weekday (Sunday as the first day of the week) as a decimal number (0-6) (&#34;1&#34;)
+    %X    is replaced by national representation of the time (&#34;13:00:00&#34;)
+    %x    is replaced by national representation of the date (&#34;11/21/2016&#34;)
+    %Y    is replaced by the year with century as a decimal number (&#34;2016&#34;)
+    %y    is replaced by the year without century as a decimal number (00-99) (&#34;16&#34;)
+    %Z    is replaced by the time zone name (&#34;EST&#34;)
+    %z    is replaced by the time zone offset from UTC; a leading plus sign stands for east of UTC, a minus sign for west of UTC, hours and minutes follow with two digits each and no delimiter between them (&#34;-0500&#34;)
+    %%    is replaced by `%&#39;
+</code></pre><p>Phew! That was a lot wasn&rsquo;t it? And where exactly does this come into play? As the <code>postgresql.conf</code> says:</p>
+<pre tabindex="0"><code>log_filename = &#39;postgresql-%a.log&#39;      # log file name pattern,
+                                        # can include strftime() escapes
+</code></pre><p>So, you can use any of the escapes above to craft a filename that automagically gets updated according to the current timestamp. In my example above, I&rsquo;m getting PostgreSQL to create a new logfile with the local weekday abbreviation. So my <code>$PGDATA/pg_log</code> directory will only ever contain:</p>
+<pre tabindex="0"><code>postgresql-Sun.log postgresql-Mon.log postgresql-Tue.log
+postgresql-Wed.log postgresql-Thu.log postgresql-Fri.log
+postgresql-Sat.log
+</code></pre><p>But wait! The key to all this is that <em>PostgreSQL only evaluates the filename when it first opens/creates the logfile</em>. So, if you start your cluster on Mon and do not restart it and don&rsquo;t have it configured to log rotate, you&rsquo;ll still be writing to <code>postgresql-Mon.log</code> forever. Fortunately, PostgreSQL has you covered here too:</p>
+<pre tabindex="0"><code>log_rotation_age = 1d      # Automatic rotation of logfiles will
+                           # happen after that time.  0 disables.
+log_rotation_size = 10MB   # Automatic rotation of logfiles will
+                           # happen after that much log output.
+                           # 0 disables.
+</code></pre><p>So, using my <code>log_filename</code> from above, I enable <code>log_rotation_age</code> (set to 1 day) and disable <code>log_rotation_size</code> and I automatically get a new log every day. If I wanted hourly logs, I could do something like:</p>
+<pre tabindex="0"><code>log_filename = &#39;postgresql-%a-%H&#39;
+log_rotation_age = 1h
+</code></pre><p>which would give me logs of <code>postgresql-Mon-00</code>, <code>postgresql-Mon-01</code>, etc. You should be able to see how combining these three <code>postgresql.conf</code> parameters and some crafty <code>strftime()</code> escapes gives you a <em>ton</em> of flexibility in your logging. So go forth and tweak those logs!</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

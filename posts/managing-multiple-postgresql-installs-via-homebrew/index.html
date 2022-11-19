@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Managing multiple PostgreSQL installs via Homebrew</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+
+
+  <meta name="author" content="Douglas J Hunley">
+
+
+  <meta name="theme-name" content="northendlab-light" />
+
+  <meta name="generator" content="Hugo 0.105.0">
+
+  <!-- plugins -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+
+
+  <!-- Main Stylesheet -->
+
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+
+
+
+
+</head>
+<body>
+
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- preloader start -->
+<div class="preloader">
+
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.svg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+
+        </ul>
+
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Managing multiple PostgreSQL installs via Homebrew</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Nov 16, 2016,
+          <a href="/categories/postgresql/">Postgresql</a>
+
+          <a href="/categories/osx/">Osx</a>
+
+          <a href="/categories/howto/">Howto</a>
+
+        </div>
+
+        <div class="content mb-5">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png" class="rleader" />
+<p>Following on from <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">this</a> post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I&rsquo;m back with a full-fledged shell script to help manage all this. Without further ado, the script:</p>
+<pre tabindex="0"><code>#!/bin/zsh
+
+wanted_ver=$1
+no_restart=
+
+# is the version requested installed?
+brew ls --version postgresql@${wanted_ver} &amp;&gt;/dev/null
+if [[ $? -eq 0 ]] ; then
+  # yes, carry on
+  :
+else
+  # nope, so install it
+  echo &#34;Installing PostgreSQL ${wanted_ver}... &#34;
+  brew install petere/postgresql/postgresql@${wanted_ver}
+fi
+
+# is postgresql is running?
+for i in /usr/local/var/postgres/*
+do
+  check_ver=$(basename ${i})
+  is_running=$(ps -few|egrep -- &#34;[p]ostgres.*-D.*${check_ver}&#34;)
+
+  if [[ -z ${is_running} ]] ; then
+    # nope, carry on
+    :
+  else
+    # it is. is it the requested version?
+    if [[ &#34;${wanted_ver}&#34; = &#34;${check_ver}&#34; ]] ; then
+      # yup, carry on
+      no_restart=t
+    else
+      # nope, so kill it
+      echo -n &#34;Stopping PostgreSQL ${check_ver}... &#34;
+      /usr/local/opt/postgresql@${check_ver}/bin/pg_ctl \
+          -D /usr/local/var/postgres/${check_ver} \
+          stop -w -mf | grep &#39;stopped&#39;
+    fi
+  fi
+done
+
+# what version is active?
+if [[ -e /usr/local/bin/psql ]] ; then
+    active_ver=$(/usr/bin/stat -f %Y /usr/local/bin/psql | cut -d\/ -f3 | cut -d\- -f2 | cut -d\@ -f2)
+else
+    active_ver=0
+fi
+
+# is the active version the requested version?
+if [[ &#34;${active_ver}&#34; = &#34;${wanted_ver}&#34; ]] ; then
+  # yup, carry on
+  :
+else
+  # nope, so deactivate it
+  echo -n &#34;Deactivating PostgreSQL ${active_ver}... &#34;
+  brew unlink --force --overwrite postgresql@${active_ver} | cut -d\  -f3-
+  # and activate the correct version
+  echo -n &#34;Activating PostgreSQL ${wanted_ver}... &#34;
+  brew link --force --overwrite postgresql@${wanted_ver} | grep &#39;created&#39; | cut -d\  -f3-
+fi
+
+# point to the correct data dir and port
+PGDATA=/usr/local/var/postgres/${wanted_ver}
+PGPORT=&#34;54$(echo ${wanted_ver} | tr -d .)&#34;
+
+# should we be starting a cluster?
+if [[ &#34;${no_restart}&#34; = &#34;t&#34; ]] ; then
+  # nope, carry on
+  :
+else
+  # yup. has the cluster been initialized?
+  if [[ ! -d ${PGDATA} ]] ; then
+    # nope, so let&#39;s do that
+    echo &#34;Initializing PostgreSQL ${wanted_ver} cluster... &#34;
+    initdb -k ${PGDATA} || initdb ${PGDATA}
+    echo &#34;port = ${PGPORT}&#34; &gt;&gt; ${PGDATA}/postgresql.conf
+    echo &#34;log_destination = &#39;stderr&#39;&#34; &gt;&gt; ${PGDATA}/postgresql.conf
+    echo &#34;logging_collector = on&#34; &gt;&gt; ${PGDATA}/postgresql.conf
+    echo &#34;log_filename = &#39;postgresql-%a.log&#39;&#34; &gt;&gt; ${PGDATA}/postgresql.conf
+    echo &#34;log_truncate_on_rotation = on&#34; &gt;&gt; ${PGDATA}/postgresql.conf
+    echo &#34;log_rotation_age = 1d&#34; &gt;&gt; ${PGDATA}/postgresql.conf
+    echo &#34;log_rotation_size = 0&#34; &gt;&gt; ${PGDATA}/postgresql.conf
+    echo &#34;log_timezone = &#39;US/Michigan&#39;&#34; &gt;&gt; ${PGDATA}/postgresql.conf
+    echo &#34;log_line_prefix = &#39;%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h &#39;&#34; &gt;&gt; ${PGDATA}/postgresql.conf
+  else
+    # yup, carry on
+    :
+  fi
+  # start the cluster
+  echo -n &#34;Starting PostgreSQL ${wanted_ver}... &#34;
+  pg_ctl -D ${PGDATA} start  &gt; /tmp/pg.start 2&gt;&amp;1
+  grep &#39;server start&#39; /tmp/pg.start
+  if [[ -x /usr/local/bin/pg_isready ]] ; then
+      ret=1
+      while [[ ${ret} -eq 1 ]]
+      do
+        # wait for the cluster to be available before exiting
+        pg_isready -q
+        ret=$?
+      done
+    fi
+fi
+
+echo &#34;export PGDATA=${PGDATA}&#34;
+echo &#34;export PGPORT=${PGPORT}&#34;
+</code></pre><p>But what does it do? It&rsquo;s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:</p>
+<pre tabindex="0"><code>$ pg 9.6
+</code></pre><p>and then the script does the following:</p>
+<ul>
+<li>checks if the requested version is installed, and installs it if not</li>
+<li>checks if another version of PostgreSQL is running, and stops it</li>
+<li>checks if another version is linked as the active version, and unlinks it</li>
+<li>links the requested version as the active version</li>
+<li>sets PGDATA to point to the requested version&rsquo;s data cluster</li>
+<li>does an <code>initdb</code> for the requested version if needed</li>
+<li>starts the requested version&rsquo;s cluster</li>
+</ul>
+<p>I&rsquo;ll be the first to admit that the script could use additional work, but it&rsquo;s functional enough to start using today. As I continue to improve the script, I&rsquo;ll update the&quot;post&quot;with those changes, so check back every so often.</p>
+<p>Enjoy.</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.svg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://twitter.com/hunleyd"><i class="ti-twitter"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>
