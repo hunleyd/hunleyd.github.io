@@ -3,10 +3,25 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://hunleyd.github.io/categories/</loc>
-    <lastmod>2021-08-25T15:33:18+00:00</lastmod>
+    <lastmod>2023-01-22T11:11:56+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/computers/</loc>
+    <lastmod>2023-01-22T11:11:56+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/computers/</loc>
+    <lastmod>2023-01-22T11:11:56+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/</loc>
-    <lastmod>2021-08-25T15:33:18+00:00</lastmod>
+    <lastmod>2023-01-22T11:11:56+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/posts/introducing-gwt/</loc>
+    <lastmod>2023-01-22T11:11:56+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/posts/</loc>
+    <lastmod>2023-01-22T11:11:56+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/</loc>
+    <lastmod>2023-01-22T11:11:56+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/tags/howto/</loc>
     <lastmod>2021-08-25T15:33:18+00:00</lastmod>
@@ -17,26 +32,14 @@
     <loc>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</loc>
     <lastmod>2021-08-25T15:33:18+00:00</lastmod>
   </url><url>
-    <loc>https://hunleyd.github.io/posts/</loc>
-    <lastmod>2021-08-25T15:33:18+00:00</lastmod>
-  </url><url>
     <loc>https://hunleyd.github.io/tags/smarthome/</loc>
     <lastmod>2021-08-25T15:33:18+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/categories/smarthome/</loc>
     <lastmod>2021-08-25T15:33:18+00:00</lastmod>
   </url><url>
-    <loc>https://hunleyd.github.io/tags/</loc>
-    <lastmod>2021-08-25T15:33:18+00:00</lastmod>
-  </url><url>
     <loc>https://hunleyd.github.io/posts/automations--timers--and-you/</loc>
     <lastmod>2021-08-16T13:48:35+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/tags/computers/</loc>
-    <lastmod>2021-08-14T16:27:09+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/categories/computers/</loc>
-    <lastmod>2021-08-14T16:27:09+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/posts/generating-dns-noise/</loc>
     <lastmod>2021-08-14T16:27:09+00:00</lastmod>

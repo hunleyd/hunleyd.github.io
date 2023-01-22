@@ -6,7 +6,16 @@
     <description>Recent content in Posts on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 25 Aug 2021 15:33:18 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 22 Jan 2023 11:11:56 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Introducing gwt</title>
+      <link>https://hunleyd.github.io/posts/introducing-gwt/</link>
+      <pubDate>Sun, 22 Jan 2023 11:11:56 +0000</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/introducing-gwt/</guid>
+      <description>After working on it for a bit, and convincing a coworker to use it and provide feedback, I&amp;rsquo;ve finally made gwt an actual thing.</description>
+    </item>
+    
     <item>
       <title>I said brr it&#39;s cold in here</title>
       <link>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</link>
