@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Meetings, menu bars, and focus modes</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+    
+    
+  <meta name="author" content="Douglas J Hunley">
+  
+  
+  <meta name="theme-name" content="northendlab-light" />
+  
+  <meta name="generator" content="Hugo 0.111.3">
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+  
+  
+  
+
+</head>
+<body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.jpg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+          
+        </ul>
+        
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div> 
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Meetings, menu bars, and focus modes</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Mar 25, 2023, 
+          <a href="/categories/osx/">Osx</a>
+          
+          <a href="/categories/productivity/">Productivity</a>
+          
+          <a href="/categories/apps/">Apps</a>
+          
+        </div>
+        
+        <div class="content mb-5">
+          <p>We recently moved all our issue tracking at work from <a href="https://github.com">GitHub Issues</a> to <a href="https://linear.app">Linear</a> for one of the products that I work on. While playing around with Linear, I stumbled upon their <a href="https://reclaim.ai">Reclaim.AI</a> integration and immediately fell in love. I quickly set about connecting the two tools, tweaking my settings, and even opened some issues w/ the Support teams of both products. After about a week, I finally had everything up and running exactly how I wanted it. During our sprint planning meeting, I simply pulled whatever Linear issues I wanted to work on into the cycle, and then let Reclaim schedule my work based on priority and points. While I could probably write an entire blog post about these two apps, these tools are really just the &lsquo;setting&rsquo; for this post. You see, now that I had all my work being scheduled for me by a AI, I found that I needed to have my calendar open at all times to see what I was supposed to be working on. I <em>hate</em> having apps open (or extra tabs in a browser) when I can have the info presented to me in some other fashion. Thankfully, I had previously discovered <a href="https://github.com/leits/MeetingBar">MeetingBar</a> and was already a huge fan. So now I have MeetingBar running in my OSX menu bar showing me (via Reclaim) exactly what I&rsquo;m supposed to be working on (or what I&rsquo;m about to start working on). I was living the dream.</p>
+<p>And then the latest release of MeetingBar dropped with <a href="https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/introduction/ASLR_intro.html">AppleScript</a> support. I had been looking for way to automatically enable &lsquo;Do Not Disturb&rsquo; mode for the duration of a meeting for a while, but I had a couple of issues. Now that my <em>entire</em> day is a set of Reclaim &ldquo;meetings&rdquo; I obviously didn&rsquo;t want DnD on the entire day (annoying as they may be, I do need to see my Slack notifications, lol). I really only wanted DnD mode active if the meeting in question had a URL defined. As a remote worker, my meetings are always an URL to the online meeting, so I dug into the AppleScript support and quickly realized that what I wanted was possible but more complicated than I really wanted to deal with. I scrolled around a bit more on the web looking at suggested solutions for automating DnD and eventually stumlbed upon <a href="https://github.com/arodik/macos-focus-mode">macos-focus-mode</a>. A quick <code>brew install npm</code>, followed by <code>npm install macos-focus-mode</code> and I was in business!</p>
+<p>I added the macos-focus-mode shortcut as per the directions on their website, tested it out  few times manually to ensure it did what I wanted, and finally I went into the MeetingBar settings screen and rigged everything up:</p>
+<ol>
+<li>In the Preferences, go to the Advanced tab</li>
+<li>Check the &lsquo;Run AppleScript Automatically&rsquo; checkbox</li>
+<li>Pick &lsquo;when the event starts&rsquo; from the drop-down</li>
+<li>click on &lsquo;Edit script&rsquo;</li>
+</ol>
+<p>Your script should look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-applescript" data-lang="applescript"><span style="display:flex;"><span><span style="color:#66d9ef">on</span> meetingStart(eventId, <span style="color:#a6e22e">title</span>, allday, startDate, endDate, eventLocation, repeatingEvent, attendeeCount, meetingUrl, meetingService, meetingNotes)
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> meetingUrl <span style="color:#f92672">is not</span> <span style="color:#e6db74">&#34;EMPTY&#34;</span> <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">set</span> <span style="color:#960050;background-color:#1e0010">_duration</span> <span style="color:#66d9ef">to</span> <span style="color:#f92672">-</span>(startDate <span style="color:#f92672">-</span> endDate) <span style="color:#f92672">/</span> <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">tell</span> application <span style="color:#e6db74">&#34;Shortcuts Events&#34;</span>
+</span></span><span style="display:flex;"><span>       run the shortcut named <span style="color:#e6db74">&#34;macos-focus-mode&#34;</span> <span style="color:#66d9ef">with</span> input <span style="color:#960050;background-color:#1e0010">_duration</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">end</span> <span style="color:#66d9ef">tell</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span> <span style="color:#66d9ef">if</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span> meetingStart
+</span></span></code></pre></div><p>Click the &lsquo;Save&rsquo; button, then &lsquo;Save script&rsquo; button and you&rsquo;re all set! Now when  a meeting starts that has an URL associated with it, MeetingBar will call your saved script, which calls the macos-focus-mode shortcode which enables DnD for the duration of the meeting. It sounds like a bunch of indirection but it happens almost instantly. I couldn&rsquo;t be happier with the setup.</p>
+
+        </div>
+        <div class="mb-3 post-meta">
+           <a href="/tags/osx/">#Osx</a>,   <a href="/tags/productivity/">#Productivity</a>,   <a href="/tags/apps/">#Apps</a>,  
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+        
+        
+        <h3>See Also</h3>
+        <ul>
+          
+          <li><a href="/posts/pgbackrest-2.08-and-macos-mojave/">pgBackRest 2.08 and macOS Mojave</a></li>
+          
+          <li><a href="/posts/pgbackrest-2.07-and-macos-mojave/">pgBackRest 2.07 and macOS Mojave</a></li>
+          
+          <li><a href="/posts/updated-postgresql-homebrew-script/">updated PostgreSQL homebrew script</a></li>
+          
+          <li><a href="/posts/installing-pgbackrest-on-osx/">Installing pgBackRest on OSX</a></li>
+          
+          <li><a href="/posts/managing-multiple-postgresql-installs-via-homebrew/">Managing multiple PostgreSQL installs via Homebrew</a></li>
+          
+        </ul>
+        
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.jpg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+          
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+          
+          <li class="list-inline-item"><a href="https://fosstodon.org/@hunleyd"><i class="ti-twitter-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2 
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>

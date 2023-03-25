@@ -6,7 +6,16 @@
     <description>Recent content in osx on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 04 Jan 2019 08:30:44 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/categories/osx/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 25 Mar 2023 17:23:08 -0400</lastBuildDate><atom:link href="https://hunleyd.github.io/categories/osx/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Meetings, menu bars, and focus modes</title>
+      <link>https://hunleyd.github.io/posts/meetings--menu-bars--and-focus-modes/</link>
+      <pubDate>Sat, 25 Mar 2023 17:23:08 -0400</pubDate>
+      
+      <guid>https://hunleyd.github.io/posts/meetings--menu-bars--and-focus-modes/</guid>
+      <description>We recently moved all our issue tracking at work from GitHub Issues to Linear for one of the products that I work on.</description>
+    </item>
+    
     <item>
       <title>pgBackRest 2.08 and macOS Mojave</title>
       <link>https://hunleyd.github.io/posts/pgbackrest-2.08-and-macos-mojave/</link>
