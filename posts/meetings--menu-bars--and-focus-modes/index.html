@@ -35,6 +35,9 @@
   
   
 
+  
+  <link rel="alternate" type="application/rss+xml" href="https://hunleyd.github.io//index.xml" title="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with">
+  
 </head>
 <body>
     
@@ -107,15 +110,15 @@
 <li>click on &lsquo;Edit script&rsquo;</li>
 </ol>
 <p>Your script should look like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-applescript" data-lang="applescript"><span style="display:flex;"><span><span style="color:#66d9ef">on</span> meetingStart(eventId, <span style="color:#a6e22e">title</span>, allday, startDate, endDate, eventLocation, repeatingEvent, attendeeCount, meetingUrl, meetingService, meetingNotes)
-</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">if</span> meetingUrl <span style="color:#f92672">is not</span> <span style="color:#e6db74">&#34;EMPTY&#34;</span> <span style="color:#66d9ef">then</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">set</span> <span style="color:#960050;background-color:#1e0010">_duration</span> <span style="color:#66d9ef">to</span> <span style="color:#f92672">-</span>(startDate <span style="color:#f92672">-</span> endDate) <span style="color:#f92672">/</span> <span style="color:#ae81ff">60</span>
-</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">tell</span> application <span style="color:#e6db74">&#34;Shortcuts Events&#34;</span>
-</span></span><span style="display:flex;"><span>       run the shortcut named <span style="color:#e6db74">&#34;macos-focus-mode&#34;</span> <span style="color:#66d9ef">with</span> input <span style="color:#960050;background-color:#1e0010">_duration</span>
-</span></span><span style="display:flex;"><span>     <span style="color:#66d9ef">end</span> <span style="color:#66d9ef">tell</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">end</span> <span style="color:#66d9ef">if</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span> meetingStart
-</span></span></code></pre></div><p>Click the &lsquo;Save&rsquo; button, then &lsquo;Save script&rsquo; button and you&rsquo;re all set! Now when  a meeting starts that has an URL associated with it, MeetingBar will call your saved script, which calls the macos-focus-mode shortcode which enables DnD for the duration of the meeting. It sounds like a bunch of indirection but it happens almost instantly. I couldn&rsquo;t be happier with the setup.</p>
+<pre tabindex="0"><code>on meetingStart(eventId, title, allday, startDate, endDate, eventLocation, repeatingEvent, attendeeCount, meetingUrl, meetingService, meetingNotes)
+   if meetingUrl is not &#34;EMPTY&#34; then
+    set _duration to -(startDate - endDate) / 60
+     tell application &#34;Shortcuts Events&#34;
+       run the shortcut named &#34;macos-focus-mode&#34; with input _duration
+     end tell
+  end if
+end meetingStart
+</code></pre><p>Click the &lsquo;Save&rsquo; button, then &lsquo;Save script&rsquo; button and you&rsquo;re all set! Now when  a meeting starts that has an URL associated with it, MeetingBar will call your saved script, which calls the macos-focus-mode shortcode which enables DnD for the duration of the meeting. It sounds like a bunch of indirection but it happens almost instantly. I couldn&rsquo;t be happier with the setup.</p>
 
         </div>
         <div class="mb-3 post-meta">
