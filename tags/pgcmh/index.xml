@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>pgcmh on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <title>Pgcmh on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
     <link>https://hunleyd.github.io/tags/pgcmh/</link>
-    <description>Recent content in pgcmh on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Pgcmh on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 03 Nov 2016 11:45:32 +0000</lastBuildDate><atom:link href="https://hunleyd.github.io/tags/pgcmh/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Nov 2016 11:45:32 +0000</lastBuildDate>
+    <atom:link href="https://hunleyd.github.io/tags/pgcmh/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Inaugural pgCMH mtg scheduled</title>
       <link>https://hunleyd.github.io/posts/inaugural-pgcmh-mtg/</link>
       <pubDate>Thu, 03 Nov 2016 11:45:32 +0000</pubDate>
-      
       <guid>https://hunleyd.github.io/posts/inaugural-pgcmh-mtg/</guid>
       <description>As announced on our Twitter, we&amp;rsquo;ve scheduled our inaugural meeting for Jan 24, 2017 at 1800 hrs.</description>
     </item>
-    
     <item>
       <title>Announcing pgCMH</title>
       <link>https://hunleyd.github.io/posts/announcing-pgcmh/</link>
       <pubDate>Mon, 31 Oct 2016 11:35:22 +0000</pubDate>
-      
       <guid>https://hunleyd.github.io/posts/announcing-pgcmh/</guid>
       <description>I&amp;rsquo;ve been kicking around the idea of founding a Columbus-based PostgreSQL User Group for a while now.</description>
     </item>
-    
   </channel>
 </rss>

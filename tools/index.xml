@@ -4,7 +4,8 @@
     <title>Tools on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
     <link>https://hunleyd.github.io/tools/</link>
     <description>Recent content in Tools on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://hunleyd.github.io/tools/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <atom:link href="https://hunleyd.github.io/tools/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

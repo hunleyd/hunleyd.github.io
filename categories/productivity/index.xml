@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>productivity on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <title>Productivity on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
     <link>https://hunleyd.github.io/categories/productivity/</link>
-    <description>Recent content in productivity on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Productivity on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 25 Mar 2023 17:23:08 -0400</lastBuildDate><atom:link href="https://hunleyd.github.io/categories/productivity/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 25 Mar 2023 17:23:08 -0400</lastBuildDate>
+    <atom:link href="https://hunleyd.github.io/categories/productivity/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Meetings, menu bars, and focus modes</title>
       <link>https://hunleyd.github.io/posts/meetings--menu-bars--and-focus-modes/</link>
       <pubDate>Sat, 25 Mar 2023 17:23:08 -0400</pubDate>
-      
       <guid>https://hunleyd.github.io/posts/meetings--menu-bars--and-focus-modes/</guid>
       <description>We recently moved all our issue tracking at work from GitHub Issues to Linear for one of the products that I work on.</description>
     </item>
-    
   </channel>
 </rss>

@@ -2,16 +2,49 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://hunleyd.github.io/tags/ansible/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/ansible/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/posts/automating-highlt-available-postgresql-clusters/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/cpa/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/cpa/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/postgresql/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/postgresql/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/posts/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/work/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/work/</loc>
+    <lastmod>2024-10-04T14:07:29+00:00</lastmod>
+  </url><url>
     <loc>https://hunleyd.github.io/tags/apps/</loc>
     <lastmod>2023-03-25T17:23:08-04:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/categories/apps/</loc>
-    <lastmod>2023-03-25T17:23:08-04:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/categories/</loc>
-    <lastmod>2023-03-25T17:23:08-04:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/</loc>
     <lastmod>2023-03-25T17:23:08-04:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/posts/meetings--menu-bars--and-focus-modes/</loc>
@@ -23,16 +56,10 @@
     <loc>https://hunleyd.github.io/categories/osx/</loc>
     <lastmod>2023-03-25T17:23:08-04:00</lastmod>
   </url><url>
-    <loc>https://hunleyd.github.io/posts/</loc>
-    <lastmod>2023-03-25T17:23:08-04:00</lastmod>
-  </url><url>
     <loc>https://hunleyd.github.io/tags/productivity/</loc>
     <lastmod>2023-03-25T17:23:08-04:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/categories/productivity/</loc>
-    <lastmod>2023-03-25T17:23:08-04:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/tags/</loc>
     <lastmod>2023-03-25T17:23:08-04:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/tags/computers/</loc>
@@ -85,12 +112,6 @@
   </url><url>
     <loc>https://hunleyd.github.io/posts/bye-pi-hello-nuc/</loc>
     <lastmod>2020-07-19T12:14:03+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/tags/postgresql/</loc>
-    <lastmod>2020-06-23T18:22:44+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/categories/postgresql/</loc>
-    <lastmod>2020-06-23T18:22:44+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/posts/tuned-pg-and-you/</loc>
     <lastmod>2020-06-23T18:22:44+00:00</lastmod>
@@ -212,12 +233,6 @@
     <loc>https://hunleyd.github.io/posts/im-syndicated/</loc>
     <lastmod>2016-10-08T15:19:57+00:00</lastmod>
   </url><url>
-    <loc>https://hunleyd.github.io/tags/work/</loc>
-    <lastmod>2016-10-08T15:19:57+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/categories/work/</loc>
-    <lastmod>2016-10-08T15:19:57+00:00</lastmod>
-  </url><url>
     <loc>https://hunleyd.github.io/tags/biking/</loc>
     <lastmod>2016-10-03T13:30:58+00:00</lastmod>
   </url><url>
@@ -334,9 +349,6 @@
   </url><url>
     <loc>https://hunleyd.github.io/posts/once-more-with-feeling/</loc>
     <lastmod>2016-01-16T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/tools/</loc>
-    <priority>0</priority>
   </url><url>
     <loc>https://hunleyd.github.io/author/</loc>
   </url><url>
