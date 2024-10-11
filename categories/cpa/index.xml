@@ -6,8 +6,15 @@
     <description>Recent content in Cpa on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 04 Oct 2024 14:07:29 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 11 Oct 2024 14:07:29 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/categories/cpa/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Crunchy Postgres via Automation: What&#39;s new in V2</title>
+      <link>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/</link>
+      <pubDate>Fri, 11 Oct 2024 14:07:29 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/</guid>
+      <description>As discussed last week, I&amp;rsquo;m back today to highlight the major differences between the 1.</description>
+    </item>
     <item>
       <title>Automating Highly Available PostgreSQL Clusters</title>
       <link>https://hunleyd.github.io/posts/automating-highly-available-postgresql-clusters/</link>

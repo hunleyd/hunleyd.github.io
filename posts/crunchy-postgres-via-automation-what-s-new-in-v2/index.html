@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Crunchy Postgres via Automation: What&#39;s new in V2</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+    
+    
+  <meta name="author" content="Douglas J Hunley">
+  
+  
+  <meta name="theme-name" content="northendlab-light" />
+  
+  <meta name="generator" content="Hugo 0.131.0">
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+  
+  
+  
+
+  
+  <link rel="alternate" type="application/rss+xml" href="https://hunleyd.github.io//index.xml" title="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with">
+  
+</head>
+<body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.jpg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+          
+        </ul>
+        
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div> 
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Crunchy Postgres via Automation: What&rsquo;s new in V2</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Oct 11, 2024, 
+          <a href="/categories/work/">Work</a>
+          
+          <a href="/categories/cpa/">Cpa</a>
+          
+        </div>
+        
+        <div class="content mb-5">
+          <p>As discussed <a href="/posts/automating-highly-available-postgresql-clusters/">last week</a>, I&rsquo;m back today to highlight
+the major differences between the 1.x and 2.x lines of <a href="https://www.crunchydata.com/products/crunchy-high-availability-postgresql">Crunchy Postgres via Automation</a>(CPA).</p>
+<h3 id="cpa-1x">CPA 1.x</h3>
+<p>When we initially designed and launched the 1.x line of CPA, we attempted to leverage the OS components as much as possible to reduce our internal support burden and ship things faster. This means that CPA would deploy the
+Crunchy Certified Postgres repository, but install packages from both it and the normally configured OS
+repositories. All the &lsquo;core&rsquo; Crunchy Postgres components would come from us, but most other things like etcd
+or HAProxy would come from the system itself.</p>
+<p>As you can imagine, this quickly led to issues:</p>
+<ul>
+<li>Each of our supported OS platforms shipped with different versions of these components</li>
+<li>Each of our supported OS platforms shipped new releases at different schedules</li>
+<li>All of our customers have different schedules for updating their OS</li>
+</ul>
+<p>Additionally, we ran into issues where:</p>
+<ul>
+<li>Some customers don&rsquo;t allow their nodes to access the Internet</li>
+<li>Some customers use internal mirrors of repositories and their refresh schedule is unknown to us</li>
+</ul>
+<p>I won&rsquo;t bore you with all the details of the pain these issues caused, but it was bad enough that we worked
+with our internal Build team to create &lsquo;dummy&rsquo; packages (.rpm and .deb) that we called &lsquo;crunchylocks&rsquo;.
+These packages were empty but had very tight dependencies. For example, the &lsquo;crunchylock&rsquo; package for etcd
+might have had a dependency of <code>3.4.3 &lt;= etcd &lt;= 3.4.8</code>, which would, in theory, limit etcd to known working
+versions. These lock packages worked, mostly, but became a maintenance burden in and of themselves. And when
+they didn&rsquo;t work, for example when using the <code>best</code> option for <code>dnf</code> when upgrading CPA, they blew up <em>spectacularly</em>.</p>
+<p>Speaking of CPA upgrades, it now involved selectively removing/upgrading specific &lsquo;crunchylock&rsquo;
+packages, in the correct order, in lock-step with upgrading the actual components <em>and re-installing existing &lsquo;crunchylock&rsquo; packages if the upgrade failed</em>. The upgrade code became pretty gnarly pretty quickly. Upgrading
+was, quite frankly, the single biggest &lsquo;issue&rsquo; with CPA 1.x as a whole.</p>
+<p>Additionally, the CPA 1.x line was limited to Ansible 2.9.6 compatibility for most of it&rsquo;s life. This become
+a large issue with customers running Ansible Automation Platform (AAP) and a growing issue for development
+efforts.</p>
+<p>Something needed to change.</p>
+<h3 id="cpa-2x">CPA 2.x</h3>
+<p>As I sat down to plan out the 2.x line in my new role as Architect<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>, it quickly became apparent that no one
+was happy with the above; customers, Support, our Solution Architects, my team, and the Build team all wanted,
+well, <em>something else</em>.</p>
+<p>So I spent time brainstorming with John, our Build team lead, and we devised a strategy to build <em>all</em> the
+necessary components in-house and ship everything we directly relied upon. We further decided, based on a
+suggestion from John, to utilize a Bill of Materials (BoM) to list exactly what we built and shipped. Each
+version of the BoM would have a 1:1 relationship with CPA 2.x release, e.g. CPA 2.1.0 would be BoM version x,
+CPA 2.1.1 would be BoM version y, and so on. This would simplify debugging for both the Support and Solution
+Architects teams as simply knowing the version of CPA would additionally provide the exact versions of all
+components.</p>
+<p>Working with Heath, one of our Build Engineers, I crafted a BoM that contained all the information needed
+for CPA to download all the components directly from the Crunchy Data software portal, verify their size and
+checksum, and <em>cache these files on the Ansible controller</em>. We would then push the files out to the target nodes,
+removing the need for these nodes to download anything.</p>
+<p>The BoM itself is essentially a giant YAML file containing a massive dictionary that the CPA roles load as ai
+variable. It currently looks something like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-YAML" data-lang="YAML"><span style="display:flex;"><span><span style="color:#f92672">crunchy_automation_bom</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">target_role_version</span>: <span style="color:#ae81ff">x.y.z</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">bom_version</span>: <span style="color:#ae81ff">nnnn</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">epcp_path</span>: <span style="color:#e6db74">&#39;/epcp/redhat/EL-8/x86_64/base/&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">ha_path</span>: <span style="color:#e6db74">&#39;/cpa/redhat/EL-8/x86_64/base/&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">pg_path</span>: <span style="color:#e6db74">&#39;/postgresql13/redhat/EL-8/x86_64/base/&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">packages</span>:
+</span></span><span style="display:flex;"><span>      - { <span style="color:#f92672">src_repo</span>: <span style="color:#e6db74">&#34;pg&#34;</span><span style="color:#f92672">, src</span>: <span style="color:#e6db74">&#34;postgresql13-13.16-1Crunchy.el8.x86_64.rpm&#34;</span><span style="color:#f92672">, pkg</span>: <span style="color:#e6db74">&#34;postgresql13&#34;</span><span style="color:#f92672">, version</span>: <span style="color:#e6db74">&#34;13.16-1Crunchy&#34;</span><span style="color:#f92672">, sha256</span>: <span style="color:#e6db74">&#34;0ecbacc38c691b6cacb95d112e1e3d770ac7ca2f3f822cd6d7ad72a0b1a088c4&#34;</span><span style="color:#f92672">, size</span>: <span style="color:#e6db74">&#34;1531568&#34;</span> }
+</span></span></code></pre></div><p>As you can see, we have all the information needed to construct an URL to retrieve packages from our software
+portal. Well, all the information except the customer&rsquo;s portal credentials, which we gather elsewhere in the
+code 🤐. Obviously, there are <em>many more</em> lines in the <code>packages</code> sub-dictionary (almost 90).</p>
+<p>We download these packages on the Ansible controller, verify their checksum to ensure they haven&rsquo;t been
+tampered with or that bits were munged in transit, and we store them into a cache directory on the Ansible
+controller. Our code is smart enough to check for packages in the cache directory first and will only download
+those files that are missing or do not match their checksum; which means you can even use an Ansible controller
+that doesn&rsquo;t have Internet access since you can simply pre-populate the cache directory by obtaining a tarball
+from us (an oft-requested feature).</p>
+<p>Once everything has been verified to be in the cache directory correctly, our code will synchronize the cache
+directory to all target nodes in the inventory, and then create a software repository (a .repo or .list) that
+points to the cache on those nodes. At that point, we can freely install our shipped packages without an
+Internet connection, and our repo is 100% static so customers can freely update the OS (dnf update/apt
+upgrade) on these nodes w/o fear of the CPA components changing. It&rsquo;s a total win.</p>
+<p>We also spent a non-trivial amount of time refactoring the code to leave Ansible 2.9.6 behind like the relic
+it is. The code now works and is tested with Ansible 2.12.10 - 2.16.x (with the upcoming CPA 2.2.0 adding support for Ansible 2.17.x!). Along with the Ansible upgrade, we now work with recent releases of <a href="https://github.com/ansible-collections/community.postgresql/">community.postgresql</a> which has allowed us to refactor
+even more of our code and optimize things. All in all, things are fairly good on the Ansible front now.</p>
+<h3 id="outro">Outro</h3>
+<p>There are a ton of other changes between the CPA 1.x and 2.x, and we&rsquo;ll cover some of them in future posts, but for now, those are the most significant changes. We have a lot planned for the 2.x line, and have even starting queuing up ideas for an eventual 3.x line.</p>
+<p>Next week, we&rsquo;ll talk about team structure and assigned duties. I think you&rsquo;ll be surprised what we&rsquo;re doing with the resources we have.</p>
+<p><code>:wq</code></p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p><img src="/images/posts/the_architect.jpg" alt="">&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+        </div>
+        <div class="mb-3 post-meta">
+           <a href="/tags/work/">#Work</a>,   <a href="/tags/cpa/">#Cpa</a>,  
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+        
+        
+        <h3>See Also</h3>
+        <ul>
+          
+          <li><a href="/posts/automating-highly-available-postgresql-clusters/">Automating Highly Available PostgreSQL Clusters</a></li>
+          
+          <li><a href="/posts/im-syndicated/">I&#39;m syndicated</a></li>
+          
+          <li><a href="/posts/glutton-for-punishment/">Glutton for Punishment</a></li>
+          
+        </ul>
+        
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.jpg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+          
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+          
+          <li class="list-inline-item"><a href="https://fosstodon.org/@hunleyd"><i class="ti-twitter-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2 
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>
