@@ -6,8 +6,15 @@
     <description>Recent content on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 11 Oct 2024 14:07:29 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 18 Oct 2024 14:29:47 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reconstructing a Development Team</title>
+      <link>https://hunleyd.github.io/posts/reconstructing-a-development-team/</link>
+      <pubDate>Fri, 18 Oct 2024 14:29:47 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/reconstructing-a-development-team/</guid>
+      <description>Welcome to our third installment in this blog series discussing Crunchy Postgres via Automation(CPA).</description>
+    </item>
     <item>
       <title>Crunchy Postgres via Automation: What&#39;s new in V2</title>
       <link>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/</link>

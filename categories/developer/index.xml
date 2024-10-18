@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Developer on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</title>
+    <link>https://hunleyd.github.io/categories/developer/</link>
+    <description>Recent content in Developer on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 18 Oct 2024 14:29:47 +0000</lastBuildDate>
+    <atom:link href="https://hunleyd.github.io/categories/developer/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reconstructing a Development Team</title>
+      <link>https://hunleyd.github.io/posts/reconstructing-a-development-team/</link>
+      <pubDate>Fri, 18 Oct 2024 14:29:47 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/reconstructing-a-development-team/</guid>
+      <description>Welcome to our third installment in this blog series discussing Crunchy Postgres via Automation(CPA).</description>
+    </item>
+  </channel>
+</rss>

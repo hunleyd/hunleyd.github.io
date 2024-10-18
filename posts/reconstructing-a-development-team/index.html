@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Reconstructing a Development Team</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+    
+    
+  <meta name="author" content="Douglas J Hunley">
+  
+  
+  <meta name="theme-name" content="northendlab-light" />
+  
+  <meta name="generator" content="Hugo 0.131.0">
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+  
+  
+  
+
+  
+  <link rel="alternate" type="application/rss+xml" href="https://hunleyd.github.io//index.xml" title="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with">
+  
+</head>
+<body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+<!-- navigation -->
+<header class="fixed-top navigation">
+  <div class="container">
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand"href="https://hunleyd.github.io/"><img class="img-fluid" src="/images/logo.jpg" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navigation">
+        <i class="ti-menu h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"> Home </a>
+          </li>
+          
+        </ul>
+        
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input class="search-box px-4" id="search-query" name="s" type="search" placeholder="Type & Hit Enter...">
+            </form>
+            <button id="searchClose" class="search-close"><i class="ti-close text-dark"></i></button>
+          </div>
+        </div>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /navigation --> <div class="py-5 d-none d-lg-block"></div> 
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Reconstructing a Development Team</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Oct 18, 2024, 
+          <a href="/categories/work/">Work</a>
+          
+          <a href="/categories/cpa/">Cpa</a>
+          
+          <a href="/categories/developer/">Developer</a>
+          
+        </div>
+        
+        <div class="content mb-5">
+          <p>Welcome to our third installment in this blog <a href="/tags/cpa/">series</a> discussing <a href="/posts/crunchy-postgres-via-automation-what-s-new-in-v2/">Crunchy Postgres via Automation</a>(CPA). This week, we&rsquo;re going to talk about the team that I work with, it&rsquo;s membership, its structure, the responsibilities, etc.</p>
+<p>Let&rsquo;s start with the team membership:</p>
+<dl>
+    <dt>Greg</dt>
+        <dd>Our Product Manager that is shared with the [Kubernetes](https://www.crunchydata.com/products/crunchy-postgresql-for-kubernetes) team</dd>
+    <dt>Doug (me)</dt>
+        <dd>the Lead Architect for CPA</dd>
+    <dt>Keith</dt>
+        <dd>the Lead Architect on [pgMonitor](https://github.com/CrunchyData/pgmonitor) and [pg_partman](https://github.com/pgpartman/pg_partman) as well as the senior most developer on CPA</dd>
+    <dt>Jim</dt>
+        <dd>In charge of maintenance on all released CPA lines<dd>
+    <dt>Yorvi</dt>
+        <dd>Our newest member, who splits his time between us and Support</dd>
+</dl>
+<p>The eagle-eyed among you might have noticed I didn&rsquo;t list a team lead or team manager. We&rsquo;re currently self-governing/self-directing with Greg and myself acting as co-manager as needed and escalating as needed to Craig K. It&rsquo;s probably not ideal, but it works for now, so why mess with it? 😉</p>
+<p>You might be thinking, &ldquo;that&rsquo;s not bad.. a tightly knit team of four developers can get a lot done&rdquo;. And you&rsquo;re not wrong, we do get a lot done, IMHO; especially when you look closer and realize that only two of those four are allocated 100% of the time to CPA. I&rsquo;m actually quite proud of what this team accomplishes with the constraints we have.</p>
+<p>In addition to developing CPA, this team is also responsible for providing internal support to our Solutions Architect (SA) team as they craft and deploy highly-available solutions for/with our customers. At any point, any member of the SA team can hop on Slack and ask for assistance in deploying or troubleshooting CPA at a customer&rsquo;s site and get help from my team. As any developer will tell you, interrupting <a href="https://dev.to/codingmindfully/a-guide-to-flow-states-for-programmers-563j">flow</a> is a <em>bad thing</em>, but we can&rsquo;t leave our guys and gals in the field hanging, right? And so, one of the first things I did after accepting the Lead Architect role was to <em>split the team into two sub-teams</em>. 😱</p>
+<p><em>Sub-teams?!</em> Yes, that&rsquo;s right. It became pretty apparent that forward momentum was being halted constantly due to interruptions. An SA would show up in our help channel asking for assistance and one or several of us would stop our work and attempt to help them. If several of us were trying to help, it would sometimes be confusing for the SA to know who to answer first, which suggestions to try first, etc. And my team would often spawn a side-conversion about who was going to help and who could go back to coding, or ask our own questions about why a suggestion was made, or why not suggest $x instead. Additionally, it was kind of a &lsquo;free for all&rsquo; when it came to who was working on bugfixes and who was working on $cool_new_feature, which led to a lot of feature work and begrudging bug fixing.</p>
+<p>So I quickly borrowed a page from my time at Va Software and split the team into two groups. I called these groups our &lsquo;sustaining engineering&rsquo; and our &lsquo;development engineering&rsquo;.</p>
+<p>The sustaining team would be &lsquo;interrupt driven&rsquo; and deal with our internal help duties. They would be responsible for responding to the SA inquiries, joining calls, debugging logs, and whatever else to get the SA over their hurdle. They were empowered to <code>@</code> people for help as needed, with the understanding that they&rsquo;d done all the needful to bring people up to speed on what the issue was thought to be, what had been tried, etc. When not delivering help to the SA team, they would be responsible for maintaining currently released product lines of CPA. It was their job review PRs against the development branch, examine and back-port bugfixes as needed, and coordinating point releases (2.1.1, 2.1.2, etc).</p>
+<p>The development team would, obviously, work on <em>development</em> to drive the product forward. They worked primarily on features, large refactors, and paying down debt. New releases of CPA (2.1.0, 2.2.0, etc) are born of the fruits of this team&rsquo;s efforts. They were not expected to respond to the internal help channel but would be available for &rsquo;escalations&rsquo; from the sustaining team. Finally, they were expected to help mentor and train members of the sustaining team for eventual promotion onto the development team.</p>
+<p>I drafted up a <a href="https://www.scrum.org/resources/creating-team-working-agreement">team contract</a> describing this division of labor and setting some loose SLAs for internal help issues and shopped the contract around a bit. With some tweaking the team adopted the contract, we shared it with our SA and Support teams, and we&rsquo;ve been following this model ever since. We still do issue triage and sprint planning together as a group (for lots of reasons), but generally Keith and I focus on driving CPA forward and cutting new releases about every 12 weeks while Jim and Yorvi focus on delivering back-ports and bugfixes in point releases. It&rsquo;s worked out really well for us so far and <em>everyone</em> on the team is much happier. Jim has stepped up to be the unofficial lead for the sustaining team, and is the Release Manager for point releases, which freed up a significant amount of my time. Along the way, we decided to have the Sustaining team &rsquo;take the lead&rsquo; on bugfixes against the development branch as well, both as a mentored learning experience and because they usually end up having to back-port the fix to release branches anyway.</p>
+<p>Is there more tweaking to be done? Probably. Could we use another body or two? Of course. Does this structure work for us, make everyone happier, and increase our productivity? <em>Absolutely</em>.</p>
+<p>In my next post, I&rsquo;ll go more into how we&rsquo;ve adopted agile (little &lsquo;a&rsquo;), and some of the tooling we use. See you then!</p>
+<p><code>:wq</code></p>
+
+        </div>
+        <div class="mb-3 post-meta">
+           <a href="/tags/work/">#Work</a>,   <a href="/tags/cpa/">#Cpa</a>,   <a href="/tags/developer/">#Developer</a>,  
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+        
+        
+        <h3>See Also</h3>
+        <ul>
+          
+          <li><a href="/posts/crunchy-postgres-via-automation-what-s-new-in-v2/">Crunchy Postgres via Automation: What&#39;s new in V2</a></li>
+          
+          <li><a href="/posts/automating-highly-available-postgresql-clusters/">Automating Highly Available PostgreSQL Clusters</a></li>
+          
+          <li><a href="/posts/im-syndicated/">I&#39;m syndicated</a></li>
+          
+          <li><a href="/posts/glutton-for-punishment/">Glutton for Punishment</a></li>
+          
+        </ul>
+        
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.jpg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+          
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+          
+          <li class="list-inline-item"><a href="https://fosstodon.org/@hunleyd"><i class="ti-twitter-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2 
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>
