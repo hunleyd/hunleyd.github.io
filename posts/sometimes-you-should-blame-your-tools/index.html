@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Sometimes You Should Blame Your Tools</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+    
+    
+  <meta name="author" content="Douglas J Hunley">
+  
+  
+  <meta name="theme-name" content="northendlab-light" />
+  
+  <meta name="generator" content="Hugo 0.131.0">
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+  
+  
+  
+
+  
+  <link rel="alternate" type="application/rss+xml" href="https://hunleyd.github.io//index.xml" title="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with">
+  
+</head>
+<body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+<header class="fixed-top navigation">
+  <div class="container">
+    
+    <nav class="navbar px-0 navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand" href="https://hunleyd.github.io/">
+        <img
+          class="img-fluid"
+          src="/images/logo.jpg"
+          alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"
+        />
+      </a>
+      <button
+        class="navbar-toggler border-0 px-0"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navigation"
+      >
+        <i class="ti-menu text-dark h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"
+              > Home </a
+            >
+          </li>
+          
+        </ul>
+         <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn">
+            <i class="ti-search"></i>
+          </button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input
+                class="search-box px-4"
+                id="search-query"
+                name="s"
+                type="search"
+                placeholder="Type & Hit Enter..."
+              />
+            </form>
+            <button id="searchClose" class="search-close">
+              <i class="ti-close text-dark"></i>
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+ <div class="py-5 d-none d-lg-block"></div> 
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Sometimes You Should Blame Your Tools</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Nov 1, 2024, 
+          <a href="/categories/work/">Work</a>
+          
+          <a href="/categories/cpa/">Cpa</a>
+          
+          <a href="/categories/developer/">Developer</a>
+          
+          <a href="/categories/agile/">Agile</a>
+          
+        </div>
+        
+        <div class="content mb-5">
+          <p>Welcome back to our blog <a href="/tags/cpa/">series</a> discussing <a href="/posts/crunchy-postgres-via-automation-what-s-new-in-v2/">Crunchy Postgres via Automation</a> (CPA) and the team behind it. This week, we&rsquo;re going to talk about the tooling used by the team and discuss some of the agile-lite processes we&rsquo;ve adopted.</p>
+<h3 id="code">Code</h3>
+<dl>
+  <dt>GitHub</dt>
+      <dd>Like a lot of other teams, our code is hosted on GitHub under the company's organization. We currently make use of three different repositories: our main repository hold the actual Ansible collection, while our Bill of Materials (BoM) is hosted in a second, and finally our documentation's Hugo theme is in a third repository since it's the official corporate theme shared among many teams.</dd>
+  <dt>Git</dt>
+    <dd>Obviously, we use Git for our source code. Our main source repository has the BoM and Hugo theme as `submodules` which allows us to tie version branches together across the different repositories. A majority of the team uses `worktrees` to manage their development. If you're not familiar with them, [Graphite](https://graphite.dev/guides/git-working-tree) has a nice write-up on worktrees. IMNSHO, worktrees are the best way to multi-task within a given repository. I even wrote a [tool](https://github.com/hunleyd/gwt) to automate my worktree workflow that others on the team have started using. Finally, the team uses SSH keys for commit signing.</dd>
+  <dt>pre-commit</dt>
+    <dd>To enforce good Git behavior, we make heavy use of [pre-commit](https://pre-commit.com/) in our repositories. We use it to enforce [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/), perform [linting](https://ansible.readthedocs.io/projects/lint/) and enforce several 'repo standards'.</dd>
+  <dt>Vagrant / VirtualBox</dt>
+    <dd>The entire team uses Vagrant to manage our virtual machines for testing using a custom Vagrantfile managed by yours truly. At the moment, &frac34; the team uses VirtualBox virtual machines with one holdout using libvirt (though they plan to convert to VirtualBox soon for consistency and ease of troubleshooting). Our Vagrant boxes are actually built by me using [Packer](https://www.packer.io/) and the [templates](https://github.com/chef/bento) maintained by the [Chef](https://www.chef.io/) team (the irony is _not_ lost on me).</dd>
+</dl>
+### Docs
+<dl>
+  <dt>Hugo</dt>
+    <dd>As mentioned above, we currently use [Hugo](https://gohugo.io/) to generate our product documentation for our customer portal though we'll be moving to something else before the new year.</dd>
+  <dt>antsibull-changelog</dt>
+    <dd>One of the first things I implemented after taking over as Lead Architect is using [antsibull-changelog](https://github.com/ansible-community/antsibull-changelog/) to auto-generate our Changelog at release time. Using this tool pairs nicely with the conventional commits mentioned above and makes it *so* much easier to ensure nothing gets forgotten. We even have a pre-commit check that ensures you've added a Changelog fragment.</dd>
+  <dt>Notion</dt>
+    <dd>Crunchy brought [Notion](https://www.notion.so) into the mix a while back, and while I don't exactly _love it_ we do use it fairly regularly. We house our [team contract](https://www.scrum.org/resources/creating-team-working-agreement), our [decision records](https://adr.github.io/), and our [sprint retrospectives](https://www.scrum.org/resources/what-is-a-sprint-retrospective) here. We use Notion to record various processes (like our release process), our patch policy, and miscellaneous other documents as well.</dd>
+</dl>
+### Bots
+<dl>
+  <dt>Geekbot</dt>
+    <dd>We use [Geekbot](https://geekbot.com/) to handle our [daily standup](https://www.aha.io/roadmapping/guide/agile/what-is-a-daily-standup), our [sprint retrospectives](https://www.aha.io/roadmapping/guide/agile/sprint-retrospective-templates), and to ask the team if they have anything to [demo](https://resources.scrumalliance.org/Article/sprint-demo). I *absolutely* love Geekbot and the team behind it and even managed to get the [CPK](https://www.crunchydata.com/products/crunchy-postgresql-for-kubernetes) team to use it. Asynchronous, Slack-based meetings that are coordinated, rolled up, and reported on by a bot *just make sense* IMHO.</dd>
+  <dt>patchback-bot</dt>
+    <dd>After running into [patchback-bot](https://github.com/sanitizers/patchback-github-app) while contributing to the Ansible [community.postgresql](https://galaxy.ansible.com/ui/repo/published/community/postgresql/) collection, I quickly adopted it in our main repo. We use this bot to make the [sustaining team](/posts/reconstructing-a-development-team/)'s job easier. Our bugfix workflow is such that all fixes land in `development` first (assuming, of course, that said bug exists there). Once the PR is reviewed and approved, we let this bot attempt to port the fix to our older release lines. It works probably 80% of the time, and when it doesn't it updates the PR in question with directions on how to handle the port manually. While it's not perfect, the time that it does save quickly adds up.</dd>
+  <dt>Reclaim</dt>
+    <dd>While most of the team does not, I make heavy use of [Reclaim](https://reclaim.ai/). I have it fully integrated with my Google Calendar and our issue tracker and it manages my workload as well as my 1:1 mtgs, sprint meetings, blocking time for code review, and several other 'habits' (in their terminology). I **love** this tool so much I pay for it out of my own pocket. I absolutely _struggled_ to stay on top of all my tasks and meetings before, trying to keep my focus on high priority tasks, trying to make sure that tasks I'd 'completed' (put up a PR) continued to get attention until they were merged, ensuring I was available to the team for mentorship and co-debugging among any ad hoc items that sprung up killed my productivity and basically ensured that something got lost in the shuffle. With Reclaim, I simply let it schedule my meeting and tasks, and if I need to bump something it's a simple click and Reclaim will reschedule it. Nothing gets missed, and everything gets its share of attention. I truly don't think I can go back to working without Reclaim at this point.</dd>
+</dl>
+### Issues
+<dl>
+  <dt>Linear</dt>
+    <dd>You might expect us to use GitHub issues, but Crunchy brought [Linear](https://linear.app/) in-house for all teams to use, and I jumped on it. I _love_ the integration with Reclaim and Slack and GitHub. Configuring workflows that auto-update Linear issue's status when someone puts up a non-draft PR on GitHub and again when said PR is merged; being able to link Slack threads to Linear issues and have a conversation between other developers, the Build team, and our internal customers that stays in sync between Slack and Linear; and having Linear issue's status auto-update based on Reclaim's knowledge of what I'm working (and having 'time spent' auto-recorded in Linear by Reclaim) are just some of the many reasons I love Linear. I absolutely love that we can block our development issues against Build issues, while our Solutions Architect team blocks their delivery issues against ours making the interdependence obvious and auto-notifying everyone as issues resolve. I am *so* much happier with Linear than I was with GitHub issues.</dd>
+</dl>
+<p>So there you have it, all the &lsquo;major&rsquo; tooling we use currently. And several references to our agile-ish approach to software development: standups, sprints, kickoffs, and retrospectives. I&rsquo;m not a huge fan of Agile (big &lsquo;A&rsquo;) or Scrum, but after reading <a href="https://www.goodreads.com/book/show/17255186-the-phoenix-project">The Phoenix Project</a> (and buying a copy for everyone on the team), I do think there&rsquo;s merit in being agile (little &lsquo;A&rsquo;). I&rsquo;m sure things will change over time, but for now we&rsquo;ve &lsquo;borrowed&rsquo; and adapted a few practices and the team seems to run rather well. For those that care about these things, we&rsquo;ve adopted a two-week sprint duration, we plan for six sprints per release, and we use a Fibonacci point system that allows 0 points (which we reserve for <a href="https://resources.scrumalliance.org/Article/epic-agile">epics</a>).</p>
+<p>I think that about covers things for this topic. Next time, we&rsquo;ll discuss brand new CPA 2.2.0 release!</p>
+<p><code>:wq</code></p>
+
+        </div>
+        <div class="mb-3 post-meta">
+           <a href="/tags/work/">#Work</a>,   <a href="/tags/cpa/">#Cpa</a>,   <a href="/tags/developer/">#Developer</a>,   <a href="/tags/agile/">#Agile</a>,  
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+        
+        
+        <h3>See Also</h3>
+        <ul>
+          
+          <li><a href="/posts/reconstructing-a-development-team/">Reconstructing a Development Team</a></li>
+          
+          <li><a href="/posts/crunchy-postgres-via-automation-what-s-new-in-v2/">Crunchy Postgres via Automation: What&#39;s new in V2</a></li>
+          
+          <li><a href="/posts/automating-highly-available-postgresql-clusters/">Automating Highly Available PostgreSQL Clusters</a></li>
+          
+          <li><a href="/posts/im-syndicated/">I&#39;m syndicated</a></li>
+          
+          <li><a href="/posts/glutton-for-punishment/">Glutton for Punishment</a></li>
+          
+        </ul>
+        
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.jpg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+          
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+          
+          <li class="list-inline-item"><a href="https://fosstodon.org/@hunleyd"><i class="ti-twitter-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://instagram.com/doughunley"><i class="ti-instagram"></i></a></li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2 
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>
