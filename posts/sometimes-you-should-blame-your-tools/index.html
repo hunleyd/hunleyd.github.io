@@ -135,7 +135,7 @@
   <dt>Vagrant / VirtualBox</dt>
     <dd>The entire team uses Vagrant to manage our virtual machines for testing using a custom Vagrantfile managed by yours truly. At the moment, &frac34; the team uses VirtualBox virtual machines with one holdout using libvirt (though they plan to convert to VirtualBox soon for consistency and ease of troubleshooting). Our Vagrant boxes are actually built by me using [Packer](https://www.packer.io/) and the [templates](https://github.com/chef/bento) maintained by the [Chef](https://www.chef.io/) team (the irony is _not_ lost on me).</dd>
 </dl>
-### Docs
+<h3 id="docs">Docs</h3>
 <dl>
   <dt>Hugo</dt>
     <dd>As mentioned above, we currently use [Hugo](https://gohugo.io/) to generate our product documentation for our customer portal though we'll be moving to something else before the new year.</dd>
@@ -144,7 +144,7 @@
   <dt>Notion</dt>
     <dd>Crunchy brought [Notion](https://www.notion.so) into the mix a while back, and while I don't exactly _love it_ we do use it fairly regularly. We house our [team contract](https://www.scrum.org/resources/creating-team-working-agreement), our [decision records](https://adr.github.io/), and our [sprint retrospectives](https://www.scrum.org/resources/what-is-a-sprint-retrospective) here. We use Notion to record various processes (like our release process), our patch policy, and miscellaneous other documents as well.</dd>
 </dl>
-### Bots
+<h3 id="bots">Bots</h3>
 <dl>
   <dt>Geekbot</dt>
     <dd>We use [Geekbot](https://geekbot.com/) to handle our [daily standup](https://www.aha.io/roadmapping/guide/agile/what-is-a-daily-standup), our [sprint retrospectives](https://www.aha.io/roadmapping/guide/agile/sprint-retrospective-templates), and to ask the team if they have anything to [demo](https://resources.scrumalliance.org/Article/sprint-demo). I *absolutely* love Geekbot and the team behind it and even managed to get the [CPK](https://www.crunchydata.com/products/crunchy-postgresql-for-kubernetes) team to use it. Asynchronous, Slack-based meetings that are coordinated, rolled up, and reported on by a bot *just make sense* IMHO.</dd>
@@ -153,7 +153,7 @@
   <dt>Reclaim</dt>
     <dd>While most of the team does not, I make heavy use of [Reclaim](https://reclaim.ai/). I have it fully integrated with my Google Calendar and our issue tracker and it manages my workload as well as my 1:1 mtgs, sprint meetings, blocking time for code review, and several other 'habits' (in their terminology). I **love** this tool so much I pay for it out of my own pocket. I absolutely _struggled_ to stay on top of all my tasks and meetings before, trying to keep my focus on high priority tasks, trying to make sure that tasks I'd 'completed' (put up a PR) continued to get attention until they were merged, ensuring I was available to the team for mentorship and co-debugging among any ad hoc items that sprung up killed my productivity and basically ensured that something got lost in the shuffle. With Reclaim, I simply let it schedule my meeting and tasks, and if I need to bump something it's a simple click and Reclaim will reschedule it. Nothing gets missed, and everything gets its share of attention. I truly don't think I can go back to working without Reclaim at this point.</dd>
 </dl>
-### Issues
+<h3 id="issues">Issues</h3>
 <dl>
   <dt>Linear</dt>
     <dd>You might expect us to use GitHub issues, but Crunchy brought [Linear](https://linear.app/) in-house for all teams to use, and I jumped on it. I _love_ the integration with Reclaim and Slack and GitHub. Configuring workflows that auto-update Linear issue's status when someone puts up a non-draft PR on GitHub and again when said PR is merged; being able to link Slack threads to Linear issues and have a conversation between other developers, the Build team, and our internal customers that stays in sync between Slack and Linear; and having Linear issue's status auto-update based on Reclaim's knowledge of what I'm working (and having 'time spent' auto-recorded in Linear by Reclaim) are just some of the many reasons I love Linear. I absolutely love that we can block our development issues against Build issues, while our Solutions Architect team blocks their delivery issues against ours making the interdependence obvious and auto-notifying everyone as issues resolve. I am *so* much happier with Linear than I was with GitHub issues.</dd>
