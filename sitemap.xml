@@ -2,13 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://hunleyd.github.io/categories/</loc>
+    <lastmod>2024-11-08T17:23:23+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</loc>
+    <lastmod>2024-11-08T17:23:23+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/</loc>
+    <lastmod>2024-11-08T17:23:23+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/else/</loc>
+    <lastmod>2024-11-08T17:23:23+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/else/</loc>
+    <lastmod>2024-11-08T17:23:23+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/posts/</loc>
+    <lastmod>2024-11-08T17:23:23+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/something/</loc>
+    <lastmod>2024-11-08T17:23:23+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/something/</loc>
+    <lastmod>2024-11-08T17:23:23+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/</loc>
+    <lastmod>2024-11-08T17:23:23+00:00</lastmod>
+  </url><url>
     <loc>https://hunleyd.github.io/tags/agile/</loc>
     <lastmod>2024-11-01T17:06:35+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/categories/agile/</loc>
-    <lastmod>2024-11-01T17:06:35+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/categories/</loc>
     <lastmod>2024-11-01T17:06:35+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/tags/cpa/</loc>
@@ -23,16 +47,7 @@
     <loc>https://hunleyd.github.io/categories/developer/</loc>
     <lastmod>2024-11-01T17:06:35+00:00</lastmod>
   </url><url>
-    <loc>https://hunleyd.github.io/</loc>
-    <lastmod>2024-11-01T17:06:35+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/posts/</loc>
-    <lastmod>2024-11-01T17:06:35+00:00</lastmod>
-  </url><url>
     <loc>https://hunleyd.github.io/posts/sometimes-you-should-blame-your-tools/</loc>
-    <lastmod>2024-11-01T17:06:35+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/tags/</loc>
     <lastmod>2024-11-01T17:06:35+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/tags/work/</loc>
