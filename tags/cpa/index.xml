@@ -6,8 +6,15 @@
     <description>Recent content in Cpa on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 Nov 2024 17:06:35 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 08 Nov 2024 17:23:23 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/tags/cpa/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Crunchy Postgres via Automation V2.2</title>
+      <link>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</link>
+      <pubDate>Fri, 08 Nov 2024 17:23:23 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</guid>
+      <description>Continuing our series on Crunchy Postgres via Automatin, we&amp;rsquo;re here this week to discuss the highlights of our latest release line, v2.</description>
+    </item>
     <item>
       <title>Sometimes You Should Blame Your Tools</title>
       <link>https://hunleyd.github.io/posts/sometimes-you-should-blame-your-tools/</link>

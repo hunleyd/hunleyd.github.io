@@ -9,17 +9,31 @@
     <lastBuildDate>Fri, 08 Nov 2024 17:23:23 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Else</title>
-      <link>https://hunleyd.github.io/tags/else/</link>
+      <title>Ansible</title>
+      <link>https://hunleyd.github.io/tags/ansible/</link>
       <pubDate>Fri, 08 Nov 2024 17:23:23 +0000</pubDate>
-      <guid>https://hunleyd.github.io/tags/else/</guid>
+      <guid>https://hunleyd.github.io/tags/ansible/</guid>
       <description></description>
     </item>
     <item>
-      <title>Something</title>
-      <link>https://hunleyd.github.io/tags/something/</link>
+      <title>Cpa</title>
+      <link>https://hunleyd.github.io/tags/cpa/</link>
       <pubDate>Fri, 08 Nov 2024 17:23:23 +0000</pubDate>
-      <guid>https://hunleyd.github.io/tags/something/</guid>
+      <guid>https://hunleyd.github.io/tags/cpa/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Postgresql</title>
+      <link>https://hunleyd.github.io/tags/postgresql/</link>
+      <pubDate>Fri, 08 Nov 2024 17:23:23 +0000</pubDate>
+      <guid>https://hunleyd.github.io/tags/postgresql/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Work</title>
+      <link>https://hunleyd.github.io/tags/work/</link>
+      <pubDate>Fri, 08 Nov 2024 17:23:23 +0000</pubDate>
+      <guid>https://hunleyd.github.io/tags/work/</guid>
       <description></description>
     </item>
     <item>
@@ -30,38 +44,10 @@
       <description></description>
     </item>
     <item>
-      <title>Cpa</title>
-      <link>https://hunleyd.github.io/tags/cpa/</link>
-      <pubDate>Fri, 01 Nov 2024 17:06:35 +0000</pubDate>
-      <guid>https://hunleyd.github.io/tags/cpa/</guid>
-      <description></description>
-    </item>
-    <item>
       <title>Developer</title>
       <link>https://hunleyd.github.io/tags/developer/</link>
       <pubDate>Fri, 01 Nov 2024 17:06:35 +0000</pubDate>
       <guid>https://hunleyd.github.io/tags/developer/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Work</title>
-      <link>https://hunleyd.github.io/tags/work/</link>
-      <pubDate>Fri, 01 Nov 2024 17:06:35 +0000</pubDate>
-      <guid>https://hunleyd.github.io/tags/work/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Ansible</title>
-      <link>https://hunleyd.github.io/tags/ansible/</link>
-      <pubDate>Fri, 04 Oct 2024 14:07:29 +0000</pubDate>
-      <guid>https://hunleyd.github.io/tags/ansible/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Postgresql</title>
-      <link>https://hunleyd.github.io/tags/postgresql/</link>
-      <pubDate>Fri, 04 Oct 2024 14:07:29 +0000</pubDate>
-      <guid>https://hunleyd.github.io/tags/postgresql/</guid>
       <description></description>
     </item>
     <item>
