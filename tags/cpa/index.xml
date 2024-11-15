@@ -6,8 +6,15 @@
     <description>Recent content in Cpa on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 08 Nov 2024 17:23:23 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 15 Nov 2024 17:10:07 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/tags/cpa/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>On CVEs, BoMs, and Releases</title>
+      <link>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</link>
+      <pubDate>Fri, 15 Nov 2024 17:10:07 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</guid>
+      <description>As previously mentioned in this Crunchy Postgres via Automation series, we now use a Bill of Materials (BoM) ship tested-together versions of the components that comprise the CPA product.</description>
+    </item>
     <item>
       <title>Crunchy Postgres via Automation V2.2</title>
       <link>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</link>
