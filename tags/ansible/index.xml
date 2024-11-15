@@ -13,7 +13,7 @@
       <link>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</link>
       <pubDate>Fri, 15 Nov 2024 17:10:07 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</guid>
-      <description>As previously mentioned in this Crunchy Postgres via Automation series, we now use a Bill of Materials (BoM) ship tested-together versions of the components that comprise the CPA product.</description>
+      <description>As previously mentioned in this Crunchy Postgres via Automation series, we now use a Bill of Materials (BoM) to ship tested-together versions of the components that comprise the CPA product.</description>
     </item>
     <item>
       <title>Crunchy Postgres via Automation V2.2</title>
