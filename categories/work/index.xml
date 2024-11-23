@@ -6,8 +6,15 @@
     <description>Recent content in Work on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 Nov 2024 17:10:07 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 23 Nov 2024 17:49:32 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/categories/work/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Anatomy of a Collection; Dissecting CPA</title>
+      <link>https://hunleyd.github.io/posts/anatomy-of-a-collection-dissecting-cpa/</link>
+      <pubDate>Sat, 23 Nov 2024 17:49:32 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/anatomy-of-a-collection-dissecting-cpa/</guid>
+      <description>Prior posts in this series have discussed the Crunchy Postgres via Automation product, the team behind it, and some of our processes and tooling.</description>
+    </item>
     <item>
       <title>On CVEs, BoMs, and Releases</title>
       <link>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</link>

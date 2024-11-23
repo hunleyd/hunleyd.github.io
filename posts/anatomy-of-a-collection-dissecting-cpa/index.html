@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title>Anatomy of a Collection; Dissecting CPA</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description"
+    content="Quick thoughts on stuff I&#39;m playing with">
+    
+    
+  <meta name="author" content="Douglas J Hunley">
+  
+  
+  <meta name="theme-name" content="northendlab-light" />
+  
+  <meta name="generator" content="Hugo 0.131.0">
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.css ">
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/plugins/themify-icons/themify-icons.css ">
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://hunleyd.github.io/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+  <link rel="icon" href="https://hunleyd.github.io/images/favicon.png " type="image/x-icon">
+
+  
+  
+  
+
+  
+  <link rel="alternate" type="application/rss+xml" href="https://hunleyd.github.io//index.xml" title="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with">
+  
+</head>
+<body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+<header class="fixed-top navigation">
+  <div class="container">
+    
+    <nav class="navbar px-0 navbar-expand-lg navbar-light bg-transparent">
+      <a class="navbar-brand" href="https://hunleyd.github.io/">
+        <img
+          class="img-fluid"
+          src="/images/logo.jpg"
+          alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"
+        />
+      </a>
+      <button
+        class="navbar-toggler border-0 px-0"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navigation"
+      >
+        <i class="ti-menu text-dark h3"></i>
+      </button>
+
+      <div class="collapse navbar-collapse text-center" id="navigation">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="https://hunleyd.github.io/"
+              > Home </a
+            >
+          </li>
+          
+        </ul>
+         <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn">
+            <i class="ti-search"></i>
+          </button>
+          <div class="search-wrapper">
+            <form action="https://hunleyd.github.io/search" class="h-100">
+              <input
+                class="search-box px-4"
+                id="search-query"
+                name="s"
+                type="search"
+                placeholder="Type & Hit Enter..."
+              />
+            </form>
+            <button id="searchClose" class="search-close">
+              <i class="ti-close text-dark"></i>
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+ <div class="py-5 d-none d-lg-block"></div> 
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto block shadow mb-5">
+        <h2>Anatomy of a Collection; Dissecting CPA</h2>
+        <div class="mb-3 post-meta">
+          <a href="/author/hunleyd/">Hunleyd</a>,
+          Nov 23, 2024, 
+          <a href="/categories/work/">Work</a>
+          
+          <a href="/categories/ansible/">Ansible</a>
+          
+          <a href="/categories/cpa/">Cpa</a>
+          
+        </div>
+        
+        <div class="content mb-5">
+          <p>Prior posts in this <a href="/tags/cpa">series</a> have discussed the <a href="https://www.crunchydata.com/products/crunchy-high-availability-postgresql">Crunchy Postgres via Automation</a> product, the team behind it, and some of our processes and tooling. This week, we&rsquo;re going to dive into the collection itself.</p>
+<p>Collection? Yes, the CPA product is really an Ansible collection. To quote the <a href="https://docs.ansible.com/ansible/latest/dev_guide/developing_collections.html">docs</a>:</p>
+<blockquote>
+<p>Collections are a distribution format for Ansible content. You can package and distribute playbooks, roles, modules, and plugins using collections. A typical collection addresses a set of related use cases. For example, the cisco.ios collection automates management of Cisco IOS devices.</p>
+</blockquote>
+<p>The CPA product, or <code>crunchydata.pg</code> collection, is a set of roles, modules, and sample playbooks and inventories created to automate the deployment of Postgres clusters. It can stand up a single-node, non-highly-available Postgres instance, a multi-node replicated Postgres instance, and a multi-node highly-available Postgres instance. And because we believe in complete solutions at Crunchy Data, the collection also includes several auxiliary components as well.</p>
+<p>Let&rsquo;s take a look at the whole collection first:
+<img src="/images/posts/collection.png" alt=""></p>
+<p>The first three entries are typical Ansible collection stuff so we won&rsquo;t go over those. Next up, you can see that we ship several example playbooks as part of our collection. These playbooks are broken up four sections: one each for playbooks specific to highly-available clusters, one for non-highly-available clusters, one for playbooks that are common across both highly-available and non-highly-available clusters, and finally playbooks specific to deploying <a href="https://github.com/CrunchyData/pgmonitor">pgMonitor</a> separately (we deploy pgMonitor by default as part of our highly-available clusters).</p>
+<p>Not shown, our playbooks directories also include example Ansible inventories as well as <code>group_vars</code>. While most customers will alter these example playbooks and inventories, or write their own from scratch, we believe in shipping fully functional examples as part of the collection for reference. Additionally, we use these examples for our own internal testing, guaranteeing they are fully functional and reflect our recommended best practices with the current collection.</p>
+<p>Next up, we include a sole Python module as part of the collection currently. It&rsquo;s not intended for use by customers directly, but our roles make use of it directly. It&rsquo;s a fairly simple module and works well enough, but if my planned refactoring (which I&rsquo;ll discuss in a later post) happens then it&rsquo;ll be removed. So let&rsquo;s not dwell on it now.</p>
+<p>Finally, we come to the collection&rsquo;s roles, which are the heart of the product. As you can see, we currently have <em>eighteen</em> roles in the collection! Which honestly seems like a lot, but I already have plans in the near term to break some of the existing roles up into more targeted roles, and want to add a new component entirely which will get it&rsquo;s own role. We&rsquo;re working really hard at applying the Unix philosophy of &lsquo;do one thing and do it well&rsquo; to our roles, so while juggling all these can be a bit much at times, we feel the trade-off is worth it.</p>
+<p>Most of these will be self-evident, but let&rsquo;s dive into these roles, shall we?</p>
+<dl>
+  <dt>alertmanager</dt>
+    <dd>This role is responsible for (optionally) installing Alertmanager, setting up notification channels, and configuring alerting rules so that you know what is going on with your Crunchy Postgres cluster at all times. This role even supports running multiple Alertmanager nodes in their own highly-available configuration.</dd>
+  <dt>backrest</dt>
+    <dd>This role is responsible for installing pgBackRest, configuring the backup repository, and executing any requested backups.</dd>
+  <dt>blackbox_exporter</dt>
+    <dd>A sub-component of pgMonitor, this role is responsible for optionally deploying the Prometheus [blackbox_exporter](https://github.com/prometheus/blackbox_exporter) onto monitored nodes and configuring Prometheus to report on its metrics.</dd>
+  <dt>common</dt>
+    <dd>An 'internal' role that the other roles depend on. Due to the *intricacies* of the twenty-two level Ansible variable [hierarchy](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#ansible-variable-precedence), this role was born out of a need to make cross-role access to certain variables easier. Its use has expanded since then, and it now handles those things that "should be set up for all other roles to find/use later". This role is not designed for users to make use of it.</dd>
+  <dt>etcd</dt>
+    <dd>This role is responsible for installing etcd, configuring the etcd nodes to talk to each other, and then setting up the DCS for Patroni. You could say this role and the Patroni role are the 'heart' of our highly-available clusters.</dd>
+  <dt>firewalld</dt>
+    <dd>One of those 'auxiliary' pieces mentioned above, the firewalld role will optionally install and configure firewalld on nodes of the cluster, adding the appropriate allow rules as needed for components to talk to each other. Not strictly needed by the CPA product, but as Crunchy Data believes strongly in best practices and system security, this role was added to reduce the friction for our users in deploying security-conscious configurations.</dd>
+  <dt>grafana</dt>
+    <dd>Responsible for (optionally) installing Grafana and setting up the default dashboards shipped with pgMonitor, this role works both with an existing Grafana install or a new CPA-installed Grafana.</dd>
+  <dt>haproxy</dt>
+    <dd>HAproxy is used in CPA to route incoming connections to the current Patroni leader (or a follower, depending on what connection type you asked for) without the client/application needing to know the status of the Patroni cluster. This role will install the proxy and configure the appropriate front-end and back-end stanzas based on your deployment choices.</dd>
+  <dt>keepalived</dt>
+    <dd>Another 'auxiliary' role not strictly needed by CPA itself, the keepalived role exists to make deploying services that aren't highly-available by themselves fault tolerant. For example, once can deploy multiple HAProxy nodes and then have the keepalived role set up and maintain a virtual IP (VIP) to 'float' between them. This role was created based on feedback from customers and has since found fairly widespread use 'in the field'.</dd>
+  <dt>patroni</dt>
+    <dd>Obviously *the* linchpin in our highly-available deployments, this role installs and configures Patroni such that it can connect to and monitor the health of the Crunchy Postgres nodes, record said state in the etcd DCS, perform switchover/failover operations, and rebuild/resurrect failed nodes.</dd>
+  <dt>pgbackup</dt>
+    <dd>This role was a mistake and is something I'm going to kill at the first opportunity. This role's original intent was to be a singe point of entry for handling any kind of physical or logical backup a user might want. We created a set of playbooks to handle physical backups and restores (via pgBackRest) or logical backups and restores using `pg_dump` and `pg_restore`. The role works well enough, but having a whole role that basically acts as an redirection into the backrest and postgresql role tasks just seems ridiculous when the playbooks could already abstract that away.</dd>
+  <dt>pgbouncer</dt>
+    <dd>Responsible for installing, configuring, and starting PgBouncer to manage our inbound connection pool, this role is fairly clever in that it configures PgBouncer with two entries for each database in the CPA cluster; one of the entries is for 'rw' traffic and the other for 'ro' traffic. These separate pool point at the respective HAProxy front-ends and route you transparently to the current Patroni leader or to one of the followers as requested. If I can get the time to make it happen, we will be adding support for [PgCat](https://github.com/postgresml/pgcat) in 2025, and then dropping both this role and HAProxy in favor of PgCat in 2026.</dd>
+  <dt>pgmonitor</dt>
+    <dd>Probably my least favorite of all the roles (sorry Keith), not because there's anything wrong with the role, but because it does too much IMHO. This role is responsible for every pgMonitor component that doesn't currently have it's own role as well as (re)configuring all the pgMonitor bits to work together. I fully intend for this role to die soon, replaced by individual roles for each and every component of pgMonitor.</dd>
+  <dt>pkgmgr</dt>
+    <dd>The star of CPA 2.x, this role is responsible or working with our BoMs, configuring hosts with local software repositories and handling any package operations (installs, upgrades, removals). It's our newest role, and probably one of the better written ones (even if I do say so myself).</dd>
+  <dt>postgresql</dt>
+    <dd>The reason or the entire collection, this is the role that installs, configures, and manages Crunchy Postgres (for non-highly-available clusters). As mentioned above, it can stand up a single Crunchy Postgres node (as a leader or a follower), it can stand up a cluster of Crunchy Postgres nodes that follow each other (in a non-highly-available manner) and it can stand up a highly-available Crunchy Postgres cluster.</dd>
+  <dt>preflight</dt>
+    <dd>A role designed to be run once at the beginning of a CPA deployment that will inspect your configuration, examine the targets nodes, and theoretically alert you to any issues that might exist. Ideally, this would happen up front, and allow you to rectify things without getting 47% through a deployment and having it blow up on you. This role has been through a few iterations now, mostly because of the extremely poor way that 'meta dependencies' are handled in Ansible. I have plans for another complete refactor of this role that will also kill the Python module we ship (mentioned above).</dd>
+  <dt>prometheus</dt>
+    <dd>Responsible for (optionally) installing and configuring Prometheus as part of our pgMonitor deployment.</dd>
+  <dt>scheduler</dt>
+    <dd>The last of our 'auxiliary' roles, this role was born of a need to standardize scheduling tasks in a CPA clusters (backups, bloat monitoring, etc). With this role, you simply specify if you want to use `cron` or a Systemd timer, give the schedule, and specify the command to run, and we'll add/update/remove the schedule entry. This role could arguably be a set of tasks in the common role, but it see enough use/re-use that it lives as its own entity.</dd>
+</dl>
+<p>There you have it; the collection as it exists today. Certainly not the largest Ansible collection I&rsquo;ve ever seen, but also not a trivial collection. The collection today supports RedHat 8 and 9 (and it&rsquo;s many many clones) as well as Ubuntu Focal and Jammy. Additionally, we always support <em>all five</em> of the current Crunchy Postgres releases. I know there are plenty of things the collection doesn&rsquo;t do, or &ldquo;should&rdquo; do differently, but I&rsquo;m pretty pleased with what it does support and how adaptable it is.</p>
+<p>Next installment, we&rsquo;ll go over some of the interesting things that we do in our roles. Until then, feel free to hit me up at <code>@hunleyd@fosstodon.org</code> if there&rsquo;s something specific you&rsquo;d like me to write about in this series.</p>
+<p><code>:wq</code></p>
+
+        </div>
+        <div class="mb-3 post-meta">
+           <a href="/tags/work/">#Work</a>,   <a href="/tags/ansible/">#Ansible</a>,   <a href="/tags/cpa/">#Cpa</a>,  
+        </div>
+      </div>
+      <div class="col-lg-8 mx-auto block shadow">
+        
+        
+        <h3>See Also</h3>
+        <ul>
+          
+          <li><a href="/posts/on-cves--boms--and-releases/">On CVEs, BoMs, and Releases</a></li>
+          
+          <li><a href="/posts/crunchy-postgres-via-automation-v2.2/">Crunchy Postgres via Automation V2.2</a></li>
+          
+          <li><a href="/posts/automating-highly-available-postgresql-clusters/">Automating Highly Available PostgreSQL Clusters</a></li>
+          
+          <li><a href="/posts/sometimes-you-should-blame-your-tools/">Sometimes You Should Blame Your Tools</a></li>
+          
+          <li><a href="/posts/reconstructing-a-development-team/">Reconstructing a Development Team</a></li>
+          
+        </ul>
+        
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+
+<footer class="py-4 bg-light border-top">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-4 text-center text-lg-left mb-4 mb-lg-0">
+        <a href="https://hunleyd.github.io/" class="d-block pb-3"><img src="/images/logo.jpg" class="img-fluid" alt="Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with"></a>
+      </div>
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <ul class="list-inline mb-0">
+          
+        </ul>
+      </div>
+      <div class="col-lg-4 text-lg-right text-center mb-4 mb-lg-0">
+        <ul class="list-inline social-icon mb-0">
+          
+          <li class="list-inline-item"><a href="https://fosstodon.org/@hunleyd"><i class="ti-twitter-alt"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://www.linkedin.com/in/dhunley"><i class="ti-linkedin"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://github.com/hunleyd"><i class="ti-github"></i></a></li>
+          
+          <li class="list-inline-item"><a href="https://instagram.com/fstlzrd"><i class="ti-instagram"></i></a></li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <span>Theme © 2020 <a href="https://gethugothemes.com">Gethugothemes</a> All Rights Reserved</span>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script>
+  var indexURL = "https://hunleyd.github.io/index.json"
+</script>
+
+
+<!-- JS Plugins -->
+
+<script src="https://hunleyd.github.io/plugins/jQuery/jquery.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/bootstrap/bootstrap.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/fuse.min.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/mark.js"></script>
+
+<script src="https://hunleyd.github.io/plugins/search/search.js"></script>
+
+
+<!-- Main Script -->
+
+<script src="https://hunleyd.github.io/js/script.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	This site uses cookies. By continuing to use this website, you agree to their use. <span id="js-cookie-button" class="btn btn-sm btn-outline-primary ml-2">I Accept</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2 
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+
+</body>
+
+</html>
