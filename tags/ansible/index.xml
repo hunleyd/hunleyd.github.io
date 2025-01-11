@@ -6,8 +6,15 @@
     <description>Recent content in Ansible on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 23 Nov 2024 17:49:32 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 11 Jan 2025 16:50:29 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/tags/ansible/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Coming Soon to CPA - Package Pinning</title>
+      <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---package-pinning/</link>
+      <pubDate>Sat, 11 Jan 2025 16:50:29 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---package-pinning/</guid>
+      <description>Welcome back to this blog series on Crunchy Postgres via Automation (CPA).</description>
+    </item>
     <item>
       <title>Anatomy of a Collection; Dissecting CPA</title>
       <link>https://hunleyd.github.io/posts/anatomy-of-a-collection-dissecting-cpa/</link>
