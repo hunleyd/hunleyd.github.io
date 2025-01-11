@@ -127,36 +127,36 @@
 
 This PR teaches the pkgmgr role to versionlock/pin packages as we install them for the packages we care about. Said locks/pins are removed as needed to allow upgrades/removes as well.
 </code></pre><p>And indeed, standing up a CPA cluster with this patch results in a situation like the following on the target nodes:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span><span style="color:#f92672">[</span>keith@cd-dc1-pg1 ~<span style="color:#f92672">]</span>$ sudo dnf versionlock list
-</span></span><span style="display:flex;"><span>postgresql17-libs-0:17.2-0Crunchy.el9.*
-</span></span><span style="display:flex;"><span>crunchy-backrest-0:2.53.1-0Crunchy.el9.*
-</span></span><span style="display:flex;"><span>policycoreutils-python-utils-0:3.6-2.1.el9.*
-</span></span><span style="display:flex;"><span>postgresql17-contrib-0:17.2-0Crunchy.el9.*
-</span></span><span style="display:flex;"><span>postgresql17-server-0:17.2-0Crunchy.el9.*
-</span></span><span style="display:flex;"><span>python3-psycopg2-0:2.9.9-0Crunchy.el9.*
-</span></span><span style="display:flex;"><span>pgmonitor-pg17-extension-0:2.0.0-1Crunchy.el9.*
-</span></span><span style="display:flex;"><span>python3-patroni-etcd-0:2.1.7-0Crunchy.el9.*
-</span></span><span style="display:flex;"><span>node-exporter-0:1.7.0-6Crunchy.el9.*
-</span></span><span style="display:flex;"><span>pgmonitor-node-exporter-extras-0:5.1.1-1Crunchy.el9.*
-</span></span><span style="display:flex;"><span>pgmonitor-sql-exporter-extras-0:5.1.1-1Crunchy.el9.*
-</span></span><span style="display:flex;"><span>sql-exporter-0:0.15.0-1Crunchy.el9.*
-</span></span><span style="display:flex;"><span>pgbadger-0:12.4-0Crunchy.el9.*
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>vagrant@ha-192-168-122-16:~$ sudo apt-mark showhold
-</span></span><span style="display:flex;"><span>acl
-</span></span><span style="display:flex;"><span>libpq5
-</span></span><span style="display:flex;"><span>node-exporter
-</span></span><span style="display:flex;"><span>pgbackrest
-</span></span><span style="display:flex;"><span>pgbadger
-</span></span><span style="display:flex;"><span>pgmonitor-node-exporter-extras
-</span></span><span style="display:flex;"><span>pgmonitor-pg16-extension
-</span></span><span style="display:flex;"><span>pgmonitor-sql-exporter-extras
-</span></span><span style="display:flex;"><span>postgresql-16
-</span></span><span style="display:flex;"><span>postgresql-common
-</span></span><span style="display:flex;"><span>python3-patroni-etcd
-</span></span><span style="display:flex;"><span>python3-psycopg2
-</span></span><span style="display:flex;"><span>reprepro
-</span></span><span style="display:flex;"><span>sql-exporter
-</span></span></code></pre></div><p>As you can see, for both RedHat-based and Debian-based systems, we now lock the specific versions of critical packages. This allows the normal system patching to occur without fear of accidentally altering the components we rely on. This solves a long-standing issue with deployed clusters in the field where the Ops team isn&rsquo;t the same team deploying CPA and isn&rsquo;t made aware of the necessary package exclusions.</p>
+<pre tabindex="0"><code>[keith@cd-dc1-pg1 ~]$ sudo dnf versionlock list
+postgresql17-libs-0:17.2-0Crunchy.el9.*
+crunchy-backrest-0:2.53.1-0Crunchy.el9.*
+policycoreutils-python-utils-0:3.6-2.1.el9.*
+postgresql17-contrib-0:17.2-0Crunchy.el9.*
+postgresql17-server-0:17.2-0Crunchy.el9.*
+python3-psycopg2-0:2.9.9-0Crunchy.el9.*
+pgmonitor-pg17-extension-0:2.0.0-1Crunchy.el9.*
+python3-patroni-etcd-0:2.1.7-0Crunchy.el9.*
+node-exporter-0:1.7.0-6Crunchy.el9.*
+pgmonitor-node-exporter-extras-0:5.1.1-1Crunchy.el9.*
+pgmonitor-sql-exporter-extras-0:5.1.1-1Crunchy.el9.*
+sql-exporter-0:0.15.0-1Crunchy.el9.*
+pgbadger-0:12.4-0Crunchy.el9.*
+</code></pre><pre tabindex="0"><code>vagrant@ha-192-168-122-16:~$ sudo apt-mark showhold
+acl
+libpq5
+node-exporter
+pgbackrest
+pgbadger
+pgmonitor-node-exporter-extras
+pgmonitor-pg16-extension
+pgmonitor-sql-exporter-extras
+postgresql-16
+postgresql-common
+python3-patroni-etcd
+python3-psycopg2
+reprepro
+sql-exporter
+</code></pre><p>As you can see, for both RedHat-based and Debian-based systems, we now lock the specific versions of critical packages. This allows the normal system patching to occur without fear of accidentally altering the components we rely on. This solves a long-standing issue with deployed clusters in the field where the Ops team isn&rsquo;t the same team deploying CPA and isn&rsquo;t made aware of the necessary package exclusions.</p>
 <p>To accomplish this, we&rsquo;ve added the <code>ansible.builtin.dpkg_selections</code> and <code>community.general.dnf_versionlock</code> modules to our code and we&rsquo;ve had to enable <code>force_apt_get</code> on our Debian package install task. Finally, we expanded the package install task file to first unpin the package in question, then install/update/remove said package, update the package facts if we made a change, and finally pin the package if we did an install or an upgrade. It&rsquo;s a little bit slower in execution, both because of the extra steps and because we have to loop over the list of packages, but it&rsquo;s a performance hit we have to take in the name of correctness and resiliency.</p>
 <p>This new feature will be included in CPA 2.3, which will be available in the first half of 2025.</p>
 
