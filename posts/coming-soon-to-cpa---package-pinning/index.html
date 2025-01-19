@@ -159,6 +159,7 @@ sql-exporter
 </code></pre><p>As you can see, for both RedHat-based and Debian-based systems, we now lock the specific versions of critical packages. This allows the normal system patching to occur without fear of accidentally altering the components we rely on. This solves a long-standing issue with deployed clusters in the field where the Ops team isn&rsquo;t the same team deploying CPA and isn&rsquo;t made aware of the necessary package exclusions.</p>
 <p>To accomplish this, we&rsquo;ve added the <code>ansible.builtin.dpkg_selections</code> and <code>community.general.dnf_versionlock</code> modules to our code and we&rsquo;ve had to enable <code>force_apt_get</code> on our Debian package install task. Finally, we expanded the package install task file to first unpin the package in question, then install/update/remove said package, update the package facts if we made a change, and finally pin the package if we did an install or an upgrade. It&rsquo;s a little bit slower in execution, both because of the extra steps and because we have to loop over the list of packages, but it&rsquo;s a performance hit we have to take in the name of correctness and resiliency.</p>
 <p>This new feature will be included in CPA 2.3, which will be available in the first half of 2025.</p>
+<p><code>:wq</code></p>
 
         </div>
         <div class="mb-3 post-meta">
