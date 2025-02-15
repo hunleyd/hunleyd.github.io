@@ -6,8 +6,22 @@
     <description>Recent content in Categories on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 19 Jan 2025 21:10:27 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 15 Feb 2025 18:58:38 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Else</title>
+      <link>https://hunleyd.github.io/categories/else/</link>
+      <pubDate>Sat, 15 Feb 2025 18:58:38 +0000</pubDate>
+      <guid>https://hunleyd.github.io/categories/else/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Something</title>
+      <link>https://hunleyd.github.io/categories/something/</link>
+      <pubDate>Sat, 15 Feb 2025 18:58:38 +0000</pubDate>
+      <guid>https://hunleyd.github.io/categories/something/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Ansible</title>
       <link>https://hunleyd.github.io/categories/ansible/</link>

@@ -2,13 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://hunleyd.github.io/categories/</loc>
+    <lastmod>2025-02-15T18:58:38+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/posts/coming-soon-to-cpa---haproxy-3.0.x/</loc>
+    <lastmod>2025-02-15T18:58:38+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/</loc>
+    <lastmod>2025-02-15T18:58:38+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/else/</loc>
+    <lastmod>2025-02-15T18:58:38+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/else/</loc>
+    <lastmod>2025-02-15T18:58:38+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/posts/</loc>
+    <lastmod>2025-02-15T18:58:38+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/something/</loc>
+    <lastmod>2025-02-15T18:58:38+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/categories/something/</loc>
+    <lastmod>2025-02-15T18:58:38+00:00</lastmod>
+  </url><url>
+    <loc>https://hunleyd.github.io/tags/</loc>
+    <lastmod>2025-02-15T18:58:38+00:00</lastmod>
+  </url><url>
     <loc>https://hunleyd.github.io/tags/ansible/</loc>
     <lastmod>2025-01-19T21:10:27+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/categories/ansible/</loc>
-    <lastmod>2025-01-19T21:10:27+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/categories/</loc>
     <lastmod>2025-01-19T21:10:27+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/posts/coming-soon-to-cpa---updated-oses-and-ansible/</loc>
@@ -18,15 +42,6 @@
     <lastmod>2025-01-19T21:10:27+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/categories/cpa/</loc>
-    <lastmod>2025-01-19T21:10:27+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/</loc>
-    <lastmod>2025-01-19T21:10:27+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/posts/</loc>
-    <lastmod>2025-01-19T21:10:27+00:00</lastmod>
-  </url><url>
-    <loc>https://hunleyd.github.io/tags/</loc>
     <lastmod>2025-01-19T21:10:27+00:00</lastmod>
   </url><url>
     <loc>https://hunleyd.github.io/tags/work/</loc>
