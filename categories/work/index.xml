@@ -10,9 +10,9 @@
     <atom:link href="https://hunleyd.github.io/categories/work/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Coming Soon to CPA - Patroni 3.x</title>
-      <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.0.x/</link>
+      <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.x/</link>
       <pubDate>Sat, 22 Feb 2025 16:17:04 +0000</pubDate>
-      <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.0.x/</guid>
+      <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.x/</guid>
       <description>Up next on the list of changes coming soon to Crunchy Postgres via Automation (CPA), Patroni 3.</description>
     </item>
     <item>
