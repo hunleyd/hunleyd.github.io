@@ -6,8 +6,15 @@
     <description>Recent content in Ansible on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 15 Feb 2025 18:58:38 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 22 Feb 2025 16:17:04 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/tags/ansible/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Coming Soon to CPA - Patroni 3.x</title>
+      <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.0.x/</link>
+      <pubDate>Sat, 22 Feb 2025 16:17:04 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.0.x/</guid>
+      <description>Up next on the list of changes coming soon to Crunchy Postgres via Automation (CPA), Patroni 3.</description>
+    </item>
     <item>
       <title>Coming Soon to CPA - HAProxy 3.0.x</title>
       <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---haproxy-3.0.x/</link>
