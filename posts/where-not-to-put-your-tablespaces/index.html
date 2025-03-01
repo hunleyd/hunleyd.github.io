@@ -14,7 +14,7 @@
   
   <meta name="theme-name" content="northendlab-light" />
   
-  <meta name="generator" content="Hugo 0.131.0">
+  <meta name="generator" content="Hugo 0.144.2">
 
   <!-- plugins -->
   
@@ -123,14 +123,11 @@
         <div class="content mb-5">
           <p>From the PostgreSQL <a href="https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html">docs</a>:</p>
 <blockquote>
-<p>Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.</p>
-</blockquote>
+<p>Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.</p></blockquote>
 <blockquote>
-<p>By using tablespaces, an administrator can control the disk layout of a PostgreSQL installation. This is useful in at least two ways. First, if the partition or volume on which the cluster was initialized runs out of space and cannot be extended, a tablespace can be created on a different partition and used until the system can be reconfigured.</p>
-</blockquote>
+<p>By using tablespaces, an administrator can control the disk layout of a PostgreSQL installation. This is useful in at least two ways. First, if the partition or volume on which the cluster was initialized runs out of space and cannot be extended, a tablespace can be created on a different partition and used until the system can be reconfigured.</p></blockquote>
 <blockquote>
-<p>Second, tablespaces allow an administrator to use knowledge of the usage pattern of database objects to optimize performance. For example, an index which is very heavily used can be placed on a very fast, highly available disk, such as an expensive solid state device. At the same time a table storing archived data which is rarely used or not performance critical could be stored on a less expensive, slower disk system.</p>
-</blockquote>
+<p>Second, tablespaces allow an administrator to use knowledge of the usage pattern of database objects to optimize performance. For example, an index which is very heavily used can be placed on a very fast, highly available disk, such as an expensive solid state device. At the same time a table storing archived data which is rarely used or not performance critical could be stored on a less expensive, slower disk system.</p></blockquote>
 <p>As you can see, while not as powerful as tablespaces in, say, Oracle, they do still have their uses in PostgreSQL. You can use them to make use of different filesystems, or different mount options, or different disk types and, in doing so, intelligently apply performance characteristics to subsets of your data. For example, you could put your highest volume tables in a tablespace that is mounted from SSDs while the rest of your db is mounted from spinning rust.</p>
 <p>Sounds decent, right? Now you before you go off and be &ldquo;clever&rdquo; and create an SSD-backed mountpoint for your new tablespace, understand that there are places you <em>should not</em> create the tablespace. You shouldn&rsquo;t create tablespaces on any kind of ephemeral storage, for example on a <code>tmpfs</code> or a <code>ramfs</code> or similar. <em>You also should not create your new tablespaces under $PGDATA</em>. Yes, I&rsquo;m aware there is <code>$PGDATA/pg_tblspc</code> but that directory is <em>not for you</em>. The system will auto-populate that directory with pointers to the real location of your tablespaces!</p>
 <p>So what happens when you create a tablespace inside $PGDATA? Let&rsquo;s find out. First, we&rsquo;ll create the directory for the tablespace:</p>
@@ -154,8 +151,7 @@ pg_basebackup: directory &#34;/Users/doug.hunley/pgdata/tablespaces&#34; exists 
 <p>OK, so it breaks backups. I can work around that by using another backup method. What else?</p>
 <p>How about using <code>pg_upgrade</code> to do an upgrade? No matter if you run in <code>link</code> mode or not, <code>pg_upgrade</code> <em>will not move</em> your tablespace location. So you may have <code>~/pgdata95</code> and <code>~/pgdata96</code> after the upgrade, but your tablespaces <em>are still in</em> <code>~/pgdata95/tablespaces</code>. So, as per the <a href="https://www.postgresql.org/docs/current/static/pgupgrade.html">docs</a>:</p>
 <blockquote>
-<p>Once you are satisfied with the upgrade, you can delete the old cluster&rsquo;s data directories by running the script mentioned when pg_upgrade completes.</p>
-</blockquote>
+<p>Once you are satisfied with the upgrade, you can delete the old cluster&rsquo;s data directories by running the script mentioned when pg_upgrade completes.</p></blockquote>
 <p>And <em>boom</em> you&rsquo;ve just deleted your tablespaces off disk. Congratulations!</p>
 <p>So there you have it. Two very good reasons to not create tablespaces inside $PGDATA. Please, don&rsquo;t do this. Everyone who admins that cluster going forward will thank you.</p>
 
@@ -181,7 +177,6 @@ pg_basebackup: directory &#34;/Users/doug.hunley/pgdata/tablespaces&#34; exists 
         </ul>
         
       </div>
-      
     </div>
   </div>
 </section>

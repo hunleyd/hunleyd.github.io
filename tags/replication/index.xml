@@ -13,14 +13,14 @@
       <link>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</link>
       <pubDate>Tue, 19 Apr 2016 13:55:11 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</guid>
-      <description>UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script.</description>
+      <description>&lt;img src=&#34;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it &lt;a href=&#34;https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>PostgreSQL Streaming Replication in 10 Minutes</title>
       <link>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</link>
       <pubDate>Mon, 18 Apr 2016 14:47:10 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</guid>
-      <description>While there&amp;rsquo;s absolutely nothing new in this blog&amp;quot;post&amp;quot;that isn&amp;rsquo;t covered by the wonderful docs I&amp;rsquo;ve been asked multiple times now by customers if we had some kind of &amp;lsquo;crib notes&amp;rsquo; format for how to get replication up and running.</description>
+      <description>&lt;img src=&#34;https://hunleyd.github.io/images/posts/database-replication.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;While there&amp;rsquo;s absolutely nothing new in this blog&amp;quot;post&amp;quot;that isn&amp;rsquo;t covered by the wonderful &lt;a href=&#34;http://www.postgresql.org/docs/current/static/index.html&#34;&gt;docs&lt;/a&gt; I&amp;rsquo;ve been asked multiple times now by customers if we had some kind of &amp;lsquo;crib notes&amp;rsquo; format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well&amp;quot;post&amp;quot;it so that I can simply point people to it in the future. So here we are.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

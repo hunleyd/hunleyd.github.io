@@ -14,7 +14,7 @@
   
   <meta name="theme-name" content="northendlab-light" />
   
-  <meta name="generator" content="Hugo 0.131.0">
+  <meta name="generator" content="Hugo 0.144.2">
 
   <!-- plugins -->
   
@@ -127,11 +127,9 @@
         <div class="content mb-5">
           <p>If you&rsquo;ve followed my previous posts (<a href="https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/">here</a> and <a href="https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a>), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don&rsquo;t really care about any of the data therein, but if you do, let me guide you to <a href="http://www.pgbackrest.org/">pgBackRest</a>.</p>
 <blockquote>
-<p>pgBackRest aims to be a simple, reliable backup and restore system that can seamlessly scale up to the largest databases and workloads.</p>
-</blockquote>
+<p>pgBackRest aims to be a simple, reliable backup and restore system that can seamlessly scale up to the largest databases and workloads.</p></blockquote>
 <blockquote>
-<p>Instead of relying on traditional backup tools like tar and rsync, pgBackRest implements all backup features internally and uses a custom protocol for communicating with remote systems. Removing reliance on tar and rsync allows for better solutions to database-specific backup challenges. The custom remote protocol allows for more flexibility and limits the types of connections that are required to perform a backup which increases security.</p>
-</blockquote>
+<p>Instead of relying on traditional backup tools like tar and rsync, pgBackRest implements all backup features internally and uses a custom protocol for communicating with remote systems. Removing reliance on tar and rsync allows for better solutions to database-specific backup challenges. The custom remote protocol allows for more flexibility and limits the types of connections that are required to perform a backup which increases security.</p></blockquote>
 <p>pgBackRest is written in Perl, but don&rsquo;t hold that against it. As of the 1.19 release, pgBackRest can now use S3 buckets as the storage backend. I <em>really</em> like pgBackRest and tend to use it for myself and customers over any of the other tools in the PostgreSQL ecosphere. So, let&rsquo;s get started by downloading the latest release from their site, and then installing it. For some reason, no one has added pgBackRest to Homebrew yet (someone, pls!) so let&rsquo;s do it the manual way:</p>
 <pre tabindex="0"><code>$ wget -o Downloads/pgbackrest-release-1.19.tar.gz https://github.com/pgbackrest/pgbackrest/archive/release/1.19.tar.gz
 $ tar xvf Downloads/pgbackrest-release-1.19.tar.gz
@@ -292,7 +290,6 @@ stanza: 92
         </ul>
         
       </div>
-      
     </div>
   </div>
 </section>

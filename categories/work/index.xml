@@ -6,98 +6,105 @@
     <description>Recent content in Work on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 22 Feb 2025 16:17:04 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 01 Mar 2025 16:03:48 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/categories/work/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>I Heard You Like Releases in Your Releases</title>
+      <link>https://hunleyd.github.io/posts/i-heard-you-like-releases-in-your-releases/</link>
+      <pubDate>Sat, 01 Mar 2025 16:03:48 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/i-heard-you-like-releases-in-your-releases/</guid>
+      <description>&lt;p&gt;On Thursday, Feb 13th, the PostgreSQL Global Development Group (PGDG) released their regularly scheduled minor releases of &lt;a href=&#34;https://www.postgresql.org&#34;&gt;PostgreSQL&lt;/a&gt;: 17.3, 16.7, 15.11, 14.16, and 13.19. These releases, among other bugfixes, resolved a CVE within PostgreSQL, so a sense of urgency in releasing them to our customers was bred. This, in turn, kicked off a flurry of activity within &lt;a href=&#34;https://www.crunchydata.com/&#34;&gt;Crunchy&lt;/a&gt; as we readied &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA) for release to ship these new PostgreSQL releases. As we dove into the release process and began our internal testing, word came down from PGDG that the CVE fix as flawed and new PostgreSQL releases would be forthcoming.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Coming Soon to CPA - Patroni 3.x</title>
       <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.x/</link>
       <pubDate>Sat, 22 Feb 2025 16:17:04 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.x/</guid>
-      <description>Up next on the list of changes coming soon to Crunchy Postgres via Automation (CPA), Patroni 3.</description>
+      <description>&lt;p&gt;Up next on the list of changes coming soon to &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA), &lt;a href=&#34;https://github.com/patroni/patroni/&#34;&gt;Patroni&lt;/a&gt; 3.x! If you want to know what else is &amp;lsquo;coming soon&amp;rsquo;, you can catch up &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Coming Soon to CPA - HAProxy 3.0.x</title>
       <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---haproxy-3.0.x/</link>
       <pubDate>Sat, 15 Feb 2025 18:58:38 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---haproxy-3.0.x/</guid>
-      <description>We&amp;rsquo;re back today with more &amp;lsquo;insider info&amp;rsquo; on upcoming changes to Crunchy Postgres via Automation (CPA).</description>
+      <description>&lt;p&gt;We&amp;rsquo;re back today with more &amp;lsquo;insider info&amp;rsquo; on upcoming changes to &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA). If you missed any of the prior posts, you can catch up &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;here&lt;/a&gt;. We recently committed support for &lt;a href=&#34;https://www.haproxy.org/&#34;&gt;HAProxy&lt;/a&gt; 3.0.x into &lt;code&gt;development&lt;/code&gt; and changed our default HAProxy configuration around to accommodate the version bump.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Coming Soon to CPA - Updated OSes and Ansible</title>
       <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---updated-oses-and-ansible/</link>
       <pubDate>Sun, 19 Jan 2025 21:10:27 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---updated-oses-and-ansible/</guid>
-      <description>Continuing the Crunchy Postgres via Automation (CPA) blog series, we&amp;rsquo;re back today with another &amp;lsquo;Coming Soon&amp;rsquo; entry, where we discuss items that have been merged into development and will appear in a future release.</description>
+      <description>&lt;p&gt;Continuing the &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA) blog &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;series&lt;/a&gt;, we&amp;rsquo;re back today with another &amp;lsquo;Coming Soon&amp;rsquo; entry, where we discuss items that have been merged into &lt;code&gt;development&lt;/code&gt; and will appear in a future release. This time around, we&amp;rsquo;re adding a new supported OS platform, dropping an existing OS platform, and raising the minimal version of ansible-core.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Coming Soon to CPA - Package Pinning</title>
       <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---package-pinning/</link>
       <pubDate>Sat, 11 Jan 2025 16:50:29 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---package-pinning/</guid>
-      <description>Welcome back to this blog series on Crunchy Postgres via Automation (CPA).</description>
+      <description>&lt;p&gt;Welcome back to this blog &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;series&lt;/a&gt; on &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA). We&amp;rsquo;re doing something a little different today; we&amp;rsquo;re going to discuss something that is merged in &lt;code&gt;development&lt;/code&gt; but isn&amp;rsquo;t released yet: package pinning.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Anatomy of a Collection; Dissecting CPA</title>
       <link>https://hunleyd.github.io/posts/anatomy-of-a-collection-dissecting-cpa/</link>
       <pubDate>Sat, 23 Nov 2024 17:49:32 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/anatomy-of-a-collection-dissecting-cpa/</guid>
-      <description>Prior posts in this series have discussed the Crunchy Postgres via Automation product, the team behind it, and some of our processes and tooling.</description>
+      <description>&lt;p&gt;Prior posts in this &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;series&lt;/a&gt; have discussed the &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; product, the team behind it, and some of our processes and tooling. This week, we&amp;rsquo;re going to dive into the collection itself.&lt;/p&gt;</description>
     </item>
     <item>
       <title>On CVEs, BoMs, and Releases</title>
       <link>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</link>
       <pubDate>Fri, 15 Nov 2024 17:10:07 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</guid>
-      <description>As previously mentioned in this Crunchy Postgres via Automation series, we now use a Bill of Materials (BoM) to ship tested-together versions of the components that comprise the CPA product.</description>
+      <description>&lt;p&gt;As previously mentioned in this &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;series&lt;/a&gt;, we now use a Bill of Materials (BoM) to ship tested-together versions of the components that comprise the CPA product. Accordingly, when the PostgreSQL Global Development Group (PGDG) releases new versions of PostgreSQL as they did &lt;a href=&#34;https://www.postgresql.org/about/news/postgresql-171-165-159-1414-1317-and-1221-released-2955/&#34;&gt;yesterday&lt;/a&gt;, we have to iterate our BoMs to include these releases.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Crunchy Postgres via Automation V2.2</title>
       <link>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</link>
       <pubDate>Fri, 08 Nov 2024 17:23:23 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</guid>
-      <description>Continuing our series on Crunchy Postgres via Automation, we&amp;rsquo;re here this week to discuss the highlights of our latest release line, v2.</description>
+      <description>&lt;p&gt;Continuing our &lt;a href=&#34;https://hunleyd.github.io/tags/cpa/&#34;&gt;series&lt;/a&gt; on &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt;, we&amp;rsquo;re here this week to discuss the highlights of our latest release line, v2.2. If you haven&amp;rsquo;t already, you can catch up on &lt;a href=&#34;https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/&#34;&gt;the differences between v1 and v2&lt;/a&gt; and then come back, we&amp;rsquo;ll wait for you.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Sometimes You Should Blame Your Tools</title>
       <link>https://hunleyd.github.io/posts/sometimes-you-should-blame-your-tools/</link>
       <pubDate>Fri, 01 Nov 2024 17:06:35 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/sometimes-you-should-blame-your-tools/</guid>
-      <description>Welcome back to our blog series discussing Crunchy Postgres via Automation (CPA) and the team behind it.</description>
+      <description>&lt;p&gt;Welcome back to our blog &lt;a href=&#34;https://hunleyd.github.io/tags/cpa/&#34;&gt;series&lt;/a&gt; discussing &lt;a href=&#34;https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA) and the team behind it. This week, we&amp;rsquo;re going to talk about the tooling used by the team and discuss some of the agile-lite processes we&amp;rsquo;ve adopted.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Reconstructing a Development Team</title>
       <link>https://hunleyd.github.io/posts/reconstructing-a-development-team/</link>
       <pubDate>Fri, 18 Oct 2024 14:29:47 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/reconstructing-a-development-team/</guid>
-      <description>Welcome to our third installment in this blog series discussing Crunchy Postgres via Automation(CPA).</description>
+      <description>&lt;p&gt;Welcome to our third installment in this blog &lt;a href=&#34;https://hunleyd.github.io/tags/cpa/&#34;&gt;series&lt;/a&gt; discussing &lt;a href=&#34;https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt;(CPA). This week, we&amp;rsquo;re going to talk about the team that I work with, it&amp;rsquo;s membership, its structure, the responsibilities, etc.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Crunchy Postgres via Automation: What&#39;s new in V2</title>
       <link>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/</link>
       <pubDate>Fri, 11 Oct 2024 14:07:29 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/</guid>
-      <description>As discussed last week, I&amp;rsquo;m back today to highlight the major differences between the 1.</description>
+      <description>&lt;p&gt;As discussed &lt;a href=&#34;https://hunleyd.github.io/posts/automating-highly-available-postgresql-clusters/&#34;&gt;last week&lt;/a&gt;, I&amp;rsquo;m back today to highlight&#xA;the major differences between the 1.x and 2.x lines of &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt;(CPA).&lt;/p&gt;</description>
     </item>
     <item>
       <title>Automating Highly Available PostgreSQL Clusters</title>
       <link>https://hunleyd.github.io/posts/automating-highly-available-postgresql-clusters/</link>
       <pubDate>Fri, 04 Oct 2024 14:07:29 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/automating-highly-available-postgresql-clusters/</guid>
-      <description>In March of &amp;lsquo;23, I took over as the Lead Architect of my employer&amp;rsquo;s Ansible-based automation for creating highly-available PostgreSQL clusters.</description>
+      <description>&lt;p&gt;In March of &amp;lsquo;23, I took over as the Lead Architect of my employer&amp;rsquo;s Ansible-based automation for creating&#xA;highly-available PostgreSQL clusters.&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; Since then, I&amp;rsquo;ve been responsible for advancing the product: refactoring&#xA;the code, adding functionality, rethinking some of its core attributes, etc. I&amp;rsquo;ve also taken some steps to informally restructure the team that works on things to better divide up responsibilities and make everyone&#xA;more productive.&lt;/p&gt;</description>
     </item>
     <item>
       <title>I&#39;m syndicated</title>
       <link>https://hunleyd.github.io/posts/im-syndicated/</link>
       <pubDate>Sat, 08 Oct 2016 15:19:57 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/im-syndicated/</guid>
-      <description>Someone at work thought it would be a good idea to give me access to the corporate blog so that I might post PostgreSQL-related things there and have them syndicated to Planet PostgreSQL.</description>
+      <description>&lt;p&gt;Someone at work thought it would be a good idea to give me access to the corporate blog so that I might &lt;a href=&#34;http://www.openscg.com/category/postgresql-blogs/doug-postgresql/&#34;&gt;post&lt;/a&gt; PostgreSQL-related things there and have them syndicated to &lt;a href=&#34;http://planet.postgresql.org/&#34;&gt;Planet PostgreSQL&lt;/a&gt;. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Glutton for Punishment</title>
       <link>https://hunleyd.github.io/posts/glutton-for-punishment/</link>
       <pubDate>Mon, 29 Feb 2016 10:14:50 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/glutton-for-punishment/</guid>
-      <description>I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing.</description>
+      <description>&lt;img src=&#34;http://www.theshell.guru/wp-content/uploads/2015/12/osx-logo3.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing. As you probably know, I spent a lot of time and effort on the previous mbp to get &lt;a href=&#34;http://www.gentoo.org&#34;&gt;Gentoo&lt;/a&gt; up and running on it. I chose &lt;em&gt;not&lt;/em&gt; to do so with this one.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

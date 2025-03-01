@@ -14,7 +14,7 @@
   
   <meta name="theme-name" content="northendlab-light" />
   
-  <meta name="generator" content="Hugo 0.131.0">
+  <meta name="generator" content="Hugo 0.144.2">
 
   <!-- plugins -->
   
@@ -128,8 +128,7 @@
           <p>Prior posts in this <a href="/tags/cpa">series</a> have discussed the <a href="https://www.crunchydata.com/products/crunchy-high-availability-postgresql">Crunchy Postgres via Automation</a> product, the team behind it, and some of our processes and tooling. This week, we&rsquo;re going to dive into the collection itself.</p>
 <p>Collection? Yes, the CPA product is really an Ansible collection. To quote the <a href="https://docs.ansible.com/ansible/latest/dev_guide/developing_collections.html">docs</a>:</p>
 <blockquote>
-<p>Collections are a distribution format for Ansible content. You can package and distribute playbooks, roles, modules, and plugins using collections. A typical collection addresses a set of related use cases. For example, the cisco.ios collection automates management of Cisco IOS devices.</p>
-</blockquote>
+<p>Collections are a distribution format for Ansible content. You can package and distribute playbooks, roles, modules, and plugins using collections. A typical collection addresses a set of related use cases. For example, the cisco.ios collection automates management of Cisco IOS devices.</p></blockquote>
 <p>The CPA product, or <code>crunchydata.pg</code> collection, is a set of roles, modules, and sample playbooks and inventories created to automate the deployment of Postgres clusters. It can stand up a single-node, non-highly-available Postgres instance, a multi-node replicated Postgres instance, and a multi-node highly-available Postgres instance. And because we believe in complete solutions at Crunchy Data, the collection also includes several auxiliary components as well.</p>
 <p>Let&rsquo;s take a look at the whole collection first:
 <img src="/images/posts/collection.png" alt=""></p>
@@ -204,7 +203,6 @@
         </ul>
         
       </div>
-      
     </div>
   </div>
 </section>

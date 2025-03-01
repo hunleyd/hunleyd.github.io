@@ -13,42 +13,42 @@
       <link>https://hunleyd.github.io/posts/ricing-it-up/</link>
       <pubDate>Sat, 31 Jul 2021 09:12:54 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/ricing-it-up/</guid>
-      <description>One of the reasons that I find myself going back to Gentoo is that you compile the entire system for your hardware which, in theory, leads to the best performance possible.</description>
+      <description>&lt;p&gt;One of the reasons that I find myself going back to Gentoo is that you compile the entire system &lt;em&gt;for your hardware&lt;/em&gt; which, in theory, leads to the best performance possible. So the first task that I undertook when switching the NUC over to it was to figure out what compile options ClearLinux uses. Once I had figured those settings out, I then decided to use LTO optimization for all packages that support it. However, I didn&amp;rsquo;t want to use the &lt;a href=&#34;https://github.com/gentoo-mirror/lto-overlay&#34;&gt;LTO overlay&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Hello again old friend</title>
       <link>https://hunleyd.github.io/posts/hello-again-old-friend/</link>
       <pubDate>Sat, 24 Jul 2021 10:04:49 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/hello-again-old-friend/</guid>
-      <description>I posted a year ago about dropping ClearLinux and switching to Ubuntu Server on my NUC.</description>
+      <description>&lt;p&gt;I &lt;a href=&#34;https://hunleyd.github.io/posts/Bye-Pi-Hello-NUC&#34;&gt;posted&lt;/a&gt; a year ago about dropping ClearLinux and&#xA;switching to Ubuntu Server on my NUC. While that little experiment was fun, it&#xA;didn&amp;rsquo;t last long. I&amp;rsquo;m not entirely sure what it is about my brain/personality, but&#xA;I just do not like any of the binary Linux distros out there for my own long-term use so I went back to my old friend, Gentoo.&lt;/p&gt;</description>
     </item>
     <item>
       <title>It&#39;s Podman, man</title>
       <link>https://hunleyd.github.io/posts/it-s-podman-man/</link>
       <pubDate>Thu, 30 Jul 2020 12:44:51 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/it-s-podman-man/</guid>
-      <description>As mentioned (very) briefly in other posts, I run Home Assistant as the &amp;lsquo;control hub&amp;rsquo; for all my &amp;ldquo;smart&amp;rdquo; devices in my home.</description>
+      <description>&lt;p&gt;As mentioned (very) briefly in other posts, I run &lt;a href=&#34;https://www.home-assistant.io/&#34;&gt;Home Assistant&lt;/a&gt; as the &amp;lsquo;control hub&amp;rsquo; for all my &amp;ldquo;smart&amp;rdquo; devices in my home. I originally ran it via their &amp;lsquo;HASSOS&amp;rsquo; Docker image but was never really happy with it. So when I most recently rebuilt my NUC, I decided to give this Podman thing a look. And so far, I seem to like it better. I&amp;rsquo;m still not entirely sold on this whole container bullshit, but whatever ;)&lt;/p&gt;</description>
     </item>
     <item>
       <title>Bye Pi, Hello NUC</title>
       <link>https://hunleyd.github.io/posts/bye-pi-hello-nuc/</link>
       <pubDate>Sun, 19 Jul 2020 12:14:03 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/bye-pi-hello-nuc/</guid>
-      <description>About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin a new experiment with an Intel NUC.</description>
+      <description>&lt;p&gt;About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin  a new experiment with an Intel NUC. It&amp;rsquo;s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn&amp;rsquo;t want to go that route. So I looked around, did some research, saved up some money and ended up with:&lt;/p&gt;</description>
     </item>
     <item>
       <title>tuned, PG, and you</title>
       <link>https://hunleyd.github.io/posts/tuned-pg-and-you/</link>
       <pubDate>Tue, 23 Jun 2020 18:22:44 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/tuned-pg-and-you/</guid>
-      <description>We&amp;rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance.</description>
+      <description>&lt;p&gt;We&amp;rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always &amp;rsquo;that depends on your hardware and workload&amp;rsquo; and involves a lot of iteration between changing a setting and benchmarking, I thought I&amp;rsquo;d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for &lt;code&gt;tuned&lt;/code&gt; to make use of. Please, for the love of $diety, stop editing &lt;code&gt;sysctl.conf&lt;/code&gt; and friends!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Glutton for Punishment</title>
       <link>https://hunleyd.github.io/posts/glutton-for-punishment/</link>
       <pubDate>Mon, 29 Feb 2016 10:14:50 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/glutton-for-punishment/</guid>
-      <description>I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing.</description>
+      <description>&lt;img src=&#34;http://www.theshell.guru/wp-content/uploads/2015/12/osx-logo3.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing. As you probably know, I spent a lot of time and effort on the previous mbp to get &lt;a href=&#34;http://www.gentoo.org&#34;&gt;Gentoo&lt;/a&gt; up and running on it. I chose &lt;em&gt;not&lt;/em&gt; to do so with this one.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

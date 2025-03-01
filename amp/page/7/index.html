@@ -14,7 +14,7 @@
   
   <meta name="theme-name" content="northendlab-light" />
   
-  <meta name="generator" content="Hugo 0.131.0">
+  <meta name="generator" content="Hugo 0.144.2">
 
   <!-- plugins -->
   
@@ -133,6 +133,24 @@
           
           
           <article class="mb-5">
+  <h2 class="h4"><a class="post-title" href="https://hunleyd.github.io/posts/upgrading-postgresql-from-9.4-to-10.3-with-pglogical/">Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</a></h2>
+  <div class="mb-3 post-meta">
+    <a href="/author/hunleyd/">Hunleyd</a>,
+    Apr 5, 2018, 
+    <a href="/categories/postgresql/">Postgresql</a>
+    
+    <a href="/categories/howto/">Howto</a>
+    
+  </div>
+  <p><p>I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of <code>pglogical</code> and some planning actually made it rather straightforward. While there&rsquo;s nothing new or original in this post, I still felt compelled to write it up both for posterity&rsquo;s sake and for anyone else that might find the info useful as an example in their own endeavors.</p></p>
+  <div class="mb-3 post-meta">
+     <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/howto/">#Howto</a>,  
+  </div>
+  <a href="https://hunleyd.github.io/posts/upgrading-postgresql-from-9.4-to-10.3-with-pglogical/" class="btn btn-sm btn-transparent pl-0">read more</a>
+  <div style="border: 1px #eee solid; margin:30px 0"></div>
+</article>
+          
+          <article class="mb-5">
   <h2 class="h4"><a class="post-title" href="https://hunleyd.github.io/posts/car-free-in-columbus/">Car(e) free in Columbus</a></h2>
   <div class="mb-3 post-meta">
     <a href="/author/hunleyd/">Hunleyd</a>,
@@ -140,7 +158,7 @@
     <a href="/categories/general/">General</a>
     
   </div>
-  <p>Last year, at the beginning of March, I turned in my 2014 Kia Optima LX at the end of its lease and decided to go &lsquo;car free&rsquo;.</p>
+  <p><p>Last year, at the beginning of March, I turned in my <a href="http://www.autoguide.com/blog/wp-content/uploads/2013/09/2014-kia-optima.jpg">2014 Kia Optima LX</a> at the end of its lease and decided to go &lsquo;car free&rsquo;. I wanted to see exactly how much of a PITA it would be, how many services I&rsquo;d need to subscribe to to get things done, and how much money it would actually save me. It&rsquo;s now been a year, and I can definitively answer these questions.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/general/">#General</a>,  
   </div>
@@ -160,7 +178,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>With the release of PostgreSQL 10, I&rsquo;ve updated my pg script.</p>
+  <p><p>With the release of PostgreSQL 10, I&rsquo;ve updated my <code>pg</code> script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter&rsquo;s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I&rsquo;m pretty pleased with the new version actually.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/osx/">#Osx</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
@@ -176,7 +194,7 @@
     <a href="/categories/postgresql/">Postgresql</a>
     
   </div>
-  <p>Connecting to a PostgreSQL instance isn&rsquo;t hard generally, but sometimes you can run into issues.</p>
+  <p><p>Connecting to a PostgreSQL instance isn&rsquo;t hard generally, but sometimes you can run into issues. Sometimes a port isn&rsquo;t open on a firewall, or the server is in a VLAN that you can&rsquo;t get to, or perhaps the server isn&rsquo;t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you&rsquo;re connection isn&rsquo;t authorized (which is not the same as being unable to <em>authenticate</em>). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you&rsquo;re facing. Let&rsquo;s dive into each scenario and see what the error looks like, shall we?</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,  
   </div>
@@ -196,27 +214,11 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>If you&rsquo;ve followed my previous posts (here and here), then you already have one or more versions of PostgreSQL installed on your Mac.</p>
+  <p><p>If you&rsquo;ve followed my previous posts (<a href="https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/">here</a> and <a href="https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a>), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don&rsquo;t really care about any of the data therein, but if you do, let me guide you to <a href="http://www.pgbackrest.org/">pgBackRest</a>.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/osx/">#Osx</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
   <a href="https://hunleyd.github.io/posts/installing-pgbackrest-on-osx/" class="btn btn-sm btn-transparent pl-0">read more</a>
-  <div style="border: 1px #eee solid; margin:30px 0"></div>
-</article>
-          
-          <article class="mb-5">
-  <h2 class="h4"><a class="post-title" href="https://hunleyd.github.io/posts/goodbye-loui-boy/">Goodbye, Loui boy</a></h2>
-  <div class="mb-3 post-meta">
-    <a href="/author/hunleyd/">Hunleyd</a>,
-    Feb 16, 2017, 
-    <a href="/categories/general/">General</a>
-    
-  </div>
-  <p>Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years.</p>
-  <div class="mb-3 post-meta">
-     <a href="/tags/general/">#General</a>,  
-  </div>
-  <a href="https://hunleyd.github.io/posts/goodbye-loui-boy/" class="btn btn-sm btn-transparent pl-0">read more</a>
   <div style="border: 1px #eee solid; margin:30px 0"></div>
 </article>
           

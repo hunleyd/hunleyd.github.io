@@ -13,28 +13,28 @@
       <link>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</link>
       <pubDate>Wed, 25 Aug 2021 15:33:18 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</guid>
-      <description>I don&amp;rsquo;t like the heat. I hate being hot. Always have.</description>
+      <description>&lt;p&gt;I don&amp;rsquo;t like the heat. I hate being hot. Always have. I&amp;rsquo;m the guy who will&#xA;leave the windows open when others have already turned on the furnace. And&#xA;I used to be guy who ran the AC all the time and ran it at a very low temp.&#xA;Recently though, I&amp;rsquo;ve come to realize that as long as it&amp;rsquo;s colder in here than&#xA;it is out there, it&amp;rsquo;s all good. However, the delta has be more than just a few&#xA;degrees. And I need the fan on.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Automations, timers, and you</title>
       <link>https://hunleyd.github.io/posts/automations--timers--and-you/</link>
       <pubDate>Mon, 16 Aug 2021 13:48:35 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/automations--timers--and-you/</guid>
-      <description>For a while now, I&amp;rsquo;ve been automating my apartment using the automations component of Home Assistant.</description>
+      <description>&lt;p&gt;For a while now, I&amp;rsquo;ve been automating my apartment using the&#xA;&lt;a href=&#34;https://www.home-assistant.io/docs/automation/basics/&#34;&gt;automations&lt;/a&gt; component&#xA;of &lt;a href=&#34;https://www.home-assistant.io&#34;&gt;Home Assistant&lt;/a&gt;. In fact, I had amassed&#xA;quite the collection of automations and was starting to have a problem keeping&#xA;track of them all and their various interactions (intentional or otherwise).&#xA;So earlier this year when Home Assistant introduced &lt;a href=&#34;https://www.home-assistant.io/blog/2021/04/07/release-20214/#automation-debugging&#34;&gt;automation&#xA;debugging&lt;/a&gt;&#xA;I decided to sit down and refactor the whole thing.&lt;/p&gt;</description>
     </item>
     <item>
       <title>I&#39;m blue da ba dee da ba di</title>
       <link>https://hunleyd.github.io/posts/i-m-blue-da-ba-dee-da-ba-di/</link>
       <pubDate>Mon, 26 Jul 2021 12:47:03 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/i-m-blue-da-ba-dee-da-ba-di/</guid>
-      <description>An update on my use Home Assistant, I&amp;rsquo;m no longer running it inside Podman as detailed here.</description>
+      <description>&lt;p&gt;An update on my use &lt;a href=&#34;https://www.home-assistant.io/&#34;&gt;Home Assistant&lt;/a&gt;, I&amp;rsquo;m no&#xA;longer running it inside Podman as detailed &lt;a href=&#34;https://hunleyd.github.io/posts/It-s-Podman-man/&#34;&gt;here&lt;/a&gt;.&#xA;In fact, I&amp;rsquo;m no longer running it on the NUC at all. Instead, I bought myself&#xA;a &lt;a href=&#34;https://www.home-assistant.io/blue&#34;&gt;Home Assistant Blue&lt;/a&gt;. I bought the &amp;lsquo;dev mode&amp;rsquo;&#xA;version just in case I want to tinker with things further, but I could have&#xA;gone with the &amp;lsquo;Zen mode&amp;rsquo; version just as easily.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Locking it down</title>
       <link>https://hunleyd.github.io/posts/locking-it-down/</link>
       <pubDate>Mon, 18 Jun 2018 12:45:02 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/locking-it-down/</guid>
-      <description>I finally saved up and bought myself a smart lock at the end of April.</description>
+      <description>&lt;p&gt;I finally saved up and bought myself a smart lock at the end of April. I ended up getting the &lt;a href=&#34;https://smile.amazon.com/gp/product/B0752V8D8D&#34;&gt;August Smart Lock Pro&lt;/a&gt; with the Connect module. Now that I&amp;rsquo;ve used it for a month and a half, I feel like I can finally review it.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

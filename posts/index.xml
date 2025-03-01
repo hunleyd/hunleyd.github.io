@@ -6,483 +6,490 @@
     <description>Recent content in Posts on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 22 Feb 2025 16:17:04 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 01 Mar 2025 16:03:48 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>I Heard You Like Releases in Your Releases</title>
+      <link>https://hunleyd.github.io/posts/i-heard-you-like-releases-in-your-releases/</link>
+      <pubDate>Sat, 01 Mar 2025 16:03:48 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/i-heard-you-like-releases-in-your-releases/</guid>
+      <description>&lt;p&gt;On Thursday, Feb 13th, the PostgreSQL Global Development Group (PGDG) released their regularly scheduled minor releases of &lt;a href=&#34;https://www.postgresql.org&#34;&gt;PostgreSQL&lt;/a&gt;: 17.3, 16.7, 15.11, 14.16, and 13.19. These releases, among other bugfixes, resolved a CVE within PostgreSQL, so a sense of urgency in releasing them to our customers was bred. This, in turn, kicked off a flurry of activity within &lt;a href=&#34;https://www.crunchydata.com/&#34;&gt;Crunchy&lt;/a&gt; as we readied &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA) for release to ship these new PostgreSQL releases. As we dove into the release process and began our internal testing, word came down from PGDG that the CVE fix as flawed and new PostgreSQL releases would be forthcoming.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Coming Soon to CPA - Patroni 3.x</title>
       <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.x/</link>
       <pubDate>Sat, 22 Feb 2025 16:17:04 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---patroni-3.x/</guid>
-      <description>Up next on the list of changes coming soon to Crunchy Postgres via Automation (CPA), Patroni 3.</description>
+      <description>&lt;p&gt;Up next on the list of changes coming soon to &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA), &lt;a href=&#34;https://github.com/patroni/patroni/&#34;&gt;Patroni&lt;/a&gt; 3.x! If you want to know what else is &amp;lsquo;coming soon&amp;rsquo;, you can catch up &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Coming Soon to CPA - HAProxy 3.0.x</title>
       <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---haproxy-3.0.x/</link>
       <pubDate>Sat, 15 Feb 2025 18:58:38 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---haproxy-3.0.x/</guid>
-      <description>We&amp;rsquo;re back today with more &amp;lsquo;insider info&amp;rsquo; on upcoming changes to Crunchy Postgres via Automation (CPA).</description>
+      <description>&lt;p&gt;We&amp;rsquo;re back today with more &amp;lsquo;insider info&amp;rsquo; on upcoming changes to &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA). If you missed any of the prior posts, you can catch up &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;here&lt;/a&gt;. We recently committed support for &lt;a href=&#34;https://www.haproxy.org/&#34;&gt;HAProxy&lt;/a&gt; 3.0.x into &lt;code&gt;development&lt;/code&gt; and changed our default HAProxy configuration around to accommodate the version bump.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Coming Soon to CPA - Updated OSes and Ansible</title>
       <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---updated-oses-and-ansible/</link>
       <pubDate>Sun, 19 Jan 2025 21:10:27 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---updated-oses-and-ansible/</guid>
-      <description>Continuing the Crunchy Postgres via Automation (CPA) blog series, we&amp;rsquo;re back today with another &amp;lsquo;Coming Soon&amp;rsquo; entry, where we discuss items that have been merged into development and will appear in a future release.</description>
+      <description>&lt;p&gt;Continuing the &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA) blog &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;series&lt;/a&gt;, we&amp;rsquo;re back today with another &amp;lsquo;Coming Soon&amp;rsquo; entry, where we discuss items that have been merged into &lt;code&gt;development&lt;/code&gt; and will appear in a future release. This time around, we&amp;rsquo;re adding a new supported OS platform, dropping an existing OS platform, and raising the minimal version of ansible-core.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Coming Soon to CPA - Package Pinning</title>
       <link>https://hunleyd.github.io/posts/coming-soon-to-cpa---package-pinning/</link>
       <pubDate>Sat, 11 Jan 2025 16:50:29 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/coming-soon-to-cpa---package-pinning/</guid>
-      <description>Welcome back to this blog series on Crunchy Postgres via Automation (CPA).</description>
+      <description>&lt;p&gt;Welcome back to this blog &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;series&lt;/a&gt; on &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA). We&amp;rsquo;re doing something a little different today; we&amp;rsquo;re going to discuss something that is merged in &lt;code&gt;development&lt;/code&gt; but isn&amp;rsquo;t released yet: package pinning.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Anatomy of a Collection; Dissecting CPA</title>
       <link>https://hunleyd.github.io/posts/anatomy-of-a-collection-dissecting-cpa/</link>
       <pubDate>Sat, 23 Nov 2024 17:49:32 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/anatomy-of-a-collection-dissecting-cpa/</guid>
-      <description>Prior posts in this series have discussed the Crunchy Postgres via Automation product, the team behind it, and some of our processes and tooling.</description>
+      <description>&lt;p&gt;Prior posts in this &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;series&lt;/a&gt; have discussed the &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; product, the team behind it, and some of our processes and tooling. This week, we&amp;rsquo;re going to dive into the collection itself.&lt;/p&gt;</description>
     </item>
     <item>
       <title>On CVEs, BoMs, and Releases</title>
       <link>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</link>
       <pubDate>Fri, 15 Nov 2024 17:10:07 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</guid>
-      <description>As previously mentioned in this Crunchy Postgres via Automation series, we now use a Bill of Materials (BoM) to ship tested-together versions of the components that comprise the CPA product.</description>
+      <description>&lt;p&gt;As previously mentioned in this &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;series&lt;/a&gt;, we now use a Bill of Materials (BoM) to ship tested-together versions of the components that comprise the CPA product. Accordingly, when the PostgreSQL Global Development Group (PGDG) releases new versions of PostgreSQL as they did &lt;a href=&#34;https://www.postgresql.org/about/news/postgresql-171-165-159-1414-1317-and-1221-released-2955/&#34;&gt;yesterday&lt;/a&gt;, we have to iterate our BoMs to include these releases.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Crunchy Postgres via Automation V2.2</title>
       <link>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</link>
       <pubDate>Fri, 08 Nov 2024 17:23:23 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</guid>
-      <description>Continuing our series on Crunchy Postgres via Automation, we&amp;rsquo;re here this week to discuss the highlights of our latest release line, v2.</description>
+      <description>&lt;p&gt;Continuing our &lt;a href=&#34;https://hunleyd.github.io/tags/cpa/&#34;&gt;series&lt;/a&gt; on &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt;, we&amp;rsquo;re here this week to discuss the highlights of our latest release line, v2.2. If you haven&amp;rsquo;t already, you can catch up on &lt;a href=&#34;https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/&#34;&gt;the differences between v1 and v2&lt;/a&gt; and then come back, we&amp;rsquo;ll wait for you.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Sometimes You Should Blame Your Tools</title>
       <link>https://hunleyd.github.io/posts/sometimes-you-should-blame-your-tools/</link>
       <pubDate>Fri, 01 Nov 2024 17:06:35 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/sometimes-you-should-blame-your-tools/</guid>
-      <description>Welcome back to our blog series discussing Crunchy Postgres via Automation (CPA) and the team behind it.</description>
+      <description>&lt;p&gt;Welcome back to our blog &lt;a href=&#34;https://hunleyd.github.io/tags/cpa/&#34;&gt;series&lt;/a&gt; discussing &lt;a href=&#34;https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA) and the team behind it. This week, we&amp;rsquo;re going to talk about the tooling used by the team and discuss some of the agile-lite processes we&amp;rsquo;ve adopted.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Reconstructing a Development Team</title>
       <link>https://hunleyd.github.io/posts/reconstructing-a-development-team/</link>
       <pubDate>Fri, 18 Oct 2024 14:29:47 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/reconstructing-a-development-team/</guid>
-      <description>Welcome to our third installment in this blog series discussing Crunchy Postgres via Automation(CPA).</description>
+      <description>&lt;p&gt;Welcome to our third installment in this blog &lt;a href=&#34;https://hunleyd.github.io/tags/cpa/&#34;&gt;series&lt;/a&gt; discussing &lt;a href=&#34;https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt;(CPA). This week, we&amp;rsquo;re going to talk about the team that I work with, it&amp;rsquo;s membership, its structure, the responsibilities, etc.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Crunchy Postgres via Automation: What&#39;s new in V2</title>
       <link>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/</link>
       <pubDate>Fri, 11 Oct 2024 14:07:29 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/</guid>
-      <description>As discussed last week, I&amp;rsquo;m back today to highlight the major differences between the 1.</description>
+      <description>&lt;p&gt;As discussed &lt;a href=&#34;https://hunleyd.github.io/posts/automating-highly-available-postgresql-clusters/&#34;&gt;last week&lt;/a&gt;, I&amp;rsquo;m back today to highlight&#xA;the major differences between the 1.x and 2.x lines of &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt;(CPA).&lt;/p&gt;</description>
     </item>
     <item>
       <title>Automating Highly Available PostgreSQL Clusters</title>
       <link>https://hunleyd.github.io/posts/automating-highly-available-postgresql-clusters/</link>
       <pubDate>Fri, 04 Oct 2024 14:07:29 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/automating-highly-available-postgresql-clusters/</guid>
-      <description>In March of &amp;lsquo;23, I took over as the Lead Architect of my employer&amp;rsquo;s Ansible-based automation for creating highly-available PostgreSQL clusters.</description>
+      <description>&lt;p&gt;In March of &amp;lsquo;23, I took over as the Lead Architect of my employer&amp;rsquo;s Ansible-based automation for creating&#xA;highly-available PostgreSQL clusters.&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; Since then, I&amp;rsquo;ve been responsible for advancing the product: refactoring&#xA;the code, adding functionality, rethinking some of its core attributes, etc. I&amp;rsquo;ve also taken some steps to informally restructure the team that works on things to better divide up responsibilities and make everyone&#xA;more productive.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Meetings, menu bars, and focus modes</title>
       <link>https://hunleyd.github.io/posts/meetings--menu-bars--and-focus-modes/</link>
       <pubDate>Sat, 25 Mar 2023 17:23:08 -0400</pubDate>
       <guid>https://hunleyd.github.io/posts/meetings--menu-bars--and-focus-modes/</guid>
-      <description>We recently moved all our issue tracking at work from GitHub Issues to Linear for one of the products that I work on.</description>
+      <description>&lt;p&gt;We recently moved all our issue tracking at work from &lt;a href=&#34;https://github.com&#34;&gt;GitHub Issues&lt;/a&gt; to &lt;a href=&#34;https://linear.app&#34;&gt;Linear&lt;/a&gt; for one of the products that I work on. While playing around with Linear, I stumbled upon their &lt;a href=&#34;https://reclaim.ai&#34;&gt;Reclaim.AI&lt;/a&gt; integration and immediately fell in love. I quickly set about connecting the two tools, tweaking my settings, and even opened some issues w/ the Support teams of both products. After about a week, I finally had everything up and running exactly how I wanted it. During our sprint planning meeting, I simply pulled whatever Linear issues I wanted to work on into the cycle, and then let Reclaim schedule my work based on priority and points. While I could probably write an entire blog post about these two apps, these tools are really just the &amp;lsquo;setting&amp;rsquo; for this post. You see, now that I had all my work being scheduled for me by a AI, I found that I needed to have my calendar open at all times to see what I was supposed to be working on. I &lt;em&gt;hate&lt;/em&gt; having apps open (or extra tabs in a browser) when I can have the info presented to me in some other fashion. Thankfully, I had previously discovered &lt;a href=&#34;https://github.com/leits/MeetingBar&#34;&gt;MeetingBar&lt;/a&gt; and was already a huge fan. So now I have MeetingBar running in my OSX menu bar showing me (via Reclaim) exactly what I&amp;rsquo;m supposed to be working on (or what I&amp;rsquo;m about to start working on). I was living the dream.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Introducing gwt</title>
       <link>https://hunleyd.github.io/posts/introducing-gwt/</link>
       <pubDate>Sun, 22 Jan 2023 11:11:56 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/introducing-gwt/</guid>
-      <description>After working on it for a bit, and convincing a coworker to use it and provide feedback, I&amp;rsquo;ve finally made gwt an actual thing.</description>
+      <description>&lt;p&gt;After working on it for a bit, and convincing a coworker to use it and provide feedback, I&amp;rsquo;ve finally made &lt;a href=&#34;https://github.com/hunleyd/gwt&#34;&gt;gwt&lt;/a&gt; an actual thing. I expect no one will actually use it, but whatever, it&amp;rsquo;s up for the world to critique.&lt;/p&gt;</description>
     </item>
     <item>
       <title>I said brr it&#39;s cold in here</title>
       <link>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</link>
       <pubDate>Wed, 25 Aug 2021 15:33:18 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/i-said-brr-it-s-cold-in-here/</guid>
-      <description>I don&amp;rsquo;t like the heat. I hate being hot. Always have.</description>
+      <description>&lt;p&gt;I don&amp;rsquo;t like the heat. I hate being hot. Always have. I&amp;rsquo;m the guy who will&#xA;leave the windows open when others have already turned on the furnace. And&#xA;I used to be guy who ran the AC all the time and ran it at a very low temp.&#xA;Recently though, I&amp;rsquo;ve come to realize that as long as it&amp;rsquo;s colder in here than&#xA;it is out there, it&amp;rsquo;s all good. However, the delta has be more than just a few&#xA;degrees. And I need the fan on.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Automations, timers, and you</title>
       <link>https://hunleyd.github.io/posts/automations--timers--and-you/</link>
       <pubDate>Mon, 16 Aug 2021 13:48:35 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/automations--timers--and-you/</guid>
-      <description>For a while now, I&amp;rsquo;ve been automating my apartment using the automations component of Home Assistant.</description>
+      <description>&lt;p&gt;For a while now, I&amp;rsquo;ve been automating my apartment using the&#xA;&lt;a href=&#34;https://www.home-assistant.io/docs/automation/basics/&#34;&gt;automations&lt;/a&gt; component&#xA;of &lt;a href=&#34;https://www.home-assistant.io&#34;&gt;Home Assistant&lt;/a&gt;. In fact, I had amassed&#xA;quite the collection of automations and was starting to have a problem keeping&#xA;track of them all and their various interactions (intentional or otherwise).&#xA;So earlier this year when Home Assistant introduced &lt;a href=&#34;https://www.home-assistant.io/blog/2021/04/07/release-20214/#automation-debugging&#34;&gt;automation&#xA;debugging&lt;/a&gt;&#xA;I decided to sit down and refactor the whole thing.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Generating DNS noise</title>
       <link>https://hunleyd.github.io/posts/generating-dns-noise/</link>
       <pubDate>Sat, 14 Aug 2021 16:27:09 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/generating-dns-noise/</guid>
-      <description>DNS is one of those thing most people never think about.</description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://en.wikipedia.org/wiki/Domain_Name_System&#34;&gt;DNS&lt;/a&gt; is one of those thing&#xA;most people never think about. It&amp;rsquo;s one of those things in the background that&#xA;quietly does its job and no one pays it no mind. Which is why it&amp;rsquo;s surprising&#xA;to people when they discover that if their DNS traffic can be logged, a very&#xA;informative picture of them can be created.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Ricing it up</title>
       <link>https://hunleyd.github.io/posts/ricing-it-up/</link>
       <pubDate>Sat, 31 Jul 2021 09:12:54 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/ricing-it-up/</guid>
-      <description>One of the reasons that I find myself going back to Gentoo is that you compile the entire system for your hardware which, in theory, leads to the best performance possible.</description>
+      <description>&lt;p&gt;One of the reasons that I find myself going back to Gentoo is that you compile the entire system &lt;em&gt;for your hardware&lt;/em&gt; which, in theory, leads to the best performance possible. So the first task that I undertook when switching the NUC over to it was to figure out what compile options ClearLinux uses. Once I had figured those settings out, I then decided to use LTO optimization for all packages that support it. However, I didn&amp;rsquo;t want to use the &lt;a href=&#34;https://github.com/gentoo-mirror/lto-overlay&#34;&gt;LTO overlay&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>I&#39;m blue da ba dee da ba di</title>
       <link>https://hunleyd.github.io/posts/i-m-blue-da-ba-dee-da-ba-di/</link>
       <pubDate>Mon, 26 Jul 2021 12:47:03 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/i-m-blue-da-ba-dee-da-ba-di/</guid>
-      <description>An update on my use Home Assistant, I&amp;rsquo;m no longer running it inside Podman as detailed here.</description>
+      <description>&lt;p&gt;An update on my use &lt;a href=&#34;https://www.home-assistant.io/&#34;&gt;Home Assistant&lt;/a&gt;, I&amp;rsquo;m no&#xA;longer running it inside Podman as detailed &lt;a href=&#34;https://hunleyd.github.io/posts/It-s-Podman-man/&#34;&gt;here&lt;/a&gt;.&#xA;In fact, I&amp;rsquo;m no longer running it on the NUC at all. Instead, I bought myself&#xA;a &lt;a href=&#34;https://www.home-assistant.io/blue&#34;&gt;Home Assistant Blue&lt;/a&gt;. I bought the &amp;lsquo;dev mode&amp;rsquo;&#xA;version just in case I want to tinker with things further, but I could have&#xA;gone with the &amp;lsquo;Zen mode&amp;rsquo; version just as easily.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Hello again old friend</title>
       <link>https://hunleyd.github.io/posts/hello-again-old-friend/</link>
       <pubDate>Sat, 24 Jul 2021 10:04:49 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/hello-again-old-friend/</guid>
-      <description>I posted a year ago about dropping ClearLinux and switching to Ubuntu Server on my NUC.</description>
+      <description>&lt;p&gt;I &lt;a href=&#34;https://hunleyd.github.io/posts/Bye-Pi-Hello-NUC&#34;&gt;posted&lt;/a&gt; a year ago about dropping ClearLinux and&#xA;switching to Ubuntu Server on my NUC. While that little experiment was fun, it&#xA;didn&amp;rsquo;t last long. I&amp;rsquo;m not entirely sure what it is about my brain/personality, but&#xA;I just do not like any of the binary Linux distros out there for my own long-term use so I went back to my old friend, Gentoo.&lt;/p&gt;</description>
     </item>
     <item>
       <title>It&#39;s Podman, man</title>
       <link>https://hunleyd.github.io/posts/it-s-podman-man/</link>
       <pubDate>Thu, 30 Jul 2020 12:44:51 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/it-s-podman-man/</guid>
-      <description>As mentioned (very) briefly in other posts, I run Home Assistant as the &amp;lsquo;control hub&amp;rsquo; for all my &amp;ldquo;smart&amp;rdquo; devices in my home.</description>
+      <description>&lt;p&gt;As mentioned (very) briefly in other posts, I run &lt;a href=&#34;https://www.home-assistant.io/&#34;&gt;Home Assistant&lt;/a&gt; as the &amp;lsquo;control hub&amp;rsquo; for all my &amp;ldquo;smart&amp;rdquo; devices in my home. I originally ran it via their &amp;lsquo;HASSOS&amp;rsquo; Docker image but was never really happy with it. So when I most recently rebuilt my NUC, I decided to give this Podman thing a look. And so far, I seem to like it better. I&amp;rsquo;m still not entirely sold on this whole container bullshit, but whatever ;)&lt;/p&gt;</description>
     </item>
     <item>
       <title>Bye Pi, Hello NUC</title>
       <link>https://hunleyd.github.io/posts/bye-pi-hello-nuc/</link>
       <pubDate>Sun, 19 Jul 2020 12:14:03 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/bye-pi-hello-nuc/</guid>
-      <description>About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin a new experiment with an Intel NUC.</description>
+      <description>&lt;p&gt;About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin  a new experiment with an Intel NUC. It&amp;rsquo;s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn&amp;rsquo;t want to go that route. So I looked around, did some research, saved up some money and ended up with:&lt;/p&gt;</description>
     </item>
     <item>
       <title>tuned, PG, and you</title>
       <link>https://hunleyd.github.io/posts/tuned-pg-and-you/</link>
       <pubDate>Tue, 23 Jun 2020 18:22:44 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/tuned-pg-and-you/</guid>
-      <description>We&amp;rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance.</description>
+      <description>&lt;p&gt;We&amp;rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always &amp;rsquo;that depends on your hardware and workload&amp;rsquo; and involves a lot of iteration between changing a setting and benchmarking, I thought I&amp;rsquo;d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for &lt;code&gt;tuned&lt;/code&gt; to make use of. Please, for the love of $diety, stop editing &lt;code&gt;sysctl.conf&lt;/code&gt; and friends!&lt;/p&gt;</description>
     </item>
     <item>
       <title>The continuing adventures of Mom cutting the cord</title>
       <link>https://hunleyd.github.io/posts/the-continuing-adventures-of-mom-cutting-the-cord/</link>
       <pubDate>Thu, 07 Feb 2019 07:24:43 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/the-continuing-adventures-of-mom-cutting-the-cord/</guid>
-      <description>As a belated update to this post, Mom has told DirecTV to completely go screw and she’s moved over to Philo where she’s currently loving life.</description>
+      <description>&lt;p&gt;As a belated update to &lt;a href=&#34;https://hunleyd.github.io/posts/Mom-cuts-the-cord/&#34;&gt;this&lt;/a&gt; post, Mom has told DirecTV to completely go screw and she’s moved over to &lt;a href=&#34;https://www.philo.com&#34;&gt;Philo&lt;/a&gt; where she’s currently loving life.&lt;/p&gt;</description>
     </item>
     <item>
       <title>pgBackRest 2.08 and macOS Mojave</title>
       <link>https://hunleyd.github.io/posts/pgbackrest-2.08-and-macos-mojave/</link>
       <pubDate>Fri, 04 Jan 2019 08:30:44 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/pgbackrest-2.08-and-macos-mojave/</guid>
-      <description>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue.</description>
+      <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;</description>
     </item>
     <item>
       <title>pgBackRest 2.07 and macOS Mojave</title>
       <link>https://hunleyd.github.io/posts/pgbackrest-2.07-and-macos-mojave/</link>
       <pubDate>Fri, 16 Nov 2018 06:12:31 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/pgbackrest-2.07-and-macos-mojave/</guid>
-      <description>pgBackRest 2.07 was announced today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave).</description>
+      <description>&lt;p&gt;pgBackRest 2.07 was &lt;a href=&#34;https://twitter.com/pgBackRest/status/1063458495700320258&#34;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Monitoring pgBackRest with tail_n_mail</title>
       <link>https://hunleyd.github.io/posts/monitoring-pgbackrest-with-tail_n_mail/</link>
       <pubDate>Mon, 24 Sep 2018 10:58:22 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/monitoring-pgbackrest-with-tail_n_mail/</guid>
-      <description>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use tail_n_mail, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs.</description>
+      <description>&lt;p&gt;After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use &lt;a href=&#34;https://bucardo.org/tail_n_mail/&#34;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;</description>
     </item>
     <item>
       <title>pgBouncer and auth pass-through</title>
       <link>https://hunleyd.github.io/posts/pgbouncer-and-auth-pass-thru/</link>
       <pubDate>Tue, 07 Aug 2018 12:53:28 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/pgbouncer-and-auth-pass-thru/</guid>
-      <description>I&amp;rsquo;ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it&amp;rsquo;s auth_file.</description>
+      <description>&lt;p&gt;I&amp;rsquo;ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it&amp;rsquo;s &lt;code&gt;auth_file&lt;/code&gt;. After the most recent such inquiry (hi Richard!) I decided I&amp;rsquo;d write this&amp;quot;post&amp;quot;to&#xA;hopefully make it clearer how to use &amp;lsquo;pass-through auth&amp;rsquo; and avoid maintaining your users and their passwords in an external file. So let&amp;rsquo;s see what this takes, shall we?&lt;/p&gt;</description>
     </item>
     <item>
       <title>Locking it down</title>
       <link>https://hunleyd.github.io/posts/locking-it-down/</link>
       <pubDate>Mon, 18 Jun 2018 12:45:02 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/locking-it-down/</guid>
-      <description>I finally saved up and bought myself a smart lock at the end of April.</description>
+      <description>&lt;p&gt;I finally saved up and bought myself a smart lock at the end of April. I ended up getting the &lt;a href=&#34;https://smile.amazon.com/gp/product/B0752V8D8D&#34;&gt;August Smart Lock Pro&lt;/a&gt; with the Connect module. Now that I&amp;rsquo;ve used it for a month and a half, I feel like I can finally review it.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Mom cuts the cord</title>
       <link>https://hunleyd.github.io/posts/mom-cuts-the-cord/</link>
       <pubDate>Thu, 31 May 2018 11:12:06 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/mom-cuts-the-cord/</guid>
-      <description>OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT.</description>
+      <description>&lt;p&gt;OK folks, it finally happened. My mother has cut the cord and now gets all her TV needs satisfied via OTA and OTT. Yes, you heard right. My mother. The same woman who spent the better part of a decade (I cut the cord in late 2008) saying how she didn&amp;rsquo;t understand how I could not have cable. Someone check the temperature in Hell will ya? :)&lt;/p&gt;</description>
     </item>
     <item>
       <title>Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title>
       <link>https://hunleyd.github.io/posts/upgrading-postgresql-from-9.4-to-10.3-with-pglogical/</link>
       <pubDate>Thu, 05 Apr 2018 13:15:46 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/upgrading-postgresql-from-9.4-to-10.3-with-pglogical/</guid>
-      <description>I recently helped a customer upgrade their PostgreSQL instance from 9.</description>
+      <description>&lt;p&gt;I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of &lt;code&gt;pglogical&lt;/code&gt; and some planning actually made it rather straightforward. While there&amp;rsquo;s nothing new or original in this post, I still felt compelled to write it up both for posterity&amp;rsquo;s sake and for anyone else that might find the info useful as an example in their own endeavors.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Car(e) free in Columbus</title>
       <link>https://hunleyd.github.io/posts/car-free-in-columbus/</link>
       <pubDate>Mon, 05 Mar 2018 15:55:32 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/car-free-in-columbus/</guid>
-      <description>Last year, at the beginning of March, I turned in my 2014 Kia Optima LX at the end of its lease and decided to go &amp;lsquo;car free&amp;rsquo;.</description>
+      <description>&lt;p&gt;Last year, at the beginning of March, I turned in my &lt;a href=&#34;http://www.autoguide.com/blog/wp-content/uploads/2013/09/2014-kia-optima.jpg&#34;&gt;2014 Kia Optima LX&lt;/a&gt; at the end of its lease and decided to go &amp;lsquo;car free&amp;rsquo;. I wanted to see exactly how much of a PITA it would be, how many services I&amp;rsquo;d need to subscribe to to get things done, and how much money it would actually save me. It&amp;rsquo;s now been a year, and I can definitively answer these questions.&lt;/p&gt;</description>
     </item>
     <item>
       <title>updated PostgreSQL homebrew script</title>
       <link>https://hunleyd.github.io/posts/updated-postgresql-homebrew-script/</link>
       <pubDate>Mon, 16 Oct 2017 13:09:23 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/updated-postgresql-homebrew-script/</guid>
-      <description>With the release of PostgreSQL 10, I&amp;rsquo;ve updated my pg script.</description>
+      <description>&lt;p&gt;With the release of PostgreSQL 10, I&amp;rsquo;ve updated my &lt;code&gt;pg&lt;/code&gt; script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter&amp;rsquo;s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I&amp;rsquo;m pretty pleased with the new version actually.&lt;/p&gt;</description>
     </item>
     <item>
       <title>When you cannot get there from here</title>
       <link>https://hunleyd.github.io/posts/when-you-cannot-get-there-from-here/</link>
       <pubDate>Tue, 25 Jul 2017 11:42:47 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/when-you-cannot-get-there-from-here/</guid>
-      <description>Connecting to a PostgreSQL instance isn&amp;rsquo;t hard generally, but sometimes you can run into issues.</description>
+      <description>&lt;p&gt;Connecting to a PostgreSQL instance isn&amp;rsquo;t hard generally, but sometimes you can run into issues. Sometimes a port isn&amp;rsquo;t open on a firewall, or the server is in a VLAN that you can&amp;rsquo;t get to, or perhaps the server isn&amp;rsquo;t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you&amp;rsquo;re connection isn&amp;rsquo;t authorized (which is not the same as being unable to &lt;em&gt;authenticate&lt;/em&gt;). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you&amp;rsquo;re facing. Let&amp;rsquo;s dive into each scenario and see what the error looks like, shall we?&lt;/p&gt;</description>
     </item>
     <item>
       <title>Installing pgBackRest on OSX</title>
       <link>https://hunleyd.github.io/posts/installing-pgbackrest-on-osx/</link>
       <pubDate>Wed, 14 Jun 2017 12:40:30 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/installing-pgbackrest-on-osx/</guid>
-      <description>If you&amp;rsquo;ve followed my previous posts (here and here), then you already have one or more versions of PostgreSQL installed on your Mac.</description>
+      <description>&lt;p&gt;If you&amp;rsquo;ve followed my previous posts (&lt;a href=&#34;https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/&#34;&gt;here&lt;/a&gt; and &lt;a href=&#34;https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/&#34;&gt;here&lt;/a&gt;), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don&amp;rsquo;t really care about any of the data therein, but if you do, let me guide you to &lt;a href=&#34;http://www.pgbackrest.org/&#34;&gt;pgBackRest&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Goodbye, Loui boy</title>
       <link>https://hunleyd.github.io/posts/goodbye-loui-boy/</link>
       <pubDate>Thu, 16 Feb 2017 08:35:19 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/goodbye-loui-boy/</guid>
-      <description>Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years.</description>
+      <description>&lt;p&gt;&lt;img src=&#34;https://hunleyd.github.io/images/posts/loui.jpg&#34; class=&#34;rleader&#34;&gt;Thank you, Loui, for bringing so much joy and happiness to our lives these past ten years. &lt;em&gt;I will miss you.&lt;/em&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>New look, same content</title>
       <link>https://hunleyd.github.io/posts/new-look-same-content/</link>
       <pubDate>Tue, 17 Jan 2017 14:26:51 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/new-look-same-content/</guid>
-      <description>UPDATE: I&amp;rsquo;ve switched out the theme entirely (again) so the CSS issues should no longer be present.</description>
+      <description>&lt;p&gt;UPDATE: I&amp;rsquo;ve switched out the theme entirely (again) so the CSS issues should no longer be present. The rest of this post still sands.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Changes to the blog</title>
       <link>https://hunleyd.github.io/posts/changes-to-the-blog/</link>
       <pubDate>Fri, 02 Dec 2016 13:48:42 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/changes-to-the-blog/</guid>
-      <description>In case you haven&amp;rsquo;t already noticed, I&amp;rsquo;ve made some changes to my blog recently.</description>
+      <description>&lt;p&gt;&lt;img class=&#34;rleader&#34; src=&#34;https://www.pngitem.com/pimgs/m/197-1971115_blog-symbol-blogging-icon-hd-png-download.png&#34; /&gt;In case you haven&amp;rsquo;t already noticed, I&amp;rsquo;ve made some changes to my blog recently. Nothing really significant or drastic, but things that have been on the TODO list for a while.&lt;/p&gt;</description>
     </item>
     <item>
       <title>EXPLAINing intermittent perf problems</title>
       <link>https://hunleyd.github.io/posts/explaining-intermittent-perf-problems/</link>
       <pubDate>Mon, 28 Nov 2016 12:24:12 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/explaining-intermittent-perf-problems/</guid>
-      <description>We&amp;rsquo;ve all gotten the dreaded email/call from a user stating that a query is &amp;ldquo;slow sometimes&amp;rdquo;.</description>
+      <description>&lt;img src=&#34;http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg&#34; class=&#34;lleader&#34;&gt;&#xA;&lt;p&gt;We&amp;rsquo;ve all gotten the dreaded email/call from a user stating that a query is &amp;ldquo;slow sometimes&amp;rdquo;. If you&amp;rsquo;re lucky, the &amp;ldquo;sometimes&amp;rdquo; actually ends up being fairly consistent and you can fairly easily determine what&amp;rsquo;s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?&lt;/p&gt;</description>
     </item>
     <item>
       <title>PostgreSQL logging, strftime, and you</title>
       <link>https://hunleyd.github.io/posts/postgresql-logging-strftime-and-you/</link>
       <pubDate>Mon, 21 Nov 2016 12:17:03 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/postgresql-logging-strftime-and-you/</guid>
-      <description>PostgreSQL has a pretty extensive logging facility. I&amp;rsquo;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&amp;rsquo;m gonna talk a bit about the naming of the log file itself.</description>
+      <description>&lt;p&gt;PostgreSQL has a pretty extensive logging facility. I&amp;rsquo;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&amp;rsquo;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&amp;rsquo;t have to be static. You can, in fact, have the name dynamically created by using &lt;code&gt;strftime()&lt;/code&gt; escapes. But what exactly are those?&lt;/p&gt;</description>
     </item>
     <item>
       <title>Upgrading PostgreSQL 5x faster</title>
       <link>https://hunleyd.github.io/posts/upgrading-postgresql-5x-faster/</link>
       <pubDate>Fri, 18 Nov 2016 12:18:28 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/upgrading-postgresql-5x-faster/</guid>
-      <description>Upgrading your PostgreSQL database from one major version (e.g. 9.</description>
+      <description>&lt;img src=&#34;https://cdn.shopify.com/s/files/1/0946/8552/files/5xFaster.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Managing multiple PostgreSQL installs via Homebrew</title>
       <link>https://hunleyd.github.io/posts/managing-multiple-postgresql-installs-via-homebrew/</link>
       <pubDate>Wed, 16 Nov 2016 13:45:27 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/managing-multiple-postgresql-installs-via-homebrew/</guid>
-      <description>Following on from this post, you probably have multiple versions of PostgreSQL installed on your Mac.</description>
+      <description>&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;Following on from &lt;a href=&#34;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&#34;&gt;this&lt;/a&gt; post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I&amp;rsquo;m back with a full-fledged shell script to help manage all this. Without further ado, the script:&lt;/p&gt;</description>
     </item>
     <item>
       <title>Routing email through GMail on OSX</title>
       <link>https://hunleyd.github.io/posts/routing-email-through-gmail-on-osx/</link>
       <pubDate>Tue, 15 Nov 2016 10:51:00 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/routing-email-through-gmail-on-osx/</guid>
-      <description>Like most geeks, I have scripts that I&amp;rsquo;ve written that I like to have run from cron on a regular basis.</description>
+      <description>&lt;img src=&#34;http://www.postfix.org/mysza.gif&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;Like most geeks, I have scripts that I&amp;rsquo;ve written that I like to have run from cron on a regular basis. And since the running of these scripts might be in the middle of the night, I like for them to email their output to me so I know if they succeeded or failed. As such, I need an MTA on my computer that can actually deliver these emails to GMail. For me, this is trivial using Sendmail or SSMTP on a Linux box, but I can never remember how to do this using Postfix on OSX. So after having to Google everything to get this running once more, I&amp;rsquo;m going to commit the steps here for my future self to reference :)&lt;/p&gt;</description>
     </item>
     <item>
       <title>Getting fancy with PostgreSQL and Homebrew</title>
       <link>https://hunleyd.github.io/posts/getting-fancy-with-postgresql-and-homebrew/</link>
       <pubDate>Thu, 10 Nov 2016 14:58:15 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/getting-fancy-with-postgresql-and-homebrew/</guid>
-      <description>In our previous post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid.</description>
+      <description>&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;In our &lt;a href=&#34;https://hunleyd.github.io/PostgreSQL-Homebrew-and-You/&#34;&gt;previous&lt;/a&gt; post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we&amp;rsquo;re going to take the next step.&lt;/p&gt;</description>
     </item>
     <item>
       <title>PostgreSQL, Homebrew, and You</title>
       <link>https://hunleyd.github.io/posts/postgresql-homebrew-and-you/</link>
       <pubDate>Fri, 04 Nov 2016 13:30:09 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/postgresql-homebrew-and-you/</guid>
-      <description>If you need to install PostgreSQL onto your Macbook, you have several options available to you nowadays.</description>
+      <description>&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;If you need to install &lt;a href=&#34;http://www.posatgresql.org&#34;&gt;PostgreSQL&lt;/a&gt; onto your Macbook, you have several options available to you nowadays. You could use the &lt;a href=&#34;https://bigsql.com/postgresql/installers.jsp&#34;&gt;BigSQL&lt;/a&gt; package, or you could use &lt;a href=&#34;http://postgresapp.com&#34;&gt;Postgres.app&lt;/a&gt;, or several others. However, if you&amp;rsquo;re a geek running OSX, you&amp;rsquo;ve probably already installed &lt;a href=&#34;http://brew.sh&#34;&gt;Homebrew&lt;/a&gt; and it has a wonderful PostgreSQL package. So let&amp;rsquo;s use it, shall we?&lt;/p&gt;</description>
     </item>
     <item>
       <title>Inaugural pgCMH mtg scheduled</title>
       <link>https://hunleyd.github.io/posts/inaugural-pgcmh-mtg/</link>
       <pubDate>Thu, 03 Nov 2016 11:45:32 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/inaugural-pgcmh-mtg/</guid>
-      <description>As announced on our Twitter, we&amp;rsquo;ve scheduled our inaugural meeting for Jan 24, 2017 at 1800 hrs.</description>
+      <description>&lt;img src=&#34;https://hunleyd.github.io/images/posts/pgCMH.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;As announced on our &lt;a href=&#34;http://www.twitter.com/pgCMH&#34;&gt;Twitter&lt;/a&gt;, we&amp;rsquo;ve scheduled our inaugural meeting for Jan 24, 2017 at 1800 hrs. The folks at CoverMyMeds will graciously provide the meeting space (and parking garage) while OpenSCG is buying the pizza!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Mi Box</title>
       <link>https://hunleyd.github.io/posts/mi-box/</link>
       <pubDate>Wed, 02 Nov 2016 10:27:55 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/mi-box/</guid>
-      <description>I&amp;rsquo;m a fan of Android TV. While I didn&amp;rsquo;t blog about it, I ran out and bought a Nexus Player on day 1.</description>
+      <description>&lt;p&gt;I&amp;rsquo;m a fan of Android TV. While I didn&amp;rsquo;t blog about it, I ran out and bought a Nexus Player on day 1. And I loved it! OK, I loved it &lt;em&gt;more&lt;/em&gt; after the upgrade to Android 6.x, but still.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Announcing pgCMH</title>
       <link>https://hunleyd.github.io/posts/announcing-pgcmh/</link>
       <pubDate>Mon, 31 Oct 2016 11:35:22 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/announcing-pgcmh/</guid>
-      <description>I&amp;rsquo;ve been kicking around the idea of founding a Columbus-based PostgreSQL User Group for a while now.</description>
+      <description>&lt;img src=&#34;https://hunleyd.github.io/images/posts/pgCMH.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;I&amp;rsquo;ve been kicking around the idea of founding a Columbus-based PostgreSQL User Group for a while now. I even went so far as to float the idea to people at &lt;a href=&#34;http://www.ohiolinux.org&#34;&gt;OLF&lt;/a&gt; in &amp;lsquo;14. After much hemming and hawing (and no one else stepping up in the interim), I&amp;rsquo;ve finally gone and done it.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Incremental pgBadger</title>
       <link>https://hunleyd.github.io/posts/incremental-pgbadger/</link>
       <pubDate>Wed, 26 Oct 2016 14:46:09 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/incremental-pgbadger/</guid>
-      <description>You&amp;rsquo;re probably already running pgBadger to monitor your PostgreSQL logs.</description>
+      <description>&lt;img src=&#34;http://www.darold.net/img/pgbadger_logo.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;You&amp;rsquo;re probably already running &lt;a href=&#34;https://dalibo.github.io/pgbadger/index.html&#34;&gt;pgBadger&lt;/a&gt; to monitor your PostgreSQL logs. However, you&amp;rsquo;re probably &lt;em&gt;not&lt;/em&gt; running it incrementally throughout the day. Most likely, you&amp;rsquo;ve setup a &lt;code&gt;cron.daily&lt;/code&gt; job that runs pgBadger against yesterday&amp;rsquo;s log(s). And that&amp;rsquo;s great. Except when you get the dreaded &amp;ldquo;what just happened on the db?&amp;rdquo; email. Are you going to wait until tonight&amp;rsquo;s normal run of pgBadger to see what happened? Are you going to run a &amp;lsquo;one off&amp;rsquo; pgBadger against today&amp;rsquo;s logfile and wait for it to process the &lt;em&gt;entire&lt;/em&gt; log? Or are you going to copy the log off somewhere, edit it to cut it down, and &lt;em&gt;then&lt;/em&gt; run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?&lt;/p&gt;</description>
     </item>
     <item>
       <title>I&#39;m syndicated</title>
       <link>https://hunleyd.github.io/posts/im-syndicated/</link>
       <pubDate>Sat, 08 Oct 2016 15:19:57 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/im-syndicated/</guid>
-      <description>Someone at work thought it would be a good idea to give me access to the corporate blog so that I might post PostgreSQL-related things there and have them syndicated to Planet PostgreSQL.</description>
+      <description>&lt;p&gt;Someone at work thought it would be a good idea to give me access to the corporate blog so that I might &lt;a href=&#34;http://www.openscg.com/category/postgresql-blogs/doug-postgresql/&#34;&gt;post&lt;/a&gt; PostgreSQL-related things there and have them syndicated to &lt;a href=&#34;http://planet.postgresql.org/&#34;&gt;Planet PostgreSQL&lt;/a&gt;. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Linka</title>
       <link>https://hunleyd.github.io/posts/linka/</link>
       <pubDate>Mon, 03 Oct 2016 13:30:58 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/linka/</guid>
-      <description>My Linka smart bike lock from Kickstarter showed up today. Holy Hell is this thing solid and hefty!</description>
+      <description>&lt;p&gt;&lt;img src=&#34;https://cdn.shopify.com/s/files/1/1496/1314/t/2/assets/lock-ani-rev.gif?7613491084476583766&#34;  class=&#34;rleader&#34; /&gt;My &lt;a href=&#34;http://www.linkalock.com&#34;&gt;Linka&lt;/a&gt; smart bike lock from Kickstarter showed up today. Holy Hell is this thing solid and hefty! Like for reals, this is gonna throw the balance of the bike off :)&lt;/p&gt;</description>
     </item>
     <item>
       <title>Welcome to Cypheri</title>
       <link>https://hunleyd.github.io/posts/welcome-to-cypheri/</link>
       <pubDate>Sat, 01 Oct 2016 11:23:56 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/welcome-to-cypheri/</guid>
-      <description>I recently discovered the online game NationStates thanks to a Reddit thread and was intrigued.</description>
+      <description>&lt;img src=&#34;https://www.nationstates.net/images/flags/uploads/cypheri__755901.jpg&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;I recently discovered the online game &lt;a href=&#34;https://www.nationstates.net&#34;&gt;NationStates&lt;/a&gt; thanks to a Reddit thread and was intrigued. So I logged in, created the nation of Cypheri and then used &lt;a href=&#34;https://blogtrottr.com&#34;&gt;BlogTrottr&lt;/a&gt; to feed the RSS feed into my inbox (which allows me offline play essentially. I ignore it until I get a notice). So far, it&amp;rsquo;s been a neat little experience. I&amp;rsquo;m pretty sure if you know me well enough to be reading this blog that I know you well enough to say you&amp;rsquo;ll enjoy it too.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Functional Blog Archives</title>
       <link>https://hunleyd.github.io/posts/functional-blog-archives/</link>
       <pubDate>Fri, 30 Sep 2016 23:30:19 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/functional-blog-archives/</guid>
-      <description>After an afternoon dicking around with Jekyll templates and Google searching, I&amp;rsquo;ve fixed up this site&amp;rsquo;s archive pages and tag cloud pages.</description>
+      <description>&lt;p&gt;After an afternoon dicking around with Jekyll templates and Google searching, I&amp;rsquo;ve fixed up this site&amp;rsquo;s archive pages and tag cloud pages. I now have functional archive pages for everything, each year, each month of said year, and each day of said month. And they should all continue to function perfectly well on their own as time progresses (unless I bork something up later trying to be clever). I&amp;rsquo;ve also modified the tag cloud page to fit in the archive pages&amp;rsquo; look an feel. It&amp;rsquo;s not a true tag cloud in that I don&amp;rsquo;t increase the weight or height of the font based on frequency, but the cloud does contain every tag used across the blog and each tag has it&amp;rsquo;s own page showing all posts tagged as such.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Where Not To Put Your Tablespaces</title>
       <link>https://hunleyd.github.io/posts/where-not-to-put-your-tablespaces/</link>
       <pubDate>Wed, 24 Aug 2016 11:55:12 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/where-not-to-put-your-tablespaces/</guid>
-      <description>From the PostgreSQL docs:&#xA;Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored.</description>
+      <description>&lt;p&gt;From the PostgreSQL &lt;a href=&#34;https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html&#34;&gt;docs&lt;/a&gt;:&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Making use of gists</title>
       <link>https://hunleyd.github.io/posts/making-use-of-gists/</link>
       <pubDate>Sun, 19 Jun 2016 15:42:19 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/making-use-of-gists/</guid>
-      <description>After stumbling upon an example of how to do so, I&amp;rsquo;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks.</description>
+      <description>&lt;p&gt;&lt;img src=&#34;https://2.bp.blogspot.com/-5yjV3rrAvHk/U6Gm4-prTPI/AAAAAAAAJf4/7HXcjGxXGxI/s1600/logo_github_gist.png&#34; class=&#34;rleader&#34; /&gt; After stumbling upon an example of how to do so, I&amp;rsquo;ve converted all my existing blog posts to use GitHub Gists instead of inline code blocks. It gives me added functionality, and reduces the size of the blog pages as well. Might as well use every GitHub feature I can since I&amp;rsquo;ve chosen that platform for hosting my blog, right? :)&lt;/p&gt;</description>
     </item>
     <item>
       <title>Happy 20th Birthday, PostgreSQL</title>
       <link>https://hunleyd.github.io/posts/happy-20th-postgresql/</link>
       <pubDate>Thu, 12 May 2016 10:11:31 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/happy-20th-postgresql/</guid>
-      <description>Just a quick shout out to PostgreSQL, the world&amp;rsquo;s most advanced open source database, as it celebrates it&amp;rsquo;s 20th year in existence.</description>
+      <description>&lt;img src=&#34;https://hunleyd.github.io/images/posts/pgsql_20th.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;Just a quick shout out to PostgreSQL, the world&amp;rsquo;s most advanced open source database, as it celebrates it&amp;rsquo;s 20&lt;sup&gt;th&lt;/sup&gt; year in existence. Happy birthday, y&amp;rsquo;all!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Smart Lock on Android N DP2</title>
       <link>https://hunleyd.github.io/posts/smart-lock-on-android-n-dp2/</link>
       <pubDate>Sun, 24 Apr 2016 22:18:56 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/smart-lock-on-android-n-dp2/</guid>
-      <description>As mentioned in my previous post I&amp;rsquo;ve stumbled across two issues with the 2nd Developer Preview of Android N.</description>
+      <description>&lt;img src=&#34;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;As mentioned in my previous &lt;a href=&#34;https://hunleyd.github.io/Now-on-Tap-Android-N-DP2/&#34;&gt;post&lt;/a&gt; I&amp;rsquo;ve stumbled across two issues with the 2&lt;sup&gt;nd&lt;/sup&gt; Developer Preview of Android N. The latter of these issues is discussed here. For reasons I won&amp;rsquo;t get into, I had need to wipe and reset my Huawei Watch, and after doing so I attempted to setup Smart Lock such that when the watch was connected, the phone would stay unlocked.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Now on Tap on Android N DP2</title>
       <link>https://hunleyd.github.io/posts/now-on-tap-android-n-dp2/</link>
       <pubDate>Sun, 24 Apr 2016 21:53:06 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/now-on-tap-android-n-dp2/</guid>
-      <description>Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program.</description>
+      <description>&lt;p&gt;&lt;img src=&#34;http://pre13.deviantart.net/ba29/th/pre/i/2016/070/a/f/android_n_logo_by_stayka007-d9untw2.png&#34; class=&#34;lleader&#34; /&gt;Like any good geek, I jumped at the opportunity to enroll my Nexus 5x into the Android N Beta Program. And for the most part, it&amp;rsquo;s worked really well for me. I &lt;em&gt;really&lt;/em&gt; like Android N so far and can&amp;rsquo;t wait for the final release. However, after updating from Developer Preview 1 (DP1) to Developer Preview 2 (DP2) via OTA, I noticed two small issues. The first issue is that I could not, for the life of me, get Now On Tap to enable even though it was previously enabled on DP1.&lt;/p&gt;</description>
     </item>
     <item>
       <title>PostgreSQL Partitioning Quick Tip</title>
       <link>https://hunleyd.github.io/posts/postgresql-partitioning-quick-tip/</link>
       <pubDate>Thu, 21 Apr 2016 09:25:32 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/postgresql-partitioning-quick-tip/</guid>
-      <description>Partitioning in PostgreSQL can be a little daunting at times.</description>
+      <description>&lt;img src=&#34;http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use &lt;a href=&#34;https://github.com/keithf4/pg_partman&#34;&gt;pg_partman&lt;/a&gt; and be done with it. However, if you&amp;rsquo;re trying to learn, can&amp;rsquo;t use &lt;code&gt;pg_partman&lt;/code&gt;, or are a masochist you&amp;rsquo;ll probably be following the &lt;a href=&#34;http://www.postgresql.org/docs/current/static/ddl-partitioning.html&#34;&gt;docs&lt;/a&gt; and thinking &amp;lsquo;seriously? i have to create indexes on each child? why don&amp;rsquo;t they copy the indexes of the parent? why isn&amp;rsquo;t this easier?&amp;rsquo;. Here&amp;rsquo;s a little tip to make things slightly easier:&lt;/p&gt;</description>
     </item>
     <item>
       <title>Logical Replication with Skytools3</title>
       <link>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</link>
       <pubDate>Tue, 19 Apr 2016 13:55:11 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</guid>
-      <description>UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script.</description>
+      <description>&lt;img src=&#34;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it &lt;a href=&#34;https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>PostgreSQL Streaming Replication in 10 Minutes</title>
       <link>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</link>
       <pubDate>Mon, 18 Apr 2016 14:47:10 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</guid>
-      <description>While there&amp;rsquo;s absolutely nothing new in this blog&amp;quot;post&amp;quot;that isn&amp;rsquo;t covered by the wonderful docs I&amp;rsquo;ve been asked multiple times now by customers if we had some kind of &amp;lsquo;crib notes&amp;rsquo; format for how to get replication up and running.</description>
+      <description>&lt;img src=&#34;https://hunleyd.github.io/images/posts/database-replication.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;While there&amp;rsquo;s absolutely nothing new in this blog&amp;quot;post&amp;quot;that isn&amp;rsquo;t covered by the wonderful &lt;a href=&#34;http://www.postgresql.org/docs/current/static/index.html&#34;&gt;docs&lt;/a&gt; I&amp;rsquo;ve been asked multiple times now by customers if we had some kind of &amp;lsquo;crib notes&amp;rsquo; format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well&amp;quot;post&amp;quot;it so that I can simply point people to it in the future. So here we are.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Hello, eero</title>
       <link>https://hunleyd.github.io/posts/hello_eero/</link>
       <pubDate>Wed, 30 Mar 2016 14:00:25 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/hello_eero/</guid>
-      <description>I don&amp;rsquo;t normally back things on Indiegogo (I&amp;rsquo;m a Kickstarter snob), but I jumped all over the eero.</description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.eero.com&#34;&gt;&lt;img src=&#34;https://d2vw57jh8139vw.cloudfront.net/abb56b35841139f06625b173a8bb8936.jpg&#34; class=&#34;lleader&#34; /&gt;&lt;/a&gt;I don&amp;rsquo;t normally back things on Indiegogo (I&amp;rsquo;m a Kickstarter snob), but I jumped &lt;em&gt;all over&lt;/em&gt; the eero. I have always had issues with the wifi coverage in my home. I&amp;rsquo;ve tried everything I can think of to alleviate the issues; differernt brands of routers, flashing different OSS firmwares, &amp;lsquo;upgrading&amp;rsquo; to SOHO equipment instead of consumer equipment, moving them all over the damn house, etc. Nothing solved all the issues. Until now.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Glutton for Punishment</title>
       <link>https://hunleyd.github.io/posts/glutton-for-punishment/</link>
       <pubDate>Mon, 29 Feb 2016 10:14:50 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/glutton-for-punishment/</guid>
-      <description>I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing.</description>
+      <description>&lt;img src=&#34;http://www.theshell.guru/wp-content/uploads/2015/12/osx-logo3.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;I recently got a new Macbook Pro from work as my old one was having keyboard issues and since it was 3+ yrs old they deemed it not worth fixing. As you probably know, I spent a lot of time and effort on the previous mbp to get &lt;a href=&#34;http://www.gentoo.org&#34;&gt;Gentoo&lt;/a&gt; up and running on it. I chose &lt;em&gt;not&lt;/em&gt; to do so with this one.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Flyover State</title>
       <link>https://hunleyd.github.io/posts/flyover-state/</link>
       <pubDate>Tue, 09 Feb 2016 16:59:24 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/flyover-state/</guid>
-      <description>Being a native of Ohio, I can assure you that I&amp;rsquo;ve heard every form of &amp;lsquo;flyover state&amp;rsquo; insult you could care to level at me.</description>
+      <description>&lt;p&gt;&lt;a href=&#34;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&#34;&gt;&lt;img src=&#34;http://howmuch.net/content/images/1600/cost-of-driving-from-Columbus-49c5.png&#34; class=&#34;lleader&#34; /&gt;&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;Being a native of Ohio, I can assure you that I&amp;rsquo;ve heard every form of &amp;lsquo;flyover state&amp;rsquo; insult you could care to level at me. And while I won&amp;rsquo;t debate the merits of Ohio in this post, I will take a minute to point out something that I&amp;rsquo;ve been saying for quite some time.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Efficient, yet Creepy</title>
       <link>https://hunleyd.github.io/posts/efficient-yet-creepy/</link>
       <pubDate>Thu, 21 Jan 2016 18:30:00 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/efficient-yet-creepy/</guid>
-      <description>So I&amp;rsquo;m sitting here seting up a new Internet connected device I bought recently (more on it later) and I can&amp;rsquo;t seem to get it to setup properly.</description>
+      <description>&lt;p&gt;So I&amp;rsquo;m sitting here seting up a new Internet connected device I bought recently (more on it later) and I can&amp;rsquo;t seem to get it to setup properly. I can create an account on their site, I can login to said account, I can power on said device and connect to it using the app and configure it to use my home wifi, but the device just won&amp;rsquo;t ever finish connecting and syncing w/ my account on the site.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Huawei Watch Review</title>
       <link>https://hunleyd.github.io/posts/huawei-watch-review/</link>
       <pubDate>Thu, 21 Jan 2016 17:00:00 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/huawei-watch-review/</guid>
-      <description>A couple of my mates wanted me to let them know what I thought of the Huawei Watch (hereafter, &amp;lsquo;H&amp;rsquo;) after upgrading from the Moto 360 (hereafter, 360) and spending some time getting to know the &amp;lsquo;H&amp;rsquo;.</description>
+      <description>&lt;p&gt;&lt;a href=&#34;http://www.gethuawei.com/buy-huawei-watch&#34;&gt;&lt;img src=&#34;https://www.androidpolice.com/wp-content/uploads/2015/09/nexus2cee_DSC09617-728x485.jpg&#34; class=&#34;lleader&#34;/&gt;&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;A couple of my mates wanted me to let them know what I thought of the &lt;a href=&#34;http://www.huawei.com/en/&#34;&gt;Huawei&lt;/a&gt; Watch (hereafter, &amp;lsquo;H&amp;rsquo;) after upgrading from the &lt;a href=&#34;https://www.motorola.com/us/products/moto-360&#34;&gt;Moto 360&lt;/a&gt; (hereafter, 360) and spending some time getting to know the &amp;lsquo;H&amp;rsquo;. So here&amp;rsquo;s my thoughts.&lt;/p&gt;</description>
     </item>
     <item>
       <title>I Have The Power</title>
       <link>https://hunleyd.github.io/posts/i-have-the-power/</link>
       <pubDate>Sun, 17 Jan 2016 00:00:00 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/i-have-the-power/</guid>
-      <description>A while back, I ran across a little project on Kickstarter from a company called SnapPower.</description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.snappower.com/snaprays-guidelight/&#34;&gt;&lt;img src=&#34;https://cdn.shopify.com/s/files/1/0336/9049/products/Single_GL2_white_07d7acd0-a697-4d12-8cd0-7bfbfd26d969_900x.jpg?v=1564168251&#34; class=&#34;lleader&#34; /&gt;&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;A while back, I ran across a little project on &lt;a href=&#34;http://www.kickstarter.com&#34;&gt;Kickstarter&lt;/a&gt; from a company called &lt;a href=&#34;http://www.snappower.com&#34;&gt;SnapPower&lt;/a&gt;. The project was for a product called Guidelights.&lt;/p&gt;</description>
     </item>
     <item>
       <title>More Bloggy Goodness</title>
       <link>https://hunleyd.github.io/posts/more-bloggy-goodness/</link>
       <pubDate>Sat, 16 Jan 2016 01:00:00 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/more-bloggy-goodness/</guid>
-      <description>It&amp;rsquo;s been a bit of a busy day for me and my blog.</description>
+      <description>&lt;p&gt;It&amp;rsquo;s been a bit of a busy day for me and my blog. I&amp;rsquo;ve added:&lt;/p&gt;</description>
     </item>
     <item>
       <title>Once More, With Feeling</title>
       <link>https://hunleyd.github.io/posts/once-more-with-feeling/</link>
       <pubDate>Sat, 16 Jan 2016 00:00:00 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/once-more-with-feeling/</guid>
-      <description>Welcome to the new blog.&#xA;That&amp;rsquo;s right, I&amp;rsquo;m running my own blog once again.</description>
+      <description>&lt;p&gt;Welcome to the new blog.&lt;/p&gt;&#xA;&lt;p&gt;That&amp;rsquo;s right, I&amp;rsquo;m running my own blog &lt;em&gt;once again&lt;/em&gt;. I know, I know. It&amp;rsquo;s been a while. And I&amp;rsquo;ve picked &lt;em&gt;yet another&lt;/em&gt; platform for hosting my blog. But you know what? You&amp;rsquo;re just going to have to suck it up. I&amp;rsquo;ve been itching to make some new posts for a while now, and the platforms at my disposal, &lt;em&gt;cough&lt;/em&gt; &lt;em&gt;G+&lt;/em&gt; &lt;em&gt;cough&lt;/em&gt;, just haven&amp;rsquo;t really cut it. Sure, they sorta worked, but with the recent direction that platform is headed? Forget it.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

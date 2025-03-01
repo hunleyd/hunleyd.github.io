@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us"><head>
   <meta charset="utf-8">
-  <title>Managing multiple PostgreSQL installs via Homebrew</title>
+  <title>I Heard You Like Releases in Your Releases</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -112,143 +112,29 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 mx-auto block shadow mb-5">
-        <h2>Managing multiple PostgreSQL installs via Homebrew</h2>
+        <h2>I Heard You Like Releases in Your Releases</h2>
         <div class="mb-3 post-meta">
           <a href="/author/hunleyd/">Hunleyd</a>,
-          Nov 16, 2016, 
+          Mar 1, 2025, 
+          <a href="/categories/work/">Work</a>
+          
+          <a href="/categories/cpa/">Cpa</a>
+          
           <a href="/categories/postgresql/">Postgresql</a>
-          
-          <a href="/categories/osx/">Osx</a>
-          
-          <a href="/categories/howto/">Howto</a>
           
         </div>
         
         <div class="content mb-5">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png" class="rleader" />
-<p>Following on from <a href="https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/">this</a> post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I&rsquo;m back with a full-fledged shell script to help manage all this. Without further ado, the script:</p>
-<pre tabindex="0"><code>#!/bin/zsh
-
-wanted_ver=$1
-no_restart=
-
-# is the version requested installed?
-brew ls --version postgresql@${wanted_ver} &amp;&gt;/dev/null
-if [[ $? -eq 0 ]] ; then
-  # yes, carry on
-  :
-else
-  # nope, so install it
-  echo &#34;Installing PostgreSQL ${wanted_ver}... &#34;
-  brew install petere/postgresql/postgresql@${wanted_ver}
-fi
-
-# is postgresql is running?
-for i in /usr/local/var/postgres/*
-do
-  check_ver=$(basename ${i})
-  is_running=$(ps -few|egrep -- &#34;[p]ostgres.*-D.*${check_ver}&#34;)
-
-  if [[ -z ${is_running} ]] ; then
-    # nope, carry on
-    :
-  else
-    # it is. is it the requested version?
-    if [[ &#34;${wanted_ver}&#34; = &#34;${check_ver}&#34; ]] ; then
-      # yup, carry on
-      no_restart=t
-    else
-      # nope, so kill it
-      echo -n &#34;Stopping PostgreSQL ${check_ver}... &#34;
-      /usr/local/opt/postgresql@${check_ver}/bin/pg_ctl \
-          -D /usr/local/var/postgres/${check_ver} \
-          stop -w -mf | grep &#39;stopped&#39;
-    fi
-  fi
-done
-
-# what version is active?
-if [[ -e /usr/local/bin/psql ]] ; then
-    active_ver=$(/usr/bin/stat -f %Y /usr/local/bin/psql | cut -d\/ -f3 | cut -d\- -f2 | cut -d\@ -f2)
-else
-    active_ver=0
-fi
-
-# is the active version the requested version?
-if [[ &#34;${active_ver}&#34; = &#34;${wanted_ver}&#34; ]] ; then
-  # yup, carry on
-  :
-else
-  # nope, so deactivate it
-  echo -n &#34;Deactivating PostgreSQL ${active_ver}... &#34;
-  brew unlink --force --overwrite postgresql@${active_ver} | cut -d\  -f3-
-  # and activate the correct version
-  echo -n &#34;Activating PostgreSQL ${wanted_ver}... &#34;
-  brew link --force --overwrite postgresql@${wanted_ver} | grep &#39;created&#39; | cut -d\  -f3-
-fi
-
-# point to the correct data dir and port
-PGDATA=/usr/local/var/postgres/${wanted_ver}
-PGPORT=&#34;54$(echo ${wanted_ver} | tr -d .)&#34;
-
-# should we be starting a cluster?
-if [[ &#34;${no_restart}&#34; = &#34;t&#34; ]] ; then
-  # nope, carry on
-  :
-else
-  # yup. has the cluster been initialized?
-  if [[ ! -d ${PGDATA} ]] ; then
-    # nope, so let&#39;s do that
-    echo &#34;Initializing PostgreSQL ${wanted_ver} cluster... &#34;
-    initdb -k ${PGDATA} || initdb ${PGDATA}
-    echo &#34;port = ${PGPORT}&#34; &gt;&gt; ${PGDATA}/postgresql.conf
-    echo &#34;log_destination = &#39;stderr&#39;&#34; &gt;&gt; ${PGDATA}/postgresql.conf
-    echo &#34;logging_collector = on&#34; &gt;&gt; ${PGDATA}/postgresql.conf
-    echo &#34;log_filename = &#39;postgresql-%a.log&#39;&#34; &gt;&gt; ${PGDATA}/postgresql.conf
-    echo &#34;log_truncate_on_rotation = on&#34; &gt;&gt; ${PGDATA}/postgresql.conf
-    echo &#34;log_rotation_age = 1d&#34; &gt;&gt; ${PGDATA}/postgresql.conf
-    echo &#34;log_rotation_size = 0&#34; &gt;&gt; ${PGDATA}/postgresql.conf
-    echo &#34;log_timezone = &#39;US/Michigan&#39;&#34; &gt;&gt; ${PGDATA}/postgresql.conf
-    echo &#34;log_line_prefix = &#39;%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h &#39;&#34; &gt;&gt; ${PGDATA}/postgresql.conf
-  else
-    # yup, carry on
-    :
-  fi
-  # start the cluster
-  echo -n &#34;Starting PostgreSQL ${wanted_ver}... &#34;
-  pg_ctl -D ${PGDATA} start  &gt; /tmp/pg.start 2&gt;&amp;1
-  grep &#39;server start&#39; /tmp/pg.start
-  if [[ -x /usr/local/bin/pg_isready ]] ; then
-      ret=1
-      while [[ ${ret} -eq 1 ]]
-      do
-        # wait for the cluster to be available before exiting
-        pg_isready -q
-        ret=$?
-      done
-    fi
-fi
-
-echo &#34;export PGDATA=${PGDATA}&#34;
-echo &#34;export PGPORT=${PGPORT}&#34;
-</code></pre><p>But what does it do? It&rsquo;s pretty simple actually. When you call this script, you tell it what version of PostgreSQL you want:</p>
-<pre tabindex="0"><code>$ pg 9.6
-</code></pre><p>and then the script does the following:</p>
-<ul>
-<li>checks if the requested version is installed, and installs it if not</li>
-<li>checks if another version of PostgreSQL is running, and stops it</li>
-<li>checks if another version is linked as the active version, and unlinks it</li>
-<li>links the requested version as the active version</li>
-<li>sets PGDATA to point to the requested version&rsquo;s data cluster</li>
-<li>does an <code>initdb</code> for the requested version if needed</li>
-<li>starts the requested version&rsquo;s cluster</li>
-</ul>
-<p>I&rsquo;ll be the first to admit that the script could use additional work, but it&rsquo;s functional enough to start using today. As I continue to improve the script, I&rsquo;ll update the&quot;post&quot;with those changes, so check back every so often.</p>
-<p>Enjoy.</p>
+          <p>On Thursday, Feb 13th, the PostgreSQL Global Development Group (PGDG) released their regularly scheduled minor releases of <a href="https://www.postgresql.org">PostgreSQL</a>: 17.3, 16.7, 15.11, 14.16, and 13.19. These releases, among other bugfixes, resolved a CVE within PostgreSQL, so a sense of urgency in releasing them to our customers was bred. This, in turn, kicked off a flurry of activity within <a href="https://www.crunchydata.com/">Crunchy</a> as we readied <a href="https://www.crunchydata.com/products/crunchy-high-availability-postgresql">Crunchy Postgres via Automation</a> (CPA) for release to ship these new PostgreSQL releases. As we dove into the release process and began our internal testing, word came down from PGDG that the CVE fix as flawed and new PostgreSQL releases would be forthcoming.</p>
+<p>Opting not to release known bad software, we continued our release testing efforts, but culled some of the tests that specifically involve the PostgreSQL releases (since we would have to do them again for the new releases). True to their word, on Thursday, Feb 20th, PGDG released PostgreSQL 17.4, 16.8, 15.12, 14.17, and 13.20 kicking off our internal release process once again. This time, we ran the full suite of release tests; and ran right into a corner case with our PostgreSQL minor version upgrade that prevented the upgrade from working. And thus, we had to scrap the CPA 2.2.2 and 2.1.7 releases, fix the upgrade issue, and start our release process over once again for CPA 2.2.3 and 2.1.8!</p>
+<p>Thankfully, Jim is the man when it comes to managing back-branch releases and he and Yorvi got everything sorted, tested, and released on Fri, Feb 28th. Huge shout-out to both of these guys for managing the releases, doing the testing, and getting this into the hands of our customers!</p>
+<p>But, the drama doesn&rsquo;t stop there. On Friday, as we were releasing, we were informed of an upcoming CVE announcement on Tues, Mar 4th from the Go community. As a significant portion of our components are Go-based, this means that our Build team will be rebuilding the stack, and we&rsquo;ll be doing the release dance again. Expect to see CPA 2.2.4 and 2.1.9 within the next fortnight. Maybe after these releases, I&rsquo;ll send Jim on vacation or something. 😁</p>
+<p>Crunchy Data customers can review the full release notes <a href="https://access.crunchydata.com/downloads/release-notes/cpa">here</a> to see all the changes in these CPA releases. And if you missed any of the prior entries in this series, you can see them all <a href="/tags/cpa">here</a>. Happy upgrading, and we&rsquo;ll talk again soon.</p>
+<p><code>:wq</code></p>
 
         </div>
         <div class="mb-3 post-meta">
-           <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/osx/">#Osx</a>,   <a href="/tags/howto/">#Howto</a>,  
+           <a href="/tags/work/">#Work</a>,   <a href="/tags/cpa/">#Cpa</a>,   <a href="/tags/postgresql/">#Postgresql</a>,  
         </div>
       </div>
       <div class="col-lg-8 mx-auto block shadow">
@@ -257,15 +143,15 @@ echo &#34;export PGPORT=${PGPORT}&#34;
         <h3>See Also</h3>
         <ul>
           
-          <li><a href="/posts/getting-fancy-with-postgresql-and-homebrew/">Getting fancy with PostgreSQL and Homebrew</a></li>
+          <li><a href="/posts/on-cves--boms--and-releases/">On CVEs, BoMs, and Releases</a></li>
           
-          <li><a href="/posts/postgresql-homebrew-and-you/">PostgreSQL, Homebrew, and You</a></li>
+          <li><a href="/posts/crunchy-postgres-via-automation-v2.2/">Crunchy Postgres via Automation V2.2</a></li>
           
-          <li><a href="/posts/routing-email-through-gmail-on-osx/">Routing email through GMail on OSX</a></li>
+          <li><a href="/posts/automating-highly-available-postgresql-clusters/">Automating Highly Available PostgreSQL Clusters</a></li>
           
-          <li><a href="/posts/incremental-pgbadger/">Incremental pgBadger</a></li>
+          <li><a href="/posts/coming-soon-to-cpa---patroni-3.x/">Coming Soon to CPA - Patroni 3.x</a></li>
           
-          <li><a href="/posts/postgresql-partitioning-quick-tip/">PostgreSQL Partitioning Quick Tip</a></li>
+          <li><a href="/posts/coming-soon-to-cpa---haproxy-3.0.x/">Coming Soon to CPA - HAProxy 3.0.x</a></li>
           
         </ul>
         

@@ -6,196 +6,203 @@
     <description>Recent content in Postgresql on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 Nov 2024 17:10:07 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 01 Mar 2025 16:03:48 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/categories/postgresql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>I Heard You Like Releases in Your Releases</title>
+      <link>https://hunleyd.github.io/posts/i-heard-you-like-releases-in-your-releases/</link>
+      <pubDate>Sat, 01 Mar 2025 16:03:48 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/i-heard-you-like-releases-in-your-releases/</guid>
+      <description>&lt;p&gt;On Thursday, Feb 13th, the PostgreSQL Global Development Group (PGDG) released their regularly scheduled minor releases of &lt;a href=&#34;https://www.postgresql.org&#34;&gt;PostgreSQL&lt;/a&gt;: 17.3, 16.7, 15.11, 14.16, and 13.19. These releases, among other bugfixes, resolved a CVE within PostgreSQL, so a sense of urgency in releasing them to our customers was bred. This, in turn, kicked off a flurry of activity within &lt;a href=&#34;https://www.crunchydata.com/&#34;&gt;Crunchy&lt;/a&gt; as we readied &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (CPA) for release to ship these new PostgreSQL releases. As we dove into the release process and began our internal testing, word came down from PGDG that the CVE fix as flawed and new PostgreSQL releases would be forthcoming.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>On CVEs, BoMs, and Releases</title>
       <link>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</link>
       <pubDate>Fri, 15 Nov 2024 17:10:07 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/on-cves--boms--and-releases/</guid>
-      <description>As previously mentioned in this Crunchy Postgres via Automation series, we now use a Bill of Materials (BoM) to ship tested-together versions of the components that comprise the CPA product.</description>
+      <description>&lt;p&gt;As previously mentioned in this &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;series&lt;/a&gt;, we now use a Bill of Materials (BoM) to ship tested-together versions of the components that comprise the CPA product. Accordingly, when the PostgreSQL Global Development Group (PGDG) releases new versions of PostgreSQL as they did &lt;a href=&#34;https://www.postgresql.org/about/news/postgresql-171-165-159-1414-1317-and-1221-released-2955/&#34;&gt;yesterday&lt;/a&gt;, we have to iterate our BoMs to include these releases.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Crunchy Postgres via Automation V2.2</title>
       <link>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</link>
       <pubDate>Fri, 08 Nov 2024 17:23:23 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/crunchy-postgres-via-automation-v2.2/</guid>
-      <description>Continuing our series on Crunchy Postgres via Automation, we&amp;rsquo;re here this week to discuss the highlights of our latest release line, v2.</description>
+      <description>&lt;p&gt;Continuing our &lt;a href=&#34;https://hunleyd.github.io/tags/cpa/&#34;&gt;series&lt;/a&gt; on &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt;, we&amp;rsquo;re here this week to discuss the highlights of our latest release line, v2.2. If you haven&amp;rsquo;t already, you can catch up on &lt;a href=&#34;https://hunleyd.github.io/posts/crunchy-postgres-via-automation-what-s-new-in-v2/&#34;&gt;the differences between v1 and v2&lt;/a&gt; and then come back, we&amp;rsquo;ll wait for you.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Automating Highly Available PostgreSQL Clusters</title>
       <link>https://hunleyd.github.io/posts/automating-highly-available-postgresql-clusters/</link>
       <pubDate>Fri, 04 Oct 2024 14:07:29 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/automating-highly-available-postgresql-clusters/</guid>
-      <description>In March of &amp;lsquo;23, I took over as the Lead Architect of my employer&amp;rsquo;s Ansible-based automation for creating highly-available PostgreSQL clusters.</description>
+      <description>&lt;p&gt;In March of &amp;lsquo;23, I took over as the Lead Architect of my employer&amp;rsquo;s Ansible-based automation for creating&#xA;highly-available PostgreSQL clusters.&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; Since then, I&amp;rsquo;ve been responsible for advancing the product: refactoring&#xA;the code, adding functionality, rethinking some of its core attributes, etc. I&amp;rsquo;ve also taken some steps to informally restructure the team that works on things to better divide up responsibilities and make everyone&#xA;more productive.&lt;/p&gt;</description>
     </item>
     <item>
       <title>tuned, PG, and you</title>
       <link>https://hunleyd.github.io/posts/tuned-pg-and-you/</link>
       <pubDate>Tue, 23 Jun 2020 18:22:44 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/tuned-pg-and-you/</guid>
-      <description>We&amp;rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance.</description>
+      <description>&lt;p&gt;We&amp;rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always &amp;rsquo;that depends on your hardware and workload&amp;rsquo; and involves a lot of iteration between changing a setting and benchmarking, I thought I&amp;rsquo;d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for &lt;code&gt;tuned&lt;/code&gt; to make use of. Please, for the love of $diety, stop editing &lt;code&gt;sysctl.conf&lt;/code&gt; and friends!&lt;/p&gt;</description>
     </item>
     <item>
       <title>pgBackRest 2.08 and macOS Mojave</title>
       <link>https://hunleyd.github.io/posts/pgbackrest-2.08-and-macos-mojave/</link>
       <pubDate>Fri, 04 Jan 2019 08:30:44 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/pgbackrest-2.08-and-macos-mojave/</guid>
-      <description>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue.</description>
+      <description>&lt;p&gt;UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving &lt;code&gt;-D_POSIX_C_SOURCE&lt;/code&gt; up to the &lt;code&gt;Makefile&lt;/code&gt; that caused the problem. The solution below is still the same though.&lt;/p&gt;</description>
     </item>
     <item>
       <title>pgBackRest 2.07 and macOS Mojave</title>
       <link>https://hunleyd.github.io/posts/pgbackrest-2.07-and-macos-mojave/</link>
       <pubDate>Fri, 16 Nov 2018 06:12:31 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/pgbackrest-2.07-and-macos-mojave/</guid>
-      <description>pgBackRest 2.07 was announced today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave).</description>
+      <description>&lt;p&gt;pgBackRest 2.07 was &lt;a href=&#34;https://twitter.com/pgBackRest/status/1063458495700320258&#34;&gt;announced&lt;/a&gt; today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a &lt;em&gt;Linux&lt;/em&gt; system, so I figured I’d write this up for anyone else attempting the same.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Monitoring pgBackRest with tail_n_mail</title>
       <link>https://hunleyd.github.io/posts/monitoring-pgbackrest-with-tail_n_mail/</link>
       <pubDate>Mon, 24 Sep 2018 10:58:22 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/monitoring-pgbackrest-with-tail_n_mail/</guid>
-      <description>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use tail_n_mail, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs.</description>
+      <description>&lt;p&gt;After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use &lt;a href=&#34;https://bucardo.org/tail_n_mail/&#34;&gt;tail_n_mail&lt;/a&gt;, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.&lt;/p&gt;</description>
     </item>
     <item>
       <title>pgBouncer and auth pass-through</title>
       <link>https://hunleyd.github.io/posts/pgbouncer-and-auth-pass-thru/</link>
       <pubDate>Tue, 07 Aug 2018 12:53:28 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/pgbouncer-and-auth-pass-thru/</guid>
-      <description>I&amp;rsquo;ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it&amp;rsquo;s auth_file.</description>
+      <description>&lt;p&gt;I&amp;rsquo;ve noticed several individuals inquiring lately about pgBouncer and how they can avoid putting all users and their passwords in it&amp;rsquo;s &lt;code&gt;auth_file&lt;/code&gt;. After the most recent such inquiry (hi Richard!) I decided I&amp;rsquo;d write this&amp;quot;post&amp;quot;to&#xA;hopefully make it clearer how to use &amp;lsquo;pass-through auth&amp;rsquo; and avoid maintaining your users and their passwords in an external file. So let&amp;rsquo;s see what this takes, shall we?&lt;/p&gt;</description>
     </item>
     <item>
       <title>Upgrading PostgreSQL from 9.4 to 10.3 with pglogical</title>
       <link>https://hunleyd.github.io/posts/upgrading-postgresql-from-9.4-to-10.3-with-pglogical/</link>
       <pubDate>Thu, 05 Apr 2018 13:15:46 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/upgrading-postgresql-from-9.4-to-10.3-with-pglogical/</guid>
-      <description>I recently helped a customer upgrade their PostgreSQL instance from 9.</description>
+      <description>&lt;p&gt;I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of &lt;code&gt;pglogical&lt;/code&gt; and some planning actually made it rather straightforward. While there&amp;rsquo;s nothing new or original in this post, I still felt compelled to write it up both for posterity&amp;rsquo;s sake and for anyone else that might find the info useful as an example in their own endeavors.&lt;/p&gt;</description>
     </item>
     <item>
       <title>updated PostgreSQL homebrew script</title>
       <link>https://hunleyd.github.io/posts/updated-postgresql-homebrew-script/</link>
       <pubDate>Mon, 16 Oct 2017 13:09:23 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/updated-postgresql-homebrew-script/</guid>
-      <description>With the release of PostgreSQL 10, I&amp;rsquo;ve updated my pg script.</description>
+      <description>&lt;p&gt;With the release of PostgreSQL 10, I&amp;rsquo;ve updated my &lt;code&gt;pg&lt;/code&gt; script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter&amp;rsquo;s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I&amp;rsquo;m pretty pleased with the new version actually.&lt;/p&gt;</description>
     </item>
     <item>
       <title>When you cannot get there from here</title>
       <link>https://hunleyd.github.io/posts/when-you-cannot-get-there-from-here/</link>
       <pubDate>Tue, 25 Jul 2017 11:42:47 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/when-you-cannot-get-there-from-here/</guid>
-      <description>Connecting to a PostgreSQL instance isn&amp;rsquo;t hard generally, but sometimes you can run into issues.</description>
+      <description>&lt;p&gt;Connecting to a PostgreSQL instance isn&amp;rsquo;t hard generally, but sometimes you can run into issues. Sometimes a port isn&amp;rsquo;t open on a firewall, or the server is in a VLAN that you can&amp;rsquo;t get to, or perhaps the server isn&amp;rsquo;t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you&amp;rsquo;re connection isn&amp;rsquo;t authorized (which is not the same as being unable to &lt;em&gt;authenticate&lt;/em&gt;). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you&amp;rsquo;re facing. Let&amp;rsquo;s dive into each scenario and see what the error looks like, shall we?&lt;/p&gt;</description>
     </item>
     <item>
       <title>Installing pgBackRest on OSX</title>
       <link>https://hunleyd.github.io/posts/installing-pgbackrest-on-osx/</link>
       <pubDate>Wed, 14 Jun 2017 12:40:30 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/installing-pgbackrest-on-osx/</guid>
-      <description>If you&amp;rsquo;ve followed my previous posts (here and here), then you already have one or more versions of PostgreSQL installed on your Mac.</description>
+      <description>&lt;p&gt;If you&amp;rsquo;ve followed my previous posts (&lt;a href=&#34;https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/&#34;&gt;here&lt;/a&gt; and &lt;a href=&#34;https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/&#34;&gt;here&lt;/a&gt;), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don&amp;rsquo;t really care about any of the data therein, but if you do, let me guide you to &lt;a href=&#34;http://www.pgbackrest.org/&#34;&gt;pgBackRest&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>EXPLAINing intermittent perf problems</title>
       <link>https://hunleyd.github.io/posts/explaining-intermittent-perf-problems/</link>
       <pubDate>Mon, 28 Nov 2016 12:24:12 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/explaining-intermittent-perf-problems/</guid>
-      <description>We&amp;rsquo;ve all gotten the dreaded email/call from a user stating that a query is &amp;ldquo;slow sometimes&amp;rdquo;.</description>
+      <description>&lt;img src=&#34;http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg&#34; class=&#34;lleader&#34;&gt;&#xA;&lt;p&gt;We&amp;rsquo;ve all gotten the dreaded email/call from a user stating that a query is &amp;ldquo;slow sometimes&amp;rdquo;. If you&amp;rsquo;re lucky, the &amp;ldquo;sometimes&amp;rdquo; actually ends up being fairly consistent and you can fairly easily determine what&amp;rsquo;s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?&lt;/p&gt;</description>
     </item>
     <item>
       <title>PostgreSQL logging, strftime, and you</title>
       <link>https://hunleyd.github.io/posts/postgresql-logging-strftime-and-you/</link>
       <pubDate>Mon, 21 Nov 2016 12:17:03 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/postgresql-logging-strftime-and-you/</guid>
-      <description>PostgreSQL has a pretty extensive logging facility. I&amp;rsquo;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&amp;rsquo;m gonna talk a bit about the naming of the log file itself.</description>
+      <description>&lt;p&gt;PostgreSQL has a pretty extensive logging facility. I&amp;rsquo;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&amp;rsquo;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&amp;rsquo;t have to be static. You can, in fact, have the name dynamically created by using &lt;code&gt;strftime()&lt;/code&gt; escapes. But what exactly are those?&lt;/p&gt;</description>
     </item>
     <item>
       <title>Upgrading PostgreSQL 5x faster</title>
       <link>https://hunleyd.github.io/posts/upgrading-postgresql-5x-faster/</link>
       <pubDate>Fri, 18 Nov 2016 12:18:28 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/upgrading-postgresql-5x-faster/</guid>
-      <description>Upgrading your PostgreSQL database from one major version (e.g. 9.</description>
+      <description>&lt;img src=&#34;https://cdn.shopify.com/s/files/1/0946/8552/files/5xFaster.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Managing multiple PostgreSQL installs via Homebrew</title>
       <link>https://hunleyd.github.io/posts/managing-multiple-postgresql-installs-via-homebrew/</link>
       <pubDate>Wed, 16 Nov 2016 13:45:27 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/managing-multiple-postgresql-installs-via-homebrew/</guid>
-      <description>Following on from this post, you probably have multiple versions of PostgreSQL installed on your Mac.</description>
+      <description>&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;Following on from &lt;a href=&#34;https://hunleyd.github.io/Getting-fancy-with-PostgreSQL-and-Homebrew/&#34;&gt;this&lt;/a&gt; post, you probably have multiple versions of PostgreSQL installed on your Mac. In that post, I added an example function to help you manage all these concurrent installs. Today, I&amp;rsquo;m back with a full-fledged shell script to help manage all this. Without further ado, the script:&lt;/p&gt;</description>
     </item>
     <item>
       <title>Getting fancy with PostgreSQL and Homebrew</title>
       <link>https://hunleyd.github.io/posts/getting-fancy-with-postgresql-and-homebrew/</link>
       <pubDate>Thu, 10 Nov 2016 14:58:15 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/getting-fancy-with-postgresql-and-homebrew/</guid>
-      <description>In our previous post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid.</description>
+      <description>&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;In our &lt;a href=&#34;https://hunleyd.github.io/PostgreSQL-Homebrew-and-You/&#34;&gt;previous&lt;/a&gt; post, we installed PostgreSQL via Homebrew and got our own little cluster up and running under our userid. That is probably good enough for 90% of the users out there who just want to play with or devel on PostgreSQL, but for those of us who need a little more flexibility in our installs, we&amp;rsquo;re going to take the next step.&lt;/p&gt;</description>
     </item>
     <item>
       <title>PostgreSQL, Homebrew, and You</title>
       <link>https://hunleyd.github.io/posts/postgresql-homebrew-and-you/</link>
       <pubDate>Fri, 04 Nov 2016 13:30:09 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/postgresql-homebrew-and-you/</guid>
-      <description>If you need to install PostgreSQL onto your Macbook, you have several options available to you nowadays.</description>
+      <description>&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/3/34/Homebrew_logo.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;If you need to install &lt;a href=&#34;http://www.posatgresql.org&#34;&gt;PostgreSQL&lt;/a&gt; onto your Macbook, you have several options available to you nowadays. You could use the &lt;a href=&#34;https://bigsql.com/postgresql/installers.jsp&#34;&gt;BigSQL&lt;/a&gt; package, or you could use &lt;a href=&#34;http://postgresapp.com&#34;&gt;Postgres.app&lt;/a&gt;, or several others. However, if you&amp;rsquo;re a geek running OSX, you&amp;rsquo;ve probably already installed &lt;a href=&#34;http://brew.sh&#34;&gt;Homebrew&lt;/a&gt; and it has a wonderful PostgreSQL package. So let&amp;rsquo;s use it, shall we?&lt;/p&gt;</description>
     </item>
     <item>
       <title>Inaugural pgCMH mtg scheduled</title>
       <link>https://hunleyd.github.io/posts/inaugural-pgcmh-mtg/</link>
       <pubDate>Thu, 03 Nov 2016 11:45:32 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/inaugural-pgcmh-mtg/</guid>
-      <description>As announced on our Twitter, we&amp;rsquo;ve scheduled our inaugural meeting for Jan 24, 2017 at 1800 hrs.</description>
+      <description>&lt;img src=&#34;https://hunleyd.github.io/images/posts/pgCMH.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;As announced on our &lt;a href=&#34;http://www.twitter.com/pgCMH&#34;&gt;Twitter&lt;/a&gt;, we&amp;rsquo;ve scheduled our inaugural meeting for Jan 24, 2017 at 1800 hrs. The folks at CoverMyMeds will graciously provide the meeting space (and parking garage) while OpenSCG is buying the pizza!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Announcing pgCMH</title>
       <link>https://hunleyd.github.io/posts/announcing-pgcmh/</link>
       <pubDate>Mon, 31 Oct 2016 11:35:22 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/announcing-pgcmh/</guid>
-      <description>I&amp;rsquo;ve been kicking around the idea of founding a Columbus-based PostgreSQL User Group for a while now.</description>
+      <description>&lt;img src=&#34;https://hunleyd.github.io/images/posts/pgCMH.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;I&amp;rsquo;ve been kicking around the idea of founding a Columbus-based PostgreSQL User Group for a while now. I even went so far as to float the idea to people at &lt;a href=&#34;http://www.ohiolinux.org&#34;&gt;OLF&lt;/a&gt; in &amp;lsquo;14. After much hemming and hawing (and no one else stepping up in the interim), I&amp;rsquo;ve finally gone and done it.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Incremental pgBadger</title>
       <link>https://hunleyd.github.io/posts/incremental-pgbadger/</link>
       <pubDate>Wed, 26 Oct 2016 14:46:09 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/incremental-pgbadger/</guid>
-      <description>You&amp;rsquo;re probably already running pgBadger to monitor your PostgreSQL logs.</description>
+      <description>&lt;img src=&#34;http://www.darold.net/img/pgbadger_logo.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;You&amp;rsquo;re probably already running &lt;a href=&#34;https://dalibo.github.io/pgbadger/index.html&#34;&gt;pgBadger&lt;/a&gt; to monitor your PostgreSQL logs. However, you&amp;rsquo;re probably &lt;em&gt;not&lt;/em&gt; running it incrementally throughout the day. Most likely, you&amp;rsquo;ve setup a &lt;code&gt;cron.daily&lt;/code&gt; job that runs pgBadger against yesterday&amp;rsquo;s log(s). And that&amp;rsquo;s great. Except when you get the dreaded &amp;ldquo;what just happened on the db?&amp;rdquo; email. Are you going to wait until tonight&amp;rsquo;s normal run of pgBadger to see what happened? Are you going to run a &amp;lsquo;one off&amp;rsquo; pgBadger against today&amp;rsquo;s logfile and wait for it to process the &lt;em&gt;entire&lt;/em&gt; log? Or are you going to copy the log off somewhere, edit it to cut it down, and &lt;em&gt;then&lt;/em&gt; run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?&lt;/p&gt;</description>
     </item>
     <item>
       <title>I&#39;m syndicated</title>
       <link>https://hunleyd.github.io/posts/im-syndicated/</link>
       <pubDate>Sat, 08 Oct 2016 15:19:57 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/im-syndicated/</guid>
-      <description>Someone at work thought it would be a good idea to give me access to the corporate blog so that I might post PostgreSQL-related things there and have them syndicated to Planet PostgreSQL.</description>
+      <description>&lt;p&gt;Someone at work thought it would be a good idea to give me access to the corporate blog so that I might &lt;a href=&#34;http://www.openscg.com/category/postgresql-blogs/doug-postgresql/&#34;&gt;post&lt;/a&gt; PostgreSQL-related things there and have them syndicated to &lt;a href=&#34;http://planet.postgresql.org/&#34;&gt;Planet PostgreSQL&lt;/a&gt;. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!&lt;/p&gt;</description>
     </item>
     <item>
       <title>Where Not To Put Your Tablespaces</title>
       <link>https://hunleyd.github.io/posts/where-not-to-put-your-tablespaces/</link>
       <pubDate>Wed, 24 Aug 2016 11:55:12 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/where-not-to-put-your-tablespaces/</guid>
-      <description>From the PostgreSQL docs:&#xA;Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored.</description>
+      <description>&lt;p&gt;From the PostgreSQL &lt;a href=&#34;https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html&#34;&gt;docs&lt;/a&gt;:&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Happy 20th Birthday, PostgreSQL</title>
       <link>https://hunleyd.github.io/posts/happy-20th-postgresql/</link>
       <pubDate>Thu, 12 May 2016 10:11:31 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/happy-20th-postgresql/</guid>
-      <description>Just a quick shout out to PostgreSQL, the world&amp;rsquo;s most advanced open source database, as it celebrates it&amp;rsquo;s 20th year in existence.</description>
+      <description>&lt;img src=&#34;https://hunleyd.github.io/images/posts/pgsql_20th.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;Just a quick shout out to PostgreSQL, the world&amp;rsquo;s most advanced open source database, as it celebrates it&amp;rsquo;s 20&lt;sup&gt;th&lt;/sup&gt; year in existence. Happy birthday, y&amp;rsquo;all!&lt;/p&gt;</description>
     </item>
     <item>
       <title>PostgreSQL Partitioning Quick Tip</title>
       <link>https://hunleyd.github.io/posts/postgresql-partitioning-quick-tip/</link>
       <pubDate>Thu, 21 Apr 2016 09:25:32 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/postgresql-partitioning-quick-tip/</guid>
-      <description>Partitioning in PostgreSQL can be a little daunting at times.</description>
+      <description>&lt;img src=&#34;http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use &lt;a href=&#34;https://github.com/keithf4/pg_partman&#34;&gt;pg_partman&lt;/a&gt; and be done with it. However, if you&amp;rsquo;re trying to learn, can&amp;rsquo;t use &lt;code&gt;pg_partman&lt;/code&gt;, or are a masochist you&amp;rsquo;ll probably be following the &lt;a href=&#34;http://www.postgresql.org/docs/current/static/ddl-partitioning.html&#34;&gt;docs&lt;/a&gt; and thinking &amp;lsquo;seriously? i have to create indexes on each child? why don&amp;rsquo;t they copy the indexes of the parent? why isn&amp;rsquo;t this easier?&amp;rsquo;. Here&amp;rsquo;s a little tip to make things slightly easier:&lt;/p&gt;</description>
     </item>
     <item>
       <title>Logical Replication with Skytools3</title>
       <link>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</link>
       <pubDate>Tue, 19 Apr 2016 13:55:11 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/logical-replication-with-skytool3/</guid>
-      <description>UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script.</description>
+      <description>&lt;img src=&#34;https://cdn2.iconfinder.com/data/icons/color-svg-cloud-icons/512/cloud_refresh-512.png&#34; class=&#34;lleader&#34; /&gt;&#xA;&lt;p&gt;UPDATE: My coworker Richard liked this write up, and Skytools, so much he threw together a demo script. You can get it &lt;a href=&#34;https://github.com/richyen/toolbox/blob/master/pg/londiste/londiste_demo.sh&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;</description>
     </item>
     <item>
       <title>PostgreSQL Streaming Replication in 10 Minutes</title>
       <link>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</link>
       <pubDate>Mon, 18 Apr 2016 14:47:10 +0000</pubDate>
       <guid>https://hunleyd.github.io/posts/postgresql-streaming-replication-in-10-minutes/</guid>
-      <description>While there&amp;rsquo;s absolutely nothing new in this blog&amp;quot;post&amp;quot;that isn&amp;rsquo;t covered by the wonderful docs I&amp;rsquo;ve been asked multiple times now by customers if we had some kind of &amp;lsquo;crib notes&amp;rsquo; format for how to get replication up and running.</description>
+      <description>&lt;img src=&#34;https://hunleyd.github.io/images/posts/database-replication.png&#34; class=&#34;rleader&#34; /&gt;&#xA;&lt;p&gt;While there&amp;rsquo;s absolutely nothing new in this blog&amp;quot;post&amp;quot;that isn&amp;rsquo;t covered by the wonderful &lt;a href=&#34;http://www.postgresql.org/docs/current/static/index.html&#34;&gt;docs&lt;/a&gt; I&amp;rsquo;ve been asked multiple times now by customers if we had some kind of &amp;lsquo;crib notes&amp;rsquo; format for how to get replication up and running. And since I just had to set this up and document it for a customer, I figured I might as well&amp;quot;post&amp;quot;it so that I can simply point people to it in the future. So here we are.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
