@@ -14,7 +14,7 @@
   
   <meta name="theme-name" content="northendlab-light" />
   
-  <meta name="generator" content="Hugo 0.131.0">
+  <meta name="generator" content="Hugo 0.144.2">
 
   <!-- plugins -->
   
@@ -129,7 +129,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue.</p>
+  <p><p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving <code>-D_POSIX_C_SOURCE</code> up to the <code>Makefile</code> that caused the problem. The solution below is still the same though.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/osx/">#Osx</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
@@ -149,7 +149,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>pgBackRest 2.07 was announced today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave).</p>
+  <p><p>pgBackRest 2.07 was <a href="https://twitter.com/pgBackRest/status/1063458495700320258">announced</a> today. As usual, I immediately downloaded it and tried to get it up and running on my MacBook (currently running Mojave). It wasn’t as straightforward as one might hope, and the online instructions assume a <em>Linux</em> system, so I figured I’d write this up for anyone else attempting the same.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/osx/">#Osx</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
@@ -167,7 +167,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use tail_n_mail, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs.</p>
+  <p><p>After a lively discussion at work today about monitoring tools and use cases, I decided to see if I could use <a href="https://bucardo.org/tail_n_mail/">tail_n_mail</a>, which I already use to monitor my PostgreSQL logs, to monitor my pgBackRest logs. It turns out that it can, and can do so fairly trivially.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
@@ -185,7 +185,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>I recently helped a customer upgrade their PostgreSQL instance from 9.</p>
+  <p><p>I recently helped a customer upgrade their PostgreSQL instance from 9.4.x on RHEL to 10.x on Ubuntu. While it initially sounded daunting, the use of <code>pglogical</code> and some planning actually made it rather straightforward. While there&rsquo;s nothing new or original in this post, I still felt compelled to write it up both for posterity&rsquo;s sake and for anyone else that might find the info useful as an example in their own endeavors.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
@@ -205,7 +205,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>With the release of PostgreSQL 10, I&rsquo;ve updated my pg script.</p>
+  <p><p>With the release of PostgreSQL 10, I&rsquo;ve updated my <code>pg</code> script. You might recall from previous posts that this script is for Homebrew users that have tapped Peter&rsquo;s brew recipes. It allows for installing and switching between multiple version of PostgreSQL seemlessly. While I was in there adding v10 support, I tweaked and tuned the code a bit and tidyied up the output significantly. I&rsquo;m pretty pleased with the new version actually.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/osx/">#Osx</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>

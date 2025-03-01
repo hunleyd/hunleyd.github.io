@@ -14,7 +14,7 @@
   
   <meta name="theme-name" content="northendlab-light" />
   
-  <meta name="generator" content="Hugo 0.131.0">
+  <meta name="generator" content="Hugo 0.144.2">
 
   <!-- plugins -->
   
@@ -129,7 +129,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>One of the reasons that I find myself going back to Gentoo is that you compile the entire system for your hardware which, in theory, leads to the best performance possible.</p>
+  <p><p>One of the reasons that I find myself going back to Gentoo is that you compile the entire system <em>for your hardware</em> which, in theory, leads to the best performance possible. So the first task that I undertook when switching the NUC over to it was to figure out what compile options ClearLinux uses. Once I had figured those settings out, I then decided to use LTO optimization for all packages that support it. However, I didn&rsquo;t want to use the <a href="https://github.com/gentoo-mirror/lto-overlay">LTO overlay</a>.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/computers/">#Computers</a>,   <a href="/tags/linux/">#Linux</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
@@ -147,7 +147,10 @@
     <a href="/categories/linux/">Linux</a>
     
   </div>
-  <p>I posted a year ago about dropping ClearLinux and switching to Ubuntu Server on my NUC.</p>
+  <p><p>I <a href="/posts/Bye-Pi-Hello-NUC">posted</a> a year ago about dropping ClearLinux and
+switching to Ubuntu Server on my NUC. While that little experiment was fun, it
+didn&rsquo;t last long. I&rsquo;m not entirely sure what it is about my brain/personality, but
+I just do not like any of the binary Linux distros out there for my own long-term use so I went back to my old friend, Gentoo.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/computers/">#Computers</a>,   <a href="/tags/linux/">#Linux</a>,  
   </div>
@@ -165,7 +168,7 @@
     <a href="/categories/linux/">Linux</a>
     
   </div>
-  <p>As mentioned (very) briefly in other posts, I run Home Assistant as the &lsquo;control hub&rsquo; for all my &ldquo;smart&rdquo; devices in my home.</p>
+  <p><p>As mentioned (very) briefly in other posts, I run <a href="https://www.home-assistant.io/">Home Assistant</a> as the &lsquo;control hub&rsquo; for all my &ldquo;smart&rdquo; devices in my home. I originally ran it via their &lsquo;HASSOS&rsquo; Docker image but was never really happy with it. So when I most recently rebuilt my NUC, I decided to give this Podman thing a look. And so far, I seem to like it better. I&rsquo;m still not entirely sold on this whole container bullshit, but whatever ;)</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/computers/">#Computers</a>,   <a href="/tags/linux/">#Linux</a>,  
   </div>
@@ -183,7 +186,7 @@
     <a href="/categories/linux/">Linux</a>
     
   </div>
-  <p>About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin a new experiment with an Intel NUC.</p>
+  <p><p>About a year ago (Sep 2019 to be precise) I decided to end my Raspberry Pi experiment and begin  a new experiment with an Intel NUC. It&rsquo;s not that the Pi is incapable or anything. I really like the platform and will probably find something else to use it for. But my computing needs/desires had changed and I was looking at having a small fleet of them (I already had 2 and was contemplating more) and I really didn&rsquo;t want to go that route. So I looked around, did some research, saved up some money and ended up with:</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/computers/">#Computers</a>,   <a href="/tags/linux/">#Linux</a>,  
   </div>
@@ -203,7 +206,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>We&rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance.</p>
+  <p><p>We&rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always &rsquo;that depends on your hardware and workload&rsquo; and involves a lot of iteration between changing a setting and benchmarking, I thought I&rsquo;d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for <code>tuned</code> to make use of. Please, for the love of $diety, stop editing <code>sysctl.conf</code> and friends!</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/linux/">#Linux</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>

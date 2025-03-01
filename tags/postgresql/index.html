@@ -14,7 +14,7 @@
   
   <meta name="theme-name" content="northendlab-light" />
   
-  <meta name="generator" content="Hugo 0.131.0">
+  <meta name="generator" content="Hugo 0.144.2">
 
   <!-- plugins -->
   
@@ -131,7 +131,7 @@
     <a href="/categories/cpa/">Cpa</a>
     
   </div>
-  <p>As previously mentioned in this Crunchy Postgres via Automation series, we now use a Bill of Materials (BoM) to ship tested-together versions of the components that comprise the CPA product.</p>
+  <p><p>As previously mentioned in this <a href="https://www.crunchydata.com/products/crunchy-high-availability-postgresql">Crunchy Postgres via Automation</a> <a href="/tags/cpa">series</a>, we now use a Bill of Materials (BoM) to ship tested-together versions of the components that comprise the CPA product. Accordingly, when the PostgreSQL Global Development Group (PGDG) releases new versions of PostgreSQL as they did <a href="https://www.postgresql.org/about/news/postgresql-171-165-159-1414-1317-and-1221-released-2955/">yesterday</a>, we have to iterate our BoMs to include these releases.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/work/">#Work</a>,   <a href="/tags/ansible/">#Ansible</a>,   <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/cpa/">#Cpa</a>,  
   </div>
@@ -153,7 +153,7 @@
     <a href="/categories/postgresql/">Postgresql</a>
     
   </div>
-  <p>Continuing our series on Crunchy Postgres via Automation, we&rsquo;re here this week to discuss the highlights of our latest release line, v2.</p>
+  <p><p>Continuing our <a href="/tags/cpa/">series</a> on <a href="https://www.crunchydata.com/products/crunchy-high-availability-postgresql">Crunchy Postgres via Automation</a>, we&rsquo;re here this week to discuss the highlights of our latest release line, v2.2. If you haven&rsquo;t already, you can catch up on <a href="/posts/crunchy-postgres-via-automation-what-s-new-in-v2/">the differences between v1 and v2</a> and then come back, we&rsquo;ll wait for you.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/work/">#Work</a>,   <a href="/tags/cpa/">#Cpa</a>,   <a href="/tags/ansible/">#Ansible</a>,   <a href="/tags/postgresql/">#Postgresql</a>,  
   </div>
@@ -175,7 +175,10 @@
     <a href="/categories/cpa/">Cpa</a>
     
   </div>
-  <p>In March of &lsquo;23, I took over as the Lead Architect of my employer&rsquo;s Ansible-based automation for creating highly-available PostgreSQL clusters.</p>
+  <p><p>In March of &lsquo;23, I took over as the Lead Architect of my employer&rsquo;s Ansible-based automation for creating
+highly-available PostgreSQL clusters.<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup> Since then, I&rsquo;ve been responsible for advancing the product: refactoring
+the code, adding functionality, rethinking some of its core attributes, etc. I&rsquo;ve also taken some steps to informally restructure the team that works on things to better divide up responsibilities and make everyone
+more productive.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/ansible/">#Ansible</a>,   <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/work/">#Work</a>,   <a href="/tags/cpa/">#Cpa</a>,  
   </div>
@@ -195,7 +198,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>We&rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance.</p>
+  <p><p>We&rsquo;ve had a small flurry of customers asking about tuning their OS for the best PostgreSQL performance. While the answer to this question is always &rsquo;that depends on your hardware and workload&rsquo; and involves a lot of iteration between changing a setting and benchmarking, I thought I&rsquo;d take a moment to point out that once you do manage to dial-in the settings, you should be writing a profile and deploying to your systems for <code>tuned</code> to make use of. Please, for the love of $diety, stop editing <code>sysctl.conf</code> and friends!</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/linux/">#Linux</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
@@ -215,7 +218,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue.</p>
+  <p><p>UPDATE: My reasoning was incorrect below. It wasn’t the moving of some of the lock code to C that caused the issue. It was moving <code>-D_POSIX_C_SOURCE</code> up to the <code>Makefile</code> that caused the problem. The solution below is still the same though.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/osx/">#Osx</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>

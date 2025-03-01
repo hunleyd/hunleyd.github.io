@@ -14,7 +14,7 @@
   
   <meta name="theme-name" content="northendlab-light" />
   
-  <meta name="generator" content="Hugo 0.131.0">
+  <meta name="generator" content="Hugo 0.144.2">
 
   <!-- plugins -->
   
@@ -125,7 +125,7 @@
     <a href="/categories/postgresql/">Postgresql</a>
     
   </div>
-  <p>Connecting to a PostgreSQL instance isn&rsquo;t hard generally, but sometimes you can run into issues.</p>
+  <p><p>Connecting to a PostgreSQL instance isn&rsquo;t hard generally, but sometimes you can run into issues. Sometimes a port isn&rsquo;t open on a firewall, or the server is in a VLAN that you can&rsquo;t get to, or perhaps the server isn&rsquo;t running on the network interface you think it is. More commonly, you can reach the PostgreSQL instance but you&rsquo;re connection isn&rsquo;t authorized (which is not the same as being unable to <em>authenticate</em>). Fortunately, the error messages returned in these different failure scenarios are fairly verbose and distinct so you can easily tell which scenario you&rsquo;re facing. Let&rsquo;s dive into each scenario and see what the error looks like, shall we?</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,  
   </div>
@@ -145,7 +145,7 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>If you&rsquo;ve followed my previous posts (here and here), then you already have one or more versions of PostgreSQL installed on your Mac.</p>
+  <p><p>If you&rsquo;ve followed my previous posts (<a href="https://hunleyd.github.io/posts/PostgreSQL-Homebrew-and-You/">here</a> and <a href="https://hunleyd.github.io/posts/Getting-fancy-with-PostgreSQL-and-Homebrew/">here</a>), then you already have one or more versions of PostgreSQL installed on your Mac. Maybe these are solely for test or dev purposes and you don&rsquo;t really care about any of the data therein, but if you do, let me guide you to <a href="http://www.pgbackrest.org/">pgBackRest</a>.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/osx/">#Osx</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
@@ -161,7 +161,8 @@
     <a href="/categories/postgresql/">Postgresql</a>
     
   </div>
-  <p>We&rsquo;ve all gotten the dreaded email/call from a user stating that a query is &ldquo;slow sometimes&rdquo;.</p>
+  <p><img src="http://i0.kym-cdn.com/entries/icons/original/000/010/997/35s7cv.jpg" class="lleader">
+<p>We&rsquo;ve all gotten the dreaded email/call from a user stating that a query is &ldquo;slow sometimes&rdquo;. If you&rsquo;re lucky, the &ldquo;sometimes&rdquo; actually ends up being fairly consistent and you can fairly easily determine what&rsquo;s happening (an errant cron job, for example). All too often though, the issue really is sporadic, fleeting, and indeterministic. So how do you track these down? And more importantly what do you do about them once found?</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,  
   </div>
@@ -177,7 +178,7 @@
     <a href="/categories/postgresql/">Postgresql</a>
     
   </div>
-  <p>PostgreSQL has a pretty extensive logging facility. I&rsquo;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&rsquo;m gonna talk a bit about the naming of the log file itself.</p>
+  <p><p>PostgreSQL has a pretty extensive logging facility. I&rsquo;ve talked briefly about configuring it to get the most out of pgBadger before, but today I&rsquo;m gonna talk a bit about the naming of the log file itself. The chosen filename doesn&rsquo;t have to be static. You can, in fact, have the name dynamically created by using <code>strftime()</code> escapes. But what exactly are those?</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,  
   </div>
@@ -193,7 +194,8 @@
     <a href="/categories/postgresql/">Postgresql</a>
     
   </div>
-  <p>Upgrading your PostgreSQL database from one major version (e.g. 9.</p>
+  <p><img src="https://cdn.shopify.com/s/files/1/0946/8552/files/5xFaster.png" class="lleader" />
+<p>Upgrading your PostgreSQL database from one major version (e.g. 9.4.x) to another major version (e.g. 9.5.x) used to a painful and exceedingly slow process. You essentially had two options: dump / reload the data or use one of the complex logical replication tools.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,  
   </div>

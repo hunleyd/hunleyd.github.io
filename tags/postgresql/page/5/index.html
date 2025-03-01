@@ -14,7 +14,7 @@
   
   <meta name="theme-name" content="northendlab-light" />
   
-  <meta name="generator" content="Hugo 0.131.0">
+  <meta name="generator" content="Hugo 0.144.2">
 
   <!-- plugins -->
   
@@ -127,7 +127,8 @@
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>You&rsquo;re probably already running pgBadger to monitor your PostgreSQL logs.</p>
+  <p><img src="http://www.darold.net/img/pgbadger_logo.png" class="lleader" />
+<p>You&rsquo;re probably already running <a href="https://dalibo.github.io/pgbadger/index.html">pgBadger</a> to monitor your PostgreSQL logs. However, you&rsquo;re probably <em>not</em> running it incrementally throughout the day. Most likely, you&rsquo;ve setup a <code>cron.daily</code> job that runs pgBadger against yesterday&rsquo;s log(s). And that&rsquo;s great. Except when you get the dreaded &ldquo;what just happened on the db?&rdquo; email. Are you going to wait until tonight&rsquo;s normal run of pgBadger to see what happened? Are you going to run a &lsquo;one off&rsquo; pgBadger against today&rsquo;s logfile and wait for it to process the <em>entire</em> log? Or are you going to copy the log off somewhere, edit it to cut it down, and <em>then</em> run pgBadger against this cut-down version (hoping you left enough in the log to see proper trending)?</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
@@ -145,7 +146,7 @@
     <a href="/categories/postgresql/">Postgresql</a>
     
   </div>
-  <p>Someone at work thought it would be a good idea to give me access to the corporate blog so that I might post PostgreSQL-related things there and have them syndicated to Planet PostgreSQL.</p>
+  <p><p>Someone at work thought it would be a good idea to give me access to the corporate blog so that I might <a href="http://www.openscg.com/category/postgresql-blogs/doug-postgresql/">post</a> PostgreSQL-related things there and have them syndicated to <a href="http://planet.postgresql.org/">Planet PostgreSQL</a>. So my PostgreSQL ramblings will show up there now instead of here. This should be fun!</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/work/">#Work</a>,   <a href="/tags/postgresql/">#Postgresql</a>,  
   </div>
@@ -161,8 +162,9 @@
     <a href="/categories/postgresql/">Postgresql</a>
     
   </div>
-  <p>From the PostgreSQL docs:
-Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored.</p>
+  <p><p>From the PostgreSQL <a href="https://www.postgresql.org/docs/current/static/manage-ag-tablespaces.html">docs</a>:</p>
+<blockquote>
+<p>Tablespaces in PostgreSQL allow database administrators to define locations in the file system where the files representing database objects can be stored. Once created, a tablespace can be referred to by name when creating database objects.</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,  
   </div>
@@ -178,7 +180,8 @@ Tablespaces in PostgreSQL allow database administrators to define locations in t
     <a href="/categories/postgresql/">Postgresql</a>
     
   </div>
-  <p>Just a quick shout out to PostgreSQL, the world&rsquo;s most advanced open source database, as it celebrates it&rsquo;s 20th year in existence.</p>
+  <p><img src="/images/posts/pgsql_20th.png" class="lleader" />
+<p>Just a quick shout out to PostgreSQL, the world&rsquo;s most advanced open source database, as it celebrates it&rsquo;s 20<sup>th</sup> year in existence. Happy birthday, y&rsquo;all!</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,  
   </div>
@@ -196,7 +199,8 @@ Tablespaces in PostgreSQL allow database administrators to define locations in t
     <a href="/categories/howto/">Howto</a>
     
   </div>
-  <p>Partitioning in PostgreSQL can be a little daunting at times.</p>
+  <p><img src="http://www.habitsofmind.org/sites/default/files/helpful-tips-image-web-design-sydney.jpg" class="rleader" />
+<p>Partitioning in PostgreSQL can be a little daunting at times. In fact, you should probably just use <a href="https://github.com/keithf4/pg_partman">pg_partman</a> and be done with it. However, if you&rsquo;re trying to learn, can&rsquo;t use <code>pg_partman</code>, or are a masochist you&rsquo;ll probably be following the <a href="http://www.postgresql.org/docs/current/static/ddl-partitioning.html">docs</a> and thinking &lsquo;seriously? i have to create indexes on each child? why don&rsquo;t they copy the indexes of the parent? why isn&rsquo;t this easier?&rsquo;. Here&rsquo;s a little tip to make things slightly easier:</p></p>
   <div class="mb-3 post-meta">
      <a href="/tags/postgresql/">#Postgresql</a>,   <a href="/tags/howto/">#Howto</a>,  
   </div>
