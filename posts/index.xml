@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Doug&#39;s Dabblings | Quick thoughts on stuff I&#39;m playing with</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 01 Mar 2025 16:03:48 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 16 Mar 2025 16:44:03 +0000</lastBuildDate>
     <atom:link href="https://hunleyd.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The End Is Nigh</title>
+      <link>https://hunleyd.github.io/posts/the-end-is-nigh/</link>
+      <pubDate>Sun, 16 Mar 2025 16:44:03 +0000</pubDate>
+      <guid>https://hunleyd.github.io/posts/the-end-is-nigh/</guid>
+      <description>&lt;p&gt;Six years ago, on January 2, 2019, we tagged the 1.0 release of &lt;a href=&#34;https://www.crunchydata.com/products/crunchy-high-availability-postgresql&#34;&gt;Crunchy Postgres via Automation&lt;/a&gt; (then known as Crunchy HA). Originally a set of Ansible roles, the product grew and morphed into the Ansible collection that it is &lt;a href=&#34;https://hunleyd.github.io/tags/cpa&#34;&gt;today&lt;/a&gt; over the course of fourteen major releases (in the 1.x line) with contributions from a dozen individuals. And now, with the release of 1.15-17 on Mar 7th, the 1.x line is officially on life support as we phase it out and move customers to our 2.x line.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>I Heard You Like Releases in Your Releases</title>
       <link>https://hunleyd.github.io/posts/i-heard-you-like-releases-in-your-releases/</link>
